@@ -18,7 +18,7 @@ type ImageCanvasProps = {
   text: string;
   title?: string;
   font: FontOption;
-  backgroundColor: string;
+  backgroundColor?: string;
   textColor: string;
   width: number;
   height: number;
@@ -64,7 +64,7 @@ const wrapText = (
     context.fillText(l.trim(), x, currentY);
     currentY += lineHeight;
   }
-  return { finalY: currentY, lines: lines };
+  return { finalY: currentY, lines: lines.map(l => l.trim()) };
 };
 
 
@@ -93,70 +93,21 @@ export function ImageCanvas({
       
       ctx.clearRect(0, 0, width, height);
 
-      if (backgroundColor === 'paper-effect' && backgroundImageUrl) {
-          const img = new Image();
-          img.crossOrigin = 'anonymous';
-          img.src = backgroundImageUrl;
-          img.onload = async () => {
-              ctx.drawImage(img, 0, 0, width, height);
-
-              const rectWidth = 830;
-              const rectHeight = 1100;
-              const rectX = (width - rectWidth) / 2;
-              const rectY = (height - rectHeight) / 2;
-              
-              ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-              ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
-
-              ctx.fillStyle = textColor;
-              ctx.textAlign = 'left';
-              ctx.textBaseline = 'top';
-              
-              const textMaxWidth = 730;
-              const textBlockHeight = 950;
-              
-              ctx.font = `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`;
-
-              const words = text.replace(/\n/g, ' \n ').split(' ');
-              let line = '';
-              const allLines = [];
-              for(let i = 0; i < words.length; i++) {
-                  if (words[i] === '\n') {
-                      allLines.push(line);
-                      line = '';
-                      continue;
-                  }
-                  const testLine = line + words[i] + ' ';
-                  if (ctx.measureText(testLine).width > textMaxWidth && i > 0) {
-                      allLines.push(line);
-                      line = words[i] + ' ';
-                  } else {
-                      line = testLine;
-                  }
-              }
-              allLines.push(line);
-              
-              const totalTextHeight = allLines.length * font.lineHeight;
-              const textX = rectX + (rectWidth - textMaxWidth) / 2;
-              let startY = rectY + (rectHeight - Math.min(totalTextHeight, textBlockHeight)) / 2;
-              
-              wrapText(ctx, text, textX, startY, textMaxWidth, font.lineHeight, ctx.font);
-
-              onCanvasReady(canvas);
-          };
-          img.onerror = () => {
-              ctx.fillStyle = "#ccc";
-              ctx.fillRect(0,0,width,height);
-              ctx.fillStyle = "red";
-              ctx.fillText("Image failed to load", 10, 10);
-              onCanvasReady(canvas);
-          }
-          return;
-      }
-
-
-      // Draw background
-      if (backgroundColor.startsWith("linear-gradient")) {
+      // 1. Draw Background
+      if (backgroundImageUrl) {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = backgroundImageUrl;
+        img.onload = () => {
+          ctx.drawImage(img, 0, 0, width, height);
+          drawLayout();
+        };
+        img.onerror = () => {
+          ctx.fillStyle = "#ccc";
+          ctx.fillRect(0,0,width,height);
+          drawLayout();
+        }
+      } else if (backgroundColor && backgroundColor.startsWith("linear-gradient")) {
         const colors = backgroundColor.match(/#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})/g);
         if (colors && colors.length >= 2) {
           const gradient = ctx.createLinearGradient(0, 0, width, height);
@@ -166,33 +117,61 @@ export function ImageCanvas({
         } else {
            ctx.fillStyle = "#ffffff";
         }
+        ctx.fillRect(0, 0, width, height);
+        drawLayout();
       } else {
-        ctx.fillStyle = backgroundColor;
-      }
-      ctx.fillRect(0, 0, width, height);
-      
-      // Text properties
-      const sidePadding = 30;
-      const topPadding = 60;
-      const maxWidth = width - (sidePadding * 2);
-      let currentY = topPadding;
-
-      ctx.fillStyle = textColor;
-      ctx.textAlign = "left";
-      ctx.textBaseline = "top";
-      
-      // Draw Title if it exists
-      if (title) {
-        const titleFont = `${font.titleWeight} ${font.titleSize}px "${font.titleFont}"`;
-        const { finalY } = wrapText(ctx, title, sidePadding, currentY, maxWidth, font.titleSize * 1.2, titleFont);
-        currentY = finalY + font.lineHeight * 0.5;
+        ctx.fillStyle = backgroundColor || '#ffffff';
+        ctx.fillRect(0, 0, width, height);
+        drawLayout();
       }
 
-      // Draw Body Text
-      const bodyFont = `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`;
-      wrapText(ctx, text, sidePadding, currentY, maxWidth, font.lineHeight, bodyFont);
+      const drawLayout = () => {
+        // 2. Draw the inner rectangle
+        const rectWidth = 830;
+        const rectHeight = 1100;
+        const rectX = (width - rectWidth) / 2;
+        const rectY = (height - rectHeight) / 2;
+        
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
 
-      onCanvasReady(canvas);
+        // 3. Draw the text
+        ctx.fillStyle = textColor;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        
+        const textMaxWidth = 730;
+        const textBlockHeight = 950;
+        
+        ctx.font = `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`;
+
+        const words = text.replace(/\n/g, ' \n ').split(' ');
+        let line = '';
+        const allLines = [];
+        for(let i = 0; i < words.length; i++) {
+            if (words[i] === '\n') {
+                allLines.push(line);
+                line = '';
+                continue;
+            }
+            const testLine = line + words[i] + ' ';
+            if (ctx.measureText(testLine).width > textMaxWidth && i > 0) {
+                allLines.push(line);
+                line = words[i] + ' ';
+            } else {
+                line = testLine;
+            }
+        }
+        allLines.push(line);
+        
+        const totalTextHeight = allLines.length * font.lineHeight;
+        const textX = rectX + (rectWidth - textMaxWidth) / 2;
+        let startY = rectY + (rectHeight - Math.min(totalTextHeight, textBlockHeight)) / 2;
+        
+        wrapText(ctx, text, textX, startY, textMaxWidth, font.lineHeight, ctx.font);
+
+        onCanvasReady(canvas);
+      };
     };
 
     draw();

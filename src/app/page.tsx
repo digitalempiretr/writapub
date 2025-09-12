@@ -276,51 +276,34 @@ export default function Home() {
   };
 
   const renderCanvas = (design: Design, index: number) => {
-    if (designTab === "image") {
-        const specialFont: FontOption = {
-            value: "paper-effect-font",
-            label: "Paper Effect Font",
-            titleFont: "Playfair Display",
-            bodyFont: "Playfair Display",
-            bodyWeight: "400",
-            titleWeight: "700",
-            titleSize: 45,
-            bodySize: 45,
-            lineHeight: 60,
-        };
-        
-        let combinedText = design.paragraph;
-        if(design.title) {
-            combinedText = design.title + "\n\n" + design.paragraph;
-        }
-
-        return (
-            <ImageCanvas
-              key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${index}`}
-              font={specialFont}
-              text={combinedText}
-              textColor="#000000"
-              backgroundColor="paper-effect"
-              backgroundImageUrl={imageBgUrl}
-              width={1080}
-              height={1350}
-              onCanvasReady={(canvas) => {
-                canvasRefs.current[index] = canvas;
-              }}
-            />
-        );
+    const layoutFont: FontOption = {
+        value: "layout-font",
+        label: "Layout Font",
+        titleFont: "Playfair Display",
+        bodyFont: "Playfair Display",
+        bodyWeight: "400",
+        titleWeight: "700",
+        titleSize: 45,
+        bodySize: 45,
+        lineHeight: 60,
+    };
+    
+    let combinedText = design.paragraph;
+    if(design.title) {
+        combinedText = design.title + "\n\n" + design.paragraph;
     }
-    
-    const currentBg = designTab === "flat" ? bgColor : gradientBg;
-    
+
+    const currentBg = designTab === "flat" ? bgColor : (designTab === "gradient" ? gradientBg : undefined);
+    const imageUrl = designTab === "image" ? imageBgUrl : undefined;
+
     return (
         <ImageCanvas
           key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${index}`}
-          font={activeFont}
-          text={design.paragraph}
-          title={design.title}
-          textColor={textColor}
+          font={layoutFont}
+          text={combinedText}
+          textColor={designTab === 'flat' ? textColor : '#000000'}
           backgroundColor={currentBg}
+          backgroundImageUrl={imageUrl}
           width={1080}
           height={1350}
           onCanvasReady={(canvas) => {
@@ -373,19 +356,6 @@ export default function Home() {
                 className="resize-none"
               />
               <p className="text-xs text-muted-foreground text-right">{text.length} karakter</p>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="font">Yazı Tipi</Label>
-              <Select onValueChange={handleFontChange} defaultValue={activeFont.value} disabled={designTab === 'image'}>
-                <SelectTrigger id="font">
-                  <SelectValue placeholder="Font seçin" />
-                </SelectTrigger>
-                <SelectContent>
-                  {fontOptions.map(font => (
-                    <SelectItem key={font.value} value={font.value}>{font.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
              <div className="space-y-4">
               <Label>Arka Plan</Label>
