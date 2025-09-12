@@ -286,42 +286,25 @@ export default function Home() {
             bodyFont: "Playfair Display",
             bodyWeight: "400",
             titleWeight: "700",
-            titleSize: 50,
+            titleSize: 45, // Not used directly, but good to have
             bodySize: 45,
-            lineHeight: 60,
+            lineHeight: 60, // 45 * 1.33
         };
-        const textToRender = design.title ? `${design.title}\n\n${design.paragraph}` : design.paragraph;
-
+        
         return (
-             <div className="aspect-[1080/1350] relative bg-black flex items-center justify-center">
-                <Image
-                    src="https://picsum.photos/seed/1/1080/1350"
-                    alt="Background"
-                    fill
-                    objectFit="cover"
-                    data-ai-hint="abstract texture"
-                />
-                <div className="relative bg-white/90 w-[830px] h-[1100px] flex items-center justify-center p-8">
-                     <p className="w-[730px] h-auto font-serif text-black text-left" style={{ fontFamily: 'Playfair Display', fontSize: '45pt', fontWeight: 400, whiteSpace: 'pre-wrap', lineHeight: '1.4' }}>
-                        {textToRender}
-                    </p>
-                </div>
-                 {/* This canvas is hidden, only used for download */}
-                <div className="absolute -z-10 opacity-0 pointer-events-none">
-                    <ImageCanvas
-                      font={specialFont}
-                      text={design.paragraph}
-                      title={design.title}
-                      textColor="#000000"
-                      backgroundColor="paper-effect"
-                      width={1080}
-                      height={1350}
-                      onCanvasReady={(canvas) => {
-                        canvasRefs.current[index] = canvas;
-                      }}
-                    />
-                </div>
-            </div>
+            <ImageCanvas
+              key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBg}-${index}`}
+              font={specialFont}
+              text={design.paragraph}
+              title={design.title}
+              textColor="#000000"
+              backgroundColor="paper-effect"
+              width={1080}
+              height={1350}
+              onCanvasReady={(canvas) => {
+                canvasRefs.current[index] = canvas;
+              }}
+            />
         );
     }
     
@@ -329,6 +312,7 @@ export default function Home() {
     
     return (
         <ImageCanvas
+          key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBg}-${index}`}
           font={activeFont}
           text={design.paragraph}
           title={design.title}

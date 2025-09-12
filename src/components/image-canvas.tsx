@@ -32,32 +32,38 @@ const wrapText = (
   x: number,
   y: number,
   maxWidth: number,
-  lineHeight: number
+  lineHeight: number,
+  font: string,
 ) => {
+  context.font = font;
   const words = text.replace(/\n/g, ' \n ').split(" ");
   let line = "";
   let currentY = y;
+  const lines = [];
 
   for (let n = 0; n < words.length; n++) {
     if (words[n] === '\n') {
-        context.fillText(line, x, currentY);
+        lines.push(line);
         line = "";
-        currentY += lineHeight;
         continue;
     }
     const testLine = line + words[n] + " ";
     const metrics = context.measureText(testLine);
     const testWidth = metrics.width;
     if (testWidth > maxWidth && n > 0) {
-      context.fillText(line, x, currentY);
+      lines.push(line);
       line = words[n] + " ";
-      currentY += lineHeight;
     } else {
       line = testLine;
     }
   }
-  context.fillText(line, x, currentY);
-  return currentY + lineHeight;
+  lines.push(line);
+
+  for (const l of lines) {
+    context.fillText(l.trim(), x, currentY);
+    currentY += lineHeight;
+  }
+  return { finalY: currentY, lines: lines };
 };
 
 const drawPaperEffect = (
@@ -95,14 +101,16 @@ const drawPaperEffect = (
             ctx.textBaseline = 'top';
             
             const textMaxWidth = 730;
+            const textBlockHeight = 950;
             const textPaddingHorizontal = (rectWidth - textMaxWidth) / 2;
             const textX = rectX + textPaddingHorizontal;
             
-            let combinedText = (title ? `${title}\n\n` : '') + text;
+            let combinedText = (title ? `${title.toUpperCase()}\n\n` : '') + text;
             
+            ctx.font = `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`;
+
             // Measure total text height to center it vertically
-            const measureLines = (textToMeasure: string, maxWidth: number, fontStyle: string) => {
-                ctx.font = fontStyle;
+            const measureLines = (textToMeasure: string, maxWidth: number) => {
                 const words = textToMeasure.replace(/\n/g, ' \n ').split(' ');
                 let line = '';
                 const lines = [];
@@ -124,22 +132,12 @@ const drawPaperEffect = (
                 return lines;
             }
             
-            const titleLines = title ? measureLines(title, textMaxWidth, `${font.titleWeight} ${font.titleSize}px "${font.titleFont}"`) : [];
-            const bodyLines = measureLines(text, textMaxWidth, `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`);
+            const allLines = measureLines(combinedText, textMaxWidth);
+            const totalTextHeight = allLines.length * font.lineHeight;
+
+            let startY = rectY + (rectHeight - Math.min(totalTextHeight, textBlockHeight)) / 2;
             
-            const titleHeight = title ? (titleLines.length * (font.titleSize * 1.2)) + (font.lineHeight * 0.5) : 0;
-            const bodyHeight = bodyLines.length * font.lineHeight;
-            const totalTextHeight = titleHeight + bodyHeight;
-
-            let startY = rectY + (rectHeight - totalTextHeight) / 2;
-
-            if (title) {
-                ctx.font = `${font.titleWeight} ${font.titleSize}px "${font.titleFont}"`;
-                startY = wrapText(ctx, title, textX, startY, textMaxWidth, font.titleSize * 1.2) + font.lineHeight * 0.5;
-            }
-
-            ctx.font = `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`;
-            wrapText(ctx, text, textX, startY, textMaxWidth, font.lineHeight);
+            wrapText(ctx, combinedText, textX, startY, textMaxWidth, font.lineHeight, ctx.font);
             
             resolve();
         };
@@ -147,6 +145,8 @@ const drawPaperEffect = (
              // Draw fallback if image fails
              ctx.fillStyle = "#ccc";
              ctx.fillRect(0,0,width,height);
+             ctx.fillStyle = "red";
+             ctx.fillText("Image failed to load", 10, 10);
              resolve();
         }
     });
@@ -172,7 +172,10 @@ export function ImageCanvas({
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
       
-      await document.fonts.ready;
+      // Ensure fonts are loaded
+      await document.fonts.load(`${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`);
+      await document.fonts.load(`${font.titleWeight} ${font.titleSize}px "${font.titleFont}"`);
+      
       ctx.clearRect(0, 0, width, height);
 
       if (backgroundColor === 'paper-effect') {
@@ -210,13 +213,14 @@ export function ImageCanvas({
       
       // Draw Title if it exists
       if (title) {
-        ctx.font = `${font.titleWeight} ${font.titleSize}px "${font.titleFont}"`;
-        currentY = wrapText(ctx, title, sidePadding, currentY, maxWidth, font.titleSize * 1.2) + font.lineHeight * 0.5;
+        const titleFont = `${font.titleWeight} ${font.titleSize}px "${font.titleFont}"`;
+        const { finalY } = wrapText(ctx, title, sidePadding, currentY, maxWidth, font.titleSize * 1.2, titleFont);
+        currentY = finalY + font.lineHeight * 0.5;
       }
 
       // Draw Body Text
-      ctx.font = `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`;
-      wrapText(ctx, text, sidePadding, currentY, maxWidth, font.lineHeight);
+      const bodyFont = `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`;
+      wrapText(ctx, text, sidePadding, currentY, maxWidth, font.lineHeight, bodyFont);
 
       onCanvasReady(canvas);
     };
