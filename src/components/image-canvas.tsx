@@ -23,6 +23,7 @@ type ImageCanvasProps = {
   width: number;
   height: number;
   onCanvasReady: (canvas: HTMLCanvasElement) => void;
+  backgroundImageUrl?: string;
 };
 
 // Helper function to wrap text on canvas
@@ -66,92 +67,6 @@ const wrapText = (
   return { finalY: currentY, lines: lines };
 };
 
-const drawPaperEffect = (
-    ctx: CanvasRenderingContext2D,
-    width: number,
-    height: number,
-    text: string,
-    font: FontOption,
-    title?: string,
-) => {
-    return new Promise<void>((resolve) => {
-        // Background
-        ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, width, height);
-
-        // Background Image
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.src = "https://picsum.photos/seed/1/1080/1350";
-        img.onload = () => {
-            ctx.drawImage(img, 0, 0, width, height);
-
-            // Centered Rectangle
-            const rectWidth = 830;
-            const rectHeight = 1100;
-            const rectX = (width - rectWidth) / 2;
-            const rectY = (height - rectHeight) / 2;
-            
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-            ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
-
-            // Text
-            ctx.fillStyle = '#000000';
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'top';
-            
-            const textMaxWidth = 730;
-            const textBlockHeight = 950;
-            const textPaddingHorizontal = (rectWidth - textMaxWidth) / 2;
-            const textX = rectX + textPaddingHorizontal;
-            
-            let combinedText = (title ? `${title.toUpperCase()}\n\n` : '') + text;
-            
-            ctx.font = `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`;
-
-            // Measure total text height to center it vertically
-            const measureLines = (textToMeasure: string, maxWidth: number) => {
-                const words = textToMeasure.replace(/\n/g, ' \n ').split(' ');
-                let line = '';
-                const lines = [];
-                for(let i = 0; i < words.length; i++) {
-                    if (words[i] === '\n') {
-                        lines.push(line);
-                        line = '';
-                        continue;
-                    }
-                    const testLine = line + words[i] + ' ';
-                    if (ctx.measureText(testLine).width > maxWidth && i > 0) {
-                        lines.push(line);
-                        line = words[i] + ' ';
-                    } else {
-                        line = testLine;
-                    }
-                }
-                lines.push(line);
-                return lines;
-            }
-            
-            const allLines = measureLines(combinedText, textMaxWidth);
-            const totalTextHeight = allLines.length * font.lineHeight;
-
-            let startY = rectY + (rectHeight - Math.min(totalTextHeight, textBlockHeight)) / 2;
-            
-            wrapText(ctx, combinedText, textX, startY, textMaxWidth, font.lineHeight, ctx.font);
-            
-            resolve();
-        };
-        img.onerror = () => {
-             // Draw fallback if image fails
-             ctx.fillStyle = "#ccc";
-             ctx.fillRect(0,0,width,height);
-             ctx.fillStyle = "red";
-             ctx.fillText("Image failed to load", 10, 10);
-             resolve();
-        }
-    });
-}
-
 
 export function ImageCanvas({
   text,
@@ -162,6 +77,7 @@ export function ImageCanvas({
   width,
   height,
   onCanvasReady,
+  backgroundImageUrl
 }: ImageCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -172,15 +88,69 @@ export function ImageCanvas({
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
       
-      // Ensure fonts are loaded
       await document.fonts.load(`${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`);
       await document.fonts.load(`${font.titleWeight} ${font.titleSize}px "${font.titleFont}"`);
       
       ctx.clearRect(0, 0, width, height);
 
-      if (backgroundColor === 'paper-effect') {
-          await drawPaperEffect(ctx, width, height, text, font, title);
-          onCanvasReady(canvas);
+      if (backgroundColor === 'paper-effect' && backgroundImageUrl) {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.src = backgroundImageUrl;
+          img.onload = async () => {
+              ctx.drawImage(img, 0, 0, width, height);
+
+              const rectWidth = 830;
+              const rectHeight = 1100;
+              const rectX = (width - rectWidth) / 2;
+              const rectY = (height - rectHeight) / 2;
+              
+              ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+              ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
+
+              ctx.fillStyle = textColor;
+              ctx.textAlign = 'left';
+              ctx.textBaseline = 'top';
+              
+              const textMaxWidth = 730;
+              const textBlockHeight = 950;
+              
+              ctx.font = `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`;
+
+              const words = text.replace(/\n/g, ' \n ').split(' ');
+              let line = '';
+              const allLines = [];
+              for(let i = 0; i < words.length; i++) {
+                  if (words[i] === '\n') {
+                      allLines.push(line);
+                      line = '';
+                      continue;
+                  }
+                  const testLine = line + words[i] + ' ';
+                  if (ctx.measureText(testLine).width > textMaxWidth && i > 0) {
+                      allLines.push(line);
+                      line = words[i] + ' ';
+                  } else {
+                      line = testLine;
+                  }
+              }
+              allLines.push(line);
+              
+              const totalTextHeight = allLines.length * font.lineHeight;
+              const textX = rectX + (rectWidth - textMaxWidth) / 2;
+              let startY = rectY + (rectHeight - Math.min(totalTextHeight, textBlockHeight)) / 2;
+              
+              wrapText(ctx, text, textX, startY, textMaxWidth, font.lineHeight, ctx.font);
+
+              onCanvasReady(canvas);
+          };
+          img.onerror = () => {
+              ctx.fillStyle = "#ccc";
+              ctx.fillRect(0,0,width,height);
+              ctx.fillStyle = "red";
+              ctx.fillText("Image failed to load", 10, 10);
+              onCanvasReady(canvas);
+          }
           return;
       }
 
@@ -226,7 +196,7 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, title, font, backgroundColor, textColor, width, height, onCanvasReady]);
+  }, [text, title, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl]);
 
   return (
     <canvas

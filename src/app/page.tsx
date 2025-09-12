@@ -86,7 +86,11 @@ const gradientTemplates = [
 ];
 
 const imageTemplates = [
-    { name: "Paper", value: "paper-effect" },
+    { name: "Parchment", value: "paper-effect", imageUrl: "https://picsum.photos/seed/1/1080/1350" },
+    { name: "Dark Wood", value: "paper-effect", imageUrl: "https://picsum.photos/seed/darkwood/1080/1350" },
+    { name: "Marble", value: "paper-effect", imageUrl: "https://picsum.photos/seed/marble/1080/1350" },
+    { name: "Concrete", value: "paper-effect", imageUrl: "https://picsum.photos/seed/concrete/1080/1350" },
+    { name: "Abstract", value: "paper-effect", imageUrl: "https://picsum.photos/seed/abstract/1080/1350" },
 ];
 
 const defaultText = `BİR İŞ NASIL YAPILMAZ kursları açılıyor! Usta kadrosu ile Büyükşehir herhalde Komek vasıtası ile öğretir artık!
@@ -128,7 +132,7 @@ export default function Home() {
   const [bgColor, setBgColor] = useState("#E8F0FE");
   const [textColor, setTextColor] = useState("#172554");
   const [gradientBg, setGradientBg] = useState(gradientTemplates[0].css);
-  const [imageBg, setImageBg] = useState(imageTemplates[0].value);
+  const [imageBgUrl, setImageBgUrl] = useState(imageTemplates[0].imageUrl);
 
   const [colorSchemes, setColorSchemes] = useState<{backgroundColor: string, textColor: string}[]>([]);
 
@@ -141,15 +145,13 @@ export default function Home() {
     const paragraphs = [];
     let remainingText = text.replace(/\\n/g, ' ').replace(/\s+/g, ' ').trim();
   
-    // Determine the title
     let derivedTitle = title;
-    if (!derivedTitle) {
+    if (!derivedTitle && remainingText.length > 0) {
       const firstSentenceEnd = remainingText.search(/[.!?]/);
       if (firstSentenceEnd !== -1) {
         derivedTitle = remainingText.substring(0, firstSentenceEnd + 1).trim();
       } else {
-        // Fallback if no sentence ending is found
-        derivedTitle = remainingText.substring(0, 50).trim() + '...';
+        derivedTitle = remainingText.substring(0, remainingText.indexOf(' ', 50) || 50).trim() + '...';
       }
     }
 
@@ -160,7 +162,6 @@ export default function Home() {
       }
   
       let splitPos = -1;
-      // Try to find a sentence end between MIN and MAX
       for (let i = MAX_LENGTH; i >= MIN_LENGTH; i--) {
         if ('.!?'.includes(remainingText[i])) {
           splitPos = i + 1;
@@ -168,7 +169,6 @@ export default function Home() {
         }
       }
 
-      // If no sentence end, try to find a space
       if (splitPos === -1) {
         for (let i = MAX_LENGTH; i >= MIN_LENGTH; i--) {
           if (remainingText[i] === ' ') {
@@ -178,7 +178,6 @@ export default function Home() {
         }
       }
       
-      // If still no good split point, force cut at MAX_LENGTH
       if (splitPos === -1) {
         splitPos = MAX_LENGTH;
       }
@@ -188,8 +187,8 @@ export default function Home() {
     }
   
     return {
-      title: derivedTitle,
-      paragraphs: paragraphs.filter(p => p.length > 0), // Filter out empty paragraphs
+      title: derivedTitle || '',
+      paragraphs: paragraphs.filter(p => p.length > 0),
     };
   }
 
@@ -248,7 +247,6 @@ export default function Home() {
   const handleDownloadAll = () => {
     if (designs.length === 0) return;
     designs.forEach((_, index) => {
-      // Add a small delay between downloads to prevent browser from blocking them
       setTimeout(() => handleDownload(index), index * 300);
     });
   };
@@ -286,19 +284,24 @@ export default function Home() {
             bodyFont: "Playfair Display",
             bodyWeight: "400",
             titleWeight: "700",
-            titleSize: 45, // Not used directly, but good to have
+            titleSize: 45,
             bodySize: 45,
-            lineHeight: 60, // 45 * 1.33
+            lineHeight: 60,
         };
         
+        let combinedText = design.paragraph;
+        if(design.title) {
+            combinedText = design.title + "\n\n" + design.paragraph;
+        }
+
         return (
             <ImageCanvas
-              key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBg}-${index}`}
+              key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${index}`}
               font={specialFont}
-              text={design.paragraph}
-              title={design.title}
+              text={combinedText}
               textColor="#000000"
               backgroundColor="paper-effect"
+              backgroundImageUrl={imageBgUrl}
               width={1080}
               height={1350}
               onCanvasReady={(canvas) => {
@@ -312,7 +315,7 @@ export default function Home() {
     
     return (
         <ImageCanvas
-          key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBg}-${index}`}
+          key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${index}`}
           font={activeFont}
           text={design.paragraph}
           title={design.title}
@@ -327,7 +330,6 @@ export default function Home() {
     )
   }
 
-  const currentBg = designTab === "flat" ? bgColor : (designTab === "gradient" ? gradientBg : imageBg);
   const showColorSuggestions = designTab === 'flat' && colorSchemes.length > 0;
 
   return (
@@ -426,8 +428,8 @@ export default function Home() {
                  <TabsContent value="image" className="pt-4">
                    <div className="grid grid-cols-3 gap-2">
                     {imageTemplates.map(t => (
-                      <button key={t.name} className="h-12 rounded-md border-2 border-transparent focus:border-primary bg-gray-200" onClick={() => setImageBg(t.value)} title={t.name}>
-                        {t.name}
+                      <button key={t.name} className="h-16 rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden" onClick={() => setImageBgUrl(t.imageUrl)} title={t.name}>
+                        <Image src={t.imageUrl} alt={t.name} width={64} height={64} className="object-cover w-full h-full" />
                       </button>
                     ))}
                    </div>
