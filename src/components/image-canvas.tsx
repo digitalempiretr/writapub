@@ -34,11 +34,17 @@ const wrapText = (
   maxWidth: number,
   lineHeight: number
 ) => {
-  const words = text.replace(/\n/g, ' ').split(" ");
+  const words = text.replace(/\n/g, ' \n ').split(" ");
   let line = "";
   let currentY = y;
 
   for (let n = 0; n < words.length; n++) {
+    if (words[n] === '\n') {
+        context.fillText(line, x, currentY);
+        line = "";
+        currentY += lineHeight;
+        continue;
+    }
     const testLine = line + words[n] + " ";
     const metrics = context.measureText(testLine);
     const testWidth = metrics.width;
@@ -54,7 +60,6 @@ const wrapText = (
   return currentY + lineHeight;
 };
 
-// Helper function to draw the special paper effect template
 const drawPaperEffect = (
     ctx: CanvasRenderingContext2D,
     width: number,
@@ -73,100 +78,69 @@ const drawPaperEffect = (
         img.crossOrigin = 'anonymous';
         img.src = "https://picsum.photos/seed/1/1080/1350";
         img.onload = () => {
-            ctx.globalAlpha = 0.5; // Grayscale effect by reducing opacity on black bg
             ctx.drawImage(img, 0, 0, width, height);
-            ctx.globalAlpha = 1.0;
 
-            // Border
-            ctx.strokeStyle = '#8B5CF6'; // purple-500
-            ctx.lineWidth = 16;
-            ctx.strokeRect(0, 0, width, height);
-
-            // Paper
-            const paperWidth = width * 0.85;
-            const paperHeight = height * 0.7; // Adjusted for better fit
-            const paperX = (width - paperWidth) / 2;
-            const paperY = (height - paperHeight) / 2;
-
-            ctx.fillStyle = 'white';
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-            ctx.shadowBlur = 30;
-            ctx.shadowOffsetX = 5;
-            ctx.shadowOffsetY = 5;
-            ctx.fillRect(paperX, paperY, paperWidth, paperHeight);
+            // Centered Rectangle
+            const rectWidth = 830;
+            const rectHeight = 1100;
+            const rectX = (width - rectWidth) / 2;
+            const rectY = (height - rectHeight) / 2;
             
-            // Reset shadow for text
-            ctx.shadowColor = 'transparent';
-
-            // Paper crease
-            ctx.strokeStyle = 'rgba(0, 0, 0, 0.08)';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(paperX, paperY + paperHeight / 2);
-            ctx.lineTo(paperX + paperWidth, paperY + paperHeight / 2);
-            ctx.stroke();
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
 
             // Text
-            ctx.fillStyle = 'black';
+            ctx.fillStyle = '#000000';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'top';
             
-            const textPadding = 40;
-            const maxWidth = paperWidth - textPadding * 2;
+            const textMaxWidth = 730;
+            const textPaddingHorizontal = (rectWidth - textMaxWidth) / 2;
+            const textX = rectX + textPaddingHorizontal;
             
-            const combinedText = (title ? `${title.toUpperCase()}\n\n` : '') + text.toUpperCase();
-
-            ctx.font = `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`;
-
-            // Manual wrapping for downloaded canvas
-            const words = combinedText.split(' ');
-            let line = '';
-            const lines = [];
-
-            for (let i = 0; i < words.length; i++) {
-                const word = words[i];
-                if (word.includes('\n')) {
-                    const parts = word.split('\n');
-                    const testLineBeforeBreak = line + parts[0];
-                    if (ctx.measureText(testLineBeforeBreak).width > maxWidth) {
-                        lines.push(line.trim());
-                        line = parts[0] + ' ';
-                    } else {
-                        line = testLineBeforeBreak + ' ';
+            let combinedText = (title ? `${title}\n\n` : '') + text;
+            
+            // Measure total text height to center it vertically
+            const measureLines = (textToMeasure: string, maxWidth: number, fontStyle: string) => {
+                ctx.font = fontStyle;
+                const words = textToMeasure.replace(/\n/g, ' \n ').split(' ');
+                let line = '';
+                const lines = [];
+                for(let i = 0; i < words.length; i++) {
+                    if (words[i] === '\n') {
+                        lines.push(line);
+                        line = '';
+                        continue;
                     }
-                    
-                    lines.push(line.trim());
-                    line = ''; // Start new line after break
-                    
-                    if(parts[1]) {
-                       line += parts[1] + ' ';
-                    }
-                     // Handle multiple breaks
-                    for(let j = 2; j < parts.length; j++) {
-                        lines.push('');
-                        line += parts[j] + ' ';
-                    }
-
-                } else {
-                    const testLine = line + word + ' ';
-                    if (ctx.measureText(testLine).width > maxWidth && line.length > 0) {
-                        lines.push(line.trim());
-                        line = word + ' ';
+                    const testLine = line + words[i] + ' ';
+                    if (ctx.measureText(testLine).width > maxWidth && i > 0) {
+                        lines.push(line);
+                        line = words[i] + ' ';
                     } else {
                         line = testLine;
                     }
                 }
+                lines.push(line);
+                return lines;
             }
-            lines.push(line.trim());
+            
+            const titleLines = title ? measureLines(title, textMaxWidth, `${font.titleWeight} ${font.titleSize}px "${font.titleFont}"`) : [];
+            const bodyLines = measureLines(text, textMaxWidth, `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`);
+            
+            const titleHeight = title ? (titleLines.length * (font.titleSize * 1.2)) + (font.lineHeight * 0.5) : 0;
+            const bodyHeight = bodyLines.length * font.lineHeight;
+            const totalTextHeight = titleHeight + bodyHeight;
 
-            const totalHeight = lines.length * font.lineHeight;
-            let startY = paperY + (paperHeight - totalHeight) / 2;
+            let startY = rectY + (rectHeight - totalTextHeight) / 2;
 
-            lines.forEach((l) => {
-                ctx.fillText(l, paperX + textPadding, startY);
-                startY += font.lineHeight;
-            });
+            if (title) {
+                ctx.font = `${font.titleWeight} ${font.titleSize}px "${font.titleFont}"`;
+                startY = wrapText(ctx, title, textX, startY, textMaxWidth, font.titleSize * 1.2) + font.lineHeight * 0.5;
+            }
 
+            ctx.font = `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`;
+            wrapText(ctx, text, textX, startY, textMaxWidth, font.lineHeight);
+            
             resolve();
         };
         img.onerror = () => {

@@ -284,27 +284,25 @@ export default function Home() {
             label: "Paper Effect Font",
             titleFont: "Playfair Display",
             bodyFont: "Playfair Display",
-            bodyWeight: "700",
+            bodyWeight: "400",
             titleWeight: "700",
-            titleSize: 52,
-            bodySize: 52,
-            lineHeight: 68,
+            titleSize: 50,
+            bodySize: 45,
+            lineHeight: 60,
         };
-        const textToRender = design.title ? `${design.title.toUpperCase()}\n\n${design.paragraph.toUpperCase()}` : design.paragraph.toUpperCase();
+        const textToRender = design.title ? `${design.title}\n\n${design.paragraph}` : design.paragraph;
 
         return (
-             <div className="aspect-[1080/1350] relative bg-black flex items-center justify-center p-4 border-4 border-purple-500">
+             <div className="aspect-[1080/1350] relative bg-black flex items-center justify-center">
                 <Image
                     src="https://picsum.photos/seed/1/1080/1350"
                     alt="Background"
                     fill
                     objectFit="cover"
-                    className="grayscale"
-                    data-ai-hint="woman portrait"
+                    data-ai-hint="abstract texture"
                 />
-                <div className="relative bg-white p-8 shadow-2xl w-[85%] h-auto">
-                     <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-200" style={{ transform: 'translateY(-1px)' }}></div>
-                     <p className="font-serif font-bold text-5xl text-black" style={{ fontFamily: 'Playfair Display', fontWeight: 700, whiteSpace: 'pre-wrap', lineHeight: '1.4' }}>
+                <div className="relative bg-white/90 w-[830px] h-[1100px] flex items-center justify-center p-8">
+                     <p className="w-[730px] h-auto font-serif text-black text-left" style={{ fontFamily: 'Playfair Display', fontSize: '45pt', fontWeight: 400, whiteSpace: 'pre-wrap', lineHeight: '1.4' }}>
                         {textToRender}
                     </p>
                 </div>
@@ -530,5 +528,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
