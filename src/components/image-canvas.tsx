@@ -34,7 +34,7 @@ const wrapText = (
   maxWidth: number,
   lineHeight: number
 ) => {
-  const words = text.replace(/\\n/g, ' ').split(" ");
+  const words = text.replace(/\n/g, ' ').split(" ");
   let line = "";
   let currentY = y;
 
@@ -60,7 +60,8 @@ const drawPaperEffect = (
     width: number,
     height: number,
     text: string,
-    font: FontOption
+    font: FontOption,
+    title?: string,
 ) => {
     return new Promise<void>((resolve) => {
         // Background
@@ -78,12 +79,12 @@ const drawPaperEffect = (
 
             // Border
             ctx.strokeStyle = '#8B5CF6'; // purple-500
-            ctx.lineWidth = 8;
+            ctx.lineWidth = 16;
             ctx.strokeRect(0, 0, width, height);
 
             // Paper
             const paperWidth = width * 0.85;
-            const paperHeight = height * 0.6;
+            const paperHeight = height * 0.7; // Adjusted for better fit
             const paperX = (width - paperWidth) / 2;
             const paperY = (height - paperHeight) / 2;
 
@@ -99,7 +100,7 @@ const drawPaperEffect = (
 
             // Paper crease
             ctx.strokeStyle = 'rgba(0, 0, 0, 0.08)';
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.moveTo(paperX, paperY + paperHeight / 2);
             ctx.lineTo(paperX + paperWidth, paperY + paperHeight / 2);
@@ -107,44 +108,61 @@ const drawPaperEffect = (
 
             // Text
             ctx.fillStyle = 'black';
-            ctx.font = `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`;
             ctx.textAlign = 'left';
-            ctx.textBaseline = 'middle';
+            ctx.textBaseline = 'top';
             
-            const textToRender = text.toUpperCase();
-            const textLines = textToRender.split('\\n');
-            let currentY = paperY + font.lineHeight;
-
             const textPadding = 40;
             const maxWidth = paperWidth - textPadding * 2;
             
-            const allText = text.toUpperCase();
+            const combinedText = (title ? `${title.toUpperCase()}\n\n` : '') + text.toUpperCase();
 
-            // Center text block vertically
-            const metrics = ctx.measureText(allText);
-            const textBlockHeight = (allText.split('\\n').length) * font.lineHeight;
+            ctx.font = `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`;
 
-            // Simple text wrapping for download
-            const words = allText.replace(/\\n/g, ' ').split(' ');
+            // Manual wrapping for downloaded canvas
+            const words = combinedText.split(' ');
             let line = '';
             const lines = [];
-            for (let n = 0; n < words.length; n++) {
-                const testLine = line + words[n] + ' ';
-                const metrics = ctx.measureText(testLine);
-                if (metrics.width > maxWidth && n > 0) {
-                    lines.push(line);
-                    line = words[n] + ' ';
+
+            for (let i = 0; i < words.length; i++) {
+                const word = words[i];
+                if (word.includes('\n')) {
+                    const parts = word.split('\n');
+                    const testLineBeforeBreak = line + parts[0];
+                    if (ctx.measureText(testLineBeforeBreak).width > maxWidth) {
+                        lines.push(line.trim());
+                        line = parts[0] + ' ';
+                    } else {
+                        line = testLineBeforeBreak + ' ';
+                    }
+                    
+                    lines.push(line.trim());
+                    line = ''; // Start new line after break
+                    
+                    if(parts[1]) {
+                       line += parts[1] + ' ';
+                    }
+                     // Handle multiple breaks
+                    for(let j = 2; j < parts.length; j++) {
+                        lines.push('');
+                        line += parts[j] + ' ';
+                    }
+
                 } else {
-                    line = testLine;
+                    const testLine = line + word + ' ';
+                    if (ctx.measureText(testLine).width > maxWidth && line.length > 0) {
+                        lines.push(line.trim());
+                        line = word + ' ';
+                    } else {
+                        line = testLine;
+                    }
                 }
             }
-            lines.push(line);
+            lines.push(line.trim());
 
             const totalHeight = lines.length * font.lineHeight;
-            let startY = paperY + (paperHeight - totalHeight) / 2 + (font.lineHeight/2);
+            let startY = paperY + (paperHeight - totalHeight) / 2;
 
-            ctx.textBaseline = "top";
-            lines.forEach(l => {
+            lines.forEach((l) => {
                 ctx.fillText(l, paperX + textPadding, startY);
                 startY += font.lineHeight;
             });
@@ -184,8 +202,7 @@ export function ImageCanvas({
       ctx.clearRect(0, 0, width, height);
 
       if (backgroundColor === 'paper-effect') {
-          const combinedText = title ? `${title}\\n${text}` : text;
-          await drawPaperEffect(ctx, width, height, combinedText, font);
+          await drawPaperEffect(ctx, width, height, text, font, title);
           onCanvasReady(canvas);
           return;
       }

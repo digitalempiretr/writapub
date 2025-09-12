@@ -135,6 +135,39 @@ export default function Home() {
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const { toast } = useToast();
 
+  const manuallySplitText = (text: string, title: string) => {
+    const MIN_LENGTH = 300;
+    const MAX_LENGTH = 350;
+    const paragraphs = [];
+    let remainingText = text.replace(/\\n/g, ' ').replace(/\s+/g, ' ').trim();
+  
+    while (remainingText.length > 0) {
+      if (remainingText.length <= MAX_LENGTH) {
+        paragraphs.push(remainingText);
+        break;
+      }
+  
+      let splitPos = MAX_LENGTH;
+      // Try to find a space to split at, going backwards from MAX_LENGTH
+      while (splitPos > MIN_LENGTH && remainingText[splitPos] !== ' ') {
+        splitPos--;
+      }
+  
+      // If no space is found between MIN and MAX, just cut at MAX
+      if (splitPos === MIN_LENGTH) {
+        splitPos = MAX_LENGTH;
+      }
+  
+      paragraphs.push(remainingText.substring(0, splitPos).trim());
+      remainingText = remainingText.substring(splitPos).trim();
+    }
+  
+    return {
+      title: title || (paragraphs.length > 0 ? text.substring(0, text.indexOf('.') + 1) : ""),
+      paragraphs: paragraphs,
+    };
+  }
+
   const handleGenerate = async () => {
     if (!text) {
       toast({
@@ -147,11 +180,14 @@ export default function Home() {
     setIsLoading(true);
     setDesigns([]);
     try {
-      const result = await automaticallySplitTextIntoParagraphs({ text, title });
+      // Use the manual splitting function instead of relying on AI for splitting
+      const result = manuallySplitText(text, title);
+
       const newDesigns: Design[] = result.paragraphs.map((p, index) => ({
         paragraph: p,
         title: index === 0 ? result.title.toUpperCase() : undefined,
       }));
+
       setDesigns(newDesigns);
       if (newDesigns.length === 0) {
         toast({
@@ -230,7 +266,7 @@ export default function Home() {
             bodySize: 52,
             lineHeight: 68,
         };
-        const textToRender = design.title ? `${design.title}\n${design.paragraph}` : design.paragraph;
+        const textToRender = design.title ? `${design.title.toUpperCase()}\n\n${design.paragraph.toUpperCase()}` : design.paragraph.toUpperCase();
 
         return (
              <div className="aspect-[1080/1350] relative bg-black flex items-center justify-center p-4 border-4 border-purple-500">
@@ -242,10 +278,10 @@ export default function Home() {
                     className="grayscale"
                     data-ai-hint="woman portrait"
                 />
-                <div className="relative bg-white p-8 shadow-2xl w-[85%]">
-                    <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-200" style={{ transform: 'translateY(-1px)' }}></div>
-                    <p className="font-serif font-bold text-5xl text-black" style={{ fontFamily: 'Playfair Display', fontWeight: 700, whiteSpace: 'pre-wrap', lineHeight: '1.4' }}>
-                        {textToRender.toUpperCase()}
+                <div className="relative bg-white p-8 shadow-2xl w-[85%] h-auto">
+                     <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-200" style={{ transform: 'translateY(-1px)' }}></div>
+                     <p className="font-serif font-bold text-5xl text-black" style={{ fontFamily: 'Playfair Display', fontWeight: 700, whiteSpace: 'pre-wrap', lineHeight: '1.4' }}>
+                        {textToRender}
                     </p>
                 </div>
                  {/* This canvas is hidden, only used for download */}
