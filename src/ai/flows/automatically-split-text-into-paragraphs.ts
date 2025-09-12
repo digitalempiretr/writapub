@@ -1,6 +1,6 @@
 'use server';
 /**
- * @fileOverview Automatically splits input text into logical paragraphs of 250-350 characters,
+ * @fileOverview Automatically splits input text into logical paragraphs of 300-350 characters,
  * using the first sentence of the first paragraph as a title if no title is provided.
  *
  * - automaticallySplitTextIntoParagraphs - A function that handles the text splitting process.
@@ -37,7 +37,7 @@ const automaticallySplitTextIntoParagraphsPrompt = ai.definePrompt({
   name: 'automaticallySplitTextIntoParagraphsPrompt',
   input: {schema: AutomaticallySplitTextIntoParagraphsInputSchema},
   output: {schema: AutomaticallySplitTextIntoParagraphsOutputSchema},
-  prompt: `You are a text processing expert. You will split the given text into paragraphs with each paragraph having between 250 and 350 characters.
+  prompt: `You are a text processing expert. You will split the given text into paragraphs. Each paragraph MUST have between 300 and 350 characters.
 If the user provided a title, use it as the title, otherwise use the first sentence of the first paragraph as the title.
 
 Text: {{{text}}}
