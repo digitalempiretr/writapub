@@ -141,30 +141,55 @@ export default function Home() {
     const paragraphs = [];
     let remainingText = text.replace(/\\n/g, ' ').replace(/\s+/g, ' ').trim();
   
+    // Determine the title
+    let derivedTitle = title;
+    if (!derivedTitle) {
+      const firstSentenceEnd = remainingText.search(/[.!?]/);
+      if (firstSentenceEnd !== -1) {
+        derivedTitle = remainingText.substring(0, firstSentenceEnd + 1).trim();
+      } else {
+        // Fallback if no sentence ending is found
+        derivedTitle = remainingText.substring(0, 50).trim() + '...';
+      }
+    }
+
     while (remainingText.length > 0) {
       if (remainingText.length <= MAX_LENGTH) {
         paragraphs.push(remainingText);
         break;
       }
   
-      let splitPos = MAX_LENGTH;
-      // Try to find a space to split at, going backwards from MAX_LENGTH
-      while (splitPos > MIN_LENGTH && remainingText[splitPos] !== ' ') {
-        splitPos--;
+      let splitPos = -1;
+      // Try to find a sentence end between MIN and MAX
+      for (let i = MAX_LENGTH; i >= MIN_LENGTH; i--) {
+        if ('.!?'.includes(remainingText[i])) {
+          splitPos = i + 1;
+          break;
+        }
       }
-  
-      // If no space is found between MIN and MAX, just cut at MAX
-      if (splitPos === MIN_LENGTH) {
+
+      // If no sentence end, try to find a space
+      if (splitPos === -1) {
+        for (let i = MAX_LENGTH; i >= MIN_LENGTH; i--) {
+          if (remainingText[i] === ' ') {
+            splitPos = i;
+            break;
+          }
+        }
+      }
+      
+      // If still no good split point, force cut at MAX_LENGTH
+      if (splitPos === -1) {
         splitPos = MAX_LENGTH;
       }
-  
+
       paragraphs.push(remainingText.substring(0, splitPos).trim());
       remainingText = remainingText.substring(splitPos).trim();
     }
   
     return {
-      title: title || (paragraphs.length > 0 ? text.substring(0, text.indexOf('.') + 1) : ""),
-      paragraphs: paragraphs,
+      title: derivedTitle,
+      paragraphs: paragraphs.filter(p => p.length > 0), // Filter out empty paragraphs
     };
   }
 
@@ -180,7 +205,6 @@ export default function Home() {
     setIsLoading(true);
     setDesigns([]);
     try {
-      // Use the manual splitting function instead of relying on AI for splitting
       const result = manuallySplitText(text, title);
 
       const newDesigns: Design[] = result.paragraphs.map((p, index) => ({
@@ -273,7 +297,7 @@ export default function Home() {
                 <Image
                     src="https://picsum.photos/seed/1/1080/1350"
                     alt="Background"
-                    layout="fill"
+                    fill
                     objectFit="cover"
                     className="grayscale"
                     data-ai-hint="woman portrait"
@@ -506,3 +530,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
