@@ -34,7 +34,7 @@ const wrapText = (
   maxWidth: number,
   lineHeight: number
 ) => {
-  const words = text.replace(/\n/g, ' ').split(" ");
+  const words = text.replace(/\\n/g, ' ').split(" ");
   let line = "";
   let currentY = y;
 
@@ -53,6 +53,112 @@ const wrapText = (
   context.fillText(line, x, currentY);
   return currentY + lineHeight;
 };
+
+// Helper function to draw the special paper effect template
+const drawPaperEffect = (
+    ctx: CanvasRenderingContext2D,
+    width: number,
+    height: number,
+    text: string,
+    font: FontOption
+) => {
+    return new Promise<void>((resolve) => {
+        // Background
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, width, height);
+
+        // Background Image
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = "https://picsum.photos/seed/1/1080/1350";
+        img.onload = () => {
+            ctx.globalAlpha = 0.5; // Grayscale effect by reducing opacity on black bg
+            ctx.drawImage(img, 0, 0, width, height);
+            ctx.globalAlpha = 1.0;
+
+            // Border
+            ctx.strokeStyle = '#8B5CF6'; // purple-500
+            ctx.lineWidth = 8;
+            ctx.strokeRect(0, 0, width, height);
+
+            // Paper
+            const paperWidth = width * 0.85;
+            const paperHeight = height * 0.6;
+            const paperX = (width - paperWidth) / 2;
+            const paperY = (height - paperHeight) / 2;
+
+            ctx.fillStyle = 'white';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowBlur = 30;
+            ctx.shadowOffsetX = 5;
+            ctx.shadowOffsetY = 5;
+            ctx.fillRect(paperX, paperY, paperWidth, paperHeight);
+            
+            // Reset shadow for text
+            ctx.shadowColor = 'transparent';
+
+            // Paper crease
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.08)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(paperX, paperY + paperHeight / 2);
+            ctx.lineTo(paperX + paperWidth, paperY + paperHeight / 2);
+            ctx.stroke();
+
+            // Text
+            ctx.fillStyle = 'black';
+            ctx.font = `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            
+            const textToRender = text.toUpperCase();
+            const textLines = textToRender.split('\\n');
+            let currentY = paperY + font.lineHeight;
+
+            const textPadding = 40;
+            const maxWidth = paperWidth - textPadding * 2;
+            
+            const allText = text.toUpperCase();
+
+            // Center text block vertically
+            const metrics = ctx.measureText(allText);
+            const textBlockHeight = (allText.split('\\n').length) * font.lineHeight;
+
+            // Simple text wrapping for download
+            const words = allText.replace(/\\n/g, ' ').split(' ');
+            let line = '';
+            const lines = [];
+            for (let n = 0; n < words.length; n++) {
+                const testLine = line + words[n] + ' ';
+                const metrics = ctx.measureText(testLine);
+                if (metrics.width > maxWidth && n > 0) {
+                    lines.push(line);
+                    line = words[n] + ' ';
+                } else {
+                    line = testLine;
+                }
+            }
+            lines.push(line);
+
+            const totalHeight = lines.length * font.lineHeight;
+            let startY = paperY + (paperHeight - totalHeight) / 2 + (font.lineHeight/2);
+
+            ctx.textBaseline = "top";
+            lines.forEach(l => {
+                ctx.fillText(l, paperX + textPadding, startY);
+                startY += font.lineHeight;
+            });
+
+            resolve();
+        };
+        img.onerror = () => {
+             // Draw fallback if image fails
+             ctx.fillStyle = "#ccc";
+             ctx.fillRect(0,0,width,height);
+             resolve();
+        }
+    });
+}
 
 
 export function ImageCanvas({
@@ -74,15 +180,19 @@ export function ImageCanvas({
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
       
-      // Await fonts to be ready
       await document.fonts.ready;
-
-      // Clear canvas
       ctx.clearRect(0, 0, width, height);
+
+      if (backgroundColor === 'paper-effect') {
+          const combinedText = title ? `${title}\\n${text}` : text;
+          await drawPaperEffect(ctx, width, height, combinedText, font);
+          onCanvasReady(canvas);
+          return;
+      }
+
 
       // Draw background
       if (backgroundColor.startsWith("linear-gradient")) {
-        // Basic parsing for 2-color linear gradient
         const colors = backgroundColor.match(/#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})/g);
         if (colors && colors.length >= 2) {
           const gradient = ctx.createLinearGradient(0, 0, width, height);
@@ -98,7 +208,7 @@ export function ImageCanvas({
       ctx.fillRect(0, 0, width, height);
       
       // Text properties
-      const sidePadding = 30; // 20px inner spacing + 10px text margin
+      const sidePadding = 30;
       const topPadding = 60;
       const maxWidth = width - (sidePadding * 2);
       let currentY = topPadding;
@@ -109,12 +219,12 @@ export function ImageCanvas({
       
       // Draw Title if it exists
       if (title) {
-        ctx.font = `${font.titleWeight} ${font.titleSize}px ${font.titleFont}`;
+        ctx.font = `${font.titleWeight} ${font.titleSize}px "${font.titleFont}"`;
         currentY = wrapText(ctx, title, sidePadding, currentY, maxWidth, font.titleSize * 1.2) + font.lineHeight * 0.5;
       }
 
       // Draw Body Text
-      ctx.font = `${font.bodyWeight} ${font.bodySize}px ${font.bodyFont}`;
+      ctx.font = `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`;
       wrapText(ctx, text, sidePadding, currentY, maxWidth, font.lineHeight);
 
       onCanvasReady(canvas);

@@ -34,6 +34,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Download, Loader2, Wand2 } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
+import Image from 'next/image';
 
 type Design = {
   paragraph: string;
@@ -84,6 +85,10 @@ const gradientTemplates = [
   { name: "Royal", css: "linear-gradient(to top right, #473B7B 0%, #3584A7 50%, #30D2BE 100%)" },
 ];
 
+const imageTemplates = [
+    { name: "Paper", value: "paper-effect" },
+];
+
 const defaultText = `BİR İŞ NASIL YAPILMAZ kursları açılıyor! Usta kadrosu ile Büyükşehir herhalde Komek vasıtası ile öğretir artık!
 Yahu 20 kere yaptığınız Mistik Müzik Festivalimizin içine etmek değilse bu nedir?
 @mistikmuzikfestivali için şehrimize gelecek turistlere 100 kere kusura bakmayın bilmiyoruz demek zorunda kaldık.
@@ -123,6 +128,8 @@ export default function Home() {
   const [bgColor, setBgColor] = useState("#E8F0FE");
   const [textColor, setTextColor] = useState("#172554");
   const [gradientBg, setGradientBg] = useState(gradientTemplates[0].css);
+  const [imageBg, setImageBg] = useState(imageTemplates[0].value);
+
   const [colorSchemes, setColorSchemes] = useState<{backgroundColor: string, textColor: string}[]>([]);
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
@@ -210,7 +217,75 @@ export default function Home() {
     }
   };
 
-  const currentBg = designTab === "flat" ? bgColor : gradientBg;
+  const renderCanvas = (design: Design, index: number) => {
+    if (designTab === "image") {
+        const specialFont: FontOption = {
+            value: "paper-effect-font",
+            label: "Paper Effect Font",
+            titleFont: "Playfair Display",
+            bodyFont: "Playfair Display",
+            bodyWeight: "700",
+            titleWeight: "700",
+            titleSize: 52,
+            bodySize: 52,
+            lineHeight: 68,
+        };
+        const textToRender = design.title ? `${design.title}\n${design.paragraph}` : design.paragraph;
+
+        return (
+             <div className="aspect-[1080/1350] relative bg-black flex items-center justify-center p-4 border-4 border-purple-500">
+                <Image
+                    src="https://picsum.photos/seed/1/1080/1350"
+                    alt="Background"
+                    layout="fill"
+                    objectFit="cover"
+                    className="grayscale"
+                    data-ai-hint="woman portrait"
+                />
+                <div className="relative bg-white p-8 shadow-2xl w-[85%]">
+                    <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-200" style={{ transform: 'translateY(-1px)' }}></div>
+                    <p className="font-serif font-bold text-5xl text-black" style={{ fontFamily: 'Playfair Display', fontWeight: 700, whiteSpace: 'pre-wrap', lineHeight: '1.4' }}>
+                        {textToRender.toUpperCase()}
+                    </p>
+                </div>
+                 {/* This canvas is hidden, only used for download */}
+                <div className="absolute -z-10 opacity-0 pointer-events-none">
+                    <ImageCanvas
+                      font={specialFont}
+                      text={design.paragraph}
+                      title={design.title}
+                      textColor="#000000"
+                      backgroundColor="paper-effect"
+                      width={1080}
+                      height={1350}
+                      onCanvasReady={(canvas) => {
+                        canvasRefs.current[index] = canvas;
+                      }}
+                    />
+                </div>
+            </div>
+        );
+    }
+    
+    const currentBg = designTab === "flat" ? bgColor : gradientBg;
+    
+    return (
+        <ImageCanvas
+          font={activeFont}
+          text={design.paragraph}
+          title={design.title}
+          textColor={textColor}
+          backgroundColor={currentBg}
+          width={1080}
+          height={1350}
+          onCanvasReady={(canvas) => {
+            canvasRefs.current[index] = canvas;
+          }}
+        />
+    )
+  }
+
+  const currentBg = designTab === "flat" ? bgColor : (designTab === "gradient" ? gradientBg : imageBg);
   const showColorSuggestions = designTab === 'flat' && colorSchemes.length > 0;
 
   return (
@@ -257,7 +332,7 @@ export default function Home() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="font">Yazı Tipi</Label>
-              <Select onValueChange={handleFontChange} defaultValue={activeFont.value}>
+              <Select onValueChange={handleFontChange} defaultValue={activeFont.value} disabled={designTab === 'image'}>
                 <SelectTrigger id="font">
                   <SelectValue placeholder="Font seçin" />
                 </SelectTrigger>
@@ -271,9 +346,10 @@ export default function Home() {
              <div className="space-y-4">
               <Label>Arka Plan</Label>
               <Tabs value={designTab} onValueChange={setDesignTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="flat">Düz Renk</TabsTrigger>
-                  <TabsTrigger value="gradient">Şablon</TabsTrigger>
+                  <TabsTrigger value="gradient">Gradyan</TabsTrigger>
+                  <TabsTrigger value="image">Şablon</TabsTrigger>
                 </TabsList>
                 <TabsContent value="flat" className="pt-4 space-y-4">
                   <div className="flex items-center gap-4">
@@ -302,6 +378,15 @@ export default function Home() {
                    <div className="grid grid-cols-3 gap-2">
                     {gradientTemplates.map(g => (
                       <button key={g.name} className="h-12 rounded-md border-2 border-transparent focus:border-primary" style={{background: g.css}} onClick={() => setGradientBg(g.css)} title={g.name} />
+                    ))}
+                   </div>
+                </TabsContent>
+                 <TabsContent value="image" className="pt-4">
+                   <div className="grid grid-cols-3 gap-2">
+                    {imageTemplates.map(t => (
+                      <button key={t.name} className="h-12 rounded-md border-2 border-transparent focus:border-primary bg-gray-200" onClick={() => setImageBg(t.value)} title={t.name}>
+                        {t.name}
+                      </button>
                     ))}
                    </div>
                 </TabsContent>
@@ -347,18 +432,7 @@ export default function Home() {
                           <div className="p-1">
                             <Card className="overflow-hidden">
                               <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
-                                <ImageCanvas
-                                  font={activeFont}
-                                  text={design.paragraph}
-                                  title={design.title}
-                                  textColor={textColor}
-                                  backgroundColor={currentBg}
-                                  width={1080}
-                                  height={1350}
-                                  onCanvasReady={(canvas) => {
-                                    canvasRefs.current[index] = canvas;
-                                  }}
-                                />
+                               {renderCanvas(design, index)}
                               </CardContent>
                               <CardFooter className="py-2 px-4 justify-end">
                                 <Button
@@ -396,5 +470,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
