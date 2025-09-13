@@ -93,38 +93,6 @@ export function ImageCanvas({
       
       ctx.clearRect(0, 0, width, height);
 
-      // 1. Draw Background
-      if (backgroundImageUrl) {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.src = backgroundImageUrl;
-        img.onload = () => {
-          ctx.drawImage(img, 0, 0, width, height);
-          drawLayout();
-        };
-        img.onerror = () => {
-          ctx.fillStyle = "#ccc";
-          ctx.fillRect(0,0,width,height);
-          drawLayout();
-        }
-      } else if (backgroundColor && backgroundColor.startsWith("linear-gradient")) {
-        const colors = backgroundColor.match(/#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})/g);
-        if (colors && colors.length >= 2) {
-          const gradient = ctx.createLinearGradient(0, 0, width, height);
-          gradient.addColorStop(0, colors[0]);
-          gradient.addColorStop(1, colors[1]);
-          ctx.fillStyle = gradient;
-        } else {
-           ctx.fillStyle = "#ffffff";
-        }
-        ctx.fillRect(0, 0, width, height);
-        drawLayout();
-      } else {
-        ctx.fillStyle = backgroundColor || '#ffffff';
-        ctx.fillRect(0, 0, width, height);
-        drawLayout();
-      }
-
       const drawLayout = () => {
         // 2. Draw the inner rectangle
         const rectWidth = 830;
@@ -172,6 +140,38 @@ export function ImageCanvas({
 
         onCanvasReady(canvas);
       };
+
+      // 1. Draw Background
+      if (backgroundImageUrl) {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = backgroundImageUrl;
+        img.onload = () => {
+          ctx.drawImage(img, 0, 0, width, height);
+          drawLayout();
+        };
+        img.onerror = () => {
+          ctx.fillStyle = "#ccc";
+          ctx.fillRect(0,0,width,height);
+          drawLayout();
+        }
+      } else if (backgroundColor && backgroundColor.startsWith("linear-gradient")) {
+        const colors = backgroundColor.match(/#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})/g);
+        if (colors && colors.length >= 2) {
+          const gradient = ctx.createLinearGradient(0, 0, width, height);
+          gradient.addColorStop(0, colors[0]);
+          gradient.addColorStop(1, colors[1]);
+          ctx.fillStyle = gradient;
+        } else {
+           ctx.fillStyle = "#ffffff";
+        }
+        ctx.fillRect(0, 0, width, height);
+        drawLayout();
+      } else {
+        ctx.fillStyle = backgroundColor || '#ffffff';
+        ctx.fillRect(0, 0, width, height);
+        drawLayout();
+      }
     };
 
     draw();
