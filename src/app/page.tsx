@@ -33,7 +33,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Download, Loader2, Wand2 } from "lucide-react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from 'next/image';
 
 type Design = {
@@ -126,6 +126,12 @@ export default function Home() {
   const [designs, setDesigns] = useState<Design[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingColors, setIsLoadingColors] = useState(false);
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
 
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions[0]);
   const [designTab, setDesignTab] = useState("flat");
@@ -301,7 +307,7 @@ export default function Home() {
           key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${index}`}
           font={layoutFont}
           text={combinedText}
-          textColor={designTab === 'flat' ? textColor : '#000000'}
+          textColor={'#000000'}
           backgroundColor={currentBg}
           backgroundImageUrl={imageUrl}
           width={1080}
@@ -438,7 +444,7 @@ export default function Home() {
               </Button>
             </CardHeader>
             <CardContent>
-              {designs.length > 0 ? (
+              {designs.length > 0 && isClient ? (
                  <Carousel className="w-full max-w-lg mx-auto" setApi={(api) => api?.reInit()}>
                     <CarouselContent>
                       {designs.map((design, index) => (
