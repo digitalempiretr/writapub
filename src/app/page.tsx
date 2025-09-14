@@ -86,7 +86,7 @@ const gradientTemplates = [
 ];
 
 const imageTemplates = [
-    { name: "Parchment", value: "paper-effect", imageUrl: "https://picsum.photos/seed/1/1080/1350" },
+    { name: "Parchment", value: "paper-effect", imageUrl: "https://picsum.photos/seed/paper/1080/1350" },
     { name: "Dark Wood", value: "paper-effect", imageUrl: "https://picsum.photos/seed/darkwood/1080/1350" },
     { name: "Marble", value: "paper-effect", imageUrl: "https://picsum.photos/seed/marble/1080/1350" },
     { name: "Concrete", value: "paper-effect", imageUrl: "https://picsum.photos/seed/concrete/1080/1350" },
