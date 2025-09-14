@@ -374,7 +374,7 @@ export default function Home() {
                 <TabsContent value="flat" className="pt-4 space-y-4">
                   <div className="flex items-center gap-4">
                     <Label>Renk Seç:</Label>
-                    <Input type="color" value={bgColor} onChange={(e) => handleBgColorChange(e.target.value)} className="w-24 p-1"/>
+                    <Input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} onBlur={(e) => handleBgColorChange(e.target.value)} className="w-24 p-1"/>
                   </div>
                   { isLoadingColors && <div className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="w-4 h-4 animate-spin"/> Renk önerileri oluşturuluyor...</div>}
                   { showColorSuggestions && (
