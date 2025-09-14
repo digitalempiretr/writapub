@@ -282,18 +282,6 @@ export default function Home() {
   };
 
   const renderCanvas = (design: Design, index: number) => {
-    const layoutFont: FontOption = {
-        value: "layout-font",
-        label: "Layout Font",
-        titleFont: "Playfair Display",
-        bodyFont: "Playfair Display",
-        bodyWeight: "400",
-        titleWeight: "700",
-        titleSize: 45,
-        bodySize: 45,
-        lineHeight: 60,
-    };
-    
     let combinedText = design.paragraph;
     if(design.title) {
         combinedText = design.title + "\n\n" + design.paragraph;
@@ -305,9 +293,9 @@ export default function Home() {
     return (
         <ImageCanvas
           key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${index}`}
-          font={layoutFont}
+          font={activeFont}
           text={combinedText}
-          textColor={'#000000'}
+          textColor={textColor}
           backgroundColor={currentBg}
           backgroundImageUrl={imageUrl}
           width={1080}
@@ -362,6 +350,19 @@ export default function Home() {
                 className="resize-none"
               />
               <p className="text-xs text-muted-foreground text-right">{text.length} karakter</p>
+            </div>
+             <div className="space-y-4">
+              <Label>Yazı Tipi</Label>
+              <Select onValueChange={handleFontChange} defaultValue={activeFont.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Bir yazı tipi seçin" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {fontOptions.map(font => (
+                      <SelectItem key={font.value} value={font.value}>{font.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
             </div>
              <div className="space-y-4">
               <Label>Arka Plan</Label>
@@ -490,3 +491,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
