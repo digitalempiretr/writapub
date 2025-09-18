@@ -309,7 +309,7 @@ export default function Home() {
       console.error(error);
       toast({
         title: "Görsel Arama Başarısız",
-        description: "Görseller aranırken bir hata oluştu. Lütfen API anahtarınızı kontrol edin veya daha sonra tekrar deneyin.",
+        description: "Görseller aranırken bir hata oluştu. Lütfen API anahtarınızın ve Özel Arama Motoru Kimliğinizin doğru yapılandırıldığından emin olun.",
         variant: "destructive",
       });
     } finally {

@@ -59,7 +59,7 @@ export const findImagesFlow = ai.defineFlow(
 
     if (!apiKey || !cx) {
       throw new Error(
-        'Google API Key or Custom Search Engine ID is not configured.'
+        'Google API Key or Custom Search Engine ID is not configured. Please create them in Google Cloud Console and add them to your .env file.'
       );
     }
 
