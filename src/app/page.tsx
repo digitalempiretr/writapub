@@ -74,17 +74,6 @@ const fontOptions: FontOption[] = [
     bodySize: 50,
     lineHeight: 68,
   },
-  {
-    value: "paper-effect",
-    label: "Paper Effect",
-    titleFont: "Special Elite",
-    bodyFont: "Special Elite",
-    bodyWeight: "400",
-    titleWeight: "400",
-    titleSize: 72,
-    bodySize: 45,
-    lineHeight: 68,
-  }
 ];
 
 const gradientTemplates = [
@@ -142,7 +131,6 @@ export default function Home() {
     setIsClient(true)
   }, [])
 
-  const layoutFont = fontOptions.find(f => f.value === 'paper-effect') || fontOptions[0];
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions[0]);
   const [designTab, setDesignTab] = useState("flat");
   const [bgColor, setBgColor] = useState("#E8F0FE");
@@ -159,7 +147,7 @@ export default function Home() {
     const MIN_LENGTH = 300;
     const MAX_LENGTH = 350;
     const paragraphs = [];
-    let currentText = text.replace(/\\n/g, ' ').replace(/\s+/g, ' ').trim();
+    let currentText = text.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
   
     let derivedTitle = title;
     if (!derivedTitle && currentText.length > 0) {
@@ -306,35 +294,30 @@ export default function Home() {
   const renderCanvas = useCallback((design: Design, index: number) => {
     let currentBg: string | undefined;
     let imageUrl: string | undefined;
-    let fontToUse = activeFont;
 
     switch(designTab) {
         case "flat":
             currentBg = bgColor;
             imageUrl = undefined;
-            fontToUse = layoutFont;
             break;
         case "gradient":
             currentBg = gradientBg;
             imageUrl = undefined;
-            fontToUse = layoutFont;
             break;
         case "image":
             currentBg = undefined;
             imageUrl = imageBgUrl;
-            fontToUse = layoutFont;
             break;
         default:
             currentBg = bgColor;
             imageUrl = undefined;
-            fontToUse = activeFont;
             break;
     }
 
     return (
         <ImageCanvas
-          key={`${designTab}-${fontToUse.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${index}-${design.paragraph}`}
-          font={fontToUse}
+          key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${index}-${design.paragraph}`}
+          font={activeFont}
           text={design.paragraph}
           textColor={textColor}
           backgroundColor={currentBg}
@@ -346,7 +329,7 @@ export default function Home() {
           }}
         />
     )
-  }, [designTab, activeFont, layoutFont, bgColor, textColor, gradientBg, imageBgUrl]);
+  }, [designTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl]);
 
   const showColorSuggestions = designTab === 'flat' && colorSchemes.length > 0;
 
@@ -486,7 +469,7 @@ export default function Home() {
               </Button>
             </CardHeader>
             <CardContent>
-              {designs.length > 0 && isClient ? (
+              { isClient && designs.length > 0 ? (
                  <Carousel className="w-full max-w-lg mx-auto" setApi={(api) => api?.reInit()}>
                     <CarouselContent>
                       {designs.map((design, index) => (
@@ -532,3 +515,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
