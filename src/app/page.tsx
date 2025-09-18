@@ -2,6 +2,7 @@
 
 import { automaticallySplitTextIntoParagraphs } from "@/ai/flows/automatically-split-text-into-paragraphs";
 import { suggestContrastingColorSchemes } from "@/ai/flows/suggest-contrasting-color-schemes";
+import { findImages } from "@/ai/flows/find-images-flow";
 import { ImageCanvas, type FontOption } from "@/components/image-canvas";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
@@ -32,7 +33,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Download, Loader2, Wand2 } from "lucide-react";
+import { Download, Loader2, Search, Wand2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from 'next/image';
 
@@ -137,6 +138,10 @@ export default function Home() {
   const [textColor, setTextColor] = useState("#172554");
   const [gradientBg, setGradientBg] = useState(gradientTemplates[0].css);
   const [imageBgUrl, setImageBgUrl] = useState(imageTemplates[0].imageUrl);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchedImages, setSearchedImages] = useState<string[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+
 
   const [colorSchemes, setColorSchemes] = useState<{backgroundColor: string, textColor: string}[]>([]);
 
@@ -147,9 +152,10 @@ export default function Home() {
     const MIN_LENGTH = 300;
     const MAX_LENGTH = 350;
     const paragraphs = [];
-    let currentText = text.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+    let currentText = text.replace(/\\n/g, ' ').replace(/\\s+/g, ' ').trim();
   
     let derivedTitle = title;
+    let titleCreated = false;
     if (!derivedTitle && currentText.length > 0) {
       const firstSentenceEnd = currentText.search(/[.!?]/);
       if (firstSentenceEnd !== -1) {
@@ -165,6 +171,7 @@ export default function Home() {
             currentText = "";
         }
       }
+      titleCreated = true;
     }
 
     while (currentText.length > 0) {
@@ -291,6 +298,25 @@ export default function Home() {
     }
   };
 
+  const handleSearchImages = async () => {
+    if (!searchQuery) return;
+    setIsSearching(true);
+    setSearchedImages([]);
+    try {
+      const result = await findImages({ query: searchQuery });
+      setSearchedImages(result.imageUrls);
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Görsel Arama Başarısız",
+        description: "Görseller aranırken bir hata oluştu. Lütfen API anahtarınızı kontrol edin veya daha sonra tekrar deneyin.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   const renderCanvas = useCallback((design: Design, index: number) => {
     let currentBg: string | undefined;
     let imageUrl: string | undefined;
@@ -394,7 +420,7 @@ export default function Home() {
                 <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="flat">Düz Renk</TabsTrigger>
                   <TabsTrigger value="gradient">Gradyan</TabsTrigger>
-                  <TabsTrigger value="image">Şablon</TabsTrigger>
+                  <TabsTrigger value="image">Görsel</TabsTrigger>
                 </TabsList>
                 <TabsContent value="flat" className="pt-4 space-y-4">
                   <div className="flex items-center gap-4">
@@ -426,15 +452,35 @@ export default function Home() {
                     ))}
                    </div>
                 </TabsContent>
-                 <TabsContent value="image" className="pt-4">
-                   <div className="grid grid-cols-3 gap-2">
-                    {imageTemplates.map(t => (
-                      <button key={t.name} className="h-16 rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden" onClick={() => setImageBgUrl(t.imageUrl)} title={t.name}>
-                        <Image src={t.imageUrl} alt={t.name} width={64} height={64} className="object-cover w-full h-full" />
-                      </button>
-                    ))}
-                   </div>
-                </TabsContent>
+                 <TabsContent value="image" className="pt-4 space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="image-search">Görsel Ara</Label>
+                      <div className="flex gap-2">
+                        <Input 
+                          id="image-search" 
+                          placeholder="Örn: dokulu kağıt, ahşap..." 
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          onKeyDown={(e) => e.key === 'Enter' && handleSearchImages()}
+                        />
+                        <Button onClick={handleSearchImages} disabled={isSearching} variant="outline" size="icon">
+                          {isSearching ? <Loader2 className="animate-spin" /> : <Search />}
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      {imageTemplates.map(t => (
+                        <button key={t.name} className="h-16 rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden" onClick={() => setImageBgUrl(t.imageUrl)} title={t.name}>
+                          <Image src={t.imageUrl} alt={t.name} width={64} height={64} className="object-cover w-full h-full" />
+                        </button>
+                      ))}
+                      {searchedImages.map((url, i) => (
+                         <button key={i} className="h-16 rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden" onClick={() => setImageBgUrl(url)} title={`Searched Image ${i+1}`}>
+                          <Image src={url} alt={`Searched Image ${i+1}`} width={64} height={64} className="object-cover w-full h-full" unoptimized/>
+                        </button>
+                      ))}
+                    </div>
+                 </TabsContent>
               </Tabs>
             </div>
           </CardContent>
@@ -515,5 +561,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
