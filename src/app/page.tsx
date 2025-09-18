@@ -38,7 +38,6 @@ import Image from 'next/image';
 
 type Design = {
   paragraph: string;
-  title?: string;
 };
 
 const fontOptions: FontOption[] = [
@@ -75,6 +74,17 @@ const fontOptions: FontOption[] = [
     bodySize: 50,
     lineHeight: 68,
   },
+  {
+    value: "paper-effect",
+    label: "Paper Effect",
+    titleFont: "Special Elite",
+    bodyFont: "Special Elite",
+    bodyWeight: "400",
+    titleWeight: "400",
+    titleSize: 72,
+    bodySize: 45,
+    lineHeight: 68,
+  }
 ];
 
 const gradientTemplates = [
@@ -86,11 +96,11 @@ const gradientTemplates = [
 ];
 
 const imageTemplates = [
-    { name: "Parchment", value: "paper-effect", imageUrl: "https://picsum.photos/seed/paper/1080/1350" },
-    { name: "Dark Wood", value: "paper-effect", imageUrl: "https://picsum.photos/seed/darkwood/1080/1350" },
-    { name: "Marble", value: "paper-effect", imageUrl: "https://picsum.photos/seed/marble/1080/1350" },
-    { name: "Concrete", value: "paper-effect", imageUrl: "https://picsum.photos/seed/concrete/1080/1350" },
-    { name: "Abstract", value: "paper-effect", imageUrl: "https://picsum.photos/seed/abstract/1080/1350" },
+    { name: "Parchment", imageUrl: "https://picsum.photos/seed/paper/1080/1350" },
+    { name: "Dark Wood", imageUrl: "https://picsum.photos/seed/darkwood/1080/1350" },
+    { name: "Marble", imageUrl: "https://picsum.photos/seed/marble/1080/1350" },
+    { name: "Concrete", imageUrl: "https://picsum.photos/seed/concrete/1080/1350" },
+    { name: "Abstract", imageUrl: "https://picsum.photos/seed/abstract/1080/1350" },
 ];
 
 const defaultText = `BİR İŞ NASIL YAPILMAZ kursları açılıyor! Usta kadrosu ile Büyükşehir herhalde Komek vasıtası ile öğretir artık!
@@ -132,7 +142,7 @@ export default function Home() {
     setIsClient(true)
   }, [])
 
-
+  const layoutFont = fontOptions.find(f => f.value === 'paper-effect') || fontOptions[0];
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions[0]);
   const [designTab, setDesignTab] = useState("flat");
   const [bgColor, setBgColor] = useState("#E8F0FE");
@@ -149,27 +159,35 @@ export default function Home() {
     const MIN_LENGTH = 300;
     const MAX_LENGTH = 350;
     const paragraphs = [];
-    let remainingText = text.replace(/\\n/g, ' ').replace(/\s+/g, ' ').trim();
+    let currentText = text.replace(/\\n/g, ' ').replace(/\s+/g, ' ').trim();
   
     let derivedTitle = title;
-    if (!derivedTitle && remainingText.length > 0) {
-      const firstSentenceEnd = remainingText.search(/[.!?]/);
+    if (!derivedTitle && currentText.length > 0) {
+      const firstSentenceEnd = currentText.search(/[.!?]/);
       if (firstSentenceEnd !== -1) {
-        derivedTitle = remainingText.substring(0, firstSentenceEnd + 1).trim();
+        derivedTitle = currentText.substring(0, firstSentenceEnd + 1).trim();
+        currentText = currentText.substring(firstSentenceEnd + 1).trim();
       } else {
-        derivedTitle = remainingText.substring(0, remainingText.indexOf(' ', 50) || 50).trim() + '...';
+        const approxTitleEnd = currentText.indexOf(' ', 50);
+        if(approxTitleEnd !== -1) {
+            derivedTitle = currentText.substring(0, approxTitleEnd).trim() + '...';
+            currentText = currentText.substring(approxTitleEnd).trim();
+        } else {
+            derivedTitle = currentText;
+            currentText = "";
+        }
       }
     }
 
-    while (remainingText.length > 0) {
-      if (remainingText.length <= MAX_LENGTH) {
-        paragraphs.push(remainingText);
+    while (currentText.length > 0) {
+      if (currentText.length <= MAX_LENGTH) {
+        paragraphs.push(currentText);
         break;
       }
   
       let splitPos = -1;
       for (let i = MAX_LENGTH; i >= MIN_LENGTH; i--) {
-        if ('.!?'.includes(remainingText[i])) {
+        if ('.!?'.includes(currentText[i])) {
           splitPos = i + 1;
           break;
         }
@@ -177,7 +195,7 @@ export default function Home() {
 
       if (splitPos === -1) {
         for (let i = MAX_LENGTH; i >= MIN_LENGTH; i--) {
-          if (remainingText[i] === ' ') {
+          if (currentText[i] === ' ') {
             splitPos = i;
             break;
           }
@@ -188,8 +206,8 @@ export default function Home() {
         splitPos = MAX_LENGTH;
       }
 
-      paragraphs.push(remainingText.substring(0, splitPos).trim());
-      remainingText = remainingText.substring(splitPos).trim();
+      paragraphs.push(currentText.substring(0, splitPos).trim());
+      currentText = currentText.substring(splitPos).trim();
     }
   
     return {
@@ -210,14 +228,18 @@ export default function Home() {
     setIsLoading(true);
     setDesigns([]);
     try {
-      const result = manuallySplitText(text, title);
+      const { title: resultTitle, paragraphs } = manuallySplitText(text, title);
 
-      const newDesigns: Design[] = result.paragraphs.map((p, index) => ({
-        paragraph: p,
-        title: index === 0 ? result.title.toUpperCase() : undefined,
-      }));
+      const newDesigns: Design[] = [];
+      if(resultTitle) {
+        newDesigns.push({ paragraph: resultTitle.toUpperCase() });
+      }
+      paragraphs.forEach(p => {
+        newDesigns.push({ paragraph: p });
+      });
 
       setDesigns(newDesigns);
+
       if (newDesigns.length === 0) {
         toast({
           title: "Tasarım Oluşturulamadı",
@@ -281,20 +303,39 @@ export default function Home() {
     }
   };
 
-  const renderCanvas = (design: Design, index: number) => {
-    let combinedText = design.paragraph;
-    if(design.title) {
-        combinedText = design.title + "\n\n" + design.paragraph;
-    }
+  const renderCanvas = useCallback((design: Design, index: number) => {
+    let currentBg: string | undefined;
+    let imageUrl: string | undefined;
+    let fontToUse = activeFont;
 
-    const currentBg = designTab === "flat" ? bgColor : (designTab === "gradient" ? gradientBg : undefined);
-    const imageUrl = designTab === "image" ? imageBgUrl : undefined;
+    switch(designTab) {
+        case "flat":
+            currentBg = bgColor;
+            imageUrl = undefined;
+            fontToUse = layoutFont;
+            break;
+        case "gradient":
+            currentBg = gradientBg;
+            imageUrl = undefined;
+            fontToUse = layoutFont;
+            break;
+        case "image":
+            currentBg = undefined;
+            imageUrl = imageBgUrl;
+            fontToUse = layoutFont;
+            break;
+        default:
+            currentBg = bgColor;
+            imageUrl = undefined;
+            fontToUse = activeFont;
+            break;
+    }
 
     return (
         <ImageCanvas
-          key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${index}`}
-          font={activeFont}
-          text={combinedText}
+          key={`${designTab}-${fontToUse.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${index}-${design.paragraph}`}
+          font={fontToUse}
+          text={design.paragraph}
           textColor={textColor}
           backgroundColor={currentBg}
           backgroundImageUrl={imageUrl}
@@ -305,7 +346,7 @@ export default function Home() {
           }}
         />
     )
-  }
+  }, [designTab, activeFont, layoutFont, bgColor, textColor, gradientBg, imageBgUrl]);
 
   const showColorSuggestions = designTab === 'flat' && colorSchemes.length > 0;
 
@@ -491,5 +532,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
