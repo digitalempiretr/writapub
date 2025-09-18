@@ -25,11 +25,13 @@ This ID tells Google which search engine configuration to use.
 
 1.  Go to the **Programmable Search Engine** control panel: [https://programmablesearchengine.google.com/](https://programmablesearchengine.google.com/)
 2.  Click **"Add"** to create a new search engine.
-3.  On the setup screen, give your search engine a name (e.g., "Image Search").
-4.  Under **"What to search?"**, select the **"Search the entire web"** option.
-5.  Make sure to **enable** the **"Image search"** toggle.
-6.  Click the **"Create"** button.
-7.  After creation, you will be taken to the control panel. On the "Basics" tab, you will find the **"Search engine ID"**. Copy this ID. This will be your `GOOGLE_CUSTOM_SEARCH_ENGINE_ID`.
+3.  On the setup screen, you will see a form. Fill it out as follows:
+    *   **Name of the search engine:** You can enter any name here. This is for your reference only. Example: `Post Weaver Image Search`.
+    *   **What to search?:** Select the **"Search the entire web"** option. Do *not* use the "Search specific sites" option.
+    *   **Image search:** Toggle this switch to **ON**. This is crucial for the feature to work.
+    *   **SafeSearch:** It is recommended to keep this toggled **ON**.
+4.  Click the **"Create"** button.
+5.  After creation, you will be taken to the control panel. On the "Basics" tab, you will find the **"Search engine ID"**. Copy this ID. This will be your `GOOGLE_CUSTOM_SEARCH_ENGINE_ID`.
 
 ### Final Step: Add the Keys to Your Project
 
