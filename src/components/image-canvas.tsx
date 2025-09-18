@@ -94,7 +94,6 @@ export function ImageCanvas({
       ctx.clearRect(0, 0, width, height);
 
       const drawLayout = () => {
-        // 2. Draw the inner rectangle
         const rectWidth = 830;
         const rectHeight = 1100;
         const rectX = (width - rectWidth) / 2;
@@ -103,7 +102,6 @@ export function ImageCanvas({
         ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
         ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
 
-        // 3. Draw the text
         ctx.fillStyle = textColor;
         ctx.textAlign = 'left';
         ctx.textBaseline = 'top';
@@ -111,7 +109,13 @@ export function ImageCanvas({
         const textMaxWidth = 730;
         const textBlockHeight = 950;
         
-        ctx.font = `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`;
+        const isTitle = text === text.toUpperCase();
+
+        if (isTitle) {
+          ctx.font = `${font.titleWeight} ${font.titleSize}px "${font.titleFont}"`;
+        } else {
+          ctx.font = `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`;
+        }
 
         const words = text.replace(/\n/g, ' \n ').split(' ');
         let line = '';
@@ -132,22 +136,41 @@ export function ImageCanvas({
         }
         allLines.push(line);
         
-        const totalTextHeight = allLines.length * font.lineHeight;
+        const lineHeight = isTitle ? font.titleSize * 1.2 : font.lineHeight;
+        const totalTextHeight = allLines.length * lineHeight;
         const textX = rectX + (rectWidth - textMaxWidth) / 2;
         let startY = rectY + (rectHeight - Math.min(totalTextHeight, textBlockHeight)) / 2;
         
-        wrapText(ctx, text, textX, startY, textMaxWidth, font.lineHeight, ctx.font);
+        wrapText(ctx, text, textX, startY, textMaxWidth, lineHeight, ctx.font);
 
         onCanvasReady(canvas);
       };
 
-      // 1. Draw Background
+
       if (backgroundImageUrl) {
         const img = new Image();
         img.crossOrigin = 'anonymous';
         img.src = backgroundImageUrl;
         img.onload = () => {
-          ctx.drawImage(img, 0, 0, width, height);
+          const canvasAspect = width / height;
+          const imageAspect = img.width / img.height;
+          let sx, sy, sWidth, sHeight;
+
+          if (imageAspect > canvasAspect) {
+            // Image is wider than canvas
+            sHeight = img.height;
+            sWidth = img.height * canvasAspect;
+            sx = (img.width - sWidth) / 2;
+            sy = 0;
+          } else {
+            // Image is taller than or same aspect as canvas
+            sWidth = img.width;
+            sHeight = img.width / canvasAspect;
+            sx = 0;
+            sy = (img.height - sHeight) / 2;
+          }
+          
+          ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, width, height);
           drawLayout();
         };
         img.onerror = () => {
