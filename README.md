@@ -17,7 +17,11 @@ This key is used to authorize your requests to Google services.
 3.  Search for **"Custom Search API"**, click on the result, and **enable** it.
 4.  After enabling the API, go to **"APIs & Services" > "Credentials"** from the left menu.
 5.  Click on **"+ CREATE CREDENTIALS"** at the top and select **"API key"**.
-6.  Copy the generated API key. This will be your `GOOGLE_API_KEY`.
+6.  A new API key will be created. A dialog box will appear. **Copy the generated API key** and then click the **"EDIT API KEY"** button to go to the key's configuration page.
+7.  On the key restrictions page, apply the following settings for security:
+    *   **Application restrictions:** Leave this as **"None"**. Since the API call is made from the server-side, IP or website restrictions are not necessary for this setup.
+    *   **API restrictions:** Select the **"Restrict key"** option. In the "Select APIs" dropdown that appears, find and select **"Custom Search API"**. This is a crucial security measure that ensures your key can only be used for this specific purpose.
+8.  Click **"Save"**. The copied key is your `GOOGLE_API_KEY`.
 
 ### Step 2: Get a Programmable Search Engine ID (GOOGLE_CUSTOM_SEARCH_ENGINE_ID)
 
