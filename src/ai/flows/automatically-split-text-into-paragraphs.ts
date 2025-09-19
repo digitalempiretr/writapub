@@ -1,7 +1,7 @@
 'use server';
 /**
  * @fileOverview Automatically splits input text into logical paragraphs of 300-350 characters,
- * using the first sentence of the first paragraph as a title if no title is provided.
+ * with a maximum of 12 lines, using the first sentence of the first paragraph as a title if no title is provided.
  *
  * - automaticallySplitTextIntoParagraphs - A function that handles the text splitting process.
  * - AutomaticallySplitTextIntoParagraphsInput - The input type for the automaticallySplitTextIntoParagraphs function.
@@ -41,10 +41,11 @@ const automaticallySplitTextIntoParagraphsPrompt = ai.definePrompt({
 
 Here are the rules you MUST follow:
 1.  Each paragraph MUST be between 300 and 350 characters long.
-2.  Do not create paragraphs shorter than 300 characters or longer than 350 characters.
-3.  The paragraphs should be logically separated and make sense.
-4.  If the user provides a title, use it.
-5.  If no title is provided, use the first sentence of the original text as the title.
+2.  Each paragraph should not exceed approximately 12 lines.
+3.  Do not create paragraphs shorter than 300 characters or longer than 350 characters unless it's necessary to respect the line limit.
+4.  The paragraphs should be logically separated and make sense.
+5.  If the user provides a title, use it.
+6.  If no title is provided, use the first sentence of the original text as the title.
 
 Original Text:
 {{{text}}}
