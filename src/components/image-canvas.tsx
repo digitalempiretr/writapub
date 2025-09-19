@@ -5,8 +5,7 @@ import { useEffect, useRef } from "react";
 export type FontOption = {
   value: string;
   label: string;
-  titleFont: string;
-  bodyFont: string;
+  fontFamily: string;
   bodyWeight: string | number;
   titleWeight: string | number;
   titleSize: number;
@@ -16,68 +15,116 @@ export type FontOption = {
 
 type ImageCanvasProps = {
   text: string;
-  title?: string;
+  isTitle: boolean;
   font: FontOption;
   backgroundColor?: string;
   textColor: string;
   width: number;
   height: number;
   onCanvasReady: (canvas: HTMLCanvasElement) => void;
+  onTextRemaining: (remainingText: string | null) => void;
   backgroundImageUrl?: string;
+  isPaginated?: boolean;
 };
 
-// Helper function to wrap text on canvas
-const wrapText = (
+// This function calculates how much text fits and returns the remaining text.
+const measureText = (
+  context: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number,
+  maxHeight: number,
+  lineHeight: number
+): { visibleText: string; remainingText: string | null } => {
+  const words = text.replace(/\n/g, ' \n ').split(" ");
+  let currentLine = "";
+  let visibleText = "";
+  let lineCount = 0;
+  const maxLines = Math.floor(maxHeight / lineHeight);
+
+  for (let n = 0; n < words.length; n++) {
+    if (lineCount >= maxLines) {
+      const remainingWords = words.slice(n);
+      return {
+        visibleText,
+        remainingText: remainingWords.join(" ").replace(/ \n /g, '\n').trim()
+      };
+    }
+    
+    if (words[n] === '\n') {
+      visibleText += currentLine.trim() + '\n';
+      lineCount++;
+      currentLine = "";
+      continue;
+    }
+
+    const testLine = currentLine + words[n] + " ";
+    const metrics = context.measureText(testLine);
+    const testWidth = metrics.width;
+
+    if (testWidth > maxWidth && n > 0) {
+      visibleText += currentLine;
+      lineCount++;
+      currentLine = words[n] + " ";
+    } else {
+      currentLine = testLine;
+    }
+  }
+
+  visibleText += currentLine;
+  
+  // Check if the last line exceeds the max lines
+  if(lineCount + 1 > maxLines && visibleText.trim().length < text.trim().length) {
+    const lastWordIndex = visibleText.trim().lastIndexOf(' ');
+    const remaining = text.substring(lastWordIndex).trim();
+    return {
+      visibleText: visibleText.substring(0, lastWordIndex).trim(),
+      remainingText: remaining,
+    }
+  }
+
+
+  return { visibleText: visibleText.trim(), remainingText: null };
+};
+
+const wrapAndDrawText = (
   context: CanvasRenderingContext2D,
   text: string,
   x: number,
   y: number,
   maxWidth: number,
-  lineHeight: number,
-  font: string,
+  lineHeight: number
 ) => {
-  context.font = font;
-  const words = text.replace(/\n/g, ' \n ').split(" ");
+  const words = text.split(" ");
   let line = "";
   let currentY = y;
-  const lines = [];
 
   for (let n = 0; n < words.length; n++) {
-    if (words[n] === '\n') {
-        lines.push(line);
-        line = "";
-        continue;
-    }
     const testLine = line + words[n] + " ";
     const metrics = context.measureText(testLine);
     const testWidth = metrics.width;
     if (testWidth > maxWidth && n > 0) {
-      lines.push(line);
+      context.fillText(line, x, currentY);
       line = words[n] + " ";
+      currentY += lineHeight;
     } else {
       line = testLine;
     }
   }
-  lines.push(line);
-
-  for (const l of lines) {
-    context.fillText(l.trim(), x, currentY);
-    currentY += lineHeight;
-  }
-  return { finalY: currentY, lines: lines.map(l => l.trim()) };
+  context.fillText(line, x, currentY);
 };
-
 
 export function ImageCanvas({
   text,
-  title,
+  isTitle,
   font,
   backgroundColor,
   textColor,
   width,
   height,
   onCanvasReady,
-  backgroundImageUrl
+  onTextRemaining,
+  backgroundImageUrl,
+  isPaginated = false,
 }: ImageCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -88,8 +135,11 @@ export function ImageCanvas({
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
       
-      await document.fonts.load(`${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`);
-      await document.fonts.load(`${font.titleWeight} ${font.titleSize}px "${font.titleFont}"`);
+      const fontWeight = isTitle ? font.titleWeight : font.bodyWeight;
+      const fontSize = isTitle ? font.titleSize : font.bodySize;
+      const fontName = font.fontFamily;
+
+      await document.fonts.load(`${fontWeight} ${fontSize}px "${fontName}"`);
       
       ctx.clearRect(0, 0, width, height);
 
@@ -107,43 +157,37 @@ export function ImageCanvas({
         ctx.textBaseline = 'top';
         
         const textMaxWidth = 730;
-        const textBlockHeight = 950;
-        
-        const isTitle = text === text.toUpperCase();
-
-        if (isTitle) {
-          ctx.font = `${font.titleWeight} ${font.titleSize}px "${font.titleFont}"`;
-        } else {
-          ctx.font = `${font.bodyWeight} ${font.bodySize}px "${font.bodyFont}"`;
-        }
-
-        const words = text.replace(/\n/g, ' \n ').split(' ');
-        let line = '';
-        const allLines = [];
-        for(let i = 0; i < words.length; i++) {
-            if (words[i] === '\n') {
-                allLines.push(line);
-                line = '';
-                continue;
-            }
-            const testLine = line + words[i] + ' ';
-            if (ctx.measureText(testLine).width > textMaxWidth && i > 0) {
-                allLines.push(line);
-                line = words[i] + ' ';
-            } else {
-                line = testLine;
-            }
-        }
-        allLines.push(line);
+        const textBlockHeight = isTitle ? 1000 : (isPaginated ? 1000 : 950);
         
         const lineHeight = isTitle ? font.titleSize * 1.2 : font.lineHeight;
-        const totalTextHeight = allLines.length * lineHeight;
-        const textX = rectX + (rectWidth - textMaxWidth) / 2;
-        let startY = rectY + (rectHeight - Math.min(totalTextHeight, textBlockHeight)) / 2;
+        ctx.font = `${fontWeight} ${fontSize}px "${fontName}"`;
         
-        wrapText(ctx, text, textX, startY, textMaxWidth, lineHeight, ctx.font);
+        // Measure and split text
+        const { visibleText, remainingText } = measureText(
+          ctx,
+          text,
+          textMaxWidth,
+          textBlockHeight,
+          lineHeight,
+        );
+
+        // Calculate vertical center
+        const lines = visibleText.split('\n');
+        const totalTextHeight = lines.reduce((acc, line) => {
+            const metrics = ctx.measureText(line);
+            // This is a simplification; a more accurate measurement would be needed for complex scripts
+            const fontHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+            return acc + Math.max(lineHeight, fontHeight);
+        }, 0);
+        
+        const textX = rectX + (rectWidth - textMaxWidth) / 2;
+        let startY = rectY + (rectHeight - totalTextHeight) / 2;
+        
+        // Draw the visible text
+        wrapAndDrawText(ctx, visibleText, textX, startY, textMaxWidth, lineHeight);
 
         onCanvasReady(canvas);
+        onTextRemaining(remainingText);
       };
 
 
@@ -198,7 +242,7 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, title, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl]);
+  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, onTextRemaining, backgroundImageUrl, isPaginated]);
 
   return (
     <canvas

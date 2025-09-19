@@ -1,6 +1,5 @@
 "use client";
 
-import { automaticallySplitTextIntoParagraphs } from "@/ai/flows/automatically-split-text-into-paragraphs";
 import { suggestContrastingColorSchemes } from "@/ai/flows/suggest-contrasting-color-schemes";
 import { findImages } from "@/ai/flows/find-images-flow";
 import { ImageCanvas, type FontOption } from "@/components/image-canvas";
@@ -38,15 +37,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from 'next/image';
 
 type Design = {
-  paragraph: string;
+  text: string;
+  isTitle: boolean;
 };
 
 const fontOptions: FontOption[] = [
   {
     value: "plus-jakarta-sans",
     label: "Plus Jakarta Sans",
-    titleFont: "Plus Jakarta Sans",
-    bodyFont: "Plus Jakarta Sans",
+    fontFamily: "Plus Jakarta Sans",
     bodyWeight: "400",
     titleWeight: "700",
     titleSize: 80,
@@ -56,8 +55,7 @@ const fontOptions: FontOption[] = [
   {
     value: "playfair-display",
     label: "Playfair Display",
-    titleFont: "Playfair Display",
-    bodyFont: "Playfair Display",
+    fontFamily: "Playfair Display",
     bodyWeight: "700",
     titleWeight: "700",
     titleSize: 90,
@@ -67,8 +65,7 @@ const fontOptions: FontOption[] = [
   {
     value: "inter",
     label: "Inter",
-    titleFont: "Inter",
-    bodyFont: "Inter",
+    fontFamily: "Inter",
     bodyWeight: "600",
     titleWeight: "600",
     titleSize: 80,
@@ -78,8 +75,7 @@ const fontOptions: FontOption[] = [
   {
     value: "special-elite",
     label: "Special Elite",
-    titleFont: "Special Elite",
-    bodyFont: "Special Elite",
+    fontFamily: "Special Elite",
     bodyWeight: "400",
     titleWeight: "400",
     titleSize: 72,
@@ -157,70 +153,8 @@ export default function Home() {
   const [colorSchemes, setColorSchemes] = useState<{backgroundColor: string, textColor: string}[]>([]);
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
+  const remainingTextRef = useRef<string | null>(null);
   const { toast } = useToast();
-
-  const manuallySplitText = (text: string, title: string) => {
-    const MIN_LENGTH = 300;
-    const MAX_LENGTH = 350;
-    const paragraphs = [];
-    let currentText = text.replace(/\\n/g, ' ').replace(/\\s+/g, ' ').trim();
-  
-    let derivedTitle = title;
-    let titleCreated = false;
-    if (!derivedTitle && currentText.length > 0) {
-      const firstSentenceEnd = currentText.search(/[.!?]/);
-      if (firstSentenceEnd !== -1) {
-        derivedTitle = currentText.substring(0, firstSentenceEnd + 1).trim();
-        currentText = currentText.substring(firstSentenceEnd + 1).trim();
-      } else {
-        const approxTitleEnd = currentText.indexOf(' ', 50);
-        if(approxTitleEnd !== -1) {
-            derivedTitle = currentText.substring(0, approxTitleEnd).trim() + '...';
-            currentText = currentText.substring(approxTitleEnd).trim();
-        } else {
-            derivedTitle = currentText;
-            currentText = "";
-        }
-      }
-      titleCreated = true;
-    }
-
-    while (currentText.length > 0) {
-      if (currentText.length <= MAX_LENGTH) {
-        paragraphs.push(currentText);
-        break;
-      }
-  
-      let splitPos = -1;
-      for (let i = MAX_LENGTH; i >= MIN_LENGTH; i--) {
-        if ('.!?'.includes(currentText[i])) {
-          splitPos = i + 1;
-          break;
-        }
-      }
-
-      if (splitPos === -1) {
-        for (let i = MAX_LENGTH; i >= MIN_LENGTH; i--) {
-          if (currentText[i] === ' ') {
-            splitPos = i;
-            break;
-          }
-        }
-      }
-      
-      if (splitPos === -1) {
-        splitPos = MAX_LENGTH;
-      }
-
-      paragraphs.push(currentText.substring(0, splitPos).trim());
-      currentText = currentText.substring(splitPos).trim();
-    }
-  
-    return {
-      title: derivedTitle || '',
-      paragraphs: paragraphs.filter(p => p.length > 0),
-    };
-  }
 
   const handleGenerate = async () => {
     if (!text) {
@@ -233,36 +167,63 @@ export default function Home() {
     }
     setIsLoading(true);
     setDesigns([]);
-    try {
-      const { title: resultTitle, paragraphs } = manuallySplitText(text, title);
-
-      const newDesigns: Design[] = [];
-      if(resultTitle) {
-        newDesigns.push({ paragraph: resultTitle.toUpperCase() });
+    
+    let derivedTitle = title;
+    let mainText = text.replace(/\\n/g, ' ').replace(/\\s+/g, ' ').trim();
+  
+    if (!derivedTitle && mainText.length > 0) {
+      const firstSentenceEnd = mainText.search(/[.!?]/);
+      if (firstSentenceEnd !== -1) {
+        derivedTitle = mainText.substring(0, firstSentenceEnd + 1).trim();
+        mainText = mainText.substring(firstSentenceEnd + 1).trim();
+      } else {
+        const approxTitleEnd = mainText.indexOf(' ', 50);
+        if(approxTitleEnd !== -1) {
+            derivedTitle = mainText.substring(0, approxTitleEnd).trim() + '...';
+            mainText = mainText.substring(approxTitleEnd).trim();
+        } else {
+            derivedTitle = mainText;
+            mainText = "";
+        }
       }
-      paragraphs.forEach(p => {
-        newDesigns.push({ paragraph: p });
-      });
+    }
 
-      setDesigns(newDesigns);
+    const initialDesigns: Design[] = [];
+    if (derivedTitle) {
+      initialDesigns.push({ text: derivedTitle, isTitle: true });
+    }
+    if (mainText) {
+        initialDesigns.push({ text: mainText, isTitle: false });
+    }
+    setDesigns(initialDesigns);
 
-      if (newDesigns.length === 0) {
-        toast({
-          title: "Tasarım Oluşturulamadı",
-          description: "Metin paragraflara bölünemedi. Lütfen daha uzun bir metin deneyin.",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error(error);
+    setIsLoading(false);
+    if (initialDesigns.length === 0) {
       toast({
-        title: "Bir Hata Oluştu",
-        description:
-          "Tasarım oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.",
+        title: "Tasarım Oluşturulamadı",
+        description: "Lütfen bir metin girin.",
         variant: "destructive",
       });
     }
-    setIsLoading(false);
+  };
+
+  const handleTextRemaining = (remainingText: string | null, index: number) => {
+    remainingTextRef.current = remainingText;
+    if (remainingText) {
+        // We need to use a timeout to allow the current render pass to complete
+        // before we update the state and trigger a new render.
+        setTimeout(() => {
+            setDesigns(currentDesigns => {
+                // Prevent adding duplicate pages if this gets called multiple times rapidly
+                if (currentDesigns.some(d => d.text === remainingText)) {
+                    return currentDesigns;
+                }
+                const nextDesigns = [...currentDesigns];
+                nextDesigns.push({ text: remainingText, isTitle: false });
+                return nextDesigns;
+            });
+        }, 0);
+    }
   };
   
   const handleDownload = (index: number) => {
@@ -350,12 +311,16 @@ export default function Home() {
             imageUrl = undefined;
             break;
     }
+    
+    // Determine if this is a subsequent page for pagination
+    const isPaginated = designs.slice(0, index).some(d => !d.isTitle);
 
     return (
         <ImageCanvas
-          key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${index}-${design.paragraph}`}
+          key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${index}-${design.text}`}
           font={activeFont}
-          text={design.paragraph}
+          text={design.text}
+          isTitle={design.isTitle}
           textColor={textColor}
           backgroundColor={currentBg}
           backgroundImageUrl={imageUrl}
@@ -364,9 +329,11 @@ export default function Home() {
           onCanvasReady={(canvas) => {
             canvasRefs.current[index] = canvas;
           }}
+          onTextRemaining={(remainingText) => handleTextRemaining(remainingText, index)}
+          isPaginated={isPaginated}
         />
     )
-  }, [designTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl]);
+  }, [designTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, designs]);
 
   const showColorSuggestions = designTab === 'flat' && colorSchemes.length > 0;
 
