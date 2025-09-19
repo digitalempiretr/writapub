@@ -40,11 +40,12 @@ const automaticallySplitTextIntoParagraphsPrompt = ai.definePrompt({
   prompt: `You are a text processing expert. Your task is to split the given text into multiple paragraphs.
 
 Here are the rules you MUST follow in order:
-1. The absolute most important rule is that each paragraph MUST NOT exceed 12 lines. This is a strict, non-negotiable limit.
-2. While adhering to the 12-line limit, try to make each paragraph between 300 and 350 characters long. The line limit takes priority over character count.
-3. The paragraphs should be logically separated and make sense.
-4. If the user provides a title, use it.
-5. If no title is provided, use the first sentence of the original text as the title.
+1.  The absolute most important rule is that each paragraph MUST NOT exceed 12 lines. This is a strict, non-negotiable limit.
+2.  While adhering to the 12-line limit, try to make each paragraph between 300 and 350 characters long. The line limit takes priority over character count.
+3.  The paragraphs should be logically separated and make sense.
+4.  If the user provides a title, use it.
+5.  If no title is provided, you MUST use the first sentence of the original text as the title.
+6.  If you use the first sentence as the title, you MUST remove that sentence from the beginning of the text body that you will split into paragraphs. Do not repeat the title in the first paragraph.
 
 Original Text:
 {{{text}}}
