@@ -41,8 +41,8 @@ const automaticallySplitTextIntoParagraphsPrompt = ai.definePrompt({
 
 Here are the rules you MUST follow:
 1.  Each paragraph MUST be between 300 and 350 characters long.
-2.  Each paragraph should not exceed approximately 12 lines.
-3.  Do not create paragraphs shorter than 300 characters or longer than 350 characters unless it's necessary to respect the line limit.
+2.  Each paragraph MUST NOT exceed 12 lines. This is a strict rule.
+3.  Do not create paragraphs shorter than 300 characters or longer than 350 characters unless it's absolutely necessary to respect the 12-line limit.
 4.  The paragraphs should be logically separated and make sense.
 5.  If the user provides a title, use it.
 6.  If no title is provided, use the first sentence of the original text as the title.
