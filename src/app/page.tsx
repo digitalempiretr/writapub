@@ -54,13 +54,24 @@ const fontOptions: FontOption[] = [
     lineHeight: 64,
   },
   {
-    value: "playfair-inter",
-    label: "Playfair Display & Inter",
+    value: "playfair-display",
+    label: "Playfair Display",
     titleFont: "Playfair Display",
-    bodyFont: "Inter",
-    bodyWeight: "600",
+    bodyFont: "Playfair Display",
+    bodyWeight: "700",
     titleWeight: "700",
     titleSize: 90,
+    bodySize: 52,
+    lineHeight: 70,
+  },
+  {
+    value: "inter",
+    label: "Inter",
+    titleFont: "Inter",
+    bodyFont: "Inter",
+    bodyWeight: "600",
+    titleWeight: "600",
+    titleSize: 80,
     bodySize: 52,
     lineHeight: 70,
   },
@@ -374,7 +385,7 @@ export default function Home() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <Card className="lg:col-span-4 xl:col-span-3 sticky top-8">
           <CardHeader>
-            <CardTitle>İçerik & Tasarım</CardTitle>
+            <CardTitle>İçerik &amp; Tasarım</CardTitle>
             <CardDescription>
               Metninizi girin ve tasarım ayarlarınızı yapın.
             </CardDescription>
