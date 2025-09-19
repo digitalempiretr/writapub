@@ -72,7 +72,6 @@ const measureText = (
 
   visibleText += currentLine;
   
-  // Check if the last line exceeds the max lines
   if(lineCount + 1 > maxLines && visibleText.trim().length < text.trim().length) {
     const lastWordIndex = visibleText.trim().lastIndexOf(' ');
     const remaining = text.substring(lastWordIndex).trim();
@@ -96,21 +95,28 @@ const wrapAndDrawText = (
 ) => {
   const words = text.split(" ");
   let line = "";
-  let currentY = y;
-
-  for (let n = 0; n < words.length; n++) {
-    const testLine = line + words[n] + " ";
-    const metrics = context.measureText(testLine);
-    const testWidth = metrics.width;
-    if (testWidth > maxWidth && n > 0) {
-      context.fillText(line, x, currentY);
-      line = words[n] + " ";
-      currentY += lineHeight;
+  
+  // First, calculate the number of lines and the total height
+  const lines: string[] = [];
+  for (const word of words) {
+    const testLine = line + word + " ";
+    if (context.measureText(testLine).width > maxWidth && line !== "") {
+      lines.push(line);
+      line = word + " ";
     } else {
       line = testLine;
     }
   }
-  context.fillText(line, x, currentY);
+  lines.push(line);
+
+  const totalTextHeight = lines.length * lineHeight;
+  let currentY = y - (totalTextHeight / 2) + (lineHeight / 2) - (context.measureText("M").actualBoundingBoxDescent / 2);
+
+  // Now, draw the text
+  for(const line of lines) {
+    context.fillText(line.trim(), x, currentY);
+    currentY += lineHeight;
+  }
 };
 
 export function ImageCanvas({
@@ -154,7 +160,7 @@ export function ImageCanvas({
 
         ctx.fillStyle = textColor;
         ctx.textAlign = 'left';
-        ctx.textBaseline = 'top';
+        ctx.textBaseline = 'middle';
         
         const textMaxWidth = 730;
         const textBlockHeight = isTitle ? 1000 : (isPaginated ? 1000 : 950);
@@ -162,7 +168,6 @@ export function ImageCanvas({
         const lineHeight = isTitle ? font.titleSize * 1.2 : font.lineHeight;
         ctx.font = `${fontWeight} ${fontSize}px "${fontName}"`;
         
-        // Measure and split text
         const { visibleText, remainingText } = measureText(
           ctx,
           text,
@@ -170,20 +175,10 @@ export function ImageCanvas({
           textBlockHeight,
           lineHeight,
         );
-
-        // Calculate vertical center
-        const lines = visibleText.split('\n');
-        const totalTextHeight = lines.reduce((acc, line) => {
-            const metrics = ctx.measureText(line);
-            // This is a simplification; a more accurate measurement would be needed for complex scripts
-            const fontHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-            return acc + Math.max(lineHeight, fontHeight);
-        }, 0);
         
         const textX = rectX + (rectWidth - textMaxWidth) / 2;
-        let startY = rectY + (rectHeight - totalTextHeight) / 2;
+        const startY = rectY + rectHeight / 2;
         
-        // Draw the visible text
         wrapAndDrawText(ctx, visibleText, textX, startY, textMaxWidth, lineHeight);
 
         onCanvasReady(canvas);
@@ -201,13 +196,11 @@ export function ImageCanvas({
           let sx, sy, sWidth, sHeight;
 
           if (imageAspect > canvasAspect) {
-            // Image is wider than canvas
             sHeight = img.height;
             sWidth = img.height * canvasAspect;
             sx = (img.width - sWidth) / 2;
             sy = 0;
           } else {
-            // Image is taller than or same aspect as canvas
             sWidth = img.width;
             sHeight = img.width / canvasAspect;
             sx = 0;
