@@ -35,54 +35,68 @@ const measureText = (
   maxHeight: number,
   lineHeight: number
 ): { visibleText: string; remainingText: string | null } => {
-  const words = text.replace(/\n/g, ' \n ').split(" ");
-  let currentLine = "";
-  let visibleText = "";
-  let lineCount = 0;
-  const maxLines = Math.floor(maxHeight / lineHeight);
+    const words = text.split(/(\s+)/); // Split by whitespace, keeping the whitespace
+    let line = '';
+    const lines = [];
+    const maxLines = Math.floor(maxHeight / lineHeight);
 
-  for (let n = 0; n < words.length; n++) {
-    if (lineCount >= maxLines) {
-      const remainingWords = words.slice(n);
-      return {
-        visibleText,
-        remainingText: remainingWords.join(" ").replace(/ \n /g, '\n').trim()
-      };
+    for (const word of words) {
+        if (lines.length >= maxLines) {
+            break;
+        }
+
+        const testLine = line + word;
+        const metrics = context.measureText(testLine);
+        
+        if (metrics.width > maxWidth && line.length > 0) {
+            lines.push(line);
+            line = word.trimStart();
+        } else {
+            line = testLine;
+        }
     }
     
-    if (words[n] === '\n') {
-      visibleText += currentLine.trim() + '\n';
-      lineCount++;
-      currentLine = "";
-      continue;
+    if (lines.length < maxLines && line.length > 0) {
+        lines.push(line);
+    }
+    
+    const visibleText = lines.join('').trimEnd();
+    let remainingText: string | null = null;
+    
+    if (visibleText.length < text.length) {
+      // Find where visibleText ends and get the rest of the original text
+      const lastChar = visibleText[visibleText.length - 1];
+      const lastWord = visibleText.split(/(\s+)/).pop() || '';
+      const textAfterVisible = text.substring(visibleText.length);
+
+      // This logic is tricky. We need to find the exact point of split.
+      // The easiest way is to count the words used.
+      const visibleWords = visibleText.split(/(\s+)/);
+      let originalWordsIndex = 0;
+      let visibleWordsIndex = 0;
+      
+      while(originalWordsIndex < words.length && visibleWordsIndex < visibleWords.length) {
+          if (words[originalWordsIndex] === visibleWords[visibleWordsIndex]) {
+              visibleWordsIndex++;
+          }
+          originalWordsIndex++;
+      }
+
+      // Sometimes the last word is partially included. We need to handle that.
+      if (text.startsWith(visibleText)) {
+          remainingText = text.substring(visibleText.length).trim();
+      } else {
+           // Fallback for more complex splits
+           const allWords = text.split(/(\s+)/);
+           const visibleWordCount = visibleText.split(/(\s+)/).length;
+           remainingText = allWords.slice(visibleWordCount).join('').trim();
+      }
+       if (remainingText === "") {
+        remainingText = null;
+      }
     }
 
-    const testLine = currentLine + words[n] + " ";
-    const metrics = context.measureText(testLine);
-    const testWidth = metrics.width;
-
-    if (testWidth > maxWidth && n > 0) {
-      visibleText += currentLine;
-      lineCount++;
-      currentLine = words[n] + " ";
-    } else {
-      currentLine = testLine;
-    }
-  }
-
-  visibleText += currentLine;
-  
-  if(lineCount + 1 > maxLines && visibleText.trim().length < text.trim().length) {
-    const lastWordIndex = visibleText.trim().lastIndexOf(' ');
-    const remaining = text.substring(lastWordIndex).trim();
-    return {
-      visibleText: visibleText.substring(0, lastWordIndex).trim(),
-      remainingText: remaining,
-    }
-  }
-
-
-  return { visibleText: visibleText.trim(), remainingText: null };
+    return { visibleText, remainingText };
 };
 
 const wrapAndDrawText = (
@@ -98,19 +112,20 @@ const wrapAndDrawText = (
   
   // First, calculate the number of lines and the total height
   const lines: string[] = [];
-  for (const word of words) {
-    const testLine = line + word + " ";
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    const testLine = line + word + (i === words.length - 1 ? "" : " ");
     if (context.measureText(testLine).width > maxWidth && line !== "") {
-      lines.push(line);
+      lines.push(line.trim());
       line = word + " ";
     } else {
       line = testLine;
     }
   }
-  lines.push(line);
+  lines.push(line.trim());
 
-  const totalTextHeight = lines.length * lineHeight;
-  let currentY = y - (totalTextHeight / 2) + (lineHeight / 2) - (context.measureText("M").actualBoundingBoxDescent / 2);
+  const totalTextHeight = (lines.length -1) * lineHeight;
+  let currentY = y - totalTextHeight / 2;
 
   // Now, draw the text
   for(const line of lines) {
