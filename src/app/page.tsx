@@ -2,6 +2,7 @@
 
 import { suggestContrastingColorSchemes } from "@/ai/flows/suggest-contrasting-color-schemes";
 import { findImages } from "@/ai/flows/find-images-flow";
+import { automaticallySplitTextIntoParagraphs } from "@/ai/flows/automatically-split-text-into-paragraphs";
 import { ImageCanvas, type FontOption } from "@/components/image-canvas";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
@@ -153,7 +154,6 @@ export default function Home() {
   const [colorSchemes, setColorSchemes] = useState<{backgroundColor: string, textColor: string}[]>([]);
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
-  const remainingTextRef = useRef<string | null>(null);
   const { toast } = useToast();
 
   const handleGenerate = async () => {
@@ -168,61 +168,30 @@ export default function Home() {
     setIsLoading(true);
     setDesigns([]);
     
-    let derivedTitle = title;
-    let mainText = text.replace(/\\n/g, ' ').replace(/\\s+/g, ' ').trim();
-  
-    if (!derivedTitle && mainText.length > 0) {
-      const firstSentenceEnd = mainText.search(/[.!?]/);
-      if (firstSentenceEnd !== -1) {
-        derivedTitle = mainText.substring(0, firstSentenceEnd + 1).trim();
-        mainText = mainText.substring(firstSentenceEnd + 1).trim();
-      } else {
-        const approxTitleEnd = mainText.indexOf(' ', 50);
-        if(approxTitleEnd !== -1) {
-            derivedTitle = mainText.substring(0, approxTitleEnd).trim() + '...';
-            mainText = mainText.substring(approxTitleEnd).trim();
-        } else {
-            derivedTitle = mainText;
-            mainText = "";
-        }
+    try {
+      const result = await automaticallySplitTextIntoParagraphs({
+        text: text,
+        title: title,
+      });
+
+      const newDesigns: Design[] = [];
+      if (result.title) {
+        newDesigns.push({ text: result.title, isTitle: true });
       }
-    }
-
-    const initialDesigns: Design[] = [];
-    if (derivedTitle) {
-      initialDesigns.push({ text: derivedTitle, isTitle: true });
-    }
-    if (mainText) {
-        initialDesigns.push({ text: mainText, isTitle: false });
-    }
-    setDesigns(initialDesigns);
-
-    setIsLoading(false);
-    if (initialDesigns.length === 0) {
+      result.paragraphs.forEach(p => {
+        newDesigns.push({ text: p, isTitle: false });
+      });
+      setDesigns(newDesigns);
+      
+    } catch(e) {
+      console.error(e);
       toast({
-        title: "Tasarım Oluşturulamadı",
-        description: "Lütfen bir metin girin.",
+        title: "Metin Bölümlenemedi",
+        description: "Yapay zeka metni paragraflara ayırırken bir hata oluştu. Lütfen tekrar deneyin.",
         variant: "destructive",
       });
-    }
-  };
-
-  const handleTextRemaining = (remainingText: string | null, index: number) => {
-    remainingTextRef.current = remainingText;
-    if (remainingText) {
-        // We need to use a timeout to allow the current render pass to complete
-        // before we update the state and trigger a new render.
-        setTimeout(() => {
-            setDesigns(currentDesigns => {
-                // Prevent adding duplicate pages if this gets called multiple times rapidly
-                if (currentDesigns.some(d => d.text === remainingText)) {
-                    return currentDesigns;
-                }
-                const nextDesigns = [...currentDesigns];
-                nextDesigns.push({ text: remainingText, isTitle: false });
-                return nextDesigns;
-            });
-        }, 0);
+    } finally {
+      setIsLoading(false);
     }
   };
   
@@ -312,7 +281,6 @@ export default function Home() {
             break;
     }
     
-    // Determine if this is a subsequent page for pagination
     const isPaginated = designs.slice(0, index).some(d => !d.isTitle);
 
     return (
@@ -329,7 +297,6 @@ export default function Home() {
           onCanvasReady={(canvas) => {
             canvasRefs.current[index] = canvas;
           }}
-          onTextRemaining={(remainingText) => handleTextRemaining(remainingText, index)}
           isPaginated={isPaginated}
         />
     )

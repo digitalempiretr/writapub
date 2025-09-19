@@ -22,81 +22,8 @@ type ImageCanvasProps = {
   width: number;
   height: number;
   onCanvasReady: (canvas: HTMLCanvasElement) => void;
-  onTextRemaining: (remainingText: string | null) => void;
   backgroundImageUrl?: string;
   isPaginated?: boolean;
-};
-
-// This function calculates how much text fits and returns the remaining text.
-const measureText = (
-  context: CanvasRenderingContext2D,
-  text: string,
-  maxWidth: number,
-  maxHeight: number,
-  lineHeight: number
-): { visibleText: string; remainingText: string | null } => {
-    const words = text.split(/(\s+)/); // Split by whitespace, keeping the whitespace
-    let line = '';
-    const lines = [];
-    const maxLines = Math.floor(maxHeight / lineHeight);
-
-    for (const word of words) {
-        if (lines.length >= maxLines) {
-            break;
-        }
-
-        const testLine = line + word;
-        const metrics = context.measureText(testLine);
-        
-        if (metrics.width > maxWidth && line.length > 0) {
-            lines.push(line);
-            line = word.trimStart();
-        } else {
-            line = testLine;
-        }
-    }
-    
-    if (lines.length < maxLines && line.length > 0) {
-        lines.push(line);
-    }
-    
-    const visibleText = lines.join('').trimEnd();
-    let remainingText: string | null = null;
-    
-    if (visibleText.length < text.length) {
-      // Find where visibleText ends and get the rest of the original text
-      const lastChar = visibleText[visibleText.length - 1];
-      const lastWord = visibleText.split(/(\s+)/).pop() || '';
-      const textAfterVisible = text.substring(visibleText.length);
-
-      // This logic is tricky. We need to find the exact point of split.
-      // The easiest way is to count the words used.
-      const visibleWords = visibleText.split(/(\s+)/);
-      let originalWordsIndex = 0;
-      let visibleWordsIndex = 0;
-      
-      while(originalWordsIndex < words.length && visibleWordsIndex < visibleWords.length) {
-          if (words[originalWordsIndex] === visibleWords[visibleWordsIndex]) {
-              visibleWordsIndex++;
-          }
-          originalWordsIndex++;
-      }
-
-      // Sometimes the last word is partially included. We need to handle that.
-      if (text.startsWith(visibleText)) {
-          remainingText = text.substring(visibleText.length).trim();
-      } else {
-           // Fallback for more complex splits
-           const allWords = text.split(/(\s+)/);
-           const visibleWordCount = visibleText.split(/(\s+)/).length;
-           remainingText = allWords.slice(visibleWordCount).join('').trim();
-      }
-       if (remainingText === "") {
-        remainingText = null;
-      }
-    }
-
-    return { visibleText, remainingText };
 };
 
 const wrapAndDrawText = (
@@ -143,7 +70,6 @@ export function ImageCanvas({
   width,
   height,
   onCanvasReady,
-  onTextRemaining,
   backgroundImageUrl,
   isPaginated = false,
 }: ImageCanvasProps) {
@@ -178,26 +104,16 @@ export function ImageCanvas({
         ctx.textBaseline = 'middle';
         
         const textMaxWidth = 730;
-        const textBlockHeight = isTitle ? 1000 : (isPaginated ? 1000 : 950);
         
         const lineHeight = isTitle ? font.titleSize * 1.2 : font.lineHeight;
         ctx.font = `${fontWeight} ${fontSize}px "${fontName}"`;
         
-        const { visibleText, remainingText } = measureText(
-          ctx,
-          text,
-          textMaxWidth,
-          textBlockHeight,
-          lineHeight,
-        );
-        
         const textX = rectX + (rectWidth - textMaxWidth) / 2;
         const startY = rectY + rectHeight / 2;
         
-        wrapAndDrawText(ctx, visibleText, textX, startY, textMaxWidth, lineHeight);
+        wrapAndDrawText(ctx, text, textX, startY, textMaxWidth, lineHeight);
 
         onCanvasReady(canvas);
-        onTextRemaining(remainingText);
       };
 
 
@@ -250,7 +166,7 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, onTextRemaining, backgroundImageUrl, isPaginated]);
+  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, isPaginated]);
 
   return (
     <canvas
