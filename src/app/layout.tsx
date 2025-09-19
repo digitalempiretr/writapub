@@ -38,6 +38,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap"
           rel="stylesheet"
         />
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto:wght@400;700&family=Slabo+27px&family=Lato:wght@400;700&family=Oswald:wght@400;700&family=Raleway:wght@400;700&family=Roboto+Slab:wght@400;700&family=Ubuntu:wght@400;700&family=Titillium+Web:wght@400;700&family=Oxygen:wght@400;700&family=Dosis:wght@400;700&family=Lobster&family=Catamaran:wght@400;700&family=Bree+Serif&family=Josefin+Sans:wght@400;700&family=Exo+2:wght@400;700&family=Anton&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
         {children}
