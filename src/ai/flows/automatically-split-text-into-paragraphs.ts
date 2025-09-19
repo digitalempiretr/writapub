@@ -39,13 +39,12 @@ const automaticallySplitTextIntoParagraphsPrompt = ai.definePrompt({
   output: {schema: AutomaticallySplitTextIntoParagraphsOutputSchema},
   prompt: `You are a text processing expert. Your task is to split the given text into multiple paragraphs.
 
-Here are the rules you MUST follow:
-1.  Each paragraph MUST be between 300 and 350 characters long.
-2.  Each paragraph MUST NOT exceed 12 lines. This is a strict rule.
-3.  Do not create paragraphs shorter than 300 characters or longer than 350 characters unless it's absolutely necessary to respect the 12-line limit.
-4.  The paragraphs should be logically separated and make sense.
-5.  If the user provides a title, use it.
-6.  If no title is provided, use the first sentence of the original text as the title.
+Here are the rules you MUST follow in order:
+1. The absolute most important rule is that each paragraph MUST NOT exceed 12 lines. This is a strict, non-negotiable limit.
+2. While adhering to the 12-line limit, try to make each paragraph between 300 and 350 characters long. The line limit takes priority over character count.
+3. The paragraphs should be logically separated and make sense.
+4. If the user provides a title, use it.
+5. If no title is provided, use the first sentence of the original text as the title.
 
 Original Text:
 {{{text}}}
@@ -53,7 +52,7 @@ Original Text:
 Title (if provided):
 {{{title}}}
 
-Based on these rules, provide the output with the title and the array of paragraphs.
+Based on these strict rules, provide the output with the title and the array of paragraphs.
 `,
 });
 
