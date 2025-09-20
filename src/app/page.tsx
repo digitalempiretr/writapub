@@ -72,6 +72,13 @@ const gradientTemplates = [
   { name: "Sunset", css: "linear-gradient(to top right, #F3904F 0%, #3B4371 100%)" },
   { name: "Forest", css: "linear-gradient(to top right, #13547a 0%, #80d0c7 100%)" },
   { name: "Royal", css: "linear-gradient(to top right, #473B7B 0%, #3584A7 50%, #30D2BE 100%)" },
+  { name: "Mojito", css: "linear-gradient(to top, #1d976c, #93f9b9)" },
+  { name: "Cherry", css: "linear-gradient(to top, #eb3349, #f45c43)" },
+  { name: "Pinky", css: "linear-gradient(to top, #dd5e89, #f7bb97)" },
+  { name: "Purple", css: "linear-gradient(to top right, #6a11cb 0%, #2575fc 100%)" },
+  { name: "Sky", css: "linear-gradient(to top right, #4facfe 0%, #00f2fe 100%)" },
+  { name: "Fire", css: "linear-gradient(to top right, #f12711 0%, #f5af19 100%)" },
+  { name: "Aqua", css: "linear-gradient(to top right, #1a2980 0%, #26d0ce 100%)" },
 ];
 
 const imageTemplates = [
@@ -487,3 +494,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
