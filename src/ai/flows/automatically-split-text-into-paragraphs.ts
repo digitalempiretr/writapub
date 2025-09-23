@@ -1,18 +1,19 @@
 'use server';
 /**
- * @fileOverview Automatically splits input text into logical paragraphs of 300-350 characters,
- * with a maximum of 12 lines, using the first sentence of the first paragraph as a title if no title is provided.
+ * @fileOverview This flow processes text to extract a title and prepares the body content.
+ * It identifies the first sentence as the title if no title is provided,
+ * and then returns the title and the rest of the text as a single block.
  *
- * - automaticallySplitTextIntoParagraphs - A function that handles the text splitting process.
- * - AutomaticallySplitTextIntoParagraphsInput - The input type for the automaticallySplitTextIntoParagraphs function.
- * - AutomaticallySplitTextIntoParagraphsOutput - The return type for the automaticallySplitTextIntoParagraphs function.
+ * - automaticallySplitTextIntoParagraphs - A function that handles the text processing.
+ * - AutomaticallySplitTextIntoParagraphsInput - The input type for the function.
+ * - AutomaticallySplitTextIntoParagraphsOutput - The return type for the function.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const AutomaticallySplitTextIntoParagraphsInputSchema = z.object({
-  text: z.string().describe('The text to split into paragraphs.'),
+  text: z.string().describe('The text to process.'),
   title: z.string().optional().describe('Optional title for the text.'),
 });
 export type AutomaticallySplitTextIntoParagraphsInput = z.infer<
@@ -21,7 +22,7 @@ export type AutomaticallySplitTextIntoParagraphsInput = z.infer<
 
 const AutomaticallySplitTextIntoParagraphsOutputSchema = z.object({
   title: z.string().describe('The title of the text.'),
-  paragraphs: z.array(z.string()).describe('The text split into paragraphs.'),
+  paragraphs: z.array(z.string()).describe('The processed body of the text as a single element array.'),
 });
 export type AutomaticallySplitTextIntoParagraphsOutput = z.infer<
   typeof AutomaticallySplitTextIntoParagraphsOutputSchema
@@ -37,15 +38,12 @@ const automaticallySplitTextIntoParagraphsPrompt = ai.definePrompt({
   name: 'automaticallySplitTextIntoParagraphsPrompt',
   input: {schema: AutomaticallySplitTextIntoParagraphsInputSchema},
   output: {schema: AutomaticallySplitTextIntoParagraphsOutputSchema},
-  prompt: `You are a text processing expert. Your task is to split the given text into multiple paragraphs.
+  prompt: `You are a text processing assistant. Your task is to process the given text according to the following rules:
 
-Here are the rules you MUST follow in order:
-1.  The absolute most important rule is that each paragraph MUST NOT exceed 12 lines. This is a strict, non-negotiable limit.
-2.  While adhering to the 12-line limit, try to make each paragraph between 300 and 350 characters long. The line limit takes priority over character count.
-3.  The paragraphs should be logically separated and make sense.
-4.  If the user provides a title, use it.
-5.  If no title is provided, you MUST use the first sentence of the original text as the title.
-6.  If you use the first sentence as the title, you MUST remove that sentence from the beginning of the text body that you will split into paragraphs. Do not repeat the title in the first paragraph.
+1.  If the user provides a title, use it as the title. The "text" input should be returned as a single block in the "paragraphs" array.
+2.  If no title is provided, you MUST use the first sentence of the original text as the title.
+3.  If you use the first sentence as the title, you MUST remove that sentence from the beginning of the text body.
+4.  The remaining text body MUST be returned as a single string inside the "paragraphs" array. Do not split it.
 
 Original Text:
 {{{text}}}
@@ -53,7 +51,7 @@ Original Text:
 Title (if provided):
 {{{title}}}
 
-Based on these strict rules, provide the output with the title and the array of paragraphs.
+Provide the output with the extracted title and the single, consolidated text block.
 `,
 });
 

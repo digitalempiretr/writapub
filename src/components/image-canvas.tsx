@@ -24,7 +24,77 @@ type ImageCanvasProps = {
   onCanvasReady: (canvas: HTMLCanvasElement) => void;
   backgroundImageUrl?: string;
   isPaginated?: boolean;
+  onTextRemaining: (remainingText: string) => void;
+  isLastCanvas: boolean;
 };
+
+// This function measures the text and splits it if it exceeds the max lines.
+const measureAndSplitText = (
+  context: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number,
+  maxLines: number
+): { textForCanvas: string; remainingText: string } => {
+  const paragraphs = text.split('\n\n');
+  let currentLines: string[] = [];
+  let remainingParagraphs = [];
+  let textForCanvas = '';
+  let remainingText = '';
+
+  let linesProcessed = false;
+
+  for (let pIndex = 0; pIndex < paragraphs.length; pIndex++) {
+    const paragraph = paragraphs[pIndex];
+    const words = paragraph.split(' ');
+    let line = '';
+
+    for (let i = 0; i < words.length; i++) {
+      const word = words[i];
+      let testLine = line + word + ' ';
+      
+      if (context.measureText(testLine).width > maxWidth && i > 0) {
+        if (currentLines.length < maxLines) {
+          currentLines.push(line);
+          line = word + ' ';
+        } else {
+          remainingParagraphs.push([line.trim(), ...words.slice(i)].join(' '));
+          linesProcessed = true;
+          break;
+        }
+      } else {
+        line = testLine;
+      }
+    }
+
+    if (linesProcessed) {
+      break;
+    }
+
+    if (currentLines.length < maxLines) {
+      currentLines.push(line);
+      // Add a blank line for paragraph breaks, if we have room
+      if (pIndex < paragraphs.length - 1 && currentLines.length < maxLines) {
+        currentLines.push('');
+      }
+    } else {
+      remainingParagraphs.push(line.trim());
+    }
+  }
+
+  textForCanvas = currentLines.map(l => l.trim()).join('\n');
+  
+  if (remainingParagraphs.length > 0) {
+    remainingText = remainingParagraphs.join(' ') + '\n\n' + paragraphs.slice(paragraphs.findIndex(p => p.startsWith(remainingParagraphs[0])) + 1).join('\n\n');
+  }
+
+  // Check if remaining paragraphs are just empty strings
+  if (paragraphs.slice(paragraphs.findIndex(p => p.startsWith(remainingParagraphs[0])) + 1).join('\n\n').trim() === "") {
+    remainingText = remainingParagraphs.join(" ");
+  }
+
+  return { textForCanvas, remainingText: remainingText.trim() };
+};
+
 
 const wrapAndDrawText = (
   context: CanvasRenderingContext2D,
@@ -34,29 +104,12 @@ const wrapAndDrawText = (
   maxWidth: number,
   lineHeight: number
 ) => {
-  const words = text.split(" ");
-  let line = "";
-  
-  // First, calculate the number of lines and the total height
-  const lines: string[] = [];
-  for (let i = 0; i < words.length; i++) {
-    const word = words[i];
-    const testLine = line + word + (i === words.length - 1 ? "" : " ");
-    if (context.measureText(testLine).width > maxWidth && line !== "") {
-      lines.push(line.trim());
-      line = word + " ";
-    } else {
-      line = testLine;
-    }
-  }
-  lines.push(line.trim());
-
+  const lines = text.split("\n");
   const totalTextHeight = (lines.length -1) * lineHeight;
   let currentY = y - totalTextHeight / 2;
 
-  // Now, draw the text
   for(const line of lines) {
-    context.fillText(line.trim(), x, currentY);
+    context.fillText(line, x, currentY);
     currentY += lineHeight;
   }
 };
@@ -71,7 +124,8 @@ export function ImageCanvas({
   height,
   onCanvasReady,
   backgroundImageUrl,
-  isPaginated = false,
+  onTextRemaining,
+  isLastCanvas,
 }: ImageCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -89,6 +143,18 @@ export function ImageCanvas({
       await document.fonts.load(`${fontWeight} ${fontSize}px "${fontName}"`);
       
       ctx.clearRect(0, 0, width, height);
+      
+      const textMaxWidth = 730;
+      ctx.font = `${fontWeight} ${fontSize}px "${fontName}"`;
+
+      let textToDraw = text;
+      let remainingText = '';
+
+      if (!isTitle) {
+        const result = measureAndSplitText(ctx, text, textMaxWidth, 12);
+        textToDraw = result.textForCanvas;
+        remainingText = result.remainingText;
+      }
 
       const drawLayout = () => {
         const rectWidth = 830;
@@ -103,16 +169,18 @@ export function ImageCanvas({
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
         
-        const textMaxWidth = 730;
-        
         const lineHeight = isTitle ? font.titleSize * 1.2 : font.lineHeight;
         ctx.font = `${fontWeight} ${fontSize}px "${fontName}"`;
         
         const textX = rectX + (rectWidth - textMaxWidth) / 2;
         const startY = rectY + rectHeight / 2;
         
-        wrapAndDrawText(ctx, text, textX, startY, textMaxWidth, lineHeight);
+        wrapAndDrawText(ctx, textToDraw, textX, startY, textMaxWidth, lineHeight);
 
+        if (isLastCanvas && !isTitle) {
+          onTextRemaining(remainingText);
+        }
+        
         onCanvasReady(canvas);
       };
 
@@ -166,7 +234,7 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, isPaginated]);
+  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, isLastCanvas]);
 
   return (
     <canvas

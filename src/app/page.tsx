@@ -79,6 +79,11 @@ const gradientTemplates = [
   { name: "Sky", css: "linear-gradient(to top right, #4facfe 0%, #00f2fe 100%)" },
   { name: "Fire", css: "linear-gradient(to top right, #f12711 0%, #f5af19 100%)" },
   { name: "Aqua", css: "linear-gradient(to top right, #1a2980 0%, #26d0ce 100%)" },
+  { name: "Peach", css: "linear-gradient(to right, #ffecd2 0%, #fcb69f 100%)" },
+  { name: "Violet", css: "linear-gradient(to right, #8e2de2, #4a00e0)" },
+  { name: "Emerald", css: "linear-gradient(to right, #348f50, #56b4d3)" },
+  { name: "Steel", css: "linear-gradient(to right, #65799b, #5e2563)" },
+  { name: "Cosmic", css: "linear-gradient(to right, #ff00cc, #333399)" },
 ];
 
 const imageTemplates = [
@@ -138,11 +143,25 @@ export default function Home() {
   const [searchedImages, setSearchedImages] = useState<string[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
-
   const [colorSchemes, setColorSchemes] = useState<{backgroundColor: string, textColor: string}[]>([]);
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const { toast } = useToast();
+
+  const remainingTextRef = useRef<string | null>(null);
+
+  const handleTextRemaining = (remaining: string, currentIndex: number) => {
+      if (remaining && remaining !== remainingTextRef.current) {
+        remainingTextRef.current = remaining;
+        setDesigns(prevDesigns => [
+            ...prevDesigns,
+            { text: remaining, isTitle: false }
+        ]);
+      } else if (!remaining) {
+        remainingTextRef.current = null;
+      }
+  };
+
 
   const handleGenerate = async () => {
     if (!text) {
@@ -166,9 +185,10 @@ export default function Home() {
       if (result.title) {
         newDesigns.push({ text: result.title, isTitle: true });
       }
-      result.paragraphs.forEach(p => {
-        newDesigns.push({ text: p, isTitle: false });
-      });
+      if (result.paragraphs.length > 0) {
+        const combinedParagraphs = result.paragraphs.join('\n\n');
+        newDesigns.push({ text: combinedParagraphs, isTitle: false });
+      }
       setDesigns(newDesigns);
       
     } catch(e) {
@@ -245,7 +265,7 @@ export default function Home() {
       setIsSearching(false);
     }
   };
-
+  
   const renderCanvas = useCallback((design: Design, index: number) => {
     let currentBg: string | undefined;
     let imageUrl: string | undefined;
@@ -286,6 +306,8 @@ export default function Home() {
             canvasRefs.current[index] = canvas;
           }}
           isPaginated={isPaginated}
+          onTextRemaining={(remaining) => handleTextRemaining(remaining, index)}
+          isLastCanvas={index === designs.length - 1}
         />
     )
   }, [designTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, designs]);
@@ -494,5 +516,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
