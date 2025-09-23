@@ -27,43 +27,65 @@ type ImageCanvasProps = {
   isLastCanvas: boolean;
 };
 
+// This function wraps text for titles.
+const wrapText = (
+  context: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number
+): string[] => {
+  const words = text.split(' ');
+  let lines: string[] = [];
+  let currentLine = words[0];
+
+  for (let i = 1; i < words.length; i++) {
+    const word = words[i];
+    const width = context.measureText(currentLine + " " + word).width;
+    if (width < maxWidth) {
+      currentLine += " " + word;
+    } else {
+      lines.push(currentLine);
+      currentLine = word;
+    }
+  }
+  lines.push(currentLine);
+  return lines;
+};
+
+
 // This function measures the text and splits it if it exceeds the max lines.
 const measureAndSplitText = (
   context: CanvasRenderingContext2D,
   text: string,
   maxWidth: number,
-  maxLines: number,
-  lineHeight: number
+  maxLines: number
 ): { textForCanvas: string; remainingText: string, lines: string[] } => {
-  const words = text.split(' ');
+  const words = text.split(/(\s+)/); // Split by whitespace, keeping the whitespace
   let line = '';
   let lines: string[] = [];
   let remainingWords = [...words];
 
   while (lines.length < maxLines && remainingWords.length > 0) {
-    let testLine = line + remainingWords[0] + ' ';
+    let testLine = line + remainingWords[0];
     let metrics = context.measureText(testLine);
-    let testWidth = metrics.width;
     
-    if (testWidth > maxWidth && line !== '') {
-      lines.push(line.trim());
-      line = '';
-    } else {
-      line = testLine;
+    if (metrics.width > maxWidth && line !== '') {
+      lines.push(line);
+      line = remainingWords[0].trimStart(); // Start new line with the current word, trimming leading space
       remainingWords.shift();
+    } else {
+      line += remainingWords.shift();
     }
   }
-
-  if (line.trim() !== '') {
-      if (lines.length < maxLines) {
-        lines.push(line.trim());
-      } else {
-        remainingWords.unshift(...line.trim().split(' '));
-      }
+  
+  if (line.trim() !== '' && lines.length < maxLines) {
+    lines.push(line);
+  } else if (line.trim() !== '') {
+    remainingWords.unshift(line);
   }
 
+
   const textForCanvas = lines.join('\n');
-  const remainingText = remainingWords.join(' ').trim();
+  const remainingText = remainingWords.join('').trim();
   
   return { textForCanvas, remainingText, lines };
 };
@@ -74,10 +96,14 @@ const wrapAndDrawText = (
   lines: string[],
   x: number,
   y: number,
-  lineHeight: number
+  lineHeight: number,
+  rectHeight: number
 ) => {
   const totalTextHeight = lines.length * lineHeight;
-  let currentY = y - totalTextHeight / 2 + (lineHeight / 2) ;
+  // Adjust start Y to be centered within the rectangle
+  const startY = y + (rectHeight - totalTextHeight) / 2 + (lineHeight / 2) - (lineHeight * 0.1); // Fine-tune vertical alignment
+
+  let currentY = startY;
 
   for(const line of lines) {
     context.fillText(line, x, currentY);
@@ -125,18 +151,15 @@ export function ImageCanvas({
 
       ctx.font = `${fontWeight} ${fontSize}px "${fontName}"`;
 
-      let textToDraw: string;
       let remainingText = '';
       let linesToDraw: string[] = [];
 
       if (!isTitle) {
-        const result = measureAndSplitText(ctx, text, textMaxWidth, 12, lineHeight);
-        textToDraw = result.textForCanvas;
+        const result = measureAndSplitText(ctx, text, textMaxWidth, 12);
         linesToDraw = result.lines;
         remainingText = result.remainingText;
       } else {
-        textToDraw = text;
-        linesToDraw = text.split('\n');
+        linesToDraw = wrapText(ctx, text, textMaxWidth);
       }
 
       const drawLayout = () => {
@@ -146,16 +169,15 @@ export function ImageCanvas({
 
         // Set up text properties
         ctx.fillStyle = textColor;
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top'; // Change to top for better control
         ctx.font = `${fontWeight} ${fontSize}px "${fontName}"`;
         
         // Calculate text position
-        const textX = rectX + (rectWidth - textMaxWidth) / 2;
-        const startY = rectY + rectHeight / 2;
+        const textX = rectX + rectWidth / 2; // Center horizontally
         
         // Draw the text
-        wrapAndDrawText(ctx, linesToDraw, textX, startY, lineHeight);
+        wrapAndDrawText(ctx, linesToDraw, textX, rectY, lineHeight, rectHeight);
 
         if (isLastCanvas && !isTitle) {
           onTextRemaining(remainingText);
