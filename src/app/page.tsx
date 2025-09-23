@@ -151,15 +151,20 @@ export default function Home() {
   const remainingTextRef = useRef<string | null>(null);
 
   const handleTextRemaining = (remaining: string, currentIndex: number) => {
-      if (remaining && remaining !== remainingTextRef.current) {
+    // Only add a new slide if the remaining text is different and not empty
+    if (remaining && remaining !== remainingTextRef.current) {
         remainingTextRef.current = remaining;
-        setDesigns(prevDesigns => [
-            ...prevDesigns,
-            { text: remaining, isTitle: false }
-        ]);
-      } else if (!remaining) {
+        setDesigns(prevDesigns => {
+            // Check if we are potentially in a loop
+            const lastNonTitleText = [...prevDesigns].reverse().find(d => !d.isTitle)?.text;
+            if (lastNonTitleText === remaining) {
+                return prevDesigns;
+            }
+            return [...prevDesigns, { text: remaining, isTitle: false }];
+        });
+    } else if (!remaining) {
         remainingTextRef.current = null;
-      }
+    }
   };
 
 
@@ -173,7 +178,8 @@ export default function Home() {
       return;
     }
     setIsLoading(true);
-    setDesigns([]);
+    setDesigns([]); // Clear previous designs
+    remainingTextRef.current = null; // Reset remaining text ref
     
     try {
       const result = await automaticallySplitTextIntoParagraphs({
@@ -187,7 +193,9 @@ export default function Home() {
       }
       if (result.paragraphs.length > 0) {
         const combinedParagraphs = result.paragraphs.join('\n\n');
-        newDesigns.push({ text: combinedParagraphs, isTitle: false });
+        if (combinedParagraphs) {
+            newDesigns.push({ text: combinedParagraphs, isTitle: false });
+        }
       }
       setDesigns(newDesigns);
       
@@ -289,8 +297,6 @@ export default function Home() {
             break;
     }
     
-    const isPaginated = designs.slice(0, index).some(d => !d.isTitle);
-
     return (
         <ImageCanvas
           key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${index}-${design.text}`}
@@ -305,7 +311,6 @@ export default function Home() {
           onCanvasReady={(canvas) => {
             canvasRefs.current[index] = canvas;
           }}
-          isPaginated={isPaginated}
           onTextRemaining={(remaining) => handleTextRemaining(remaining, index)}
           isLastCanvas={index === designs.length - 1}
         />
