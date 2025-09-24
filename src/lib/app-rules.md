@@ -1,4 +1,4 @@
-# Post Weaver - Uygulama Kuralları ve İşleyişi (Application Rules & Logic)
+# Writa - Uygulama Kuralları ve İşleyişi (Application Rules & Logic)
 
 Bu dosya, uygulamanın temel işleyiş kurallarını ve özelliklerini içerir. Gelecekteki tüm geliştirmeler, burada belirtilen kurallara uygun olarak yapılmalı ve mevcut işleyişi bozmamalıdır.
 _This file documents the core logic and rules of the application. All future development must adhere to these rules and avoid breaking existing functionality._
