@@ -86,10 +86,18 @@ const measureAndSplitText = (
         lines.push(line);
     } else if (line.trim() !== '') {
       // The line is longer than maxWidth but it's the only line left, so we need to backtrack
-      const lastWord = line.split(/(\s+)/).pop() || '';
-      const lineWithoutLastWord = line.substring(0, line.length - lastWord.length);
+      const lineWords = line.trimEnd().split(' ');
+      const lastWord = lineWords.pop() || '';
+      const lineWithoutLastWord = lineWords.join(' ');
+      
       lines.push(lineWithoutLastWord);
-      wordIndex--; // Go back one word
+
+      // find the word index to restart from
+      let consumedWords = 0;
+      for(let i=0; i<lines.length; i++) {
+        consumedWords += lines[i].split(' ').length;
+      }
+      wordIndex = words.slice(0, words.join('').lastIndexOf(lastWord)).filter(w => w.trim() !== '').length;
     }
 
     const textForCanvas = lines.join('\n');

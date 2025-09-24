@@ -452,9 +452,9 @@ export default function Home() {
                       )}
                     </TabsContent>
                     <TabsContent value="gradient" className="pt-4">
-                       <div className="grid grid-cols-3 gap-2">
+                       <div className="grid grid-cols-4 gap-2">
                         {gradientTemplates.map(g => (
-                          <button key={g.name} className="h-12 rounded-md border-2 border-transparent focus:border-primary" style={{background: g.css}} onClick={() => setGradientBg(g.css)} title={g.name} />
+                          <button key={g.name} className="aspect-[1080/1350] w-full rounded-md border-2 border-transparent focus:border-primary" style={{background: g.css}} onClick={() => setGradientBg(g.css)} title={g.name} />
                         ))}
                        </div>
                     </TabsContent>
@@ -474,15 +474,15 @@ export default function Home() {
                             </Button>
                           </div>
                         </div>
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-4 gap-2">
                           {imageTemplates.map(t => (
-                            <button key={t.name} className="h-16 rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden" onClick={() => setImageBgUrl(t.imageUrl)} title={t.name}>
-                              <Image src={t.imageUrl} alt={t.name} width={64} height={64} className="object-cover w-full h-full" />
+                            <button key={t.name} className="aspect-[1080/1350] w-full rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden relative" onClick={() => setImageBgUrl(t.imageUrl)} title={t.name}>
+                              <Image src={t.imageUrl} alt={t.name} layout="fill" className="object-cover" />
                             </button>
                           ))}
                           {searchedImages.map((url, i) => (
-                             <button key={i} className="h-16 rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden" onClick={() => setImageBgUrl(url)} title={`Searched Image ${i+1}`}>
-                              <Image src={url} alt={`Searched Image ${i+1}`} width={64} height={64} className="object-cover w-full h-full" unoptimized/>
+                             <button key={i} className="aspect-[1080/1350] w-full rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden relative" onClick={() => setImageBgUrl(url)} title={`Searched Image ${i+1}`}>
+                              <Image src={url} alt={`Searched Image ${i+1}`} layout="fill" className="object-cover" unoptimized/>
                             </button>
                           ))}
                         </div>

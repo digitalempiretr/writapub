@@ -17,6 +17,7 @@ _**ATTENTION:** The rules listed in this section are fundamental to the stable o
 5.  **Geniş Ekran Panel Oranı ("Widescreen Panel Ratio"):** Masaüstü gibi geniş ekranlarda, sol kontrol paneli (İçerik & Tasarım) `lg:col-span-5` (yaklaşık %40) ve sağ tasarım alanı `lg:col-span-7` (yaklaşık %60) genişliğinde olmalıdır. (Eklendi - 2025-09-24 13:15)
 6.  **"Yapışkan" Kontrol Paneli ("Sticky Control Panel"):** Masaüstü gibi daha geniş ekranlarda, kullanıcı sayfayı aşağı kaydırdığında sol taraftaki kontrol paneli ekranın soluna **sabitlenmelidir** (`sticky`). (Eklendi - 2025-09-24 12:55)
 7.  **Mobil Düzen ("Mobile Layout"):** Mobil cihazlarda (daha küçük ekranlarda), kontrol paneli ve tasarım önizleme alanı yan yana değil, **alt alta** görüntülenmelidir. (Eklendi - 2025-09-24 12:55)
+8.  **Dikey Arka Plan Önizlemesi ("Portrait Background Previews"):** Gradyan ve Görsel seçimi sekmelerindeki küçük resim önizlemeleri, nihai tasarımın 1080x1350 en-boy oranını yansıtacak şekilde dikey olmalıdır. (Eklendi - 2025-09-25 10:20)
 
 ---
 
@@ -48,4 +49,6 @@ _**ATTENTION:** The rules listed in this section are fundamental to the stable o
 *** Not: Bu alanda yer alan maddelerdeki değişiklikler yapıldıktan sonra ilgili bölüme eklenmeli. Eklendikten sonra sonuna eklendiği tarih ve saat parantez içinde yazılmalı. ***
 *Note: After the changes in the items in this area are made, they should be added to the relevant section. After being added, the date and time of addition should be written in parentheses at the end.*
 
-- Gradyan ve Görsel seçiminde örneklemeler yatay şekilde gösteriliyor. Bunları dikey şekilde yap. Yani tasarımda kullanıcak şekilde oranla. 1.08x1.35 olarak.
+-
+
+```
