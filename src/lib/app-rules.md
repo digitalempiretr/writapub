@@ -12,7 +12,7 @@ _**ATTENTION:** The rules listed in this section are fundamental to the stable o
 
 1.  **Sıfırdan Oluşturma ("Generate from Scratch"):** "Oluştur" butonuna her tıklandığında, mevcut tüm tasarımlar temizlenmeli (`setDesigns([])`) ve girdiler (başlık ve metin) kullanılarak tamamen yeni bir tasarım seti sıfırdan oluşturulmalıdır.
 2.  **Kesin 12 Satır Limiti ("Strict 12-Line Limit"):** Ana metin, `ImageCanvas` içinde programatik olarak bölünür. Her bir görsel (slayt), **kesinlikle 12 satırı geçemez**. Bu bir yapay zeka önerisi değil, kod tarafından uygulanan katı bir kuraldır.
-3.  **Taşma Engeli ("No Overflow"):** Hem başlık hem de gövde metni, her zaman kanvasın ortasındaki beyaz dikdörtgen alanın **içinde kalmalıdır**. Metin, bu alanın dışına dikey veya yatay olarak **asla taşmamalıdır**. Uzun başlıklar otomatik olarak alt satırlara sarılmalıdır.
+3.  **Taşma Engeli ("No Overflow"):** Hem başlık hem de gövde metni, her zaman kanvasın ortasındaki metin kutusu alanının **içinde kalmalıdır**. Metin, bu alanın dışına dikey veya yatay olarak **asla taşmamalıdır**. Uzun başlıklar otomatik olarak alt satırlara sarılmalıdır.
 4.  **Otomatik Başlık Mantığı ("Automatic Title Logic"):** Kullanıcı bir başlık belirtmemişse, girilen metnin ilk cümlesi otomatik olarak başlık olarak kullanılır. Bu durumda, başlık olarak kullanılan bu cümle ana metnin başından **kesinlikle çıkarılmalıdır**.
 5.  **Geniş Ekran Panel Oranı ("Widescreen Panel Ratio"):** Masaüstü gibi geniş ekranlarda, sol kontrol paneli (İçerik & Tasarım) `lg:col-span-5` (yaklaşık %40) ve sağ tasarım alanı `lg:col-span-7` (yaklaşık %60) genişliğinde olmalıdır. (Eklendi - 2025-09-24 13:15)
 6.  **"Yapışkan" Kontrol Paneli ("Sticky Control Panel"):** Masaüstü gibi daha geniş ekranlarda, kullanıcı sayfayı aşağı kaydırdığında sol taraftaki kontrol paneli ekranın soluna **sabitlenmelidir** (`sticky`). (Eklendi - 2025-09-24 12:55)
@@ -27,11 +27,11 @@ _**ATTENTION:** The rules listed in this section are fundamental to the stable o
 
 ## 2. Kanvas ve Tasarım Kuralları (Canvas & Design Rules)
 
-- **TR:** Başlıklar ve metinler sola dayalı (`text-align: left` veya `start`) olmalıdır. Metin, beyaz kutunun sol kenarından hafif bir iç boşluk bırakılarak başlamalıdır. (Eklendi - 2025-09-24 13:20)
+- **TR:** Başlıklar ve metinler sola dayalı (`text-align: left` veya `start`) olmalıdır. Metin, metin kutusunun sol kenarından hafif bir iç boşluk bırakılarak başlamalıdır. (Eklendi - 2025-09-24 13:20)
 - **TR:** Kullanıcı, "Düz Renk" sekmesi altından tasarım üzerindeki metnin rengini bir renk seçici aracılığıyla değiştirebilmelidir. (Eklendi - 2025-09-24 12:40)
-- **TR:** Kullanıcı, kanvasın ortasındaki metin kutusunun (dikdörtgen alan) rengini ve 0 ile 1 arasında şeffaflığını ayarlayabilmelidir. (Eklendi - 2025-09-24 14:02)
+- **TR:** Kullanıcı, seçtiği arka plan türünden (Düz Renk, Gradyan, Görsel) bağımsız olarak, kanvasın ortasındaki metin kutusunun rengini ve 0 ile 1 arasında şeffaflığını ayarlayabilmelidir. Bu ayarlar, "Yazı Tipi" seçim alanının altında ve "Arka Plan" seçim sekmelerinden önce ayrı bir bölümde yer almalıdır. (Eklendi - 2025-09-24 14:02)
 - **EN:** The user should be able to change the color of the text on the design via a color picker under the "Flat Color" tab. (Added - 2025-09-24 12:40)
-- **EN:** The user should be able to adjust the color and opacity (from 0 to 1) of the text box (rectangular area) in the center of the canvas. (Added - 2025-09-24 14:02)
+- **EN:** Regardless of the chosen background type (Flat Color, Gradient, Image), the user should be able to adjust the color and opacity (from 0 to 1) of the text box in the center of the canvas. These settings should be located in a separate section below the "Font" selection area and before the "Background" selection tabs. (Added - 2025-09-24 14:02)
 
 ## 3. Font ve Karakter Desteği (Font & Character Support)
 

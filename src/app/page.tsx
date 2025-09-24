@@ -381,6 +381,23 @@ export default function Home() {
                       </SelectContent>
                     </Select>
                 </div>
+
+                <div className="space-y-4">
+                  <Label>Metin Kutusu Ayarları</Label>
+                  <div className="flex items-center gap-4">
+                    <Label>Renk:</Label>
+                    <Input type="color" value={rectBgColor} onChange={(e) => setRectBgColor(e.target.value)} className="w-24 p-1"/>
+                    <Label>Opaklık:</Label>
+                    <Slider
+                      value={[rectOpacity]}
+                      onValueChange={(value) => setRectOpacity(value[0])}
+                      max={1}
+                      step={0.05}
+                      className="w-[120px]"
+                    />
+                  </div>
+                </div>
+
                  <div className="space-y-4">
                   <Label>Arka Plan</Label>
                   <Tabs value={designTab} onValueChange={setDesignTab} className="w-full">
@@ -396,23 +413,7 @@ export default function Home() {
                         <Label>Metin:</Label>
                         <Input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="w-24 p-1"/>
                       </div>
-
-                      <div className="space-y-2 pt-2">
-                        <Label>Metin Kutusu Ayarları</Label>
-                        <div className="flex items-center gap-4">
-                          <Label>Renk:</Label>
-                          <Input type="color" value={rectBgColor} onChange={(e) => setRectBgColor(e.target.value)} className="w-24 p-1"/>
-                          <Label>Opaklık:</Label>
-                          <Slider
-                            value={[rectOpacity]}
-                            onValueChange={(value) => setRectOpacity(value[0])}
-                            max={1}
-                            step={0.05}
-                            className="w-[120px]"
-                          />
-                        </div>
-                      </div>
-
+                      
                       { isLoadingColors && <div className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="w-4 h-4 animate-spin"/> Renk önerileri oluşturuluyor...</div>}
                       { showColorSuggestions && (
                         <div className="space-y-2">
