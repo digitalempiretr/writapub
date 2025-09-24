@@ -2,7 +2,6 @@
 
 import { automaticallySplitTextIntoParagraphs } from "@/ai/flows/automatically-split-text-into-paragraphs";
 import { findImages } from "@/ai/flows/find-images-flow";
-import { suggestContrastingColorSchemes } from "@/ai/flows/suggest-contrasting-color-schemes";
 import { ImageCanvas, type FontOption } from "@/components/image-canvas";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
@@ -131,7 +130,6 @@ export default function Home() {
   const [title, setTitle] = useState("");
   const [designs, setDesigns] = useState<Design[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingColors, setIsLoadingColors] = useState(false);
   const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
@@ -151,8 +149,6 @@ export default function Home() {
 
   const [rectBgColor, setRectBgColor] = useState("#FFFFFF");
   const [rectOpacity, setRectOpacity] = useState(0.9);
-
-  const [colorSchemes, setColorSchemes] = useState<{backgroundColor: string, textColor: string}[]>([]);
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const { toast } = useToast();
@@ -243,25 +239,6 @@ export default function Home() {
     setActiveFont(newFont);
   }
 
-  const handleBgColorChange = async (color: string) => {
-    setBgColor(color);
-    setIsLoadingColors(true);
-    setColorSchemes([]);
-    try {
-      const schemes = await suggestContrastingColorSchemes({ baseBackgroundColor: color });
-      setColorSchemes(schemes.colorSchemes);
-    } catch(e) {
-      console.error(e);
-      toast({
-        title: "Renk Şemaları Alınamadı",
-        description: "AI renk önerileri getirilemedi. Lütfen varsayılan renkleri kullanın.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoadingColors(false);
-    }
-  };
-
   const handleSearchImages = async () => {
     if (!searchQuery) return;
     setIsSearching(true);
@@ -326,8 +303,6 @@ export default function Home() {
         />
     )
   }, [designTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, designs, handleTextRemaining, rectBgColor, rectOpacity, textAlign]);
-
-  const showColorSuggestions = designTab === 'flat' && colorSchemes.length > 0;
 
   return (
     <div className="container mx-auto p-4 md:p-8">
@@ -434,22 +409,8 @@ export default function Home() {
                     <TabsContent value="flat" className="pt-4 space-y-4">
                       <div className="flex items-center gap-4">
                         <Label>Arka Plan:</Label>
-                        <Input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} onBlur={(e) => handleBgColorChange(e.target.value)} className="w-24 p-1"/>
+                        <Input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-24 p-1"/>
                       </div>
-                      
-                      { isLoadingColors && <div className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="w-4 h-4 animate-spin"/> Renk önerileri oluşturuluyor...</div>}
-                      { showColorSuggestions && (
-                        <div className="space-y-2">
-                          <Label>AI Renk Önerileri</Label>
-                          <div className="grid grid-cols-5 gap-2">
-                            {colorSchemes.map((scheme, i) => (
-                               <button key={i} className="h-10 rounded-md border-2 border-transparent focus:border-primary" style={{backgroundColor: scheme.backgroundColor}} onClick={() => { setBgColor(scheme.backgroundColor); setTextColor(scheme.textColor)}}>
-                                 <span className="sr-only">Arka plan {scheme.backgroundColor} ve metin {scheme.textColor}</span>
-                               </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
                     </TabsContent>
                     <TabsContent value="gradient" className="pt-4">
                        <div className="grid grid-cols-4 gap-2">

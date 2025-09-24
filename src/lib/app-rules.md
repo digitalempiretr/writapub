@@ -49,6 +49,5 @@ _**ATTENTION:** The rules listed in this section are fundamental to the stable o
 *** Not: Bu alanda yer alan maddelerdeki değişiklikler yapıldıktan sonra ilgili bölüme eklenmeli. Eklendikten sonra sonuna eklendiği tarih ve saat parantez içinde yazılmalı. ***
 *Note: After the changes in the items in this area are made, they should be added to the relevant section. After being added, the date and time of addition should be written in parentheses at the end.*
 
--
-
-```
+- Renk Önerileri: Arka plan rengini değiştirdiğinizde çalışan `suggestContrastingColorSchemes` flow'unda Gemini kullanılıyordu. Bu özellik ve ilgili flow kaldırıldı. (Eklendi - 2025-09-25 10:50)
+- Kalan AI özellikleri ve maliyetleri: `automaticallySplitTextIntoParagraphs` (metin bölme) ve `findImages` (görsel arama) olmak üzere 2 AI özelliği kalmıştır. Metin bölme işlemi Gemini token maliyetine tabidir, görsel arama ise Google Custom Search API'sinin kendi ücretlendirmesine tabidir.
