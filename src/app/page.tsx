@@ -369,7 +369,9 @@ export default function Home() {
                   </SelectTrigger>
                   <SelectContent>
                     {fontOptions.map(font => (
-                      <SelectItem key={font.value} value={font.value}>{font.label}</SelectItem>
+                      <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
+                        {font.label}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>

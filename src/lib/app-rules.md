@@ -26,7 +26,8 @@ _This file documents the core logic and rules of the application. All future dev
 
 ### 2.1. Metin Yerleşimi ve Sınırları (Text Placement & Boundaries)
 
-- **TR:** Hem başlık hem de gövde metni, her zaman kanvasın ortasındaki beyaz dikdörtgen alanın **içinde kalmalıdır**. Metin, bu alanın dışına dikey veya yatay olarak **asla taşmamalıdır**. Metin, bu beyaz kutu içinde dikey ve yatay olarak ortalanmalıdır.
+- **TR:** Hem başlık hem de gövde metni, her zaman kanvasın ortasındaki beyaz dikdörtgen alanın **içinde kalmalıdır**. Metin, bu alanın dışına dikey veya yatay olarak **asla taşmamalıdır**. Metin, bu beyaz kutu içinde dikey ve yatay olarak ortalanmalıdır. 
+**text-align=start ya da text-align=left kullanılmalıdır.**
 - **EN:** All text, both titles and body paragraphs, must always remain **inside** the central white rectangular area on the canvas. The text **must never overflow** this area, either vertically or horizontally. The text should be centered vertically and horizontally within this white box.
 
 ### 2.2. Başlık Metni Sarma (Title Text Wrapping)
@@ -37,4 +38,11 @@ _This file documents the core logic and rules of the application. All future dev
 ## 3. Font ve Karakter Desteği (Font & Character Support)
 
 - **TR:** Google Fonts'tan yüklenen tüm yazı tipleri, `&display=swap` parametresi ile `latin-ext` karakter setini içermelidir. Bu, 'ş', 'ç', 'ğ', 'ı', 'ü', 'ö' gibi Türkçe karakterlerin tüm fontlarda doğru bir şekilde görüntülenmesini sağlar.
+- Font seçim alanında açılır sekmede fontların isimleri yazıyor ya. O yazılar kendi fontlarıyla yazılsın. Böylece hangi fontu seçtiğini daha iyi görür kullanıcı. Yani açılır sekmede Inter yazıyorsa bu yazı Inter fontuyla yazılsın.
 - **EN:** All fonts loaded from Google Fonts must include the `latin-ext` character set via the `&display=swap` parameter. This ensures that Turkish characters like 'ş', 'ç', 'ğ', 'ı', 'ü', 'ö' are displayed correctly across all fonts.
+
+## 4. Mobil Layout - Telefonda kullanıcı deneyimi üst seviye olmalı
+
+- ** Mobil uyum için azami özen gösterilmeli.
+- ** Yazarlar için yazı yazdıkları alan deneyimi kolay ve üst seviyede kolay olmalı.
+-- ** Yazılar yazıldıktan sonra tasarımlar alt tarafta görünür olmalı. Belki de hem text box yazı alanına yazı yazabilmeli hem de tasarım üzerinde değişiklikler yapabilmeli. (Kodda çok değişiklik olacaksa zorluk durumuna göre ayrıca ele alalım.)
