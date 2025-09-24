@@ -35,7 +35,7 @@ const wrapText = (
 ): string[] => {
   const words = text.split(' ');
   let lines: string[] = [];
-  let currentLine = words[0];
+  let currentLine = words[0] || '';
 
   for (let i = 1; i < words.length; i++) {
     const word = words[i];
@@ -65,22 +65,27 @@ const measureAndSplitText = (
   let remainingWords = [...words];
 
   while (lines.length < maxLines && remainingWords.length > 0) {
-    let testLine = line + remainingWords[0];
+    let currentWord = remainingWords.shift() || '';
+    let testLine = line + currentWord;
     let metrics = context.measureText(testLine);
     
     if (metrics.width > maxWidth && line !== '') {
       lines.push(line);
-      line = remainingWords[0].trimStart(); // Start new line with the current word, trimming leading space
-      remainingWords.shift();
+      line = currentWord.trimStart(); // Start new line with the current word
     } else {
-      line += remainingWords.shift();
+      line = testLine;
     }
   }
   
   if (line.trim() !== '' && lines.length < maxLines) {
     lines.push(line);
   } else if (line.trim() !== '') {
-    remainingWords.unshift(line);
+    // If the last line was too long, put the last word back
+    const lastWord = line.split(/(\s+)/).pop() || '';
+    const lineWithoutLastWord = line.substring(0, line.length - lastWord.length);
+    lines.push(lineWithoutLastWord);
+    remainingWords.unshift(lastWord);
+    // also put back the words that were not processed
   }
 
 
@@ -101,7 +106,7 @@ const wrapAndDrawText = (
 ) => {
   const totalTextHeight = lines.length * lineHeight;
   // Adjust start Y to be centered within the rectangle
-  const startY = y + (rectHeight - totalTextHeight) / 2 + (lineHeight / 2) - (lineHeight * 0.1); // Fine-tune vertical alignment
+  const startY = y + (rectHeight - totalTextHeight) / 2;
 
   let currentY = startY;
 
@@ -138,16 +143,17 @@ export function ImageCanvas({
       const fontName = font.fontFamily;
       const lineHeight = isTitle ? font.titleSize * 1.2 : font.lineHeight;
 
+      // Ensure the font is loaded before using it
       await document.fonts.load(`${fontWeight} ${fontSize}px "${fontName}"`);
       
       ctx.clearRect(0, 0, width, height);
       
-      // Define properties of the inner white box
       const rectWidth = 830;
       const rectHeight = 1100;
       const rectX = (width - rectWidth) / 2;
       const rectY = (height - rectHeight) / 2;
-      const textMaxWidth = rectWidth - 100; // 50px padding on each side
+      const textPadding = 50;
+      const textMaxWidth = rectWidth - (textPadding * 2);
 
       ctx.font = `${fontWeight} ${fontSize}px "${fontName}"`;
 
@@ -169,12 +175,12 @@ export function ImageCanvas({
 
         // Set up text properties
         ctx.fillStyle = textColor;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top'; // Change to top for better control
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top'; 
         ctx.font = `${fontWeight} ${fontSize}px "${fontName}"`;
         
         // Calculate text position
-        const textX = rectX + rectWidth / 2; // Center horizontally
+        const textX = rectX + textPadding;
         
         // Draw the text
         wrapAndDrawText(ctx, linesToDraw, textX, rectY, lineHeight, rectHeight);
