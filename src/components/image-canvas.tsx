@@ -107,7 +107,7 @@ const wrapAndDrawText = (
   lineHeight: number,
   rectHeight: number
 ) => {
-  const totalTextHeight = lines.length * lineHeight - (lineHeight - context.measureText('M').width); // A more accurate height
+  const totalTextHeight = (lines.length * lineHeight) - (lineHeight - context.measureText('M').width); // A more accurate height
   // Adjust start Y to be centered within the rectangle
   const startY = y + (rectHeight - totalTextHeight) / 2;
 
