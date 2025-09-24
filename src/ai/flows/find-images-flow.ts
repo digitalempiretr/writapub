@@ -1,13 +1,11 @@
 /**
- * @fileoverview A flow that finds images based on a search query.
+ * @fileoverview A flow that finds images based on a search query using the Pexels API.
  */
 'use server';
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { google } from 'googleapis';
-
-const customsearch = google.customsearch('v1');
+import { createClient, type Photos } from 'pexels';
 
 const FindImagesInputSchema = z.object({
   query: z.string().describe('The search query for images.'),
@@ -15,35 +13,26 @@ const FindImagesInputSchema = z.object({
 export type FindImagesInput = z.infer<typeof FindImagesInputSchema>;
 
 const FindImagesOutputSchema = z.object({
-  imageUrls: z.array(z.string()).describe('A list of image URLs.'),
+  imageUrls: z.array(z.string()).describe('A list of image URLs from Pexels.'),
 });
 export type FindImagesOutput = z.infer<typeof FindImagesOutputSchema>;
 
-async function searchImages(
+
+async function searchPexelsImages(
   query: string,
   apiKey: string,
-  cx: string
 ): Promise<string[]> {
   try {
-    const response = await customsearch.cse.list({
-      q: query,
-      auth: apiKey,
-      cx: cx,
-      searchType: 'image',
-      num: 10,
-      imgSize: 'huge',
-      safe: 'high',
-    });
+    const client = createClient(apiKey);
+    const response = await client.photos.search({ query, per_page: 10 });
 
-    const items = response.data.items;
-    if (!items) {
-      return [];
+    if ('photos' in response) {
+      return response.photos.map((photo) => photo.src.large);
     }
-
-    return items.map((item) => item.link).filter((link): link is string => !!link);
+    return [];
   } catch (error) {
-    console.error('Error searching for images:', error);
-    throw new Error('Failed to search for images.');
+    console.error('Error searching for images on Pexels:', error);
+    throw new Error('Failed to search for images on Pexels.');
   }
 }
 
@@ -54,16 +43,15 @@ export const findImagesFlow = ai.defineFlow(
     outputSchema: FindImagesOutputSchema,
   },
   async (input) => {
-    const apiKey = process.env.GOOGLE_API_KEY;
-    const cx = process.env.GOOGLE_CUSTOM_SEARCH_ENGINE_ID;
+    const apiKey = process.env.PEXELS_API_KEY;
 
-    if (!apiKey || !cx) {
+    if (!apiKey) {
       throw new Error(
-        'Google API Anahtarınız veya Özel Arama Motoru Kimliğiniz yapılandırılmamış. Lütfen projenizin ana dizinindeki `.env` dosyasını kontrol edin ve gerekli bilgileri ekleyin.'
+        'Pexels API Anahtarınız yapılandırılmamış. Lütfen projenizin ana dizinindeki `.env` dosyasını kontrol edin ve `PEXELS_API_KEY` anahtarını ekleyin.'
       );
     }
 
-    const imageUrls = await searchImages(input.query, apiKey, cx);
+    const imageUrls = await searchPexelsImages(input.query, apiKey);
 
     return {
       imageUrls,

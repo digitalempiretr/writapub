@@ -10,7 +10,7 @@ _Bu dosya, uygulamanın temel işleyiş kurallarını ve özelliklerini içerir.
 **ATTENTION:** The rules listed in this section are fundamental to the stable operation of the application. These rules cannot be changed without the approval of the code manager (the user). All new developments must be made while ensuring that the rules in this section are not broken.
 _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışması için temeldir. Kod yöneticisi (kullanıcı) onayı olmadan bu kurallar değiştirilemez. Tüm yeni geliştirmeler, bu bölümdeki kuralların bozulmadığı kontrol edilerek yapılmalıdır._
 
-### English
+### English Non-Negotiable Core Rules
 1.  **Generate from Scratch:** Every time the "Generate" button is clicked, all existing designs must be cleared (`setDesigns([])`), and a completely new set of designs must be created from scratch using the inputs (title and text).
 2.  **Strict 12-Line Limit:** The main text is programmatically split within `ImageCanvas`. Each image (slide) **cannot exceed exactly 12 lines**. This is not an AI suggestion but a strict rule enforced by the code.
 3.  **No Overflow:** Both the title and body text must always remain **inside** the text box area in the center of the canvas. The text must **never** overflow vertically or horizontally outside this area. Long titles must automatically wrap to new lines.
@@ -20,7 +20,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 7.  **Mobile Layout:** On mobile devices (smaller screens), the control panel and the design preview area should be displayed **one below the other**, not side-by-side.
 8.  **Portrait Background Previews:** The thumbnail previews in the Gradient and Image selection tabs must be portrait-oriented to reflect the final design's 1080x1350 aspect ratio.
 
-### Türkçe
+### Türkçe Değiştirilemez Çekirdek Kurallar
 1.  **Sıfırdan Oluşturma:** "Oluştur" butonuna her tıklandığında, mevcut tüm tasarımlar temizlenmeli (`setDesigns([])`) ve girdiler (başlık ve metin) kullanılarak tamamen yeni bir tasarım seti sıfırdan oluşturulmalıdır.
 2.  **Kesin 12 Satır Limiti:** Ana metin, `ImageCanvas` içinde programatik olarak bölünür. Her bir görsel (slayt), **kesinlikle 12 satırı geçemez**. Bu bir yapay zeka önerisi değil, kod tarafından uygulanan katı bir kuraldır.
 3.  **Taşma Engeli:** Hem başlık hem de gövde metni, her zaman kanvasın ortasındaki metin kutusu alanının **içinde kalmalıdır**. Metin, bu alanın dışına dikey veya yatay olarak **asla taşmamalıdır**. Uzun başlıklar otomatik olarak alt satırlara sarılmalıdır.
@@ -32,10 +32,10 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 
 ---
 
-## 1. Text Processing & AI Costs (Metin İşleme ve Yapay Zeka Maliyetleri)
+## 1. Text Processing & AI Costs (Metin İşleme ve API Maliyetleri)
 
-### 1.1. AI Features and Cost Details
-The application has 2 AI-powered features that generate costs:
+### 1.1. AI/API Features and Cost Details
+The application has 2 features that use external APIs:
 
 **1. Text Processing (`automaticallySplitTextIntoParagraphs`):**
     - **Service:** Google Gemini (`gemini-1.5-flash` model)
@@ -43,22 +43,22 @@ The application has 2 AI-powered features that generate costs:
     - **Cost Model:** This process incurs costs based on Google's token-based pricing model. The cost depends on both the length of the text you input (input tokens) and the length of the title and paragraph separated by the AI (output tokens).
 
 **2. Image Search (`findImages`):**
-    - **Service:** Google Custom Search API
+    - **Service:** Pexels API
     - **Trigger:** Runs when you type a search term in the "Image Search" box and press the "Search" button.
-    - **Cost Model:** This feature **does not** incur Gemini token costs. Instead, it is subject to the usage limits and pricing of the "Custom Search API" service under the Google Cloud Platform. Google typically offers a free tier for a certain number of queries per month. After this free limit is exceeded, a per-query fee is applied. For detailed information, see the "Quotas and Pricing" section of the relevant API in the Google Cloud Console.
+    - **Cost Model:** This feature is subject to the Pexels API's usage limits. Pexels offers a free tier with a certain number of requests per hour. If you exceed this limit, you may need to wait or consider their commercial plans. For details, see the Pexels API documentation.
 
-### 1.2. Yapay Zeka Özellikleri ve Maliyet Detayları
-Uygulamada maliyet oluşturan 2 adet yapay zeka destekli özellik bulunmaktadır:
+### 1.2. Yapay Zeka/API Özellikleri ve Maliyet Detayları
+Uygulamada harici API kullanan 2 adet özellik bulunmaktadır:
 
 **1. Metin İşleme (`automaticallySplitTextIntoParagraphs`):**
     - **Servis:** Google Gemini (`gemini-1.5-flash` modeli)
     - **Tetiklenme:** "Oluştur" butonuna her basıldığında çalışır.
     - **Maliyetlendirme:** Bu işlem, Google'ın token tabanlı ücretlendirme modeline göre maliyet oluşturur. Maliyet, hem girdiğiniz metnin uzunluğuna (input token) hem de yapay zekanın ayırdığı başlık ve paragrafın uzunluğuna (output token) bağlıdır. 
-
+            
 **2. Görsel Arama (`findImages`):**
-    - **Servis:** Google Custom Search API
+    - **Servis:** Pexels API
     - **Tetiklenme:** "Görsel Ara" kutusuna bir arama terimi yazıp "Ara" butonuna basıldığında çalışır.
-    - **Maliyetlendirme:** Bu özellik Gemini token maliyeti **oluşturmaz**. Bunun yerine, Google Cloud Platform altındaki "Custom Search API" hizmetinin kendi kullanım limitleri ve ücretlendirmesine tabidir. Google, genellikle aylık belirli bir sorgu sayısına kadar ücretsiz bir kullanım hakkı tanır. Bu ücretsiz limit aşıldıktan sonra, yapılan her sorgu başına bir ücretlendirme uygulanır. Detaylı bilgi için Google Cloud Console'daki ilgili API'nin "Kotalar ve Fiyatlandırma" bölümüne bakınız.
+    - **Maliyetlendirme:** Bu özellik, Pexels API'sinin kullanım limitlerine tabidir. Pexels, saatte belirli bir istek sayısına kadar ücretsiz bir kullanım hakkı sunar. Bu limit aşıldığında beklemeniz veya ticari planları değerlendirmeniz gerekebilir. Detaylar için Pexels API dokümantasyonuna bakınız.
 
 ---
 
