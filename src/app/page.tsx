@@ -30,6 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
@@ -143,6 +144,9 @@ export default function Home() {
   const [searchedImages, setSearchedImages] = useState<string[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
+  const [rectBgColor, setRectBgColor] = useState("#FFFFFF");
+  const [rectOpacity, setRectOpacity] = useState(0.9);
+
   const [colorSchemes, setColorSchemes] = useState<{backgroundColor: string, textColor: string}[]>([]);
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
@@ -150,20 +154,20 @@ export default function Home() {
 
   const remainingTextRef = useRef<string | null>(null);
 
-  const handleTextRemaining = (remaining: string, currentIndex: number) => {
+  const handleTextRemaining = useCallback((remaining: string) => {
     if (remaining && remaining !== remainingTextRef.current) {
-        remainingTextRef.current = remaining;
-        setDesigns(prevDesigns => {
-            const lastNonTitleText = [...prevDesigns].reverse().find(d => !d.isTitle)?.text;
-            if (lastNonTitleText === remaining) {
-                return prevDesigns;
-            }
-            return [...prevDesigns, { text: remaining, isTitle: false }];
-        });
+      remainingTextRef.current = remaining;
+      setDesigns(prevDesigns => {
+        const lastNonTitleText = [...prevDesigns].reverse().find(d => !d.isTitle)?.text;
+        if (lastNonTitleText === remaining) {
+          return prevDesigns;
+        }
+        return [...prevDesigns, { text: remaining, isTitle: false }];
+      });
     } else if (!remaining) {
-        remainingTextRef.current = null;
+      remainingTextRef.current = null;
     }
-  };
+  }, []);
 
 
   const handleGenerate = async () => {
@@ -297,7 +301,7 @@ export default function Home() {
     
     return (
         <ImageCanvas
-          key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${index}-${design.text}`}
+          key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${index}-${design.text}`}
           font={activeFont}
           text={design.text}
           isTitle={design.isTitle}
@@ -309,11 +313,13 @@ export default function Home() {
           onCanvasReady={(canvas) => {
             canvasRefs.current[index] = canvas;
           }}
-          onTextRemaining={(remaining) => handleTextRemaining(remaining, index)}
+          onTextRemaining={(remaining) => handleTextRemaining(remaining)}
           isLastCanvas={index === designs.length - 1}
+          rectColor={rectBgColor}
+          rectOpacity={rectOpacity}
         />
     )
-  }, [designTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, designs]);
+  }, [designTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, designs, handleTextRemaining, rectBgColor, rectOpacity]);
 
   const showColorSuggestions = designTab === 'flat' && colorSchemes.length > 0;
 
@@ -390,6 +396,23 @@ export default function Home() {
                         <Label>Metin:</Label>
                         <Input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="w-24 p-1"/>
                       </div>
+
+                      <div className="space-y-2 pt-2">
+                        <Label>Metin Kutusu Ayarları</Label>
+                        <div className="flex items-center gap-4">
+                          <Label>Renk:</Label>
+                          <Input type="color" value={rectBgColor} onChange={(e) => setRectBgColor(e.target.value)} className="w-24 p-1"/>
+                          <Label>Opaklık:</Label>
+                          <Slider
+                            value={[rectOpacity]}
+                            onValueChange={(value) => setRectOpacity(value[0])}
+                            max={1}
+                            step={0.05}
+                            className="w-[120px]"
+                          />
+                        </div>
+                      </div>
+
                       { isLoadingColors && <div className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="w-4 h-4 animate-spin"/> Renk önerileri oluşturuluyor...</div>}
                       { showColorSuggestions && (
                         <div className="space-y-2">

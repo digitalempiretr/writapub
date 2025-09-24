@@ -25,6 +25,8 @@ type ImageCanvasProps = {
   backgroundImageUrl?: string;
   onTextRemaining: (remainingText: string) => void;
   isLastCanvas: boolean;
+  rectColor: string;
+  rectOpacity: number;
 };
 
 // This function wraps text for titles.
@@ -59,40 +61,40 @@ const measureAndSplitText = (
   maxWidth: number,
   maxLines: number
 ): { textForCanvas: string; remainingText: string, lines: string[] } => {
-  const words = text.split(/(\s+)/); // Split by whitespace, keeping the whitespace
-  let line = '';
-  let lines: string[] = [];
-  let remainingWords = [...words];
+    const words = text.split(/(\s+)/); // Split by whitespace, keeping the whitespace
+    let line = '';
+    let lines: string[] = [];
+    const remainingWords = [...words];
+    let wordIndex = 0;
 
-  while (lines.length < maxLines && remainingWords.length > 0) {
-    let currentWord = remainingWords.shift() || '';
-    let testLine = line + currentWord;
-    let metrics = context.measureText(testLine);
-    
-    if (metrics.width > maxWidth && line !== '') {
-      lines.push(line);
-      line = currentWord.trimStart(); // Start new line with the current word
-    } else {
-      line = testLine;
+    while (lines.length < maxLines && wordIndex < remainingWords.length) {
+        let currentWord = remainingWords[wordIndex] || '';
+        let testLine = line + currentWord;
+        let metrics = context.measureText(testLine);
+        
+        if (metrics.width > maxWidth && line !== '') {
+            lines.push(line);
+            line = currentWord.trimStart(); 
+        } else {
+            line = testLine;
+        }
+        wordIndex++;
     }
-  }
   
-  if (line.trim() !== '' && lines.length < maxLines) {
-    lines.push(line);
-  } else if (line.trim() !== '') {
-    // If the last line was too long, put the last word back
-    const lastWord = line.split(/(\s+)/).pop() || '';
-    const lineWithoutLastWord = line.substring(0, line.length - lastWord.length);
-    lines.push(lineWithoutLastWord);
-    remainingWords.unshift(lastWord);
-    // also put back the words that were not processed
-  }
+    if (line.trim() !== '' && lines.length < maxLines) {
+        lines.push(line);
+    } else if (line.trim() !== '') {
+      // The line is longer than maxWidth but it's the only line left, so we need to backtrack
+      const lastWord = line.split(/(\s+)/).pop() || '';
+      const lineWithoutLastWord = line.substring(0, line.length - lastWord.length);
+      lines.push(lineWithoutLastWord);
+      wordIndex--; // Go back one word
+    }
 
-
-  const textForCanvas = lines.join('\n');
-  const remainingText = remainingWords.join('').trim();
+    const textForCanvas = lines.join('\n');
+    const remainingText = remainingWords.slice(wordIndex).join('').trim();
   
-  return { textForCanvas, remainingText, lines };
+    return { textForCanvas, remainingText, lines };
 };
 
 
@@ -104,17 +106,34 @@ const wrapAndDrawText = (
   lineHeight: number,
   rectHeight: number
 ) => {
-  const totalTextHeight = lines.length * lineHeight;
+  const totalTextHeight = lines.length * lineHeight - (lineHeight - context.measureText('M').width); // A more accurate height
   // Adjust start Y to be centered within the rectangle
   const startY = y + (rectHeight - totalTextHeight) / 2;
 
   let currentY = startY;
 
   for(const line of lines) {
-    context.fillText(line, x, currentY);
+    context.fillText(line.trim(), x, currentY);
     currentY += lineHeight;
   }
 };
+
+function hexToRgba(hex: string, alpha: number) {
+    let r = 0, g = 0, b = 0;
+    // 3 digits
+    if (hex.length === 4) {
+        r = parseInt(hex[1] + hex[1], 16);
+        g = parseInt(hex[2] + hex[2], 16);
+        b = parseInt(hex[3] + hex[3], 16);
+    }
+    // 6 digits
+    else if (hex.length === 7) {
+        r = parseInt(hex.substring(1, 3), 16);
+        g = parseInt(hex.substring(3, 5), 16);
+        b = parseInt(hex.substring(5, 7), 16);
+    }
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
 
 export function ImageCanvas({
   text,
@@ -128,6 +147,8 @@ export function ImageCanvas({
   backgroundImageUrl,
   onTextRemaining,
   isLastCanvas,
+  rectColor,
+  rectOpacity,
 }: ImageCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -169,8 +190,8 @@ export function ImageCanvas({
       }
 
       const drawLayout = () => {
-        // Draw the white rectangle
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        // Draw the text box rectangle
+        ctx.fillStyle = hexToRgba(rectColor, rectOpacity);
         ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
 
         // Set up text properties
@@ -184,7 +205,7 @@ export function ImageCanvas({
         
         // Draw the text
         wrapAndDrawText(ctx, linesToDraw, textX, rectY, lineHeight, rectHeight);
-
+        
         if (isLastCanvas && !isTitle) {
           onTextRemaining(remainingText);
         }
@@ -242,7 +263,7 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, isLastCanvas]);
+  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, isLastCanvas, rectColor, rectOpacity]);
 
   return (
     <canvas
