@@ -25,13 +25,15 @@ _**ATTENTION:** The rules listed in this section are fundamental to the stable o
 
 - **TR:** Ana metnin geri kalanı, bir sonraki 12 satırlık görsele otomatik olarak aktarılır.
 - **EN:** The remaining text is automatically carried over to the next 12-line image.
+- **TR:** Renk Önerileri: Arka plan rengini değiştirdiğinizde çalışan `suggestContrastingColorSchemes` flow'unda Gemini kullanılıyordu. Bu özellik ve ilgili flow kaldırıldı. (Eklendi - 2025-09-25 10:50)
+- **TR:** Kalan AI özellikleri ve maliyetleri: `automaticallySplitTextIntoParagraphs` (metin bölme) ve `findImages` (görsel arama) olmak üzere 2 AI özelliği kalmıştır. Metin bölme işlemi Gemini token maliyetine tabidir, görsel arama ise Google Custom Search API'sinin kendi ücretlendirmesine tabidir. (Eklendi - 2025-09-25 10:50)
 
 ## 2. Kanvas ve Tasarım Kuralları (Canvas & Design Rules)
 
-- **TR:** Kullanıcı, "Yazı Tipi Ayarları" bölümünden tasarım üzerindeki metnin rengini bir renk seçici aracılığıyla değiştirebilmelidir. (Eklendi - 2025-09-24 12:40)
+- **TR:** Kullanıcı, "Yazı Tipi Ayarları" bölümünden tasarım üzerindeki metnin rengini bir renk seçici aracılığıyla değiştirebilmelidir. (Eklendi - 2024-09-24 12:40)
 - **TR:** Kullanıcı, seçtiği arka plan türünden (Düz Renk, Gradyan, Görsel) bağımsız olarak, kanvasın ortasındaki metin kutusunun rengini ve 0 ile 1 arasında şeffaflığını ayarlayabilmelidir. Bu ayarlar, "Yazı Tipi" seçim alanının altında ve "Arka Plan" seçim sekmelerinden önce ayrı bir bölümde yer almalıdır. (Eklendi - 2025-09-24 14:02)
 - **TR:** Kullanıcı, metin hizalamasını (sol, orta, sağ) seçebilmelidir. Bu ayar "Yazı Tipi Ayarları" bölümünde yer alır. (Eklendi - 2025-09-24 15:45)
-- **EN:** The user should be able to change the color of the text on the design via a color picker in the "Font Settings" section. (Added - 2025-09-24 12:40)
+- **EN:** The user should be able to change the color of the text on the design via a color picker in the "Font Settings" section. (Added - 2024-09-24 12:40)
 - **EN:** Regardless of the chosen background type (Flat Color, Gradient, Image), the user should be able to adjust the color and opacity (from 0 to 1) of the text box in the center of the canvas. These settings should be located in a separate section below the "Font" selection area and before the "Background" selection tabs. (Added - 2025-09-24 14:02)
 - **EN:** The user should be able to choose the text alignment (left, center, right). This setting is located in the "Font Settings" section. (Added - 2025-09-24 15:45)
 
@@ -49,5 +51,4 @@ _**ATTENTION:** The rules listed in this section are fundamental to the stable o
 *** Not: Bu alanda yer alan maddelerdeki değişiklikler yapıldıktan sonra ilgili bölüme eklenmeli. Eklendikten sonra sonuna eklendiği tarih ve saat parantez içinde yazılmalı. ***
 *Note: After the changes in the items in this area are made, they should be added to the relevant section. After being added, the date and time of addition should be written in parentheses at the end.*
 
-- Renk Önerileri: Arka plan rengini değiştirdiğinizde çalışan `suggestContrastingColorSchemes` flow'unda Gemini kullanılıyordu. Bu özellik ve ilgili flow kaldırıldı. (Eklendi - 2025-09-25 10:50)
-- Kalan AI özellikleri ve maliyetleri: `automaticallySplitTextIntoParagraphs` (metin bölme) ve `findImages` (görsel arama) olmak üzere 2 AI özelliği kalmıştır. Metin bölme işlemi Gemini token maliyetine tabidir, görsel arama ise Google Custom Search API'sinin kendi ücretlendirmesine tabidir.
+(Tüm planlanan adımlar tamamlandı. Yeni görevler buraya eklenebilir.)
