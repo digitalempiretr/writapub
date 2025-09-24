@@ -26,8 +26,8 @@ _This file documents the core logic and rules of the application. All future dev
 
 ### 2.1. Metin Yerleşimi ve Sınırları (Text Placement & Boundaries)
 
-- **TR:** Hem başlık hem de gövde metni, her zaman kanvasın ortasındaki beyaz dikdörtgen alanın **içinde kalmalıdır**. Metin, bu alanın dışına dikey veya yatay olarak **asla taşmamalıdır**. Metin, bu beyaz kutu içinde dikey ve yatay olarak ortalanmalıdır. Başlıklar ve metinler sola dayalı (`text-align: left` veya `start`) olmalıdır.
-- **EN:** All text, both titles and body paragraphs, must always remain **inside** the central white rectangular area on the canvas. The text **must never overflow** this area, either vertically or horizontally. The text should be centered vertically and horizontally within this white box. Titles and body text must be left-aligned (`text-align: left` or `start`).
+- **TR:** Hem başlık hem de gövde metni, her zaman kanvasın ortasındaki beyaz dikdörtgen alanın **içinde kalmalıdır**. Metin, bu alanın dışına dikey veya yatay olarak **asla taşmamalıdır**. Metin, bu beyaz kutu içinde dikey ve yatay olarak ortalanmalıdır. 
+- **EN:** All text, both titles and body paragraphs, must always remain **inside** the central white rectangular area on the canvas. The text **must never overflow** this area, either vertically or horizontally. The text should be centered vertically and horizontally within this white box. 
 
 ### 2.2. Başlık Metni Sarma (Title Text Wrapping)
 
@@ -69,3 +69,4 @@ _This file documents the core logic and rules of the application. All future dev
 ### PLANLANAN ADIMLAR *** Not: Bu alanda yer alan maddelerdeki değişiklikler yapıldıktan sonra ilgili bölüme eklenmeli. Eklendikten sonra sonuna eklendiği tarih ve saat parantez içinde yazılmalı.
 
 - Orta alandaki beyaz dikey dikdörtgen yazı alanın da rengi ve transparancy ayarları (0 to 1) değişebilmeli.
+-Başlıklar ve metinler sola dayalı (`text-align: left` veya `start`) olmalıdır.
