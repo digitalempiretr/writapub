@@ -36,8 +36,8 @@ _This file documents the core logic and rules of the application. All future dev
 
 ### 2.3. Metin Rengi (Text Color)
 
-- **TR:** Kullanıcı, "Düz Renk" sekmesi altından tasarım üzerindeki metnin rengini bir renk seçici aracılığıyla değiştirebilmelidir. (Eklendi - 2024-07-28 10:00)
-- **EN:** The user should be able to change the color of the text on the design via a color picker under the "Flat Color" tab. (Added - 2024-07-28 10:00)
+- **TR:** Kullanıcı, "Düz Renk" sekmesi altından tasarım üzerindeki metnin rengini bir renk seçici aracılığıyla değiştirebilmelidir. (Eklendi - 2025-09-24 12:40)
+- **EN:** The user should be able to change the color of the text on the design via a color picker under the "Flat Color" tab. (Added - 2025-09-24 12:40)
 
 
 ## 3. Font ve Karakter Desteği (Font & Character Support)
