@@ -27,6 +27,7 @@ type ImageCanvasProps = {
   isLastCanvas: boolean;
   rectColor: string;
   rectOpacity: number;
+  textAlign: 'left' | 'center' | 'right';
 };
 
 // This function wraps text for titles.
@@ -149,6 +150,7 @@ export function ImageCanvas({
   isLastCanvas,
   rectColor,
   rectOpacity,
+  textAlign,
 }: ImageCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -196,12 +198,19 @@ export function ImageCanvas({
 
         // Set up text properties
         ctx.fillStyle = textColor;
-        ctx.textAlign = 'left';
+        ctx.textAlign = textAlign;
         ctx.textBaseline = 'top'; 
         ctx.font = `${fontWeight} ${fontSize}px "${fontName}"`;
         
-        // Calculate text position
-        const textX = rectX + textPadding;
+        // Calculate text position based on alignment
+        let textX;
+        if (textAlign === 'left') {
+            textX = rectX + textPadding;
+        } else if (textAlign === 'right') {
+            textX = rectX + rectWidth - textPadding;
+        } else { // center
+            textX = rectX + rectWidth / 2;
+        }
         
         // Draw the text
         wrapAndDrawText(ctx, linesToDraw, textX, rectY, lineHeight, rectHeight);
@@ -263,7 +272,7 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, isLastCanvas, rectColor, rectOpacity]);
+  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, isLastCanvas, rectColor, rectOpacity, textAlign]);
 
   return (
     <canvas

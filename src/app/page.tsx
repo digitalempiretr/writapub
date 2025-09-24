@@ -34,7 +34,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Download, Loader2, Search, Wand2 } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, Download, Loader2, Search, Wand2 } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -42,6 +42,9 @@ type Design = {
   text: string;
   isTitle: boolean;
 };
+
+type TextAlign = 'left' | 'center' | 'right';
+
 
 const fontOptions: FontOption[] = [
     { value: 'anton', label: 'Anton', fontFamily: 'Anton', bodyWeight: '400', titleWeight: '400', titleSize: 100, bodySize: 58, lineHeight: 74 },
@@ -136,6 +139,7 @@ export default function Home() {
   }, [])
 
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions[0]);
+  const [textAlign, setTextAlign] = useState<TextAlign>('left');
   const [designTab, setDesignTab] = useState("flat");
   const [bgColor, setBgColor] = useState("#E8F0FE");
   const [textColor, setTextColor] = useState("#172554");
@@ -302,7 +306,7 @@ export default function Home() {
     
     return (
         <ImageCanvas
-          key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${index}-${design.text}`}
+          key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${index}-${design.text}-${textAlign}`}
           font={activeFont}
           text={design.text}
           isTitle={design.isTitle}
@@ -318,9 +322,10 @@ export default function Home() {
           isLastCanvas={index === designs.length - 1}
           rectColor={rectBgColor}
           rectOpacity={rectOpacity}
+          textAlign={textAlign}
         />
     )
-  }, [designTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, designs, handleTextRemaining, rectBgColor, rectOpacity]);
+  }, [designTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, designs, handleTextRemaining, rectBgColor, rectOpacity, textAlign]);
 
   const showColorSuggestions = designTab === 'flat' && colorSchemes.length > 0;
 
@@ -369,9 +374,9 @@ export default function Home() {
                 </div>
                  <div className="space-y-4">
                   <Label>Yazı Tipi Ayarları</Label>
-                   <div className="flex items-center gap-4">
+                   <div className="flex flex-col gap-4">
                      <Select onValueChange={handleFontChange} defaultValue={activeFont.value}>
-                       <SelectTrigger className="flex-1">
+                       <SelectTrigger>
                          <SelectValue placeholder="Bir yazı tipi seçin" />
                        </SelectTrigger>
                        <SelectContent>
@@ -382,9 +387,22 @@ export default function Home() {
                          ))}
                        </SelectContent>
                      </Select>
-                     <div className="flex items-center gap-2">
-                       <Label>Metin:</Label>
-                       <Input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="w-20 p-1"/>
+                     <div className="flex items-center justify-between">
+                       <div className="flex items-center gap-2">
+                         <Label>Metin:</Label>
+                         <Input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="w-20 p-1"/>
+                       </div>
+                       <div className="flex items-center gap-1 rounded-md border border-input p-1">
+                          <Button variant={textAlign === 'left' ? 'secondary' : 'ghost'} size="icon" onClick={() => setTextAlign('left')} className="h-8 w-8">
+                            <AlignLeft className="h-4 w-4" />
+                          </Button>
+                           <Button variant={textAlign === 'center' ? 'secondary' : 'ghost'} size="icon" onClick={() => setTextAlign('center')} className="h-8 w-8">
+                            <AlignCenter className="h-4 w-4" />
+                          </Button>
+                           <Button variant={textAlign === 'right' ? 'secondary' : 'ghost'} size="icon" onClick={() => setTextAlign('right')} className="h-8 w-8">
+                            <AlignRight className="h-4 w-4" />
+                          </Button>
+                       </div>
                      </div>
                    </div>
                  </div>

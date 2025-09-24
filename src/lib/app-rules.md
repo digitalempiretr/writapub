@@ -27,11 +27,12 @@ _**ATTENTION:** The rules listed in this section are fundamental to the stable o
 
 ## 2. Kanvas ve Tasarım Kuralları (Canvas & Design Rules)
 
-- **TR:** Başlıklar ve metinler sola dayalı (`text-align: left` veya `start`) olmalıdır. Metin, metin kutusunun sol kenarından hafif bir iç boşluk bırakılarak başlamalıdır. (Eklendi - 2025-09-24 13:20)
 - **TR:** Kullanıcı, "Düz Renk" sekmesi altından tasarım üzerindeki metnin rengini bir renk seçici aracılığıyla değiştirebilmelidir. (Eklendi - 2025-09-24 12:40)
 - **TR:** Kullanıcı, seçtiği arka plan türünden (Düz Renk, Gradyan, Görsel) bağımsız olarak, kanvasın ortasındaki metin kutusunun rengini ve 0 ile 1 arasında şeffaflığını ayarlayabilmelidir. Bu ayarlar, "Yazı Tipi" seçim alanının altında ve "Arka Plan" seçim sekmelerinden önce ayrı bir bölümde yer almalıdır. (Eklendi - 2025-09-24 14:02)
+- **TR:** Kullanıcı, metin hizalamasını (sol, orta, sağ) seçebilmelidir. Bu ayar "Yazı Tipi Ayarları" bölümünde yer alır. (Eklendi - 2025-09-24 15:45)
 - **EN:** The user should be able to change the color of the text on the design via a color picker under the "Flat Color" tab. (Added - 2025-09-24 12:40)
 - **EN:** Regardless of the chosen background type (Flat Color, Gradient, Image), the user should be able to adjust the color and opacity (from 0 to 1) of the text box in the center of the canvas. These settings should be located in a separate section below the "Font" selection area and before the "Background" selection tabs. (Added - 2025-09-24 14:02)
+- **EN:** The user should be able to choose the text alignment (left, center, right). This setting is located in the "Font Settings" section. (Added - 2025-09-24 15:45)
 
 ## 3. Font ve Karakter Desteği (Font & Character Support)
 
@@ -46,7 +47,8 @@ _**ATTENTION:** The rules listed in this section are fundamental to the stable o
 *** Not: Bu alanda yer alan maddelerdeki değişiklikler yapıldıktan sonra ilgili bölüme eklenmeli. Eklendikten sonra sonuna eklendiği tarih ve saat parantez içinde yazılmalı. ***
 *Note: After the changes in the items in this area are made, they should be added to the relevant section. After being added, the date and time of addition should be written in parentheses at the end.*
 
-- text-align: left özelliği getirmiştik daha önce. Ama bunu kullanıcın seçebileceği şekilde yapalım. Her tasarım programında olduğu gibi 3 kare buton olsun. left - center- right şeklinde. 
 - İlk oluştur butonuna basılıştan sonra bir tasarım oluşuyor ya. İşte o anda eğer yazı tipi değişirse türkçe karakter uyumu olmuyor. 'ş', 'ç', 'ğ', 'ı', 'ü', 'ö' harfleri önceki fonttan kalıyor. Ama tekrar oluştur butonuna basınca bu harfler yeni seçilen fontta doğru görünüyor. Bu sorunu çözelim.
 
-- Yazı Tipi seçim açılır sekmesindeki font sıralaması Alfabetik olarak yapılsın.
+- Yazı Tipi seçim açılır sekmesindeki  varsayılan font Anton değil Special Elite olsun.
+
+- Gradyan ve Görsel seçiminde örneklemeler yatay şekilde gösteriliyor. Bunları dikey şekilde yap. Yani tasarımda kullanıcak şekilde oranla. 1.08x1.35 olarak.
