@@ -151,11 +151,9 @@ export default function Home() {
   const remainingTextRef = useRef<string | null>(null);
 
   const handleTextRemaining = (remaining: string, currentIndex: number) => {
-    // Only add a new slide if the remaining text is different and not empty
     if (remaining && remaining !== remainingTextRef.current) {
         remainingTextRef.current = remaining;
         setDesigns(prevDesigns => {
-            // Check if we are potentially in a loop
             const lastNonTitleText = [...prevDesigns].reverse().find(d => !d.isTitle)?.text;
             if (lastNonTitleText === remaining) {
                 return prevDesigns;
@@ -178,8 +176,8 @@ export default function Home() {
       return;
     }
     setIsLoading(true);
-    setDesigns([]); // Clear previous designs
-    remainingTextRef.current = null; // Reset remaining text ref
+    setDesigns([]);
+    remainingTextRef.current = null;
     
     try {
       const result = await automaticallySplitTextIntoParagraphs({
@@ -332,137 +330,139 @@ export default function Home() {
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        <Card className="lg:col-span-4 xl:col-span-3 sticky top-8">
-          <CardHeader>
-            <CardTitle>İçerik &amp; Tasarım</CardTitle>
-            <CardDescription>
-              Metninizi girin ve tasarım ayarlarınızı yapın.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="title">Başlık (İsteğe Bağlı)</Label>
-              <Input
-                id="title"
-                placeholder="Paylaşım başlığı"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="text">Köşe Yazısı Metni</Label>
-              <Textarea
-                id="text"
-                placeholder="Metninizi buraya yapıştırın..."
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                rows={8}
-                className="resize-none"
-              />
-              <p className="text-xs text-muted-foreground text-right">{text.length} karakter</p>
-            </div>
-             <div className="space-y-4">
-              <Label>Yazı Tipi</Label>
-              <Select onValueChange={handleFontChange} defaultValue={activeFont.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Bir yazı tipi seçin" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {fontOptions.map(font => (
-                      <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
-                        {font.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-            </div>
-             <div className="space-y-4">
-              <Label>Arka Plan</Label>
-              <Tabs value={designTab} onValueChange={setDesignTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="flat">Düz Renk</TabsTrigger>
-                  <TabsTrigger value="gradient">Gradyan</TabsTrigger>
-                  <TabsTrigger value="image">Görsel</TabsTrigger>
-                </TabsList>
-                <TabsContent value="flat" className="pt-4 space-y-4">
-                  <div className="flex items-center gap-4">
-                    <Label>Renk Seç:</Label>
-                    <Input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} onBlur={(e) => handleBgColorChange(e.target.value)} className="w-24 p-1"/>
-                  </div>
-                  { isLoadingColors && <div className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="w-4 h-4 animate-spin"/> Renk önerileri oluşturuluyor...</div>}
-                  { showColorSuggestions && (
-                    <div className="space-y-2">
-                      <Label>AI Renk Önerileri</Label>
-                      <div className="grid grid-cols-5 gap-2">
-                        {colorSchemes.map((scheme, i) => (
-                           <button key={i} className="h-10 rounded-md border-2 border-transparent focus:border-primary" style={{backgroundColor: scheme.backgroundColor}} onClick={() => { setBgColor(scheme.backgroundColor); setTextColor(scheme.textColor)}}>
-                             <span className="sr-only">Arka plan {scheme.backgroundColor} ve metin {scheme.textColor}</span>
-                           </button>
+        <div className="lg:col-span-4 xl:col-span-3 lg:sticky top-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>İçerik &amp; Tasarım</CardTitle>
+                <CardDescription>
+                  Metninizi girin ve tasarım ayarlarınızı yapın.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="title">Başlık (İsteğe Bağlı)</Label>
+                  <Input
+                    id="title"
+                    placeholder="Paylaşım başlığı"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="text">Köşe Yazısı Metni</Label>
+                  <Textarea
+                    id="text"
+                    placeholder="Metninizi buraya yapıştırın..."
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    rows={8}
+                    className="resize-none"
+                  />
+                  <p className="text-xs text-muted-foreground text-right">{text.length} karakter</p>
+                </div>
+                 <div className="space-y-4">
+                  <Label>Yazı Tipi</Label>
+                  <Select onValueChange={handleFontChange} defaultValue={activeFont.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Bir yazı tipi seçin" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {fontOptions.map(font => (
+                          <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
+                            {font.label}
+                          </SelectItem>
                         ))}
+                      </SelectContent>
+                    </Select>
+                </div>
+                 <div className="space-y-4">
+                  <Label>Arka Plan</Label>
+                  <Tabs value={designTab} onValueChange={setDesignTab} className="w-full">
+                    <TabsList className="grid w-full grid-cols-3">
+                      <TabsTrigger value="flat">Düz Renk</TabsTrigger>
+                      <TabsTrigger value="gradient">Gradyan</TabsTrigger>
+                      <TabsTrigger value="image">Görsel</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="flat" className="pt-4 space-y-4">
+                      <div className="flex items-center gap-4">
+                        <Label>Renk Seç:</Label>
+                        <Input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} onBlur={(e) => handleBgColorChange(e.target.value)} className="w-24 p-1"/>
                       </div>
-                    </div>
+                      { isLoadingColors && <div className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="w-4 h-4 animate-spin"/> Renk önerileri oluşturuluyor...</div>}
+                      { showColorSuggestions && (
+                        <div className="space-y-2">
+                          <Label>AI Renk Önerileri</Label>
+                          <div className="grid grid-cols-5 gap-2">
+                            {colorSchemes.map((scheme, i) => (
+                               <button key={i} className="h-10 rounded-md border-2 border-transparent focus:border-primary" style={{backgroundColor: scheme.backgroundColor}} onClick={() => { setBgColor(scheme.backgroundColor); setTextColor(scheme.textColor)}}>
+                                 <span className="sr-only">Arka plan {scheme.backgroundColor} ve metin {scheme.textColor}</span>
+                               </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-4">
+                        <Label>Metin Rengi:</Label>
+                        <Input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="w-24 p-1"/>
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="gradient" className="pt-4">
+                       <div className="grid grid-cols-3 gap-2">
+                        {gradientTemplates.map(g => (
+                          <button key={g.name} className="h-12 rounded-md border-2 border-transparent focus:border-primary" style={{background: g.css}} onClick={() => setGradientBg(g.css)} title={g.name} />
+                        ))}
+                       </div>
+                    </TabsContent>
+                     <TabsContent value="image" className="pt-4 space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="image-search">Görsel Ara</Label>
+                          <div className="flex gap-2">
+                            <Input 
+                              id="image-search" 
+                              placeholder="Örn: dokulu kağıt, ahşap..." 
+                              value={searchQuery}
+                              onChange={(e) => setSearchQuery(e.target.value)}
+                              onKeyDown={(e) => e.key === 'Enter' && handleSearchImages()}
+                            />
+                            <Button onClick={handleSearchImages} disabled={isSearching} variant="outline" size="icon">
+                              {isSearching ? <Loader2 className="animate-spin" /> : <Search />}
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2">
+                          {imageTemplates.map(t => (
+                            <button key={t.name} className="h-16 rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden" onClick={() => setImageBgUrl(t.imageUrl)} title={t.name}>
+                              <Image src={t.imageUrl} alt={t.name} width={64} height={64} className="object-cover w-full h-full" />
+                            </button>
+                          ))}
+                          {searchedImages.map((url, i) => (
+                             <button key={i} className="h-16 rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden" onClick={() => setImageBgUrl(url)} title={`Searched Image ${i+1}`}>
+                              <Image src={url} alt={`Searched Image ${i+1}`} width={64} height={64} className="object-cover w-full h-full" unoptimized/>
+                            </button>
+                          ))}
+                        </div>
+                     </TabsContent>
+                  </Tabs>
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  onClick={handleGenerate}
+                  disabled={isLoading}
+                  className="w-full"
+                >
+                  {isLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Wand2 className="mr-2 h-4 w-4" />
                   )}
-                  <div className="flex items-center gap-4">
-                    <Label>Metin Rengi:</Label>
-                    <Input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="w-24 p-1"/>
-                  </div>
-                </TabsContent>
-                <TabsContent value="gradient" className="pt-4">
-                   <div className="grid grid-cols-3 gap-2">
-                    {gradientTemplates.map(g => (
-                      <button key={g.name} className="h-12 rounded-md border-2 border-transparent focus:border-primary" style={{background: g.css}} onClick={() => setGradientBg(g.css)} title={g.name} />
-                    ))}
-                   </div>
-                </TabsContent>
-                 <TabsContent value="image" className="pt-4 space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="image-search">Görsel Ara</Label>
-                      <div className="flex gap-2">
-                        <Input 
-                          id="image-search" 
-                          placeholder="Örn: dokulu kağıt, ahşap..." 
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          onKeyDown={(e) => e.key === 'Enter' && handleSearchImages()}
-                        />
-                        <Button onClick={handleSearchImages} disabled={isSearching} variant="outline" size="icon">
-                          {isSearching ? <Loader2 className="animate-spin" /> : <Search />}
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2">
-                      {imageTemplates.map(t => (
-                        <button key={t.name} className="h-16 rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden" onClick={() => setImageBgUrl(t.imageUrl)} title={t.name}>
-                          <Image src={t.imageUrl} alt={t.name} width={64} height={64} className="object-cover w-full h-full" />
-                        </button>
-                      ))}
-                      {searchedImages.map((url, i) => (
-                         <button key={i} className="h-16 rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden" onClick={() => setImageBgUrl(url)} title={`Searched Image ${i+1}`}>
-                          <Image src={url} alt={`Searched Image ${i+1}`} width={64} height={64} className="object-cover w-full h-full" unoptimized/>
-                        </button>
-                      ))}
-                    </div>
-                 </TabsContent>
-              </Tabs>
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button
-              onClick={handleGenerate}
-              disabled={isLoading}
-              className="w-full"
-            >
-              {isLoading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Wand2 className="mr-2 h-4 w-4" />
-              )}
-              Oluştur
-            </Button>
-          </CardFooter>
-        </Card>
+                  Oluştur
+                </Button>
+              </CardFooter>
+            </Card>
+        </div>
 
-        <div className="lg:col-span-8 xl:col-span-9">
+        <div className="lg:col-span-8 xl:col-span-9 mt-8 lg:mt-0">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
@@ -523,3 +523,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
