@@ -48,3 +48,5 @@ _**ATTENTION:** The rules listed in this section are fundamental to the stable o
 
 - text-align: left özelliği getirmiştik daha önce. Ama bunu kullanıcın seçebileceği şekilde yapalım. Her tasarım programında olduğu gibi 3 kare buton olsun. left - center- right şeklinde. 
 - İlk oluştur butonuna basılıştan sonra bir tasarım oluşuyor ya. İşte o anda eğer yazı tipi değişirse türkçe karakter uyumu olmuyor. 'ş', 'ç', 'ğ', 'ı', 'ü', 'ö' harfleri önceki fonttan kalıyor. Ama tekrar oluştur butonuna basınca bu harfler yeni seçilen fontta doğru görünüyor. Bu sorunu çözelim.
+
+- Yazı Tipi seçim açılır sekmesindeki font sıralaması Alfabetik olarak yapılsın.
