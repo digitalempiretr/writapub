@@ -21,12 +21,26 @@ _**ATTENTION:** The rules listed in this section are fundamental to the stable o
 
 ---
 
-## 1. Metin İşleme ve Görsel Oluşturma (Text Processing & Image Generation)
+## 1. Metin İşleme ve Yapay Zeka Maliyetleri (Text Processing & AI Costs)
 
 - **TR:** Ana metnin geri kalanı, bir sonraki 12 satırlık görsele otomatik olarak aktarılır.
 - **EN:** The remaining text is automatically carried over to the next 12-line image.
-- **TR:** Renk Önerileri: Arka plan rengini değiştirdiğinizde çalışan `suggestContrastingColorSchemes` flow'unda Gemini kullanılıyordu. Bu özellik ve ilgili flow kaldırıldı. (Eklendi - 2025-09-25 10:50)
-- **TR:** Kalan AI özellikleri ve maliyetleri: `automaticallySplitTextIntoParagraphs` (metin bölme) ve `findImages` (görsel arama) olmak üzere 2 AI özelliği kalmıştır. Metin bölme işlemi Gemini token maliyetine tabidir, görsel arama ise Google Custom Search API'sinin kendi ücretlendirmesine tabidir. (Eklendi - 2025-09-25 10:50)
+
+### 1.1. Yapay Zeka Özellikleri ve Maliyet Detayları
+
+Uygulamada maliyet oluşturan 2 adet yapay zeka destekli özellik bulunmaktadır:
+
+**1. Metin İşleme (`automaticallySplitTextIntoParagraphs`):**
+    - **Servis:** Google Gemini (`gemini-1.5-flash` modeli)
+    - **Tetiklenme:** "Oluştur" butonuna her basıldığında çalışır.
+    - **Maliyetlendirme:** Bu işlem, Google'ın token tabanlı ücretlendirme modeline göre maliyet oluşturur. Maliyet, hem girdiğiniz metnin uzunluğuna (input token) hem de yapay zekanın ayırdığı başlık ve paragrafın uzunluğuna (output token) bağlıdır. Detaylı ve güncel fiyatlandırma için [Google AI Platform Fiyatlandırma](https://ai.google/pricing) sayfasını kontrol ediniz.
+
+**2. Görsel Arama (`findImages`):**
+    - **Servis:** Google Custom Search API
+    - **Tetiklenme:** "Görsel Ara" kutusuna bir arama terimi yazıp "Ara" butonuna basıldığında çalışır.
+    - **Maliyetlendirme:** Bu özellik Gemini token maliyeti **oluşturmaz**. Bunun yerine, Google Cloud Platform altındaki "Custom Search API" hizmetinin kendi kullanım limitleri ve ücretlendirmesine tabidir. Google, genellikle aylık belirli bir sorgu sayısına kadar ücretsiz bir kullanım hakkı tanır. Bu ücretsiz limit aşıldıktan sonra, yapılan her sorgu başına bir ücretlendirme uygulanır. Detaylı bilgi için Google Cloud Console'daki ilgili API'nin "Kotalar ve Fiyatlandırma" bölümüne bakınız.
+
+---
 
 ## 2. Kanvas ve Tasarım Kuralları (Canvas & Design Rules)
 
