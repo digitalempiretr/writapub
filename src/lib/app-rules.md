@@ -34,6 +34,12 @@ _This file documents the core logic and rules of the application. All future dev
 - **TR:** Uzun başlıklar, beyaz kutunun genişliğini aşmamak için otomatik olarak alt satırlara sarılmalıdır. Tek bir satırda kalarak dışarı taşamazlar.
 - **EN:** Long titles must automatically wrap to subsequent lines to avoid exceeding the width of the white box. They cannot remain on a single line and overflow.
 
+### 2.3. Metin Rengi (Text Color)
+
+- **TR:** Kullanıcı, "Düz Renk" sekmesi altından tasarım üzerindeki metnin rengini bir renk seçici aracılığıyla değiştirebilmelidir. (Eklendi - 2024-07-28 10:00)
+- **EN:** The user should be able to change the color of the text on the design via a color picker under the "Flat Color" tab. (Added - 2024-07-28 10:00)
+
+
 ## 3. Font ve Karakter Desteği (Font & Character Support)
 
 ### 3.1. Karakter Seti (Character Set)
@@ -57,3 +63,9 @@ _This file documents the core logic and rules of the application. All future dev
 
 - **TR:** Masaüstü gibi daha geniş ekranlarda, kullanıcı sayfayı aşağı kaydırdığında sol taraftaki kontrol paneli ekranın soluna **sabitlenmelidir** ("sticky"). Bu, kullanıcının tasarımları incelerken kontrol ayarlarına her zaman erişebilmesini sağlar.
 - **EN:** On larger screens like desktops, the left-side control panel must be **"sticky"** to the left side of the screen as the user scrolls down the page. This ensures the user always has access to the controls while reviewing the designs.
+
+
+
+### PLANLANAN ADIMLAR *** Not: Bu alanda yer alan maddelerdeki değişiklikler yapıldıktan sonra ilgili bölüme eklenmeli. Eklendikten sonra sonuna eklendiği tarih ve saat parantez içinde yazılmalı.
+
+- Orta alandaki beyaz dikey dikdörtgen yazı alanın da rengi ve transparancy ayarları (0 to 1) değişebilmeli.

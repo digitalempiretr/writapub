@@ -385,8 +385,10 @@ export default function Home() {
                     </TabsList>
                     <TabsContent value="flat" className="pt-4 space-y-4">
                       <div className="flex items-center gap-4">
-                        <Label>Renk Seç:</Label>
+                        <Label>Arka Plan:</Label>
                         <Input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} onBlur={(e) => handleBgColorChange(e.target.value)} className="w-24 p-1"/>
+                        <Label>Metin:</Label>
+                        <Input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="w-24 p-1"/>
                       </div>
                       { isLoadingColors && <div className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="w-4 h-4 animate-spin"/> Renk önerileri oluşturuluyor...</div>}
                       { showColorSuggestions && (
@@ -401,10 +403,6 @@ export default function Home() {
                           </div>
                         </div>
                       )}
-                      <div className="flex items-center gap-4">
-                        <Label>Metin Rengi:</Label>
-                        <Input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="w-24 p-1"/>
-                      </div>
                     </TabsContent>
                     <TabsContent value="gradient" className="pt-4">
                        <div className="grid grid-cols-3 gap-2">
