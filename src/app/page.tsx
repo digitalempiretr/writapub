@@ -138,7 +138,7 @@ export default function Home() {
     setIsClient(true)
   }, [])
 
-  const [activeFont, setActiveFont] = useState<FontOption>(fontOptions[0]);
+  const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'special-elite') || fontOptions[0]);
   const [textAlign, setTextAlign] = useState<TextAlign>('left');
   const [designTab, setDesignTab] = useState("flat");
   const [bgColor, setBgColor] = useState("#E8F0FE");
