@@ -1,6 +1,5 @@
 "use client";
 
-import { automaticallySplitTextIntoParagraphs } from "@/ai/flows/automatically-split-text-into-paragraphs";
 import { findImages } from "@/ai/flows/find-images-flow";
 import { ImageCanvas, type FontOption } from "@/components/image-canvas";
 import { Logo } from "@/components/logo";
@@ -170,12 +169,11 @@ export default function Home() {
     }
   }, []);
 
-
   const handleGenerate = async () => {
-    if (!text) {
+    if (!text && !title) {
       toast({
         title: "Metin Girilmedi",
-        description: "Lütfen bir köşe yazısı metni girin.",
+        description: "Lütfen bir başlık veya köşe yazısı metni girin.",
         variant: "destructive",
       });
       return;
@@ -184,34 +182,38 @@ export default function Home() {
     setDesigns([]);
     remainingTextRef.current = null;
     
-    try {
-      const result = await automaticallySplitTextIntoParagraphs({
-        text: text,
-        title: title,
-      });
+    // Artificial delay to show loading state
+    await new Promise(resolve => setTimeout(resolve, 50));
 
-      const newDesigns: Design[] = [];
-      if (result.title) {
-        newDesigns.push({ text: result.title, isTitle: true });
-      }
-      if (result.paragraphs.length > 0) {
-        const combinedParagraphs = result.paragraphs.join('\n\n');
-        if (combinedParagraphs) {
-            newDesigns.push({ text: combinedParagraphs, isTitle: false });
+    let finalTitle = title;
+    let finalBody = text;
+
+    if (!finalTitle && finalBody) {
+        // Extract the first sentence as the title.
+        const sentenceEndMarkers = /[.!?]/;
+        const firstSentenceMatch = finalBody.match(sentenceEndMarkers);
+        
+        if (firstSentenceMatch && firstSentenceMatch.index !== undefined) {
+            const firstSentenceEnd = firstSentenceMatch.index + 1;
+            finalTitle = finalBody.substring(0, firstSentenceEnd).trim();
+            finalBody = finalBody.substring(firstSentenceEnd).trim();
+        } else {
+            // If no sentence end is found, use the whole text as title and leave body empty
+            finalTitle = finalBody;
+            finalBody = "";
         }
-      }
-      setDesigns(newDesigns);
-      
-    } catch(e) {
-      console.error(e);
-      toast({
-        title: "Metin Bölümlenemedi",
-        description: "Yapay zeka metni paragraflara ayırırken bir hata oluştu. Lütfen tekrar deneyin.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
     }
+
+    const newDesigns: Design[] = [];
+    if (finalTitle) {
+      newDesigns.push({ text: finalTitle, isTitle: true });
+    }
+    if (finalBody) {
+      newDesigns.push({ text: finalBody, isTitle: false });
+    }
+    
+    setDesigns(newDesigns);
+    setIsLoading(false);
   };
   
   const handleDownload = (index: number) => {
@@ -250,7 +252,7 @@ export default function Home() {
       console.error(error);
       toast({
         title: "Görsel Arama Başarısız",
-        description: "Görseller aranırken bir hata oluştu. Lütfen API anahtarınızın ve Özel Arama Motoru Kimliğinizin doğru yapılandırıldığından emin olun.",
+        description: "Görseller aranırken bir hata oluştu. Lütfen API anahtarınızın doğru yapılandırıldığından emin olun.",
         variant: "destructive",
       });
     } finally {

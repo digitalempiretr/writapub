@@ -32,30 +32,18 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 
 ---
 
-## 1. Text Processing & AI Costs (Metin İşleme ve API Maliyetleri)
+## 1. Text Processing & API Costs (Metin İşleme ve API Maliyetleri)
 
-### 1.1. AI/API Features and Cost Details
-The application has 2 features that use external APIs:
-
-**1. Text Processing (`automaticallySplitTextIntoParagraphs`):**
-    - **Service:** Google Gemini (`gemini-1.5-flash` model)
-    - **Trigger:** Runs every time the "Generate" button is pressed.
-    - **Cost Model:** This process incurs costs based on Google's token-based pricing model. The cost depends on both the length of the text you input (input tokens) and the length of the title and paragraph separated by the AI (output tokens).
-
-**2. Image Search (`findImages`):**
+### English
+The application has 1 feature that uses an external API:
+**1. Image Search (`findImages`):**
     - **Service:** Pexels API
     - **Trigger:** Runs when you type a search term in the "Image Search" box and press the "Search" button.
     - **Cost Model:** This feature is subject to the Pexels API's usage limits. Pexels offers a free tier with a certain number of requests per hour. If you exceed this limit, you may need to wait or consider their commercial plans. For details, see the Pexels API documentation.
 
-### 1.2. Yapay Zeka/API Özellikleri ve Maliyet Detayları
-Uygulamada harici API kullanan 2 adet özellik bulunmaktadır:
-
-**1. Metin İşleme (`automaticallySplitTextIntoParagraphs`):**
-    - **Servis:** Google Gemini (`gemini-1.5-flash` modeli)
-    - **Tetiklenme:** "Oluştur" butonuna her basıldığında çalışır.
-    - **Maliyetlendirme:** Bu işlem, Google'ın token tabanlı ücretlendirme modeline göre maliyet oluşturur. Maliyet, hem girdiğiniz metnin uzunluğuna (input token) hem de yapay zekanın ayırdığı başlık ve paragrafın uzunluğuna (output token) bağlıdır. 
-            
-**2. Görsel Arama (`findImages`):**
+### Türkçe
+Uygulamada harici API kullanan 1 adet özellik bulunmaktadır:
+**1. Görsel Arama (`findImages`):**
     - **Servis:** Pexels API
     - **Tetiklenme:** "Görsel Ara" kutusuna bir arama terimi yazıp "Ara" butonuna basıldığında çalışır.
     - **Maliyetlendirme:** Bu özellik, Pexels API'sinin kullanım limitlerine tabidir. Pexels, saatte belirli bir istek sayısına kadar ücretsiz bir kullanım hakkı sunar. Bu limit aşıldığında beklemeniz veya ticari planları değerlendirmeniz gerekebilir. Detaylar için Pexels API dokümantasyonuna bakınız.
