@@ -54,58 +54,81 @@ const wrapText = (
 };
 
 
-// This function measures the text and splits it if it exceeds the max lines.
+// This function measures the text and splits it if it exceeds the max lines, preserving newlines.
 const measureAndSplitText = (
   context: CanvasRenderingContext2D,
   text: string,
   maxWidth: number,
   maxLines: number
 ): { textForCanvas: string; remainingText: string, lines: string[] } => {
-    const words = text.split(/(\s+)/); // Split by whitespace, keeping the whitespace
-    let line = '';
+    const paragraphs = text.split('\n');
     let lines: string[] = [];
-    const remainingWords = [...words];
-    let wordIndex = 0;
+    let remainingParagraphs: string[] = [];
+    let processingStopped = false;
 
-    while (lines.length < maxLines && wordIndex < remainingWords.length) {
-        let currentWord = remainingWords[wordIndex] || '';
-        let testLine = line + currentWord;
-        let metrics = context.measureText(testLine);
-        
-        if (metrics.width > maxWidth && line !== '') {
-            lines.push(line);
-            line = currentWord.trimStart(); 
-        } else {
-            line = testLine;
+    for (let i = 0; i < paragraphs.length; i++) {
+        if (processingStopped) {
+            remainingParagraphs.push(paragraphs[i]);
+            continue;
         }
-        wordIndex++;
-    }
-  
-    if (line.trim() !== '' && lines.length < maxLines) {
-        lines.push(line);
-    } else if (line.trim() !== '') {
-      // The line is longer than maxWidth but it's the only line left, so we need to backtrack
-      const lineWords = line.trimEnd().split(' ');
-      const lastWord = lineWords.pop() || '';
-      const lineWithoutLastWord = lineWords.join(' ');
-      
-      lines.push(lineWithoutLastWord);
 
-      // find the word index to restart from
-      let consumedWords = 0;
-      for(let i=0; i<lines.length; i++) {
-        consumedWords += lines[i].split(' ').length;
-      }
-      wordIndex = words.slice(0, words.join('').lastIndexOf(lastWord)).filter(w => w.trim() !== '').length;
+        const paragraph = paragraphs[i];
+        if (paragraph.trim() === '') {
+            if (lines.length < maxLines) {
+                lines.push(''); // Preserve empty line
+            } else {
+                processingStopped = true;
+                remainingParagraphs.push(paragraphs[i]);
+            }
+            continue;
+        }
+
+        const words = paragraph.split(' ');
+        let currentLine = '';
+
+        for (const word of words) {
+            const testLine = currentLine ? `${currentLine} ${word}` : word;
+            const metrics = context.measureText(testLine);
+
+            if (metrics.width > maxWidth && currentLine !== '') {
+                if (lines.length < maxLines) {
+                    lines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    processingStopped = true;
+                    // The rest of the paragraph needs to be carried over
+                    const paragraphWords = paragraph.split(' ');
+                    const currentLineWords = currentLine.split(' ');
+                    const remainingWordsInParagraph = paragraphWords.slice(paragraphWords.indexOf(currentLineWords[0]) + currentLineWords.length);
+                    remainingParagraphs.push(remainingWordsInParagraph.join(' '));
+                    break; // Exit the word loop
+                }
+            } else {
+                currentLine = testLine;
+            }
+        }
+
+        if (!processingStopped) {
+            if (currentLine) {
+                if (lines.length < maxLines) {
+                    lines.push(currentLine);
+                } else {
+                    processingStopped = true;
+                    remainingParagraphs.push(currentLine);
+                }
+            }
+        } else {
+            // If we stopped, the rest of the original paragraphs should be added too
+             for (let j = i + 1; j < paragraphs.length; j++) {
+                remainingParagraphs.push(paragraphs[j]);
+            }
+            break; // Exit the paragraph loop
+        }
     }
 
     const textForCanvas = lines.join('\n');
-    let consumedChars = 0;
-    for(const l of lines) {
-        consumedChars += l.length;
-    }
-    const remainingText = text.substring(consumedChars).trim();
-  
+    const remainingText = remainingParagraphs.join('\n').trim();
+
     return { textForCanvas, remainingText, lines };
 };
 
