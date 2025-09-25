@@ -65,11 +65,13 @@ const measureAndSplitText = (
     const paragraphs = text.split('\n');
     let lines: string[] = [];
     let allWords: string[] = [];
-    paragraphs.forEach(p => {
-        if (p.trim() === '') {
-            allWords.push('\n');
-        } else {
+    paragraphs.forEach((p, index) => {
+        if (p.trim() !== '') {
             allWords.push(...p.split(' '));
+        }
+        // Add a newline marker between paragraphs, but not after the last one
+        if (index < paragraphs.length - 1) {
+            allWords.push('\n');
         }
     });
 
@@ -82,13 +84,13 @@ const measureAndSplitText = (
 
         if (word === undefined) break;
 
+        // Handle explicit newlines
         if (word === '\n') {
             if (lines.length < extendedMaxLines) {
                 lines.push(currentLine);
-                lines.push(''); // Represent the newline
-                currentLine = '';
+                currentLine = ''; // Start a new line, effectively creating a paragraph break
             } else {
-                finalRemainingText = [currentLine, ...wordBuffer].join(' ').trim();
+                finalRemainingText = [currentLine, ...wordBuffer].join(' ').replace(/\n/g, ' \n ').trim();
                 currentLine = '';
                 break;
             }
@@ -103,33 +105,34 @@ const measureAndSplitText = (
         } else {
             currentLine = testLine;
         }
-
-        const isApproachingBaseLimit = lines.length === baseMaxLines - 1;
-
-        if (lines.length >= extendedMaxLines) {
-            wordBuffer.unshift(currentLine);
-            finalRemainingText = wordBuffer.join(' ').trim();
-            currentLine = '';
-            break;
-        }
-
-        if (isApproachingBaseLimit) {
-            // Logic to check if we should extend to 14 lines
-            const potentialRemainingText = [currentLine, ...wordBuffer].join(' ').trim();
+        
+        let maxLines = baseMaxLines;
+        
+        // Check for extension possibility around the base limit
+        if (lines.length === baseMaxLines - 1) {
+            const potentialRemainingText = [currentLine, ...wordBuffer].join(' ').replace(/\n/g, ' \n ').trim();
             const firstSentenceMatch = potentialRemainingText.match(/^([^.!?]+[.!?])/);
 
             if (firstSentenceMatch) {
                 const firstSentence = firstSentenceMatch[1];
                 const sentenceWords = firstSentence.trim().split(' ');
                 
-                // If the next sentence is very short, do not extend. Let it go to the next slide.
-                if (sentenceWords.length <= 2) {
-                     if (currentLine) lines.push(currentLine);
-                     currentLine = '';
-                     finalRemainingText = potentialRemainingText;
-                     break;
+                // If the next sentence is longer than 2 words, we don't extend.
+                if (sentenceWords.length > 2) {
+                    maxLines = baseMaxLines;
+                } else {
+                // If it's short, allow extension to keep it.
+                    maxLines = extendedMaxLines;
                 }
             }
+        }
+
+
+        if (lines.length >= maxLines) {
+             wordBuffer.unshift(currentLine);
+             finalRemainingText = wordBuffer.join(' ').replace(/\n/g, ' \n ').trim();
+             currentLine = '';
+             break;
         }
     }
 
@@ -137,17 +140,10 @@ const measureAndSplitText = (
         lines.push(currentLine);
     }
     
-    // Filter out consecutive empty lines created by logic
-    const cleanedLines = lines.reduce((acc, line, i) => {
-      if (line === '' && acc[acc.length - 1] === '') {
-        return acc;
-      }
-      acc.push(line);
-      return acc;
-    }, [] as string[]);
+    // Clean up remaining text for proper handoff
+    const cleanedRemainingText = finalRemainingText.replace(/ \n /g, '\n').trim();
 
-
-    return { textForCanvas: cleanedLines.join('\n'), remainingText: finalRemainingText, lines: cleanedLines };
+    return { textForCanvas: lines.join('\n'), remainingText: cleanedRemainingText, lines: lines };
 };
 
 
@@ -204,8 +200,20 @@ export function ImageCanvas({
   textAlign,
 }: ImageCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const indexRef = useRef<number | null>(null);
 
   useEffect(() => {
+    // Find index once and store it
+    if (canvasRef.current && indexRef.current === null) {
+      const parentElement = canvasRef.current.closest('[data-index]');
+      if (parentElement) {
+        const idx = parseInt(parentElement.getAttribute('data-index') || '0', 10);
+        indexRef.current = idx;
+      } else {
+        indexRef.current = 0; // fallback
+      }
+    }
+
     const draw = async () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
@@ -266,10 +274,8 @@ export function ImageCanvas({
         // Draw the text
         wrapAndDrawText(ctx, linesToDraw, textX, rectY, lineHeight, rectHeight);
         
-        if (!isTitle) {
-          // Pass the original index to onTextRemaining
-          const canvasIndex = parseInt(canvas.dataset.index || '0', 10);
-          onTextRemaining(remainingText, canvasIndex);
+        if (!isTitle && indexRef.current !== null) {
+          onTextRemaining(remainingText, indexRef.current);
         }
         
         onCanvasReady(canvas);
@@ -327,27 +333,12 @@ export function ImageCanvas({
     draw();
   }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, textAlign]);
 
-  // We need a way to pass the index to the effect
-  const index = React.useMemo(() => {
-    if (canvasRef.current && canvasRef.current.parentElement) {
-      // A bit of a hack, but we can try to find the index from the DOM structure
-      // This is not ideal but works for the carousel item structure
-      const carouselItem = canvasRef.current.closest('[role="group"]');
-      if (carouselItem && carouselItem.parentElement) {
-        return Array.from(carouselItem.parentElement.children).indexOf(carouselItem);
-      }
-    }
-    return 0;
-  }, []);
-
-
   return (
     <canvas
       ref={canvasRef}
       width={width}
       height={height}
       className="w-full h-full"
-      data-index={index}
     />
   );
 }

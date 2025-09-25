@@ -485,7 +485,7 @@ export default function Home() {
                  <Carousel className="w-full max-w-lg mx-auto" setApi={(api) => api?.reInit()}>
                     <CarouselContent>
                       {designs.map((design, index) => (
-                        <CarouselItem key={index}>
+                        <CarouselItem key={index} data-index={index}>
                           <div className="p-1">
                             <Card className="overflow-hidden">
                               <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
