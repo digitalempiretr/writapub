@@ -56,80 +56,98 @@ const wrapText = (
 
 // This function measures the text and splits it if it exceeds the max lines, preserving newlines.
 const measureAndSplitText = (
-  context: CanvasRenderingContext2D,
-  text: string,
-  maxWidth: number,
-  maxLines: number
-): { textForCanvas: string; remainingText: string, lines: string[] } => {
+    context: CanvasRenderingContext2D,
+    text: string,
+    maxWidth: number,
+    baseMaxLines: number,
+    extendedMaxLines: number
+): { textForCanvas: string; remainingText: string; lines: string[] } => {
     const paragraphs = text.split('\n');
     let lines: string[] = [];
-    let remainingParagraphs: string[] = [];
-    let processingStopped = false;
-
-    for (let i = 0; i < paragraphs.length; i++) {
-        if (processingStopped) {
-            remainingParagraphs.push(paragraphs[i]);
-            continue;
-        }
-
-        const paragraph = paragraphs[i];
-        if (paragraph.trim() === '') {
-            if (lines.length < maxLines) {
-                lines.push(''); // Preserve empty line
-            } else {
-                processingStopped = true;
-                remainingParagraphs.push(paragraphs[i]);
-            }
-            continue;
-        }
-
-        const words = paragraph.split(' ');
-        let currentLine = '';
-
-        for (const word of words) {
-            const testLine = currentLine ? `${currentLine} ${word}` : word;
-            const metrics = context.measureText(testLine);
-
-            if (metrics.width > maxWidth && currentLine !== '') {
-                if (lines.length < maxLines) {
-                    lines.push(currentLine);
-                    currentLine = word;
-                } else {
-                    processingStopped = true;
-                    // The rest of the paragraph needs to be carried over
-                    const paragraphWords = paragraph.split(' ');
-                    const currentLineWords = currentLine.split(' ');
-                    const remainingWordsInParagraph = paragraphWords.slice(paragraphWords.indexOf(currentLineWords[0]) + currentLineWords.length);
-                    remainingParagraphs.push(remainingWordsInParagraph.join(' '));
-                    break; // Exit the word loop
-                }
-            } else {
-                currentLine = testLine;
-            }
-        }
-
-        if (!processingStopped) {
-            if (currentLine) {
-                if (lines.length < maxLines) {
-                    lines.push(currentLine);
-                } else {
-                    processingStopped = true;
-                    remainingParagraphs.push(currentLine);
-                }
-            }
+    let allWords: string[] = [];
+    paragraphs.forEach(p => {
+        if (p.trim() === '') {
+            allWords.push('\n');
         } else {
-            // If we stopped, the rest of the original paragraphs should be added too
-             for (let j = i + 1; j < paragraphs.length; j++) {
-                remainingParagraphs.push(paragraphs[j]);
+            allWords.push(...p.split(' '));
+        }
+    });
+
+    let currentLine = '';
+    let wordBuffer = [...allWords];
+    let finalRemainingText = '';
+
+    while (wordBuffer.length > 0) {
+        const word = wordBuffer.shift();
+
+        if (word === undefined) break;
+
+        if (word === '\n') {
+            if (lines.length < extendedMaxLines) {
+                lines.push(currentLine);
+                lines.push(''); // Represent the newline
+                currentLine = '';
+            } else {
+                finalRemainingText = [currentLine, ...wordBuffer].join(' ').trim();
+                currentLine = '';
+                break;
             }
-            break; // Exit the paragraph loop
+            continue;
+        }
+
+        const testLine = currentLine ? `${currentLine} ${word}` : word;
+
+        if (context.measureText(testLine).width > maxWidth && currentLine !== '') {
+            lines.push(currentLine);
+            currentLine = word;
+        } else {
+            currentLine = testLine;
+        }
+
+        const isApproachingBaseLimit = lines.length === baseMaxLines - 1;
+
+        if (lines.length >= extendedMaxLines) {
+            wordBuffer.unshift(currentLine);
+            finalRemainingText = wordBuffer.join(' ').trim();
+            currentLine = '';
+            break;
+        }
+
+        if (isApproachingBaseLimit) {
+            // Logic to check if we should extend to 14 lines
+            const potentialRemainingText = [currentLine, ...wordBuffer].join(' ').trim();
+            const firstSentenceMatch = potentialRemainingText.match(/^([^.!?]+[.!?])/);
+
+            if (firstSentenceMatch) {
+                const firstSentence = firstSentenceMatch[1];
+                const sentenceWords = firstSentence.trim().split(' ');
+                
+                // If the next sentence is very short, do not extend. Let it go to the next slide.
+                if (sentenceWords.length <= 2) {
+                     if (currentLine) lines.push(currentLine);
+                     currentLine = '';
+                     finalRemainingText = potentialRemainingText;
+                     break;
+                }
+            }
         }
     }
 
-    const textForCanvas = lines.join('\n');
-    const remainingText = remainingParagraphs.join('\n').trim();
+    if (currentLine) {
+        lines.push(currentLine);
+    }
+    
+    // Filter out consecutive empty lines created by logic
+    const cleanedLines = lines.reduce((acc, line, i) => {
+      if (line === '' && acc[acc.length - 1] === '') {
+        return acc;
+      }
+      acc.push(line);
+      return acc;
+    }, [] as string[]);
 
-    return { textForCanvas, remainingText, lines };
+
+    return { textForCanvas: cleanedLines.join('\n'), remainingText: finalRemainingText, lines: cleanedLines };
 };
 
 
@@ -217,7 +235,7 @@ export function ImageCanvas({
       let linesToDraw: string[] = [];
 
       if (!isTitle) {
-        const result = measureAndSplitText(ctx, text, textMaxWidth, 12);
+        const result = measureAndSplitText(ctx, text, textMaxWidth, 12, 14);
         linesToDraw = result.lines;
         remainingText = result.remainingText;
       } else {
