@@ -63,87 +63,72 @@ const measureAndSplitText = (
     extendedMaxLines: number
 ): { textForCanvas: string; remainingText: string; lines: string[] } => {
     const paragraphs = text.split('\n');
-    let lines: string[] = [];
     let allWords: string[] = [];
     paragraphs.forEach((p, index) => {
         if (p.trim() !== '') {
             allWords.push(...p.split(' '));
         }
-        // Add a newline marker between paragraphs, but not after the last one
         if (index < paragraphs.length - 1) {
             allWords.push('\n');
         }
     });
 
+    let lines: string[] = [];
     let currentLine = '';
     let wordBuffer = [...allWords];
-    let finalRemainingText = '';
+    let remainingWords: string[] = [];
 
     while (wordBuffer.length > 0) {
         const word = wordBuffer.shift();
-
         if (word === undefined) break;
 
-        // Handle explicit newlines
         if (word === '\n') {
-            if (lines.length < extendedMaxLines) {
-                lines.push(currentLine);
-                currentLine = ''; // Start a new line, effectively creating a paragraph break
-            } else {
-                finalRemainingText = [currentLine, ...wordBuffer].join(' ').replace(/\n/g, ' \n ').trim();
-                currentLine = '';
+            lines.push(currentLine);
+            currentLine = '';
+            if (lines.length >= extendedMaxLines) {
+                remainingWords = wordBuffer;
                 break;
             }
             continue;
         }
 
         const testLine = currentLine ? `${currentLine} ${word}` : word;
-
-        if (context.measureText(testLine).width > maxWidth && currentLine !== '') {
+        if (context.measureText(testLine).width <= maxWidth) {
+            currentLine = testLine;
+        } else {
             lines.push(currentLine);
             currentLine = word;
-        } else {
-            currentLine = testLine;
         }
-        
-        let maxLines = baseMaxLines;
-        
-        // Check for extension possibility around the base limit
-        if (lines.length === baseMaxLines - 1) {
-            const potentialRemainingText = [currentLine, ...wordBuffer].join(' ').replace(/\n/g, ' \n ').trim();
+
+        if (lines.length >= baseMaxLines) {
+            const potentialRemainingWords = [currentLine, ...wordBuffer];
+            const potentialRemainingText = potentialRemainingWords.join(' ').replace(/\n/g, ' \n ').trim();
             const firstSentenceMatch = potentialRemainingText.match(/^([^.!?]+[.!?])/);
 
+            let extend = false;
             if (firstSentenceMatch) {
                 const firstSentence = firstSentenceMatch[1];
                 const sentenceWords = firstSentence.trim().split(' ');
-                
-                // If the next sentence is longer than 2 words, we don't extend.
-                if (sentenceWords.length > 2) {
-                    maxLines = baseMaxLines;
-                } else {
-                // If it's short, allow extension to keep it.
-                    maxLines = extendedMaxLines;
+                if (sentenceWords.length <= 2) {
+                    extend = true;
                 }
             }
-        }
 
-
-        if (lines.length >= maxLines) {
-             wordBuffer.unshift(currentLine);
-             finalRemainingText = wordBuffer.join(' ').replace(/\n/g, ' \n ').trim();
-             currentLine = '';
-             break;
+            if (lines.length >= extendedMaxLines || (!extend && lines.length >= baseMaxLines)) {
+                 remainingWords = [currentLine, ...wordBuffer];
+                 currentLine = ''; 
+                 break;
+            }
         }
     }
-
+    
     if (currentLine) {
         lines.push(currentLine);
     }
     
-    // Clean up remaining text for proper handoff
-    const cleanedRemainingText = finalRemainingText.replace(/ \n /g, '\n').trim();
+    const finalRemainingText = remainingWords.join(' ').replace(/ \n /g, '\n').trim();
 
-    return { textForCanvas: lines.join('\n'), remainingText: cleanedRemainingText, lines: lines };
+    return { textForCanvas: lines.join('\n'), remainingText: finalRemainingText, lines: lines };
 };
 
 
