@@ -152,22 +152,15 @@ export default function Home() {
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const { toast } = useToast();
 
-  const remainingTextRef = useRef<string | null>(null);
-
-  const handleTextRemaining = useCallback((remaining: string) => {
-    if (remaining && remaining !== remainingTextRef.current) {
-      remainingTextRef.current = remaining;
-      setDesigns(prevDesigns => {
-        const lastNonTitleText = [...prevDesigns].reverse().find(d => !d.isTitle)?.text;
-        if (lastNonTitleText === remaining) {
-          return prevDesigns;
-        }
-        return [...prevDesigns, { text: remaining, isTitle: false }];
-      });
-    } else if (!remaining) {
-      remainingTextRef.current = null;
+  const handleTextRemaining = useCallback((remaining: string, fromIndex: number) => {
+    if (remaining) {
+      // To prevent infinite loops, only add a new design if it's from the last canvas 
+      // and the remaining text is not already present in subsequent designs.
+      if (fromIndex === designs.length - 1) {
+        setDesigns(prevDesigns => [...prevDesigns, { text: remaining, isTitle: false }]);
+      }
     }
-  }, []);
+  }, [designs.length]);
 
   const handleGenerate = async () => {
     if (!text && !title) {
@@ -179,41 +172,39 @@ export default function Home() {
       return;
     }
     setIsLoading(true);
-    setDesigns([]);
-    remainingTextRef.current = null;
+    setDesigns([]); // Clear all previous designs
     
-    // Artificial delay to show loading state
-    await new Promise(resolve => setTimeout(resolve, 50));
+    // Use a short timeout to allow the UI to update and clear the old designs
+    // before we start generating new ones. This prevents race conditions.
+    setTimeout(() => {
+        let finalTitle = title;
+        let finalBody = text;
 
-    let finalTitle = title;
-    let finalBody = text;
-
-    if (!finalTitle && finalBody) {
-        // Extract the first sentence as the title.
-        const sentenceEndMarkers = /[.!?]/;
-        const firstSentenceMatch = finalBody.match(sentenceEndMarkers);
-        
-        if (firstSentenceMatch && firstSentenceMatch.index !== undefined) {
-            const firstSentenceEnd = firstSentenceMatch.index + 1;
-            finalTitle = finalBody.substring(0, firstSentenceEnd).trim();
-            finalBody = finalBody.substring(firstSentenceEnd).trim();
-        } else {
-            // If no sentence end is found, use the whole text as title and leave body empty
-            finalTitle = finalBody;
-            finalBody = "";
+        if (!finalTitle && finalBody) {
+            const sentenceEndMarkers = /[.!?]/;
+            const firstSentenceMatch = finalBody.match(sentenceEndMarkers);
+            
+            if (firstSentenceMatch && firstSentenceMatch.index !== undefined) {
+                const firstSentenceEnd = firstSentenceMatch.index + 1;
+                finalTitle = finalBody.substring(0, firstSentenceEnd).trim();
+                finalBody = finalBody.substring(firstSentenceEnd).trim();
+            } else {
+                finalTitle = finalBody;
+                finalBody = "";
+            }
         }
-    }
 
-    const newDesigns: Design[] = [];
-    if (finalTitle) {
-      newDesigns.push({ text: finalTitle, isTitle: true });
-    }
-    if (finalBody) {
-      newDesigns.push({ text: finalBody, isTitle: false });
-    }
-    
-    setDesigns(newDesigns);
-    setIsLoading(false);
+        const newDesigns: Design[] = [];
+        if (finalTitle) {
+          newDesigns.push({ text: finalTitle, isTitle: true });
+        }
+        if (finalBody) {
+          newDesigns.push({ text: finalBody, isTitle: false });
+        }
+        
+        setDesigns(newDesigns);
+        setIsLoading(false);
+    }, 50);
   };
   
   const handleDownload = (index: number) => {
@@ -297,14 +288,13 @@ export default function Home() {
           onCanvasReady={(canvas) => {
             canvasRefs.current[index] = canvas;
           }}
-          onTextRemaining={(remaining) => handleTextRemaining(remaining)}
-          isLastCanvas={index === designs.length - 1}
+          onTextRemaining={(remaining) => handleTextRemaining(remaining, index)}
           rectColor={rectBgColor}
           rectOpacity={rectOpacity}
           textAlign={textAlign}
         />
     )
-  }, [designTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, designs, handleTextRemaining, rectBgColor, rectOpacity, textAlign]);
+  }, [designTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, handleTextRemaining, rectBgColor, rectOpacity, textAlign]);
 
   return (
     <div className="container mx-auto p-4 md:p-8">

@@ -23,8 +23,7 @@ type ImageCanvasProps = {
   height: number;
   onCanvasReady: (canvas: HTMLCanvasElement) => void;
   backgroundImageUrl?: string;
-  onTextRemaining: (remainingText: string) => void;
-  isLastCanvas: boolean;
+  onTextRemaining: (remainingText: string, fromIndex: number) => void;
   rectColor: string;
   rectOpacity: number;
   textAlign: 'left' | 'center' | 'right';
@@ -101,7 +100,11 @@ const measureAndSplitText = (
     }
 
     const textForCanvas = lines.join('\n');
-    const remainingText = remainingWords.slice(wordIndex).join('').trim();
+    let consumedChars = 0;
+    for(const l of lines) {
+        consumedChars += l.length;
+    }
+    const remainingText = text.substring(consumedChars).trim();
   
     return { textForCanvas, remainingText, lines };
 };
@@ -155,7 +158,6 @@ export function ImageCanvas({
   onCanvasReady,
   backgroundImageUrl,
   onTextRemaining,
-  isLastCanvas,
   rectColor,
   rectOpacity,
   textAlign,
@@ -223,8 +225,10 @@ export function ImageCanvas({
         // Draw the text
         wrapAndDrawText(ctx, linesToDraw, textX, rectY, lineHeight, rectHeight);
         
-        if (isLastCanvas && !isTitle) {
-          onTextRemaining(remainingText);
+        if (!isTitle) {
+          // Pass the original index to onTextRemaining
+          const canvasIndex = parseInt(canvas.dataset.index || '0', 10);
+          onTextRemaining(remainingText, canvasIndex);
         }
         
         onCanvasReady(canvas);
@@ -280,7 +284,21 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, isLastCanvas, rectColor, rectOpacity, textAlign]);
+  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, textAlign]);
+
+  // We need a way to pass the index to the effect
+  const index = React.useMemo(() => {
+    if (canvasRef.current && canvasRef.current.parentElement) {
+      // A bit of a hack, but we can try to find the index from the DOM structure
+      // This is not ideal but works for the carousel item structure
+      const carouselItem = canvasRef.current.closest('[role="group"]');
+      if (carouselItem && carouselItem.parentElement) {
+        return Array.from(carouselItem.parentElement.children).indexOf(carouselItem);
+      }
+    }
+    return 0;
+  }, []);
+
 
   return (
     <canvas
@@ -288,6 +306,7 @@ export function ImageCanvas({
       width={width}
       height={height}
       className="w-full h-full"
+      data-index={index}
     />
   );
 }
