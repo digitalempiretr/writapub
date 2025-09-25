@@ -154,13 +154,19 @@ export default function Home() {
 
   const handleTextRemaining = useCallback((remaining: string, fromIndex: number) => {
     if (remaining) {
-      // To prevent infinite loops, only add a new design if it's from the last canvas 
-      // and the remaining text is not already present in subsequent designs.
-      if (fromIndex === designs.length - 1) {
-        setDesigns(prevDesigns => [...prevDesigns, { text: remaining, isTitle: false }]);
-      }
+      setDesigns(prevDesigns => {
+        // Only add a new design if it's from the last canvas.
+        if (fromIndex === prevDesigns.length - 1) {
+          // And also check if the next design doesn't already have this text.
+          const nextDesign = prevDesigns[fromIndex + 1];
+          if (!nextDesign || nextDesign.text !== remaining) {
+            return [...prevDesigns, { text: remaining, isTitle: false }];
+          }
+        }
+        return prevDesigns;
+      });
     }
-  }, [designs.length]);
+  }, []);
 
   const handleGenerate = async () => {
     if (!text && !title) {
