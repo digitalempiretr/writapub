@@ -1,85 +1,94 @@
 # Writa - Application Rules & Logic (Uygulama Kuralları ve İşleyişi)
 
-This file documents the core logic and rules of the application. All future development must adhere to these rules and avoid breaking existing functionality.
-_Bu dosya, uygulamanın temel işleyiş kurallarını ve özelliklerini içerir. Gelecekteki tüm geliştirmeler, burada belirtilen kurallara uygun olarak yapılmalı ve mevcut işleyişi bozmamalıdır._
+This document outlines the core rules, logic, and version history of the Writa application. All future development must adhere to these rules, and changes will be documented under a new version number at the top of this file.
+_Bu belge, Writa uygulamasının temel kurallarını, işleyişini ve sürüm geçmişini içerir. Gelecekteki tüm geliştirmeler bu kurallara uygun olmalı ve yapılan değişiklikler dosyanın en üstüne yeni bir sürüm numarası ile belgelenmelidir._
 
 ---
 
-## 0. Non-Negotiable Core Rules (Değiştirilemez Çekirdek Kurallar)
+## Version V1.0
+
+This version represents the first stable release of the application, where the core text-to-image generation functionality is working reliably.
+_Bu sürüm, uygulamanın temel metinden görsel oluşturma işlevinin güvenilir bir şekilde çalıştığı ilk kararlı sürümünü temsil eder._
+
+---
+
+### 0. Non-Negotiable Core Rules (Değiştirilemez Çekirdek Kurallar)
 
 **ATTENTION:** The rules listed in this section are fundamental to the stable operation of the application. These rules cannot be changed without the approval of the code manager (the user). All new developments must be made while ensuring that the rules in this section are not broken.
 _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışması için temeldir. Kod yöneticisi (kullanıcı) onayı olmadan bu kurallar değiştirilemez. Tüm yeni geliştirmeler, bu bölümdeki kuralların bozulmadığı kontrol edilerek yapılmalıdır._
 
-### English Non-Negotiable Core Rules
+#### English Core Rules
 1.  **Generate from Scratch:** Every time the "Generate" button is clicked, all existing designs must be cleared (`setDesigns([])`), and a completely new set of designs must be created from scratch using the inputs (title and text).
-2.  **Flexible 12-Line Limit:** The main text is programmatically split within `ImageCanvas`. Each image (slide) should generally not exceed 12 lines. However, to avoid splitting a sentence at an awkward point, if the last sentence would be split and only 1 or 2 words would carry over to the next slide, the current slide can be extended up to a maximum of 14 lines to keep the sentence intact. This is a strict rule enforced by the code.
-3.  **No Overflow:** Both the title and body text must always remain **inside** the text box area in the center of the canvas. The text must **never** overflow vertically or horizontally outside this area. Long titles must automatically wrap to new lines.
-4.  **Automatic Title Logic:** If the user has not specified a title, the first sentence of the entered text is automatically used as the title. In this case, this sentence used as the title **must be removed** from the beginning of the main text.
-5.  **Widescreen Panel Ratio:** On wide screens like desktops, the left control panel (Content & Design) should be `lg:col-span-5` (approx. 40%) and the right design area `lg:col-span-7` (approx. 60%) wide.
-6.  **"Sticky" Control Panel:** On wider screens like desktops, the left-side control panel should be **fixed (`sticky`)** to the left of the screen when the user scrolls down.
-7.  **Mobile Layout:** On mobile devices (smaller screens), the control panel and the design preview area should be displayed **one below the other**, not side-by-side.
-8.  **Portrait Background Previews:** The thumbnail previews in the Gradient and Image selection tabs must be portrait-oriented to reflect the final design's 1080x1350 aspect ratio.
+2.  **Dynamic Slide Generation:** The number of generated images (slides) is not fixed. It dynamically increases based on the length of the input text until all text is placed.
+3.  **Flexible Line Limit (12-14 lines):** Each image (slide) should generally not exceed 12 lines. However, to avoid awkwardly splitting a sentence, if only 1 or 2 words of the last sentence would carry over to the next slide, the current slide can be extended up to a maximum of 14 lines to keep the sentence intact. This is a strict rule enforced by the code.
+4.  **No Overflow:** Both the title and body text must always remain **inside** the text box area in the center of the canvas. The text must **never** overflow vertically or horizontally outside this area. Long titles must automatically wrap to new lines.
+5.  **Automatic Title Logic:** If the user has not specified a title, the first sentence of the entered text is automatically used as the title. In this case, this sentence used as the title **must be removed** from the beginning of the main text.
+6.  **Paragraph & Newline Preservation:** Paragraphs and newlines entered by the user in the text area must be preserved and reflected in the final designs.
+7.  **Widescreen Panel Ratio:** On wide screens like desktops, the left control panel (Content & Design) should be `lg:col-span-5` (approx. 40%) and the right design area `lg:col-span-7` (approx. 60%) wide.
+8.  **"Sticky" Control Panel:** On wider screens like desktops, the left-side control panel should be **fixed (`sticky`)** to the left of the screen when the user scrolls down.
+9.  **Mobile Layout:** On mobile devices (smaller screens), the control panel and the design preview area should be displayed **one below the other**, not side-by-side.
+10. **Portrait Background Previews:** The thumbnail previews in the Gradient and Image selection tabs must be portrait-oriented to reflect the final design's 1080x1350 aspect ratio.
 
-### Türkçe Değiştirilemez Çekirdek Kurallar
+#### Türkçe Çekirdek Kurallar
 1.  **Sıfırdan Oluşturma:** "Oluştur" butonuna her tıklandığında, mevcut tüm tasarımlar temizlenmeli (`setDesigns([])`) ve girdiler (başlık ve metin) kullanılarak tamamen yeni bir tasarım seti sıfırdan oluşturulmalıdır.
-2.  **Esnek 12 Satır Limiti:** Ana metin, `ImageCanvas` içinde programatik olarak bölünür. Her bir görsel (slayt) genellikle 12 satırı geçmemelidir. Ancak, bir cümlenin anlamsız bir yerde bölünmesini önlemek amacıyla, eğer son cümlenin bölünmesiyle sonraki slayta sadece 1 ya da 2 kelime kalacaksa, mevcut slayt cümleyi bir arada tutmak için en fazla 14 satıra kadar uzatılabilir. Bu, kod tarafından uygulanan katı bir kuraldır.
-3.  **Taşma Engeli:** Hem başlık hem de gövde metni, her zaman kanvasın ortasındaki metin kutusu alanının **içinde kalmalıdır**. Metin, bu alanın dışına dikey veya yatay olarak **asla taşmamalıdır**. Uzun başlıklar otomatik olarak alt satırlara sarılmalıdır.
-4.  **Otomatik Başlık Mantığı:** Kullanıcı bir başlık belirtmemişse, girilen metnin ilk cümlesi otomatik olarak başlık olarak kullanılır. Bu durumda, başlık olarak kullanılan bu cümle ana metnin başından **kesinlikle çıkarılmalıdır**.
-5.  **Geniş Ekran Panel Oranı:** Masaüstü gibi geniş ekranlarda, sol kontrol paneli (İçerik & Tasarım) `lg:col-span-5` (yaklaşık %40) ve sağ tasarım alanı `lg:col-span-7` (yaklaşık %60) genişliğinde olmalıdır.
-6.  **"Yapışkan" Kontrol Paneli:** Masaüstü gibi daha geniş ekranlarda, kullanıcı sayfayı aşağı kaydırdığında sol taraftaki kontrol paneli ekranın soluna **sabitlenmelidir** (`sticky`).
-7.  **Mobil Düzen:** Mobil cihazlarda (daha küçük ekranlarda), kontrol paneli ve tasarım önizleme alanı yan yana değil, **alt alta** görüntülenmelidir.
-8.  **Dikey Arka Plan Önizlemesi:** Gradyan ve Görsel seçimi sekmelerindeki küçük resim önizlemeleri, nihai tasarımın 1080x1350 en-boy oranını yansıtacak şekilde dikey olmalıdır.
+2.  **Dinamik Slayt Oluşturma:** Oluşturulan görsel (slayt) sayısı sabit değildir. Girilen metnin uzunluğuna göre, tüm metin yerleştirilene kadar dinamik olarak artar.
+3.  **Esnek Satır Limiti (12-14 satır):** Her bir görsel (slayt) genellikle 12 satırı geçmemelidir. Ancak, bir cümlenin anlamsız bir yerde bölünmesini önlemek amacıyla, eğer son cümlenin bölünmesiyle sonraki slayta sadece 1 ya da 2 kelime kalacaksa, mevcut slayt cümleyi bir arada tutmak için en fazla 14 satıra kadar uzatılabilir. Bu, kod tarafından uygulanan katı bir kuraldır.
+4.  **Taşma Engeli:** Hem başlık hem de gövde metni, her zaman kanvasın ortasındaki metin kutusu alanının **içinde kalmalıdır**. Metin, bu alanın dışına dikey veya yatay olarak **asla taşmamalıdır**. Uzun başlıklar otomatik olarak alt satırlara sarılmalıdır.
+5.  **Otomatik Başlık Mantığı:** Kullanıcı bir başlık belirtmemişse, girilen metnin ilk cümlesi otomatik olarak başlık olarak kullanılır. Bu durumda, başlık olarak kullanılan bu cümle ana metnin başından **kesinlikle çıkarılmalıdır**.
+6.  **Paragraf ve Satır Başı Koruma:** Kullanıcının metin alanına girdiği paragraflar ve satır başları korunmalı ve oluşturulan tasarımlara aynen yansıtılmalıdır.
+7.  **Geniş Ekran Panel Oranı:** Masaüstü gibi geniş ekranlarda, sol kontrol paneli (İçerik & Tasarım) `lg:col-span-5` (yaklaşık %40) ve sağ tasarım alanı `lg:col-span-7` (yaklaşık %60) genişliğinde olmalıdır.
+8.  **"Yapışkan" Kontrol Paneli:** Masaüstü gibi daha geniş ekranlarda, kullanıcı sayfayı aşağı kaydırdığında sol taraftaki kontrol paneli ekranın soluna **sabitlenmelidir** (`sticky`).
+9.  **Mobil Düzen:** Mobil cihazlarda (daha küçük ekranlarda), kontrol panel ve tasarım önizleme alanı yan yana değil, **alt alta** görüntülenmelidir.
+10. **Dikey Arka Plan Önizlemesi:** Gradyan ve Görsel seçimi sekmelerindeki küçük resim önizlemeleri, nihai tasarımın 1080x1350 en-boy oranını yansıtacak şekilde dikey olmalıdır.
 
 ---
 
-## 1. Text Processing & API Costs (Metin İşleme ve API Maliyetleri)
+### 1. API Usage & Costs (API Kullanımı ve Maliyetler)
 
-### English
+#### English
 The application has 1 feature that uses an external API:
 -   **Image Search (`findImages`):**
     -   **Service:** Pexels API
     -   **Trigger:** Runs when you type a search term in the "Image Search" box and press the "Search" button.
     -   **Cost Model:** This feature is subject to the Pexels API's usage limits. Pexels offers a free tier with a certain number of requests per hour. If you exceed this limit, you may need to wait or consider their commercial plans. For details, see the Pexels API documentation.
+-   **Text Processing (`handleGenerate`):**
+    -   **Service:** This is now handled by client-side JavaScript code.
+    -   **Cost Model:** There is **no API cost** associated with generating designs from text. This operation is free.
 
-### Türkçe
+#### Türkçe
 Uygulamada harici API kullanan 1 adet özellik bulunmaktadır:
 -   **Görsel Arama (`findImages`):**
     -   **Servis:** Pexels API
     -   **Tetiklenme:** "Görsel Ara" kutusuna bir arama terimi yazıp "Ara" butonuna basıldığında çalışır.
     -   **Maliyetlendirme:** Bu özellik, Pexels API'sinin kullanım limitlerine tabidir. Pexels, saatte belirli bir istek sayısına kadar ücretsiz bir kullanım hakkı sunar. Bu limit aşıldığında beklemeniz veya ticari planları değerlendirmeniz gerekebilir. Detaylar için Pexels API dokümantasyonuna bakınız.
+-   **Metin İşleme (`handleGenerate`):**
+    -   **Servis:** Bu işlem artık istemci tarafı (client-side) JavaScript kodu ile yapılmaktadır.
+    -   **Maliyetlendirme:** Metinden tasarım oluşturma işlemiyle ilişkili **herhangi bir API maliyeti yoktur**. Bu işlem ücretsizdir.
 
 ---
 
-## 2. Canvas & Design Rules (Kanvas ve Tasarım Kuralları)
+### 2. Canvas & Design Rules (Kanvas ve Tasarım Kuralları)
 
-### English
--   The user should be able to change the color of the text on the design via a color picker in the "Font Settings" section.
--   Regardless of the chosen background type (Flat Color, Gradient, Image), the user should be able to adjust the color and opacity (from 0 to 1) of the text box in the center of the canvas. These settings should be located in a separate section below the "Font" selection area and before the "Background" selection tabs.
--   The user should be able to choose the text alignment (left, center, right). This setting is located in the "Font Settings" section.
+#### English
+-   The user can change the color of the text on the design via a color picker in the "Font Settings" section.
+-   Regardless of the chosen background type (Flat Color, Gradient, Image), the user can adjust the color and opacity (from 0 to 1) of the text box in the center of the canvas. These settings are located in a separate "Text Box Settings" section.
+-   The user can choose the text alignment (left, center, right). This setting is located in the "Font Settings" section.
 
-### Türkçe
+#### Türkçe
 -   Kullanıcı, "Yazı Tipi Ayarları" bölümünden tasarım üzerindeki metnin rengini bir renk seçici aracılığıyla değiştirebilmelidir.
--   Seçtiği arka plan türünden (Düz Renk, Gradyan, Görsel) bağımsız olarak, kullanıcı kanvasın ortasındaki metin kutusunun rengini ve 0 ile 1 arasında şeffaflığını ayarlayabilmelidir. Bu ayarlar, "Yazı Tipi" seçim alanının altında ve "Arka Plan" seçim sekmelerinden önce ayrı bir bölümde yer almalıdır.
+-   Seçtiği arka plan türünden (Düz Renk, Gradyan, Görsel) bağımsız olarak, kullanıcı kanvasın ortasındaki metin kutusunun rengini ve 0 ile 1 arasında şeffaflığını ayarlayabilmelidir. Bu ayarlar, ayrı bir "Metin Kutusu Ayarları" bölümünde yer alır.
 -   Kullanıcı, metin hizalamasını (sol, orta, sağ) seçebilmelidir. Bu ayar "Yazı Tipi Ayarları" bölümünde yer alır.
 
 ---
 
-## 3. Font & Character Support (Font ve Karakter Desteği)
+### 3. Font & Character Support (Font ve Karakter Desteği)
 
-### English
+#### English
 -   All fonts loaded from Google Fonts must include the `latin-ext` character set to ensure correct display of Turkish characters.
 -   In the font selection menu, the name of each font option should be displayed in its own font style. This allows the user to preview how the fonts look before selecting them.
 -   The default font in the font selection dropdown is set to "Special Elite".
 
-### Türkçe
+#### Türkçe
 -   Google Fonts'tan yüklenen tüm yazı tipleri, Türkçe karakterlerin doğru görüntülenmesini sağlamak için `latin-ext` karakter setini içermelidir.
 -   Font seçim menüsünde, her bir font seçeneğinin adı kendi yazı tipiyle görüntülenmelidir. Bu, kullanıcının fontları seçmeden önce nasıl göründüklerini önizlemesini sağlar.
 -   Yazı tipi seçim menüsündeki varsayılan font "Special Elite" olarak ayarlanmıştır.
-
----
-
-### PLANNED STEPS (PLANLANAN ADIMLAR)
-***Not: Yeni görevler buraya eklenebilir.***
-*Note: New tasks can be added here.*
-
-(All planned steps have been completed. New tasks can be added here.)
