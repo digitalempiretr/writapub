@@ -5,14 +5,20 @@ _Bu belge, Writa uygulamasının temel kurallarını, işleyişini ve sürüm ge
 
 ---
 
+# Version History (Sürüm Geçmişi)
+
+_New versions will be added to the top of this section._
+_Yeni sürümler bu bölümün en üstüne eklenecektir._
+
+---
+---
+
 ## Version V1.0
 
 This version represents the first stable release of the application, where the core text-to-image generation functionality is working reliably.
 _Bu sürüm, uygulamanın temel metinden görsel oluşturma işlevinin güvenilir bir şekilde çalıştığı ilk kararlı sürümünü temsil eder._
 
----
-
-### 0. Non-Negotiable Core Rules (Değiştirilemez Çekirdek Kurallar)
+### Non-Negotiable Core Rules (Değiştirilemez Çekirdek Kurallar)
 
 **ATTENTION:** The rules listed in this section are fundamental to the stable operation of the application. These rules cannot be changed without the approval of the code manager (the user). All new developments must be made while ensuring that the rules in this section are not broken.
 _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışması için temeldir. Kod yöneticisi (kullanıcı) onayı olmadan bu kurallar değiştirilemez. Tüm yeni geliştirmeler, bu bölümdeki kuralların bozulmadığı kontrol edilerek yapılmalıdır._
