@@ -7,3 +7,4 @@ Bu dosya, Writa uygulaması için planlanan özellikleri ve değişiklikleri iç
 _This file contains the planned features and changes for the Writa application. The AI will read this file to understand the next steps. Completed tasks will be removed from here and added as a version note to `app-rules.md`._
 
 ---
+Yazı Tipi Ayarları kısmını sağ tarafraki tasarımlar bölümüne taşı

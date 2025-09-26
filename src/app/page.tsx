@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
@@ -315,15 +316,6 @@ export default function Home() {
                 <CardTitle>Creative Magic</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* <div className="space-y-2">
-                  <Label htmlFor="title">Başlık (İsteğe Bağlı)</Label>
-                  <Input
-                    id="title"
-                    placeholder="Paylaşım başlığı"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
-                </div> */}
                 <div className="space-y-2">
                   <Textarea
                     id="text"
@@ -334,40 +326,6 @@ export default function Home() {
                   />
                   <p className="text-xs text-muted-foreground text-right">{text.length} karakter</p>
                 </div>
-                 <div className="space-y-4">
-                  <Label>Yazı Tipi Ayarları</Label>
-                   <div className="flex flex-col gap-4">
-                     <Select onValueChange={handleFontChange} defaultValue={activeFont.value}>
-                       <SelectTrigger>
-                         <SelectValue placeholder="Bir yazı tipi seçin" />
-                       </SelectTrigger>
-                       <SelectContent>
-                         {fontOptions.map(font => (
-                           <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
-                             {font.label}
-                           </SelectItem>
-                         ))}
-                       </SelectContent>
-                     </Select>
-                     <div className="flex items-center justify-between">
-                       <div className="flex items-center gap-2">
-                         <Label>Metin:</Label>
-                         <Input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="w-20 p-1"/>
-                       </div>
-                       <div className="flex items-center gap-1 rounded-md border border-input p-1">
-                          <Button variant={textAlign === 'left' ? 'secondary' : 'ghost'} size="icon" onClick={() => setTextAlign('left')} className="h-8 w-8">
-                            <AlignLeft className="h-4 w-4" />
-                          </Button>
-                           <Button variant={textAlign === 'center' ? 'secondary' : 'ghost'} size="icon" onClick={() => setTextAlign('center')} className="h-8 w-8">
-                            <AlignCenter className="h-4 w-4" />
-                          </Button>
-                           <Button variant={textAlign === 'right' ? 'secondary' : 'ghost'} size="icon" onClick={() => setTextAlign('right')} className="h-8 w-8">
-                            <AlignRight className="h-4 w-4" />
-                          </Button>
-                       </div>
-                     </div>
-                   </div>
-                 </div>
 
                 <div className="space-y-4">
                   <Label>Metin Kutusu Ayarları</Label>
@@ -509,6 +467,41 @@ export default function Home() {
                     </p>
                 </div>
               )}
+               <Separator className="my-6" />
+                <div className="space-y-4 px-1">
+                  <Label>Yazı Tipi Ayarları</Label>
+                   <div className="flex flex-col gap-4">
+                     <Select onValueChange={handleFontChange} defaultValue={activeFont.value}>
+                       <SelectTrigger>
+                         <SelectValue placeholder="Bir yazı tipi seçin" />
+                       </SelectTrigger>
+                       <SelectContent>
+                         {fontOptions.map(font => (
+                           <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
+                             {font.label}
+                           </SelectItem>
+                         ))}
+                       </SelectContent>
+                     </Select>
+                     <div className="flex items-center justify-between">
+                       <div className="flex items-center gap-2">
+                         <Label>Metin:</Label>
+                         <Input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="w-20 p-1"/>
+                       </div>
+                       <div className="flex items-center gap-1 rounded-md border border-input p-1">
+                          <Button variant={textAlign === 'left' ? 'secondary' : 'ghost'} size="icon" onClick={() => setTextAlign('left')} className="h-8 w-8">
+                            <AlignLeft className="h-4 w-4" />
+                          </Button>
+                           <Button variant={textAlign === 'center' ? 'secondary' : 'ghost'} size="icon" onClick={() => setTextAlign('center')} className="h-8 w-8">
+                            <AlignCenter className="h-4 w-4" />
+                          </Button>
+                           <Button variant={textAlign === 'right' ? 'secondary' : 'ghost'} size="icon" onClick={() => setTextAlign('right')} className="h-8 w-8">
+                            <AlignRight className="h-4 w-4" />
+                          </Button>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
             </CardContent>
           </Card>
         </div>
