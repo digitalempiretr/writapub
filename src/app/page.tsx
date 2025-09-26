@@ -138,7 +138,7 @@ export default function Home() {
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'special-elite') || fontOptions[0]);
   const [textAlign, setTextAlign] = useState<TextAlign>('left');
   const [designTab, setDesignTab] = useState("flat");
-  const [bgColor, setBgColor] = useState("#E8F0FE");
+  const [bgColor, setBgColor] = useState("#FFFFFF");
   const [textColor, setTextColor] = useState("#172554");
   const [gradientBg, setGradientBg] = useState(gradientTemplates[0].css);
   const [imageBgUrl, setImageBgUrl] = useState(imageTemplates[0].imageUrl);
@@ -331,7 +331,6 @@ export default function Home() {
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     rows={8}
-                    className="resize-none"
                   />
                   <p className="text-xs text-muted-foreground text-right">{text.length} karakter</p>
                 </div>
@@ -517,5 +516,3 @@ export default function Home() {
     </div>
   );
 }
-
-    

@@ -14,6 +14,20 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.04
+
+#### ENGLISH
+### 1. UI & Style Updates
+-   **Background:** A new gradient background (`linear-gradient(to left, #fcb045, #fd1d1d, #833ab4)`) has been applied to the main body of the application.
+-   **Text Area:** The text input area is now resizable by the user, allowing for a more flexible writing experience.
+
+#### TURKCE
+### 1. Arayüz ve Stil Güncellemeleri
+-   **Arka Plan:** Uygulamanın ana gövdesine yeni bir gradyan arka plan (`linear-gradient(to left, #fcb045, #fd1d1d, #833ab4)`) uygulandı.
+-   **Metin Alanı:** Metin giriş alanı artık kullanıcı tarafından yeniden boyutlandırılabiliyor, bu da daha esnek bir yazma deneyimi sağlıyor.
+
+---
+
 ## Version V1.03
 
 #### ENGLISH
@@ -67,6 +81,21 @@ _Bu sürüm, uygulamanın temel metinden görsel oluşturma işlevinin güvenili
 
 **ATTENTION:** The rules listed in this section are fundamental to the stable operation of the application. These rules cannot be changed without the approval of the code manager (the user). All new developments must be made while ensuring that the rules in this section are not broken.
 _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışması için temeldir. Kod yöneticisi (kullanıcı) onayı olmadan bu kurallar değiştirilemez. Tüm yeni geliştirmeler, bu bölümdeki kuralların bozulmadığı kontrol edilerek yapılmalıdır._
+
+#### English Core Rules
+1.  **AI Pre-development Check:** Before starting any development, the AI must first review the `app-rules.md` file to understand all existing rules and the current state of the project.
+2.  **AI Task & Suggestion Protocol:** The AI must check `plans.md` for planned tasks. If the file is empty and there are no user instructions, the AI should proactively suggest new features or improvements in the chat.
+3.  **Version Control:** After every completed task or set of changes, the `app-rules.md` file must be updated with a new incremental version number (e.g., V1.01, V1.02), and the changes must be documented under that new version. Completed tasks must be removed from `plans.md`.
+4.  **Generate from Scratch:** Every time the "Generate" button is clicked, all existing designs must be cleared (`setDesigns([])`), and a completely new set of designs must be created from scratch using the inputs (title and text).
+5.  **Dynamic Slide Generation:** The number of generated images (slides) is not fixed. It dynamically increases based on the length of the input text until all text is placed.
+6.  **Flexible Line Limit (12-14 lines):** Each image (slide) should generally not exceed 12 lines. However, to avoid awkwardly splitting a sentence, if the remaining part of the sentence (e.g., 1 or 2 words) can fit, the current slide can be extended up to a maximum of 14 lines to keep the sentence intact. This is a strict rule enforced by the code.
+7.  **No Overflow:** Both the title and body text must always remain **inside** the text box area in the center of the canvas. The text must **never** overflow vertically or horizontally outside this area. Long titles must automatically wrap to new lines.
+8.  **Automatic Title Logic:** If the user has not specified a title, the first sentence of the entered text is automatically used as the title. In this case, this sentence used as the title **must be removed** from the beginning of the main text.
+9.  **Paragraph & Newline Preservation:** Paragraphs and newlines entered by the user in the text area must be preserved and reflected in the final designs.
+10. **Widescreen Panel Ratio:** On wide screens like desktops, the left control panel (Content & Design) should be `lg:col-span-5` (approx. 40%) and the right design area `lg:col-span-7` (approx. 60%) wide.
+11. **"Sticky" Control Panel:** On wider screens like desktops, the left-side control panel should be **fixed (`sticky`)** to the left of the screen when the user scrolls down.
+12. **Mobile Layout:** On mobile devices (smaller screens), the control panel and the design preview area should be displayed **one below the other**, not side-by-side.
+13. **Portrait Background Previews:** The thumbnail previews in the Gradient and Image selection tabs must be portrait-oriented to reflect the final design's 1080x1350 aspect ratio.
 
 #### English Core Rules
 1.  **AI Pre-development Check:** Before starting any development, the AI must first review the `app-rules.md` file to understand all existing rules and the current state of the project.

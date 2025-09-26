@@ -9,6 +9,3 @@ _This file contains the planned features and changes for the Writa application. 
 ---
 
 **Sıradaki Görevler:**
-- Başlık alanını kaldıralım uygulamadan. Ama bu fonksiyon kodlardan kalkmasın. İleride kolayca aktif edebilelim. Yani şimdilik deaktif olsun. Metnin ilk cümlesi başlık olarak ayarlanıyor zaten.
-
-- "Köşe Yazısı Metni" text parçasını kaldıralım. Textbox kalsın. Sayfanın tam ortasında olsun. Yüksekliği 200px olsun. Köşeleri rounded olsun. Sağa alttan aşağı doğru büyütüp küçüktülbilsin. Hemen üstünde ve sola yaslı şekilde Creative Magic yazsın.
