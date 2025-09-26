@@ -323,6 +323,7 @@ export default function Home() {
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     rows={8}
+                    className="bg-[#2C5364] text-primary-foreground placeholder:text-gray-400"
                   />
                   <p className="text-xs text-muted-foreground text-right">{text.length} karakter</p>
                 </div>
