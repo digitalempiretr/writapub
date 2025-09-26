@@ -305,13 +305,13 @@ export default function Home() {
 
   return (
     <>
-      <header className="text-left mb-10 p-4 md:p-8">
+      <header className="w-full text-left mb-10 p-4 md:p-8">
         <Logo className="text-[2rem]" />
       </header>
 
       <main className="container mx-auto p-4 md:p-8 pt-0">
         <div className="grid grid-cols-1 gap-8 items-start">
-          <div className="space-y-6">
+          <div className="space-y-6 max-w-[800px] mx-auto w-full">
               <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
               <div className="space-y-2">
                   <Textarea
