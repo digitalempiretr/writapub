@@ -326,59 +326,6 @@ export default function Home() {
                   />
                   <p className="text-xs text-muted-foreground text-right">{text.length} karakter</p>
                 </div>
-
-                 <div className="space-y-4">
-                  <Label>Arka Plan</Label>
-                  <Tabs value={designTab} onValueChange={setDesignTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-3">
-                      <TabsTrigger value="flat">Düz Renk</TabsTrigger>
-                      <TabsTrigger value="gradient">Gradyan</TabsTrigger>
-                      <TabsTrigger value="image">Görsel</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="flat" className="pt-4 space-y-4">
-                      <div className="flex items-center gap-4">
-                        <Label>Arka Plan:</Label>
-                        <Input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-24 p-1"/>
-                      </div>
-                    </TabsContent>
-                    <TabsContent value="gradient" className="pt-4">
-                       <div className="grid grid-cols-4 gap-2">
-                        {gradientTemplates.map(g => (
-                          <button key={g.name} className="aspect-[1080/1350] w-full rounded-md border-2 border-transparent focus:border-primary" style={{background: g.css}} onClick={() => setGradientBg(g.css)} title={g.name} />
-                        ))}
-                       </div>
-                    </TabsContent>
-                     <TabsContent value="image" className="pt-4 space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="image-search">Görsel Ara</Label>
-                          <div className="flex gap-2">
-                            <Input 
-                              id="image-search" 
-                              placeholder="Örn: dokulu kağıt, ahşap..." 
-                              value={searchQuery}
-                              onChange={(e) => setSearchQuery(e.target.value)}
-                              onKeyDown={(e) => e.key === 'Enter' && handleSearchImages()}
-                            />
-                            <Button onClick={handleSearchImages} disabled={isSearching} variant="outline" size="icon">
-                              {isSearching ? <Loader2 className="animate-spin" /> : <Search />}
-                            </Button>
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-4 gap-2">
-                          {imageTemplates.map(t => (
-                            <button key={t.name} className="aspect-[1080/1350] w-full rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden relative" onClick={() => setImageBgUrl(t.imageUrl)} title={t.name}>
-                              <Image src={t.imageUrl} alt={t.name} layout="fill" className="object-cover" />
-                            </button>
-                          ))}
-                          {searchedImages.map((url, i) => (
-                             <button key={i} className="aspect-[1080/1350] w-full rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden relative" onClick={() => setImageBgUrl(url)} title={`Searched Image ${i+1}`}>
-                              <Image src={url} alt={`Searched Image ${i+1}`} layout="fill" className="object-cover" unoptimized/>
-                            </button>
-                          ))}
-                        </div>
-                     </TabsContent>
-                  </Tabs>
-                </div>
               </CardContent>
               <CardFooter>
                 <Button
@@ -453,6 +400,59 @@ export default function Home() {
               )}
                <Separator className="my-6" />
                 <div className="space-y-4 px-1">
+                  <div className="space-y-4">
+                    <Label>Arka Plan</Label>
+                    <Tabs value={designTab} onValueChange={setDesignTab} className="w-full">
+                      <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="flat">Düz Renk</TabsTrigger>
+                        <TabsTrigger value="gradient">Gradyan</TabsTrigger>
+                        <TabsTrigger value="image">Görsel</TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="flat" className="pt-4 space-y-4">
+                        <div className="flex items-center gap-4">
+                          <Label>Arka Plan:</Label>
+                          <Input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-24 p-1"/>
+                        </div>
+                      </TabsContent>
+                      <TabsContent value="gradient" className="pt-4">
+                         <div className="grid grid-cols-4 gap-2">
+                          {gradientTemplates.map(g => (
+                            <button key={g.name} className="aspect-[1080/1350] w-full rounded-md border-2 border-transparent focus:border-primary" style={{background: g.css}} onClick={() => setGradientBg(g.css)} title={g.name} />
+                          ))}
+                         </div>
+                      </TabsContent>
+                       <TabsContent value="image" className="pt-4 space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="image-search">Görsel Ara</Label>
+                            <div className="flex gap-2">
+                              <Input 
+                                id="image-search" 
+                                placeholder="Örn: dokulu kağıt, ahşap..." 
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSearchImages()}
+                              />
+                              <Button onClick={handleSearchImages} disabled={isSearching} variant="outline" size="icon">
+                                {isSearching ? <Loader2 className="animate-spin" /> : <Search />}
+                              </Button>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-4 gap-2">
+                            {imageTemplates.map(t => (
+                              <button key={t.name} className="aspect-[1080/1350] w-full rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden relative" onClick={() => setImageBgUrl(t.imageUrl)} title={t.name}>
+                                <Image src={t.imageUrl} alt={t.name} layout="fill" className="object-cover" />
+                              </button>
+                            ))}
+                            {searchedImages.map((url, i) => (
+                               <button key={i} className="aspect-[1080/1350] w-full rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden relative" onClick={() => setImageBgUrl(url)} title={`Searched Image ${i+1}`}>
+                                <Image src={url} alt={`Searched Image ${i+1}`} layout="fill" className="object-cover" unoptimized/>
+                              </button>
+                            ))}
+                          </div>
+                       </TabsContent>
+                    </Tabs>
+                  </div>
+                  <Separator className="my-2" />
                   <div className="space-y-4">
                     <Label>Metin Kutusu Ayarları</Label>
                     <div className="flex items-center gap-4">

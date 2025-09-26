@@ -14,6 +14,18 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.06
+
+#### ENGLISH
+### 1. UI & Layout Updates
+-   **Centralized Design Controls:** The "Background," "Text Box Settings," and "Font Settings" sections have all been moved from the left-hand control panel to the right-hand design preview panel. This places all visual customization options directly next to the carousel preview, creating a more intuitive and consolidated user workflow.
+
+#### TURKCE
+### 1. Arayüz ve Yerleşim Güncellemeleri
+-   **Merkezi Tasarım Kontrolleri:** "Arka Plan," "Metin Kutusu Ayarları," ve "Yazı Tipi Ayarları" bölümlerinin tamamı sol kontrol panelinden sağdaki tasarım önizleme paneline taşındı. Bu, tüm görsel özelleştirme seçeneklerini doğrudan karusel önizlemesinin yanına yerleştirerek daha sezgisel ve birleşik bir kullanıcı iş akışı oluşturur.
+
+---
+
 ## Version V1.05
 
 #### ENGLISH
