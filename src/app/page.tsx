@@ -309,8 +309,8 @@ export default function Home() {
         <Logo className="text-[2rem]" />
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        <div className="lg:col-span-5 lg:sticky top-8">
+      <div className="grid grid-cols-1 gap-8 items-start">
+        <div className="">
             <Card>
               <CardHeader>
                 <CardTitle>Creative Magic</CardTitle>
@@ -344,7 +344,7 @@ export default function Home() {
             </Card>
         </div>
 
-        <div className="lg:col-span-7 mt-8 lg:mt-0">
+        <div className="mt-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
