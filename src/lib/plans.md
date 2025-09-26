@@ -7,7 +7,3 @@ _This file contains the planned features and changes for the Writa application. 
 ---
 
 **Sıradaki Görevler:**
-- Uygulama logosu olarak kullandığımız Writa yazısını başka bir google font ile yazmanı istiyorum. https://fonts.google.com/specimen/Libertinus+Keyboard . sadece bu yazıyı kullan ve dol tarafındaki o simgeyi iptal et. Bu yazı artık logomuz. Logoyu sola yasla. 
-Are You Writa? sloganını kaldır.
-
-- "İçerik & Tasarım, Metninizi girin ve tasarım ayarlarınızı yapın" yazılarını kaldır. Onun yerine sadece "Creative Magic" yazsın

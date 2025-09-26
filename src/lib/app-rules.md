@@ -27,7 +27,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 4.  **Taşma Engeli:** Hem başlık hem de gövde metni, her zaman kanvasın ortasındaki metin kutusu alanının **içinde kalmalıdır**. Metin, bu alanın dışına dikey veya yatay olarak **asla taşmamalıdır**. Uzun başlıklar otomatik olarak alt satırlara sarılmalıdır.
 5.  **Otomatik Başlık Mantığı:** Kullanıcı bir başlık belirtmemişse, girilen metnin ilk cümlesi otomatik olarak başlık olarak kullanılır. Bu durumda, başlık olarak kullanılan bu cümle ana metnin başından **kesinlikle çıkarılmalıdır**.
 6.  **Paragraf ve Satır Başı Koruma:** Kullanıcının metin alanına girdiği paragraflar ve satır başları korunmalı ve oluşturulan tasarımlara aynen yansıtılmalıdır.
-7.  **Geniş Ekran Panel Oranı:** Masaüstü gibi geniş ekranlarda, sol kontrol paneli (İçerik & Tasarım) `lg:col-span-5` (yaklaşık %40) ve sağ tasarım alanı `lg:col-span-7` (yaklaşık %60) genişliğinde olmalıdır.
+7.  **Geniş Ekran Panel Oranı:** Masaüstü gibi geniş ekranlarda, sol kontrol paneleli (İçerik & Tasarım) `lg:col-span-5` (yaklaşık %40) ve sağ tasarım alanı `lg:col-span-7` (yaklaşık %60) genişliğinde olmalıdır.
 8.  **"Yapışkan" Kontrol Paneli:** Masaüstü gibi daha geniş ekranlarda, kullanıcı sayfayı aşağı kaydırdığında sol taraftaki kontrol paneli ekranın soluna **sabitlenmelidir** (`sticky`).
 9.  **Mobil Düzen:** Mobil cihazlarda (daha küçük ekranlarda), kontrol panel ve tasarım önizleme alanı yan yana değil, **alt alta** görüntülenmelidir.
 10. **Dikey Arka Plan Önizlemesi:** Gradyan ve Görsel seçimi sekmelerindeki küçük resim önizlemeleri, nihai tasarımın 1080x1350 en-boy oranını yansıtacak şekilde dikey olmalıdır.
@@ -42,13 +42,27 @@ _New versions will be added to the top of this section._
 _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
+
+## Version V1.01
+
+#### ENGLISH
+### 1. UI & Branding Updates
+-   **Logo:** The application logo has been changed. It now uses the "Libertinus Keyboard" font from Google Fonts. The logo text is uppercase and has a fixed size of `2rem` on all screen sizes.
+-   **Header:** The "Are You Writa?" slogan has been removed. The logo is now left-aligned.
+-   **Control Panel Title:** The title of the left control panel has been changed from "İçerik & Tasarım" to a cleaner "Creative Magic".
+
+#### TURKCE
+### 1. Arayüz ve Marka Güncellemeleri
+-   **Logo:** Uygulama logosu değiştirildi. Artık Google Fonts'tan "Libertinus Keyboard" yazı tipini kullanıyor. Logo metni büyük harfle yazılmıştır ve tüm ekran boyutlarında `2rem` sabit boyutuna sahiptir.
+-   **Başlık Alanı:** "Are You Writa?" sloganı kaldırıldı. Logo artık sola hizalanmış durumda.
+-   **Kontrol Paneli Başlığı:** Sol kontrol panelinin başlığı "İçerik & Tasarım" yerine daha temiz bir ifade olan "Creative Magic" olarak değiştirildi.
+
 ---
 
 ## Version V1.0
 
 This version represents the first stable release of the application, where the core text-to-image generation functionality is working reliably.
 _Bu sürüm, uygulamanın temel metinden görsel oluşturma işlevinin güvenilir bir şekilde çalıştığı ilk kararlı sürümünü temsil eder._
-
 
 #### ENGLISH
 
@@ -65,16 +79,14 @@ _Bu sürüm, uygulamanın temel metinden görsel oluşturma işlevinin güvenili
 ### 2. Canvas & Design Rules
 -   The user can change the color of the text on the design via a color picker in the "Font Settings" section.
 -   Regardless of the chosen background type (Flat Color, Gradient, Image), the user can adjust the color and opacity (from 0 to 1) of the text box in the center of the canvas. These settings are located in a separate "Text Box Settings" section.
--   The user can choose the text alignment (left, center, right). This setting is located in the "Font Settings" section. 
+-   The user can choose the text alignment (left, center, right). This setting is located in the "Font Settings" section.
 
 ### 3. Font & Character Support
 -   All fonts loaded from Google Fonts must include the `latin-ext` character set to ensure correct display of Turkish characters.
 -   In the font selection menu, the name of each font option should be displayed in its own font style. This allows the user to preview how the fonts look before selecting them.
 -   The default font in the font selection dropdown is set to "Special Elite".
 
-
-
-#### TURKCE 
+#### TURKCE
 
 ### 1. API Kullanımı ve Maliyetler
 Uygulamada harici API kullanan 1 adet özellik bulunmaktadır:
@@ -83,7 +95,7 @@ Uygulamada harici API kullanan 1 adet özellik bulunmaktadır:
     -   **Tetiklenme:** "Görsel Ara" kutusuna bir arama terimi yazıp "Ara" butonuna basıldığında çalışır.
     -   **Maliyetlendirme:** Bu özellik, Pexels API'sinin kullanım limitlerine tabidir. Pexels, saatte belirli bir istek sayısına kadar ücretsiz bir kullanım hakkı sunar. Bu limit aşıldığında beklemeniz veya ticari planları değerlendirmeniz gerekebilir. Detaylar için Pexels API dokümantasyonuna bakınız.
 -   **Metin İşleme (`handleGenerate`):**
-    -   **Servis:** Bu işlem artık istemci tarafı (client-side) JavaScript kodu ile yapılmaktadır.
+    -   **Service:** Bu işlem artık istemci tarafı (client-side) JavaScript kodu ile yapılmaktadır.
     -   **Maliyetlendirme:** Metinden tasarım oluşturma işlemiyle ilişkili **herhangi bir API maliyeti yoktur**. Bu işlem ücretsizdir.
 
 ### 2. Kanvas ve Tasarım Kuralları
