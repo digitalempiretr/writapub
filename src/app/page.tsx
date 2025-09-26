@@ -304,202 +304,204 @@ export default function Home() {
   }, [designTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, handleTextRemaining, rectBgColor, rectOpacity, textAlign]);
 
   return (
-    <div className="container mx-auto p-4 md:p-8">
-      <header className="text-left mb-10">
+    <>
+      <header className="text-left mb-10 p-4 md:p-8">
         <Logo className="text-[2rem]" />
       </header>
 
-      <div className="grid grid-cols-1 gap-8 items-start">
-        <div className="space-y-6">
-            <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
-            <div className="space-y-2">
-                <Textarea
-                id="text"
-                placeholder="Metninizi buraya yapıştırın..."
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                rows={8}
-                className="bg-[#2C5364] text-primary-foreground placeholder:text-gray-400"
-                />
-                <p className="text-xs text-muted-foreground text-right">{text.length} karakter</p>
-            </div>
-            <div>
-                <Button
-                    onClick={handleGenerate}
-                    disabled={isLoading}
-                    className="w-full"
-                >
-                    {isLoading ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                    <Wand2 className="mr-2 h-4 w-4" />
-                    )}
-                    Oluştur
-                </Button>
-            </div>
-        </div>
-
-        <div className="mt-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>Tasarimlar</CardTitle>
-                <CardDescription>
-                  Oluşturulan görselleri kaydırarak inceleyebilirsiniz.
-                </CardDescription>
+      <main className="container mx-auto p-4 md:p-8 pt-0">
+        <div className="grid grid-cols-1 gap-8 items-start">
+          <div className="space-y-6">
+              <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
+              <div className="space-y-2">
+                  <Textarea
+                  id="text"
+                  placeholder="Metninizi buraya yapıştırın..."
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  rows={8}
+                  className="bg-[#2C5364] text-primary-foreground placeholder:text-gray-400"
+                  />
+                  <p className="text-xs text-muted-foreground text-right">{text.length} karakter</p>
               </div>
-              <Button onClick={handleDownloadAll} variant="outline" size="sm" disabled={designs.length === 0}>
-                <Download className="mr-2 h-4 w-4" />
-                Tümünü İndir
-              </Button>
-            </CardHeader>
-            <CardContent>
-              { isClient && designs.length > 0 ? (
-                 <Carousel className="w-full max-w-lg mx-auto" setApi={(api) => api?.reInit()}>
-                    <CarouselContent>
-                      {designs.map((design, index) => (
-                        <CarouselItem key={index} data-index={index}>
-                          <div className="p-1">
-                            <Card className="overflow-hidden">
-                              <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
-                               {renderCanvas(design, index)}
-                              </CardContent>
-                              <CardFooter className="py-2 px-4 justify-end">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleDownload(index)}
-                                >
-                                  <Download className="mr-2 h-4 w-4" />
-                                  JPG İndir
-                                </Button>
-                              </CardFooter>
-                            </Card>
-                          </div>
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                    <CarouselPrevious className="-left-4 md:-left-12" />
-                    <CarouselNext className="-right-4 md:-right-12" />
-                  </Carousel>
-              ) : (
-                <div className="aspect-[1080/1350] max-w-lg mx-auto flex flex-col items-center justify-center rounded-lg border-2 border-dashed bg-muted/50 text-center p-8">
-                    <Wand2 className="w-16 h-16 text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground">
-                      Görselleriniz burada görünecek.
-                    </p>
-                    <p className="text-sm text-muted-foreground/80">
-                      Başlamak için soldaki panelden metninizi girip "Oluştur" butonuna tıklayın.
-                    </p>
+              <div>
+                  <Button
+                      onClick={handleGenerate}
+                      disabled={isLoading}
+                      className="w-full"
+                  >
+                      {isLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                      <Wand2 className="mr-2 h-4 w-4" />
+                      )}
+                      Oluştur
+                  </Button>
+              </div>
+          </div>
+
+          <div className="mt-8">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Tasarimlar</CardTitle>
+                  <CardDescription>
+                    Oluşturulan görselleri kaydırarak inceleyebilirsiniz.
+                  </CardDescription>
                 </div>
-              )}
-               <Separator className="my-6" />
-                <div className="space-y-4 px-1">
-                  <div className="space-y-4">
-                    <Label>Arka Plan</Label>
-                    <Tabs value={designTab} onValueChange={setDesignTab} className="w-full">
-                      <TabsList className="grid w-full grid-cols-3">
-                        <TabsTrigger value="flat">Düz Renk</TabsTrigger>
-                        <TabsTrigger value="gradient">Gradyan</TabsTrigger>
-                        <TabsTrigger value="image">Görsel</TabsTrigger>
-                      </TabsList>
-                      <TabsContent value="flat" className="pt-4 space-y-4">
-                        <div className="flex items-center gap-4">
-                          <Label>Arka Plan:</Label>
-                          <Input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-24 p-1"/>
-                        </div>
-                      </TabsContent>
-                      <TabsContent value="gradient" className="pt-4">
-                         <div className="grid grid-cols-4 gap-2">
-                          {gradientTemplates.map(g => (
-                            <button key={g.name} className="aspect-[1080/1350] w-full rounded-md border-2 border-transparent focus:border-primary" style={{background: g.css}} onClick={() => setGradientBg(g.css)} title={g.name} />
-                          ))}
-                         </div>
-                      </TabsContent>
-                       <TabsContent value="image" className="pt-4 space-y-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="image-search">Görsel Ara</Label>
-                            <div className="flex gap-2">
-                              <Input 
-                                id="image-search" 
-                                placeholder="Örn: dokulu kağıt, ahşap..." 
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleSearchImages()}
-                              />
-                              <Button onClick={handleSearchImages} disabled={isSearching} variant="outline" size="icon">
-                                {isSearching ? <Loader2 className="animate-spin" /> : <Search />}
-                              </Button>
+                <Button onClick={handleDownloadAll} variant="outline" size="sm" disabled={designs.length === 0}>
+                  <Download className="mr-2 h-4 w-4" />
+                  Tümünü İndir
+                </Button>
+              </CardHeader>
+              <CardContent>
+                { isClient && designs.length > 0 ? (
+                   <Carousel className="w-full max-w-lg mx-auto" setApi={(api) => api?.reInit()}>
+                      <CarouselContent>
+                        {designs.map((design, index) => (
+                          <CarouselItem key={index} data-index={index}>
+                            <div className="p-1">
+                              <Card className="overflow-hidden">
+                                <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
+                                 {renderCanvas(design, index)}
+                                </CardContent>
+                                <CardFooter className="py-2 px-4 justify-end">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleDownload(index)}
+                                  >
+                                    <Download className="mr-2 h-4 w-4" />
+                                    JPG İndir
+                                  </Button>
+                                </CardFooter>
+                              </Card>
                             </div>
-                          </div>
-                          <div className="grid grid-cols-4 gap-2">
-                            {imageTemplates.map(t => (
-                              <button key={t.name} className="aspect-[1080/1350] w-full rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden relative" onClick={() => setImageBgUrl(t.imageUrl)} title={t.name}>
-                                <Image src={t.imageUrl} alt={t.name} layout="fill" className="object-cover" />
-                              </button>
-                            ))}
-                            {searchedImages.map((url, i) => (
-                               <button key={i} className="aspect-[1080/1350] w-full rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden relative" onClick={() => setImageBgUrl(url)} title={`Searched Image ${i+1}`}>
-                                <Image src={url} alt={`Searched Image ${i+1}`} layout="fill" className="object-cover" unoptimized/>
-                              </button>
-                            ))}
-                          </div>
-                       </TabsContent>
-                    </Tabs>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="-left-4 md:-left-12" />
+                      <CarouselNext className="-right-4 md:-right-12" />
+                    </Carousel>
+                ) : (
+                  <div className="aspect-[1080/1350] max-w-lg mx-auto flex flex-col items-center justify-center rounded-lg border-2 border-dashed bg-muted/50 text-center p-8">
+                      <Wand2 className="w-16 h-16 text-muted-foreground mb-4" />
+                      <p className="text-muted-foreground">
+                        Görselleriniz burada görünecek.
+                      </p>
+                      <p className="text-sm text-muted-foreground/80">
+                        Başlamak için soldaki panelden metninizi girip "Oluştur" butonuna tıklayın.
+                      </p>
                   </div>
-                  <Separator className="my-2" />
-                  <div className="space-y-4">
-                    <Label>Metin Kutusu Ayarları</Label>
-                    <div className="flex items-center gap-4">
-                      <Label>Renk:</Label>
-                      <Input type="color" value={rectBgColor} onChange={(e) => setRectBgColor(e.target.value)} className="w-24 p-1"/>
-                      <Label>Opaklık:</Label>
-                      <Slider
-                        value={[rectOpacity]}
-                        onValueChange={(value) => setRectOpacity(value[0])}
-                        max={1}
-                        step={0.05}
-                        className="w-[120px]"
-                      />
+                )}
+                 <Separator className="my-6" />
+                  <div className="space-y-4 px-1">
+                    <div className="space-y-4">
+                      <Label>Arka Plan</Label>
+                      <Tabs value={designTab} onValueChange={setDesignTab} className="w-full">
+                        <TabsList className="grid w-full grid-cols-3">
+                          <TabsTrigger value="flat">Düz Renk</TabsTrigger>
+                          <TabsTrigger value="gradient">Gradyan</TabsTrigger>
+                          <TabsTrigger value="image">Görsel</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="flat" className="pt-4 space-y-4">
+                          <div className="flex items-center gap-4">
+                            <Label>Arka Plan:</Label>
+                            <Input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-24 p-1"/>
+                          </div>
+                        </TabsContent>
+                        <TabsContent value="gradient" className="pt-4">
+                           <div className="grid grid-cols-4 gap-2">
+                            {gradientTemplates.map(g => (
+                              <button key={g.name} className="aspect-[1080/1350] w-full rounded-md border-2 border-transparent focus:border-primary" style={{background: g.css}} onClick={() => setGradientBg(g.css)} title={g.name} />
+                            ))}
+                           </div>
+                        </TabsContent>
+                         <TabsContent value="image" className="pt-4 space-y-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="image-search">Görsel Ara</Label>
+                              <div className="flex gap-2">
+                                <Input 
+                                  id="image-search" 
+                                  placeholder="Örn: dokulu kağıt, ahşap..." 
+                                  value={searchQuery}
+                                  onChange={(e) => setSearchQuery(e.target.value)}
+                                  onKeyDown={(e) => e.key === 'Enter' && handleSearchImages()}
+                                />
+                                <Button onClick={handleSearchImages} disabled={isSearching} variant="outline" size="icon">
+                                  {isSearching ? <Loader2 className="animate-spin" /> : <Search />}
+                                </Button>
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-4 gap-2">
+                              {imageTemplates.map(t => (
+                                <button key={t.name} className="aspect-[1080/1350] w-full rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden relative" onClick={() => setImageBgUrl(t.imageUrl)} title={t.name}>
+                                  <Image src={t.imageUrl} alt={t.name} layout="fill" className="object-cover" />
+                                </button>
+                              ))}
+                              {searchedImages.map((url, i) => (
+                                 <button key={i} className="aspect-[1080/1350] w-full rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden relative" onClick={() => setImageBgUrl(url)} title={`Searched Image ${i+1}`}>
+                                  <Image src={url} alt={`Searched Image ${i+1}`} layout="fill" className="object-cover" unoptimized/>
+                                </button>
+                              ))}
+                            </div>
+                         </TabsContent>
+                      </Tabs>
                     </div>
-                  </div>
-                  <Separator className="my-2" />
-                  <Label>Yazı Tipi Ayarları</Label>                   <div className="flex flex-col gap-4">
-                     <Select onValueChange={handleFontChange} defaultValue={activeFont.value}>
-                       <SelectTrigger>
-                         <SelectValue placeholder="Bir yazı tipi seçin" />
-                       </SelectTrigger>
-                       <SelectContent>
-                         {fontOptions.map(font => (
-                           <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
-                             {font.label}
-                           </SelectItem>
-                         ))}
-                       </SelectContent>
-                     </Select>
-                     <div className="flex items-center justify-between">
-                       <div className="flex items-center gap-2">
-                         <Label>Metin:</Label>
-                         <Input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="w-20 p-1"/>
-                       </div>
-                       <div className="flex items-center gap-1 rounded-md border border-input p-1">
-                          <Button variant={textAlign === 'left' ? 'secondary' : 'ghost'} size="icon" onClick={() => setTextAlign('left')} className="h-8 w-8">
-                            <AlignLeft className="h-4 w-4" />
-                          </Button>
-                           <Button variant={textAlign === 'center' ? 'secondary' : 'ghost'} size="icon" onClick={() => setTextAlign('center')} className="h-8 w-8">
-                            <AlignCenter className="h-4 w-4" />
-                          </Button>
-                           <Button variant={textAlign === 'right' ? 'secondary' : 'ghost'} size="icon" onClick={() => setTextAlign('right')} className="h-8 w-8">
-                            <AlignRight className="h-4 w-4" />
-                          </Button>
+                    <Separator className="my-2" />
+                    <div className="space-y-4">
+                      <Label>Metin Kutusu Ayarları</Label>
+                      <div className="flex items-center gap-4">
+                        <Label>Renk:</Label>
+                        <Input type="color" value={rectBgColor} onChange={(e) => setRectBgColor(e.target.value)} className="w-24 p-1"/>
+                        <Label>Opaklık:</Label>
+                        <Slider
+                          value={[rectOpacity]}
+                          onValueChange={(value) => setRectOpacity(value[0])}
+                          max={1}
+                          step={0.05}
+                          className="w-[120px]"
+                        />
+                      </div>
+                    </div>
+                    <Separator className="my-2" />
+                    <Label>Yazı Tipi Ayarları</Label>                   <div className="flex flex-col gap-4">
+                       <Select onValueChange={handleFontChange} defaultValue={activeFont.value}>
+                         <SelectTrigger>
+                           <SelectValue placeholder="Bir yazı tipi seçin" />
+                         </SelectTrigger>
+                         <SelectContent>
+                           {fontOptions.map(font => (
+                             <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
+                               {font.label}
+                             </SelectItem>
+                           ))}
+                         </SelectContent>
+                       </Select>
+                       <div className="flex items-center justify-between">
+                         <div className="flex items-center gap-2">
+                           <Label>Metin:</Label>
+                           <Input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="w-20 p-1"/>
+                         </div>
+                         <div className="flex items-center gap-1 rounded-md border border-input p-1">
+                            <Button variant={textAlign === 'left' ? 'secondary' : 'ghost'} size="icon" onClick={() => setTextAlign('left')} className="h-8 w-8">
+                              <AlignLeft className="h-4 w-4" />
+                            </Button>
+                             <Button variant={textAlign === 'center' ? 'secondary' : 'ghost'} size="icon" onClick={() => setTextAlign('center')} className="h-8 w-8">
+                              <AlignCenter className="h-4 w-4" />
+                            </Button>
+                             <Button variant={textAlign === 'right' ? 'secondary' : 'ghost'} size="icon" onClick={() => setTextAlign('right')} className="h-8 w-8">
+                              <AlignRight className="h-4 w-4" />
+                            </Button>
+                         </div>
                        </div>
                      </div>
                    </div>
-                 </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </div>
-    </div>
+      </main>
+    </>
   );
 }
