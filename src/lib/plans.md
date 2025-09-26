@@ -8,3 +8,5 @@ _This file contains the planned features and changes for the Writa application. 
 
 ---
 Yazı Tipi Ayarları kısmını sağ tarafraki tasarımlar bölümüne taşı
+Metin Kutusu Ayarlarıkısmını sağ tarafraki tasarımlar bölümüne taşı
+Arka Plan kısmını sağ tarafraki tasarımlar bölümüne taşı

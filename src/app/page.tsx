@@ -327,22 +327,6 @@ export default function Home() {
                   <p className="text-xs text-muted-foreground text-right">{text.length} karakter</p>
                 </div>
 
-                <div className="space-y-4">
-                  <Label>Metin Kutusu Ayarları</Label>
-                  <div className="flex items-center gap-4">
-                    <Label>Renk:</Label>
-                    <Input type="color" value={rectBgColor} onChange={(e) => setRectBgColor(e.target.value)} className="w-24 p-1"/>
-                    <Label>Opaklık:</Label>
-                    <Slider
-                      value={[rectOpacity]}
-                      onValueChange={(value) => setRectOpacity(value[0])}
-                      max={1}
-                      step={0.05}
-                      className="w-[120px]"
-                    />
-                  </div>
-                </div>
-
                  <div className="space-y-4">
                   <Label>Arka Plan</Label>
                   <Tabs value={designTab} onValueChange={setDesignTab} className="w-full">
@@ -469,6 +453,22 @@ export default function Home() {
               )}
                <Separator className="my-6" />
                 <div className="space-y-4 px-1">
+                  <div className="space-y-4">
+                    <Label>Metin Kutusu Ayarları</Label>
+                    <div className="flex items-center gap-4">
+                      <Label>Renk:</Label>
+                      <Input type="color" value={rectBgColor} onChange={(e) => setRectBgColor(e.target.value)} className="w-24 p-1"/>
+                      <Label>Opaklık:</Label>
+                      <Slider
+                        value={[rectOpacity]}
+                        onValueChange={(value) => setRectOpacity(value[0])}
+                        max={1}
+                        step={0.05}
+                        className="w-[120px]"
+                      />
+                    </div>
+                  </div>
+                  <Separator className="my-2" />
                   <Label>Yazı Tipi Ayarları</Label>
                    <div className="flex flex-col gap-4">
                      <Select onValueChange={handleFontChange} defaultValue={activeFont.value}>
