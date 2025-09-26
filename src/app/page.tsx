@@ -310,39 +310,33 @@ export default function Home() {
       </header>
 
       <div className="grid grid-cols-1 gap-8 items-start">
-        <div className="">
-            <Card>
-              <CardHeader>
-                <CardTitle>Creative Magic</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-2">
-                  <Textarea
-                    id="text"
-                    placeholder="Metninizi buraya yapıştırın..."
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    rows={8}
-                    className="bg-[#2C5364] text-primary-foreground placeholder:text-gray-400"
-                  />
-                  <p className="text-xs text-muted-foreground text-right">{text.length} karakter</p>
-                </div>
-              </CardContent>
-              <CardFooter>
+        <div className="space-y-6">
+            <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
+            <div className="space-y-2">
+                <Textarea
+                id="text"
+                placeholder="Metninizi buraya yapıştırın..."
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                rows={8}
+                className="bg-[#2C5364] text-primary-foreground placeholder:text-gray-400"
+                />
+                <p className="text-xs text-muted-foreground text-right">{text.length} karakter</p>
+            </div>
+            <div>
                 <Button
-                  onClick={handleGenerate}
-                  disabled={isLoading}
-                  className="w-full"
+                    onClick={handleGenerate}
+                    disabled={isLoading}
+                    className="w-full"
                 >
-                  {isLoading ? (
+                    {isLoading ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
+                    ) : (
                     <Wand2 className="mr-2 h-4 w-4" />
-                  )}
-                  Oluştur
+                    )}
+                    Oluştur
                 </Button>
-              </CardFooter>
-            </Card>
+            </div>
         </div>
 
         <div className="mt-8">
@@ -470,8 +464,7 @@ export default function Home() {
                     </div>
                   </div>
                   <Separator className="my-2" />
-                  <Label>Yazı Tipi Ayarları</Label>
-                   <div className="flex flex-col gap-4">
+                  <Label>Yazı Tipi Ayarları</Label>                   <div className="flex flex-col gap-4">
                      <Select onValueChange={handleFontChange} defaultValue={activeFont.value}>
                        <SelectTrigger>
                          <SelectValue placeholder="Bir yazı tipi seçin" />
