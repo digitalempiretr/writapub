@@ -305,7 +305,7 @@ export default function Home() {
   return (
     <div className="container mx-auto p-4 md:p-8">
       <header className="text-left mb-10">
-        <Logo className="text-[2rem] text-primary" />
+        <Logo className="text-[2rem]" />
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -315,7 +315,7 @@ export default function Home() {
                 <CardTitle>Creative Magic</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <Label htmlFor="title">Başlık (İsteğe Bağlı)</Label>
                   <Input
                     id="title"
@@ -323,9 +323,8 @@ export default function Home() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
-                </div>
+                </div> */}
                 <div className="space-y-2">
-                  <Label htmlFor="text">Köşe Yazısı Metni</Label>
                   <Textarea
                     id="text"
                     placeholder="Metninizi buraya yapıştırın..."
@@ -518,3 +517,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
