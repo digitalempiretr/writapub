@@ -3,21 +3,6 @@
 This document outlines the core rules, logic, and version history of the Writa application. All future development must adhere to these rules, and changes will be documented under a new version number at the top of this file.
 _Bu belge, Writa uygulamasının temel kurallarını, işleyişini ve sürüm geçmişini içerir. Gelecekteki tüm geliştirmeler bu kurallara uygun olmalı ve yapılan değişiklikler dosyanın en üstüne yeni bir sürüm numarası ile belgelenmelidir._
 
----
-
-# Version History (Sürüm Geçmişi)
-
-_New versions will be added to the top of this section._
-_Yeni sürümler bu bölümün en üstüne eklenecektir._
-
----
----
-
-## Version V1.0
-
-This version represents the first stable release of the application, where the core text-to-image generation functionality is working reliably.
-_Bu sürüm, uygulamanın temel metinden görsel oluşturma işlevinin güvenilir bir şekilde çalıştığı ilk kararlı sürümünü temsil eder._
-
 ### Non-Negotiable Core Rules (Değiştirilemez Çekirdek Kurallar)
 
 **ATTENTION:** The rules listed in this section are fundamental to the stable operation of the application. These rules cannot be changed without the approval of the code manager (the user). All new developments must be made while ensuring that the rules in this section are not broken.
@@ -49,10 +34,26 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 
 ---
 
-### 1. API Usage & Costs (API Kullanımı ve Maliyetler)
+---
 
-#### English
-The application has 1 feature that uses an external API:
+# Version History (Sürüm Geçmişi)
+
+_New versions will be added to the top of this section._
+_Yeni sürümler bu bölümün en üstüne eklenecektir._
+
+---
+---
+
+## Version V1.0
+
+This version represents the first stable release of the application, where the core text-to-image generation functionality is working reliably.
+_Bu sürüm, uygulamanın temel metinden görsel oluşturma işlevinin güvenilir bir şekilde çalıştığı ilk kararlı sürümünü temsil eder._
+
+
+#### ENGLISH
+
+### 1. API Usage & Costs
+   The application has 1 feature that uses an external API:
 -   **Image Search (`findImages`):**
     -   **Service:** Pexels API
     -   **Trigger:** Runs when you type a search term in the "Image Search" box and press the "Search" button.
@@ -61,7 +62,21 @@ The application has 1 feature that uses an external API:
     -   **Service:** This is now handled by client-side JavaScript code.
     -   **Cost Model:** There is **no API cost** associated with generating designs from text. This operation is free.
 
-#### Türkçe
+### 2. Canvas & Design Rules
+-   The user can change the color of the text on the design via a color picker in the "Font Settings" section.
+-   Regardless of the chosen background type (Flat Color, Gradient, Image), the user can adjust the color and opacity (from 0 to 1) of the text box in the center of the canvas. These settings are located in a separate "Text Box Settings" section.
+-   The user can choose the text alignment (left, center, right). This setting is located in the "Font Settings" section. 
+
+### 3. Font & Character Support
+-   All fonts loaded from Google Fonts must include the `latin-ext` character set to ensure correct display of Turkish characters.
+-   In the font selection menu, the name of each font option should be displayed in its own font style. This allows the user to preview how the fonts look before selecting them.
+-   The default font in the font selection dropdown is set to "Special Elite".
+
+
+
+#### TURKCE 
+
+### 1. API Kullanımı ve Maliyetler
 Uygulamada harici API kullanan 1 adet özellik bulunmaktadır:
 -   **Görsel Arama (`findImages`):**
     -   **Servis:** Pexels API
@@ -71,30 +86,12 @@ Uygulamada harici API kullanan 1 adet özellik bulunmaktadır:
     -   **Servis:** Bu işlem artık istemci tarafı (client-side) JavaScript kodu ile yapılmaktadır.
     -   **Maliyetlendirme:** Metinden tasarım oluşturma işlemiyle ilişkili **herhangi bir API maliyeti yoktur**. Bu işlem ücretsizdir.
 
----
-
-### 2. Canvas & Design Rules (Kanvas ve Tasarım Kuralları)
-
-#### English
--   The user can change the color of the text on the design via a color picker in the "Font Settings" section.
--   Regardless of the chosen background type (Flat Color, Gradient, Image), the user can adjust the color and opacity (from 0 to 1) of the text box in the center of the canvas. These settings are located in a separate "Text Box Settings" section.
--   The user can choose the text alignment (left, center, right). This setting is located in the "Font Settings" section.
-
-#### Türkçe
+### 2. Kanvas ve Tasarım Kuralları
 -   Kullanıcı, "Yazı Tipi Ayarları" bölümünden tasarım üzerindeki metnin rengini bir renk seçici aracılığıyla değiştirebilmelidir.
 -   Seçtiği arka plan türünden (Düz Renk, Gradyan, Görsel) bağımsız olarak, kullanıcı kanvasın ortasındaki metin kutusunun rengini ve 0 ile 1 arasında şeffaflığını ayarlayabilmelidir. Bu ayarlar, ayrı bir "Metin Kutusu Ayarları" bölümünde yer alır.
 -   Kullanıcı, metin hizalamasını (sol, orta, sağ) seçebilmelidir. Bu ayar "Yazı Tipi Ayarları" bölümünde yer alır.
 
----
-
-### 3. Font & Character Support (Font ve Karakter Desteği)
-
-#### English
--   All fonts loaded from Google Fonts must include the `latin-ext` character set to ensure correct display of Turkish characters.
--   In the font selection menu, the name of each font option should be displayed in its own font style. This allows the user to preview how the fonts look before selecting them.
--   The default font in the font selection dropdown is set to "Special Elite".
-
-#### Türkçe
+### 3. Font ve Karakter Desteği
 -   Google Fonts'tan yüklenen tüm yazı tipleri, Türkçe karakterlerin doğru görüntülenmesini sağlamak için `latin-ext` karakter setini içermelidir.
 -   Font seçim menüsünde, her bir font seçeneğinin adı kendi yazı tipiyle görüntülenmelidir. Bu, kullanıcının fontları seçmeden önce nasıl göründüklerini önizlemesini sağlar.
 -   Yazı tipi seçim menüsündeki varsayılan font "Special Elite" olarak ayarlanmıştır.

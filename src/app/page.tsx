@@ -304,24 +304,15 @@ export default function Home() {
 
   return (
     <div className="container mx-auto p-4 md:p-8">
-      <header className="text-center mb-10">
-        <div className="flex items-center justify-center gap-4 mb-2">
-          <Logo className="w-12 h-12 text-primary" />
-          <h1 className="text-4xl md:text-5xl font-bold text-primary">Writa</h1>
-        </div>
-        <p className="text-lg text-muted-foreground">
-          Are You Writa?
-        </p>
+      <header className="text-left mb-10">
+        <Logo className="text-4xl md:text-5xl font-bold text-primary" />
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <div className="lg:col-span-5 lg:sticky top-8">
             <Card>
               <CardHeader>
-                <CardTitle>İçerik &amp; Tasarım</CardTitle>
-                <CardDescription>
-                  Metninizi girin ve tasarım ayarlarınızı yapın.
-                </CardDescription>
+                <CardTitle>Creative Magic</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-2">
