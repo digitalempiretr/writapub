@@ -3,35 +3,6 @@
 This document outlines the core rules, logic, and version history of the Writa application. All future development must adhere to these rules, and changes will be documented under a new version number at the top of this file.
 _Bu belge, Writa uygulamasının temel kurallarını, işleyişini ve sürüm geçmişini içerir. Gelecekteki tüm geliştirmeler bu kurallara uygun olmalı ve yapılan değişiklikler dosyanın en üstüne yeni bir sürüm numarası ile belgelenmelidir._
 
-### Non-Negotiable Core Rules (Değiştirilemez Çekirdek Kurallar)
-
-**ATTENTION:** The rules listed in this section are fundamental to the stable operation of the application. These rules cannot be changed without the approval of the code manager (the user). All new developments must be made while ensuring that the rules in this section are not broken.
-_**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışması için temeldir. Kod yöneticisi (kullanıcı) onayı olmadan bu kurallar değiştirilemez. Tüm yeni geliştirmeler, bu bölümdeki kuralların bozulmadığı kontrol edilerek yapılmalıdır._
-
-#### English Core Rules
-1.  **Generate from Scratch:** Every time the "Generate" button is clicked, all existing designs must be cleared (`setDesigns([])`), and a completely new set of designs must be created from scratch using the inputs (title and text).
-2.  **Dynamic Slide Generation:** The number of generated images (slides) is not fixed. It dynamically increases based on the length of the input text until all text is placed.
-3.  **Flexible Line Limit (12-14 lines):** Each image (slide) should generally not exceed 12 lines. However, to avoid awkwardly splitting a sentence, if only 1 or 2 words of the last sentence would carry over to the next slide, the current slide can be extended up to a maximum of 14 lines to keep the sentence intact. This is a strict rule enforced by the code.
-4.  **No Overflow:** Both the title and body text must always remain **inside** the text box area in the center of the canvas. The text must **never** overflow vertically or horizontally outside this area. Long titles must automatically wrap to new lines.
-5.  **Automatic Title Logic:** If the user has not specified a title, the first sentence of the entered text is automatically used as the title. In this case, this sentence used as the title **must be removed** from the beginning of the main text.
-6.  **Paragraph & Newline Preservation:** Paragraphs and newlines entered by the user in the text area must be preserved and reflected in the final designs.
-7.  **Widescreen Panel Ratio:** On wide screens like desktops, the left control panel (Content & Design) should be `lg:col-span-5` (approx. 40%) and the right design area `lg:col-span-7` (approx. 60%) wide.
-8.  **"Sticky" Control Panel:** On wider screens like desktops, the left-side control panel should be **fixed (`sticky`)** to the left of the screen when the user scrolls down.
-9.  **Mobile Layout:** On mobile devices (smaller screens), the control panel and the design preview area should be displayed **one below the other**, not side-by-side.
-10. **Portrait Background Previews:** The thumbnail previews in the Gradient and Image selection tabs must be portrait-oriented to reflect the final design's 1080x1350 aspect ratio.
-
-#### Türkçe Çekirdek Kurallar
-1.  **Sıfırdan Oluşturma:** "Oluştur" butonuna her tıklandığında, mevcut tüm tasarımlar temizlenmeli (`setDesigns([])`) ve girdiler (başlık ve metin) kullanılarak tamamen yeni bir tasarım seti sıfırdan oluşturulmalıdır.
-2.  **Dinamik Slayt Oluşturma:** Oluşturulan görsel (slayt) sayısı sabit değildir. Girilen metnin uzunluğuna göre, tüm metin yerleştirilene kadar dinamik olarak artar.
-3.  **Esnek Satır Limiti (12-14 satır):** Her bir görsel (slayt) genellikle 12 satırı geçmemelidir. Ancak, bir cümlenin anlamsız bir yerde bölünmesini önlemek amacıyla, eğer son cümlenin bölünmesiyle sonraki slayta sadece 1 ya da 2 kelime kalacaksa, mevcut slayt cümleyi bir arada tutmak için en fazla 14 satıra kadar uzatılabilir. Bu, kod tarafından uygulanan katı bir kuraldır.
-4.  **Taşma Engeli:** Hem başlık hem de gövde metni, her zaman kanvasın ortasındaki metin kutusu alanının **içinde kalmalıdır**. Metin, bu alanın dışına dikey veya yatay olarak **asla taşmamalıdır**. Uzun başlıklar otomatik olarak alt satırlara sarılmalıdır.
-5.  **Otomatik Başlık Mantığı:** Kullanıcı bir başlık belirtmemişse, girilen metnin ilk cümlesi otomatik olarak başlık olarak kullanılır. Bu durumda, başlık olarak kullanılan bu cümle ana metnin başından **kesinlikle çıkarılmalıdır**.
-6.  **Paragraf ve Satır Başı Koruma:** Kullanıcının metin alanına girdiği paragraflar ve satır başları korunmalı ve oluşturulan tasarımlara aynen yansıtılmalıdır.
-7.  **Geniş Ekran Panel Oranı:** Masaüstü gibi geniş ekranlarda, sol kontrol paneleli (İçerik & Tasarım) `lg:col-span-5` (yaklaşık %40) ve sağ tasarım alanı `lg:col-span-7` (yaklaşık %60) genişliğinde olmalıdır.
-8.  **"Yapışkan" Kontrol Paneli:** Masaüstü gibi daha geniş ekranlarda, kullanıcı sayfayı aşağı kaydırdığında sol taraftaki kontrol paneli ekranın soluna **sabitlenmelidir** (`sticky`).
-9.  **Mobil Düzen:** Mobil cihazlarda (daha küçük ekranlarda), kontrol panel ve tasarım önizleme alanı yan yana değil, **alt alta** görüntülenmelidir.
-10. **Dikey Arka Plan Önizlemesi:** Gradyan ve Görsel seçimi sekmelerindeki küçük resim önizlemeleri, nihai tasarımın 1080x1350 en-boy oranını yansıtacak şekilde dikey olmalıdır.
-
 ---
 
 ---
@@ -40,6 +11,18 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 
 _New versions will be added to the top of this section._
 _Yeni sürümler bu bölümün en üstüne eklenecektir._
+
+---
+
+## Version V1.02
+
+#### ENGLISH
+### 1. Documentation & Process
+-   **Version Control Rule:** A new non-negotiable core rule has been added. It mandates that the version number in `app-rules.md` must be incremented after every change, and the completed tasks must be removed from `plans.md`.
+
+#### TURKCE
+### 1. Dokümantasyon ve Süreç
+-   **Sürüm Kontrolü Kuralı:** Değiştirilemez çekirdek kurallara yeni bir kural eklendi. Bu kural, her değişiklikten sonra `app-rules.md` dosyasındaki sürüm numarasının artırılmasını ve tamamlanan görevlerin `plans.md`'den kaldırılmasını zorunlu kılar.
 
 ---
 
@@ -63,6 +46,38 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 This version represents the first stable release of the application, where the core text-to-image generation functionality is working reliably.
 _Bu sürüm, uygulamanın temel metinden görsel oluşturma işlevinin güvenilir bir şekilde çalıştığı ilk kararlı sürümünü temsil eder._
+
+### Non-Negotiable Core Rules (Değiştirilemez Çekirdek Kurallar)
+
+**ATTENTION:** The rules listed in this section are fundamental to the stable operation of the application. These rules cannot be changed without the approval of the code manager (the user). All new developments must be made while ensuring that the rules in this section are not broken.
+_**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışması için temeldir. Kod yöneticisi (kullanıcı) onayı olmadan bu kurallar değiştirilemez. Tüm yeni geliştirmeler, bu bölümdeki kuralların bozulmadığı kontrol edilerek yapılmalıdır._
+
+#### English Core Rules
+1.  **Version Control:** After every completed task or set of changes, the `app-rules.md` file must be updated with a new incremental version number (e.g., V1.01, V1.02), and the changes must be documented under that new version. Completed tasks must be removed from `plans.md`.
+2.  **Generate from Scratch:** Every time the "Generate" button is clicked, all existing designs must be cleared (`setDesigns([])`), and a completely new set of designs must be created from scratch using the inputs (title and text).
+3.  **Dynamic Slide Generation:** The number of generated images (slides) is not fixed. It dynamically increases based on the length of the input text until all text is placed.
+4.  **Flexible Line Limit (12-14 lines):** Each image (slide) should generally not exceed 12 lines. However, to avoid awkwardly splitting a sentence, if the remaining part of the sentence can fit, the current slide can be extended up to a maximum of 14 lines to keep the sentence intact. This is a strict rule enforced by the code.
+5.  **No Overflow:** Both the title and body text must always remain **inside** the text box area in the center of the canvas. The text must **never** overflow vertically or horizontally outside this area. Long titles must automatically wrap to new lines.
+6.  **Automatic Title Logic:** If the user has not specified a title, the first sentence of the entered text is automatically used as the title. In this case, this sentence used as the title **must be removed** from the beginning of the main text.
+7.  **Paragraph & Newline Preservation:** Paragraphs and newlines entered by the user in the text area must be preserved and reflected in the final designs.
+8.  **Widescreen Panel Ratio:** On wide screens like desktops, the left control panel (Content & Design) should be `lg:col-span-5` (approx. 40%) and the right design area `lg:col-span-7` (approx. 60%) wide.
+9.  **"Sticky" Control Panel:** On wider screens like desktops, the left-side control panel should be **fixed (`sticky`)** to the left of the screen when the user scrolls down.
+10. **Mobile Layout:** On mobile devices (smaller screens), the control panel and the design preview area should be displayed **one below the other**, not side-by-side.
+11. **Portrait Background Previews:** The thumbnail previews in the Gradient and Image selection tabs must be portrait-oriented to reflect the final design's 1080x1350 aspect ratio.
+
+#### Türkçe Çekirdek Kurallar
+1.  **Sürüm Kontrolü:** Tamamlanan her görev veya değişiklik setinden sonra, `app-rules.md` dosyası yeni bir artan sürüm numarasıyla (örn: V1.01, V1.02) güncellenmeli ve yapılan değişiklikler o yeni sürüm altında belgelenmelidir. Tamamlanan görevler `plans.md` dosyasından silinmelidir.
+2.  **Sıfırdan Oluşturma:** "Oluştur" butonuna her tıklandığında, mevcut tüm tasarımlar temizlenmeli (`setDesigns([])`) ve girdiler (başlık ve metin) kullanılarak tamamen yeni bir tasarım seti sıfırdan oluşturulmalıdır.
+3.  **Dinamik Slayt Oluşturma:** Oluşturulan görsel (slayt) sayısı sabit değildir. Girilen metnin uzunluğuna göre, tüm metin yerleştirilene kadar dinamik olarak artar.
+4.  **Esnek Satır Limiti (12-14 satır):** Her bir görsel (slayt) genellikle 12 satırı geçmemelidir. Ancak, bir cümlenin anlamsız bir yerde bölünmesini önlemek amacıyla, eğer cümlenin geri kalan kısmı sığıyorsa mevcut slayt cümleyi bir arada tutmak için en fazla 14 satıra kadar uzatılabilir. Bu, kod tarafından uygulanan katı bir kuraldır.
+5.  **Taşma Engeli:** Hem başlık hem de gövde metni, her zaman kanvasın ortasındaki metin kutusu alanının **içinde kalmalıdır**. Metin, bu alanın dışına dikey veya yatay olarak **asla taşmamalıdır**. Uzun başlıklar otomatik olarak alt satırlara sarılmalıdır.
+6.  **Otomatik Başlık Mantığı:** Kullanıcı bir başlık belirtmemişse, girilen metnin ilk cümlesi otomatik olarak başlık olarak kullanılır. Bu durumda, başlık olarak kullanılan bu cümle ana metnin başından **kesinlikle çıkarılmalıdır**.
+7.  **Paragraf ve Satır Başı Koruma:** Kullanıcının metin alanına girdiği paragraflar ve satır başları korunmalı ve oluşturulan tasarımlara aynen yansıtılmalıdır.
+8.  **Geniş Ekran Panel Oranı:** Masaüstü gibi geniş ekranlarda, sol kontrol paneleli (İçerik & Tasarım) `lg:col-span-5` (yaklaşık %40) ve sağ tasarım alanı `lg:col-span-7` (yaklaşık %60) genişliğinde olmalıdır.
+9.  **"Yapışkan" Kontrol Paneli:** Masaüstü gibi daha geniş ekranlarda, kullanıcı sayfayı aşağı kaydırdığında sol taraftaki kontrol paneli ekranın soluna **sabitlenmelidir** (`sticky`).
+10. **Mobil Düzen:** Mobil cihazlarda (daha küçük ekranlarda), kontrol panel ve tasarım önizleme alanı yan yana değil, **alt alta** görüntülenmelidir.
+11. **Dikey Arka Plan Önizlemesi:** Gradyan ve Görsel seçimi sekmelerindeki küçük resim önizlemeleri, nihai tasarımın 1080x1350 en-boy oranını yansıtacak şekilde dikey olmalıdır.
+
 
 #### ENGLISH
 
