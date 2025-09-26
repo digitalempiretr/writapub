@@ -305,7 +305,7 @@ export default function Home() {
   return (
     <div className="container mx-auto p-4 md:p-8">
       <header className="text-left mb-10">
-        <Logo className="text-4xl md:text-5xl font-bold text-primary" />
+        <Logo className="text-[2rem] text-primary" />
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
