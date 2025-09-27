@@ -33,7 +33,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, Download, Loader2, Search, Wand2 } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, Loader2, Search, Wand2 } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -313,7 +313,7 @@ export default function Home() {
         <div className="grid grid-cols-1 gap-8 items-start">
           <div className="space-y-6 max-w-[800px] mx-auto w-full">
               <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
-              <div className="space-y-2">
+              <div className="space-y-4">
                   <Textarea
                   id="text"
                   placeholder="Metninizi buraya yapıştırın..."
@@ -322,21 +322,21 @@ export default function Home() {
                   rows={8}
                   className="bg-[#2C5364] text-primary-foreground placeholder:text-gray-400"
                   />
-                  <p className="text-xs text-muted-foreground text-right">{text.length} karakter</p>
-              </div>
-              <div>
-                  <Button
-                      onClick={handleGenerate}
-                      disabled={isLoading}
-                      className="w-full"
-                  >
-                      {isLoading ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      ) : (
-                      <Wand2 className="mr-2 h-4 w-4" />
-                      )}
-                      Oluştur
-                  </Button>
+                  <div className="flex items-center justify-end gap-4">
+                     <p className="text-xs text-muted-foreground">{text.length} karakter</p>
+                     <Button
+                        onClick={handleGenerate}
+                        disabled={isLoading}
+                        size="icon"
+                        className="rounded-full"
+                      >
+                        {isLoading ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <ArrowUp className="h-4 w-4" />
+                        )}
+                      </Button>
+                  </div>
               </div>
           </div>
 
