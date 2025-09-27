@@ -350,10 +350,6 @@ export default function Home() {
           <div ref={designsRef} className="mt-8 max-w-[800px] mx-auto w-full space-y-6 pb-8">
             <div className="flex items-center justify-between">
               <CardTitle className="text-primary-foreground">Designs</CardTitle>
-              <Button onClick={handleDownloadAll} variant="outline" size="sm" disabled={designs.length === 0}>
-                <Download className="mr-2 h-4 w-4" />
-                Tümünü İndir
-              </Button>
             </div>
             
             <div className="w-full">
@@ -366,14 +362,23 @@ export default function Home() {
                             <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
                               {renderCanvas(design, index)}
                             </CardContent>
-                            <CardFooter className="py-2 px-4 justify-end">
+                            <CardFooter className="py-2 px-4 flex items-center justify-between">
                               <Button
                                 variant="ghost"
+                                size="sm"
+                                onClick={handleDownloadAll}
+                                disabled={designs.length === 0}
+                              >
+                                <Download className="mr-2 h-4 w-4" />
+                                Tümünü İndir
+                              </Button>
+                              <Button
+                                variant="outline"
                                 size="sm"
                                 onClick={() => handleDownload(index)}
                               >
                                 <Download className="mr-2 h-4 w-4" />
-                                JPG İndir
+                                Bu Tasarımı İndir
                               </Button>
                             </CardFooter>
                           </Card>
