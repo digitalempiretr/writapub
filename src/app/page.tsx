@@ -7,10 +7,7 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import {
   Carousel,
@@ -36,6 +33,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, Loader2, Search, Wand2 } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
+import { CardTitle } from "@/components/ui/card";
 
 type Design = {
   text: string;
@@ -320,7 +318,7 @@ export default function Home() {
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   rows={8}
-                  className="bg-[#2C5364] text-primary-foreground placeholder:text-gray-400"
+                  className="bg-[#2C5364] text-primary-foreground placeholder:text-gray-400 border-0"
                   />
                   <div className="flex items-center justify-end gap-4">
                      <p className="text-xs text-muted-foreground">{text.length} karakter</p>
@@ -402,96 +400,176 @@ export default function Home() {
                       <TabsContent value="flat" className="pt-4 space-y-4">
                         <div className="flex items-center gap-4">
                           <Label>Arka Plan:</Label>
-                          <Input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-24 p-1"/>
+                          <Input
+                            type="color"
+                            value={bgColor}
+                            onChange={(e) => setBgColor(e.target.value)}
+                            className="h-9 w-12 p-0 border-0 bg-transparent shadow-none"
+                          />
+                          <Input
+                            type="text"
+                            value={bgColor}
+                            onChange={(e) => setBgColor(e.target.value)}
+                            className="h-9 w-32"
+                          />
                         </div>
                       </TabsContent>
-                      <TabsContent value="gradient" className="pt-4">
-                          <div className="grid grid-cols-4 gap-2">
-                          {gradientTemplates.map(g => (
-                            <button key={g.name} className="aspect-[1080/1350] w-full rounded-md border-2 border-transparent focus:border-primary" style={{background: g.css}} onClick={() => setGradientBg(g.css)} title={g.name} />
-                          ))}
-                          </div>
+                      <TabsContent value="gradient" className="pt-4 space-y-4">
+                        <Carousel className="w-full" setApi={(api) => api?.reInit()}>
+                          <CarouselContent>
+                            {gradientTemplates.map((gradient) => (
+                              <CarouselItem key={gradient.name} className="basis-1/3">
+                                <Card className="overflow-hidden cursor-pointer" onClick={() => setGradientBg(gradient.css)}>
+                                  <CardContent className="h-32" style={{ background: gradient.css }} />
+                                </Card>
+                              </CarouselItem>
+                            ))}
+                          </CarouselContent>
+                          <CarouselPrevious className="-left-4" />
+                          <CarouselNext className="-right-4" />
+                        </Carousel>
                       </TabsContent>
-                        <TabsContent value="image" className="pt-4 space-y-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="image-search">Görsel Ara</Label>
-                            <div className="flex gap-2">
-                              <Input 
-                                id="image-search" 
-                                placeholder="Örn: dokulu kağıt, ahşap..." 
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleSearchImages()}
-                              />
-                              <Button onClick={handleSearchImages} disabled={isSearching} variant="outline" size="icon">
-                                {isSearching ? <Loader2 className="animate-spin" /> : <Search />}
-                              </Button>
-                            </div>
-                          </div>
-                          <div className="grid grid-cols-4 gap-2">
-                            {imageTemplates.map(t => (
-                              <button key={t.name} className="aspect-[1080/1350] w-full rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden relative" onClick={() => setImageBgUrl(t.imageUrl)} title={t.name}>
-                                <Image src={t.imageUrl} alt={t.name} layout="fill" className="object-cover" />
+                      <TabsContent value="image" className="pt-4 space-y-4">
+                        <Carousel className="w-full" setApi={(api) => api?.reInit()}>
+                          <CarouselContent>
+                            {imageTemplates.map((image) => (
+                              <CarouselItem key={image.name} className="basis-1/3">
+                                <Card className="overflow-hidden cursor-pointer" onClick={() => setImageBgUrl(image.imageUrl)}>
+                                  <CardContent className="h-32 relative">
+                                    <Image src={image.imageUrl} alt={image.name} fill className="object-cover" />
+                                  </CardContent>
+                                </Card>
+                              </CarouselItem>
+                            ))}
+                          </CarouselContent>
+                          <CarouselPrevious className="-left-4" />
+                          <CarouselNext className="-right-4" />
+                        </Carousel>
+
+                        <div className="flex items-center space-x-2">
+                          <Input
+                            type="text"
+                            placeholder="Görsel ara..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                          />
+                          <Button onClick={handleSearchImages} disabled={isSearching}>
+                            {isSearching ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Search className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </div>
+
+                        {searchedImages.length > 0 && (
+                          <div className="grid grid-cols-3 gap-2">
+                            {searchedImages.map((imageUrl, index) => (
+                              <button key={index} onClick={() => setImageBgUrl(imageUrl)}>
+                                <Image src={imageUrl} alt={`Search Result ${index}`} width={200} height={250} className="object-cover aspect-[2/3] rounded-md" />
                               </button>
                             ))}
-                            {searchedImages.map((url, i) => (
-                                <button key={i} className="aspect-[1080/1350] w-full rounded-md border-2 border-transparent focus:border-primary bg-gray-200 overflow-hidden relative" onClick={() => setImageBgUrl(url)} title={`Searched Image ${i+1}`}>
-                                <Image src={url} alt={`Searched Image ${i+1}`} layout="fill" className="object-cover" unoptimized/>
-                              </button>
-                            ))}
                           </div>
-                        </TabsContent>
+                        )}
+                      </TabsContent>
                     </Tabs>
                   </div>
-                  <Separator className="my-2" />
-                  <div className="space-y-4">
-                    <Label>Metin Kutusu Ayarları</Label>
-                    <div className="flex items-center gap-4">
-                      <Label>Renk:</Label>
-                      <Input type="color" value={rectBgColor} onChange={(e) => setRectBgColor(e.target.value)} className="w-24 p-1"/>
-                      <Label>Opaklık:</Label>
-                      <Slider
-                        value={[rectOpacity]}
-                        onValueChange={(value) => setRectOpacity(value[0])}
-                        max={1}
-                        step={0.05}
-                        className="w-[120px]"
-                      />
-                    </div>
-                  </div>
-                  <Separator className="my-2" />
-                  <Label>Yazı Tipi Ayarları</Label>                   <div className="flex flex-col gap-4">
-                      <Select onValueChange={handleFontChange} defaultValue={activeFont.value}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Bir yazı tipi seçin" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {fontOptions.map(font => (
-                            <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
-                              {font.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Label>Metin:</Label>
-                          <Input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="w-20 p-1"/>
-                        </div>
-                        <div className="flex items-center gap-1 rounded-md border border-input p-1">
-                          <Button variant={textAlign === 'left' ? 'secondary' : 'ghost'} size="icon" onClick={() => setTextAlign('left')} className="h-8 w-8">
-                            <AlignLeft className="h-4 w-4" />
-                          </Button>
-                            <Button variant={textAlign === 'center' ? 'secondary' : 'ghost'} size="icon" onClick={() => setTextAlign('center')} className="h-8 w-8">
-                            <AlignCenter className="h-4 w-4" />
-                          </Button>
-                            <Button variant={textAlign === 'right' ? 'secondary' : 'ghost'} size="icon" onClick={() => setTextAlign('right')} className="h-8 w-8">
-                            <AlignRight className="h-4 w-4" />
-                          </Button>
-                        </div>
+
+                  <div className="space-y-2">
+                      <Label htmlFor="textColor">Yazı Rengi</Label>
+                      <div className="flex items-center gap-4">
+                        <Input
+                          type="color"
+                          id="textColor"
+                          value={textColor}
+                          onChange={(e) => setTextColor(e.target.value)}
+                          className="h-9 w-12 p-0 border-0 bg-transparent shadow-none"
+                        />
+                        <Input
+                          type="text"
+                          id="textColorText"
+                          value={textColor}
+                          onChange={(e) => setTextColor(e.target.value)}
+                          className="h-9 w-32"
+                        />
                       </div>
+                  </div>
+
+                  <div className="space-y-2">
+                      <Label htmlFor="rectBgColor">Zemin Rengi</Label>
+                      <div className="flex items-center gap-4">
+                        <Input
+                          type="color"
+                          id="rectBgColor"
+                          value={rectBgColor}
+                          onChange={(e) => setRectBgColor(e.target.value)}
+                          className="h-9 w-12 p-0 border-0 bg-transparent shadow-none"
+                        />
+                        <Input
+                          type="text"
+                          id="rectBgColorText"
+                          value={rectBgColor}
+                          onChange={(e) => setRectBgColor(e.target.value)}
+                          className="h-9 w-32"
+                        />
+                      </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="rectOpacity">Zemin Opaklığı</Label>
+                    <Slider
+                      id="rectOpacity"
+                      max={1}
+                      min={0}
+                      step={0.05}
+                      value={[rectOpacity]}
+                      onValueChange={(value) => setRectOpacity(value[0])}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Yazı Tipi</Label>
+                    <Select value={activeFont.value} onValueChange={handleFontChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Yazı Tipi Seçin" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {fontOptions.map((font) => (
+                          <SelectItem key={font.value} value={font.value}>
+                            {font.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label>Yazı Hizalama</Label>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant={textAlign === 'left' ? 'default' : 'outline'}
+                        onClick={() => setTextAlign('left')}
+                        size="icon"
+                      >
+                        <AlignLeft className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant={textAlign === 'center' ? 'default' : 'outline'}
+                        onClick={() => setTextAlign('center')}
+                        size="icon"
+                      >
+                        <AlignCenter className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant={textAlign === 'right' ? 'default' : 'outline'}
+                        onClick={() => setTextAlign('right')}
+                        size="icon"
+                      >
+                        <AlignRight className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
+                </div>
             </div>
           </div>
         </div>
