@@ -219,8 +219,11 @@ export default function Home() {
 
         // Scroll to designs section after a short delay to ensure it's rendered
         setTimeout(() => {
-          designsRef.current?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
+            window.scrollTo({
+                top: document.body.scrollHeight / 2,
+                behavior: 'smooth'
+            });
+        }, 2100);
 
     }, 2000); // Increased timeout for animation
   };
@@ -361,7 +364,7 @@ export default function Home() {
         )}
 
         { isClient && designs.length > 0 && (
-          <div ref={designsRef} className="mt-8 max-w-[800px] mx-auto w-full space-y-6 pb-8">
+          <div ref={designsRef} className="max-w-[800px] mx-auto w-full space-y-6 pb-8 pt-8">
             
             <div className="w-full">
                 <Carousel className="w-full max-w-lg mx-auto" setApi={(api) => api?.reInit()}>
