@@ -181,50 +181,46 @@ export default function Home() {
       });
       return;
     }
+    
     setIsLoading(true);
     setIsGeneratingAnimation(true);
     setDesigns([]); // Clear all previous designs
     
-    // Use a short timeout to allow the UI to update and clear the old designs
-    // before we start generating new ones. This prevents race conditions.
-    setTimeout(() => {
-        let finalTitle = title;
-        let finalBody = text;
+    // Prepare designs in the background
+    let finalTitle = title;
+    let finalBody = text;
 
-        if (!finalTitle && finalBody) {
-            const sentenceEndMarkers = /[.!?]/;
-            const firstSentenceMatch = finalBody.match(sentenceEndMarkers);
-            
-            if (firstSentenceMatch && firstSentenceMatch.index !== undefined) {
-                const firstSentenceEnd = firstSentenceMatch.index + 1;
-                finalTitle = finalBody.substring(0, firstSentenceEnd).trim();
-                finalBody = finalBody.substring(firstSentenceEnd).trim();
-            } else {
-                finalTitle = finalBody;
-                finalBody = "";
-            }
-        }
-
-        const newDesigns: Design[] = [];
-        if (finalTitle) {
-          newDesigns.push({ text: finalTitle, isTitle: true });
-        }
-        if (finalBody) {
-          newDesigns.push({ text: finalBody, isTitle: false });
-        }
+    if (!finalTitle && finalBody) {
+        const sentenceEndMarkers = /[.!?]/;
+        const firstSentenceMatch = finalBody.match(sentenceEndMarkers);
         
+        if (firstSentenceMatch && firstSentenceMatch.index !== undefined) {
+            const firstSentenceEnd = firstSentenceMatch.index + 1;
+            finalTitle = finalBody.substring(0, firstSentenceEnd).trim();
+            finalBody = finalBody.substring(firstSentenceEnd).trim();
+        } else {
+            finalTitle = finalBody;
+            finalBody = "";
+        }
+    }
+
+    const newDesigns: Design[] = [];
+    if (finalTitle) {
+      newDesigns.push({ text: finalTitle, isTitle: true });
+    }
+    if (finalBody) {
+      newDesigns.push({ text: finalBody, isTitle: false });
+    }
+    setDesigns(newDesigns);
+
+    // Show animation for 3 seconds, then reveal content and scroll
+    setTimeout(() => {
         setIsGeneratingAnimation(false);
-        setDesigns(newDesigns);
         setIsLoading(false);
-
-        // Scroll to designs section after a short delay to ensure it's rendered
-        setTimeout(() => {
-            if(designsRef.current) {
-                designsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }, 2100);
-
-    }, 2000); // Increased timeout for animation
+        if(designsRef.current) {
+            designsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, 3000);
   };
   
   const handleDownload = (index: number) => {
@@ -355,7 +351,9 @@ export default function Home() {
         </div>
         
         {isGeneratingAnimation && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
+              background: 'linear-gradient(to bottom, #2c5364, #203a43, #0f2027)'
+            }}>
                 <div className="w-64 h-64">
                     <Lottie animationData={webflowAnimation} loop={true} />
                 </div>
@@ -363,9 +361,9 @@ export default function Home() {
         )}
 
         { isClient && designs.length > 0 && (
-          <div className="max-w-[800px] mx-auto w-full space-y-6 pb-8 pt-8">
-            <div ref={designsRef} className="h-32 ...">Reels</div>
-            <div className="w-full">
+          <div className="w-full pt-8 pb-8">
+            <div ref={designsRef} className="text-2xl h-10 pt-5 text-[#f4fdff]">Reels</div>
+            <div className="max-w-[800px] mx-auto w-full space-y-6">
                 <Carousel className="w-full max-w-lg mx-auto" setApi={(api) => api?.reInit()}>
                   <CarouselContent>
                     {designs.map((design, index) => (
