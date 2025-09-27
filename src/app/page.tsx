@@ -34,6 +34,8 @@ import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, Loader2, Search 
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
+import Lottie from 'lottie-react';
+import designerCatAnimation from '@/lib/Designer cat.json';
 
 type Design = {
   text: string;
@@ -128,7 +130,9 @@ export default function Home() {
   const [title, setTitle] = useState("");
   const [designs, setDesigns] = useState<Design[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isClient, setIsClient] = useState(false)
+  const [isClient, setIsClient] = useState(false);
+  const [isGeneratingAnimation, setIsGeneratingAnimation] = useState(false);
+
 
   useEffect(() => {
     setIsClient(true)
@@ -178,6 +182,7 @@ export default function Home() {
       return;
     }
     setIsLoading(true);
+    setIsGeneratingAnimation(true);
     setDesigns([]); // Clear all previous designs
     
     // Use a short timeout to allow the UI to update and clear the old designs
@@ -208,6 +213,7 @@ export default function Home() {
           newDesigns.push({ text: finalBody, isTitle: false });
         }
         
+        setIsGeneratingAnimation(false);
         setDesigns(newDesigns);
         setIsLoading(false);
 
@@ -216,7 +222,7 @@ export default function Home() {
           designsRef.current?.scrollIntoView({ behavior: 'smooth' });
         }, 100);
 
-    }, 50);
+    }, 2000); // Increased timeout for animation
   };
   
   const handleDownload = (index: number) => {
@@ -345,6 +351,14 @@ export default function Home() {
               </div>
             </div>
         </div>
+        
+        {isGeneratingAnimation && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="w-96 h-96">
+                    <Lottie animationData={designerCatAnimation} loop={true} />
+                </div>
+            </div>
+        )}
 
         { isClient && designs.length > 0 && (
           <div ref={designsRef} className="mt-8 max-w-[800px] mx-auto w-full space-y-6 pb-8">
