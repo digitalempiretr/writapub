@@ -328,7 +328,7 @@ export default function Home() {
                         onClick={handleGenerate}
                         disabled={isLoading}
                         size="icon"
-                        className="rounded-full"
+                        className="rounded-full bg-[#2C5364] hover:bg-[#203a43]"
                       >
                         {isLoading ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
@@ -505,3 +505,5 @@ export default function Home() {
     </>
   );
 }
+
+    
