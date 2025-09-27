@@ -362,9 +362,6 @@ export default function Home() {
 
         { isClient && designs.length > 0 && (
           <div ref={designsRef} className="mt-8 max-w-[800px] mx-auto w-full space-y-6 pb-8">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-primary-foreground">Designs</CardTitle>
-            </div>
             
             <div className="w-full">
                 <Carousel className="w-full max-w-lg mx-auto" setApi={(api) => api?.reInit()}>
