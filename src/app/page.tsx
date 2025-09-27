@@ -35,7 +35,7 @@ import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
 import Lottie from 'lottie-react';
-import designerCatAnimation from '@/lib/Designer cat.json';
+import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
 
 type Design = {
   text: string;
@@ -354,8 +354,8 @@ export default function Home() {
         
         {isGeneratingAnimation && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <div className="w-96 h-96">
-                    <Lottie animationData={designerCatAnimation} loop={true} />
+                <div className="w-64 h-64">
+                    <Lottie animationData={webflowAnimation} loop={true} />
                 </div>
             </div>
         )}
