@@ -347,7 +347,7 @@ export default function Home() {
         </div>
 
         { isClient && designs.length > 0 && (
-          <div ref={designsRef} className="mt-8 max-w-[800px] mx-auto w-full space-y-6">
+          <div ref={designsRef} className="mt-8 max-w-[800px] mx-auto w-full space-y-6 pb-8">
             <div className="flex items-center justify-between">
               <CardTitle className="text-primary-foreground">Designs</CardTitle>
               <Button onClick={handleDownloadAll} variant="outline" size="sm" disabled={designs.length === 0}>
