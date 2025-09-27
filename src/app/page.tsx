@@ -340,7 +340,7 @@ export default function Home() {
               </div>
           </div>
 
-          <div className="mt-8">
+          <div className="mt-8 max-w-[800px] mx-auto w-full">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
