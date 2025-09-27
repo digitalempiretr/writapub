@@ -30,7 +30,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, Loader2, Search, Wand2 } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, Loader2, Search } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -149,6 +149,7 @@ export default function Home() {
   const [rectOpacity, setRectOpacity] = useState(0.9);
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
+  const designsRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   const handleTextRemaining = useCallback((remaining: string, fromIndex: number) => {
@@ -209,6 +210,12 @@ export default function Home() {
         
         setDesigns(newDesigns);
         setIsLoading(false);
+
+        // Scroll to designs section after a short delay to ensure it's rendered
+        setTimeout(() => {
+          designsRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+
     }, 50);
   };
   
@@ -340,7 +347,7 @@ export default function Home() {
         </div>
 
         { isClient && designs.length > 0 && (
-          <div className="mt-8 max-w-[800px] mx-auto w-full space-y-6">
+          <div ref={designsRef} className="mt-8 max-w-[800px] mx-auto w-full space-y-6">
             <div className="flex items-center justify-between">
               <CardTitle className="text-primary-foreground">Designs</CardTitle>
               <Button onClick={handleDownloadAll} variant="outline" size="sm" disabled={designs.length === 0}>
