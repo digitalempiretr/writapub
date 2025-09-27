@@ -137,7 +137,7 @@ export default function Home() {
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'special-elite') || fontOptions[0]);
   const [textAlign, setTextAlign] = useState<TextAlign>('left');
   const [designTab, setDesignTab] = useState("flat");
-  const [bgColor, setBgColor] = useState("#FFFFFF");
+  const [bgColor, setBgColor] = useState("#f4fdff");
   const [textColor, setTextColor] = useState("#172554");
   const [gradientBg, setGradientBg] = useState(gradientTemplates[0].css);
   const [imageBgUrl, setImageBgUrl] = useState(imageTemplates[0].imageUrl);
@@ -145,7 +145,7 @@ export default function Home() {
   const [searchedImages, setSearchedImages] = useState<string[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
-  const [rectBgColor, setRectBgColor] = useState("#FFFFFF");
+  const [rectBgColor, setRectBgColor] = useState("#f4fdff");
   const [rectOpacity, setRectOpacity] = useState(0.9);
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
@@ -388,7 +388,7 @@ export default function Home() {
                 <Separator className="my-6" />
                 <div className="space-y-4 px-1">
                   <div className="space-y-4">
-                    <Label>Arka Plan</Label>
+                    <Label className="text-[#f4fdff]">Arka Plan</Label>
                     <Tabs value={designTab} onValueChange={setDesignTab} className="w-full">
                       <TabsList className="grid w-full grid-cols-3">
                         <TabsTrigger value="flat">Düz Renk</TabsTrigger>
@@ -397,7 +397,7 @@ export default function Home() {
                       </TabsList>
                       <TabsContent value="flat" className="pt-4 space-y-4">
                         <div className="flex items-center gap-4">
-                          <Label>Arka Plan:</Label>
+                          <Label className="text-[#f4fdff]">Arka Plan:</Label>
                           <Input
                             type="color"
                             value={bgColor}
@@ -474,7 +474,7 @@ export default function Home() {
                   </div>
 
                   <div className="space-y-2">
-                      <Label htmlFor="textColor">Yazı Rengi</Label>
+                      <Label htmlFor="textColor" className="text-[#f4fdff]">Yazı Rengi</Label>
                       <div className="flex items-center gap-4">
                         <Input
                           type="color"
@@ -494,7 +494,7 @@ export default function Home() {
                   </div>
 
                   <div className="space-y-2">
-                      <Label htmlFor="rectBgColor">Zemin Rengi</Label>
+                      <Label htmlFor="rectBgColor" className="text-[#f4fdff]">Zemin Rengi</Label>
                       <div className="flex items-center gap-4">
                         <Input
                           type="color"
@@ -514,7 +514,7 @@ export default function Home() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="rectOpacity">Zemin Opaklığı</Label>
+                    <Label htmlFor="rectOpacity" className="text-[#f4fdff]">Zemin Opaklığı</Label>
                     <Slider
                       id="rectOpacity"
                       max={1}
@@ -526,7 +526,7 @@ export default function Home() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Yazı Tipi</Label>
+                    <Label className="text-[#f4fdff]">Yazı Tipi</Label>
                     <Select value={activeFont.value} onValueChange={handleFontChange}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Yazı Tipi Seçin" />
@@ -542,7 +542,7 @@ export default function Home() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label>Yazı Hizalama</Label>
+                    <Label className="text-[#f4fdff]">Yazı Hizalama</Label>
                     <div className="flex items-center gap-2">
                       <Button
                         variant={textAlign === 'left' ? 'default' : 'outline'}
