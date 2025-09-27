@@ -14,6 +14,18 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.09
+
+#### ENGLISH
+### 1. UI & Layout Updates
+-   **Vertical Sizing:** The header height is now fixed to `10vh` and the main content area to `90vh`, creating a full-screen vertical layout.
+
+#### TURKCE
+### 1. Arayüz ve Yerleşim Güncellemeleri
+-   **Dikey Boyutlandırma:** Başlık (header) yüksekliği `10vh` ve ana içerik alanı `90vh` olarak sabitlenerek tam ekran dikey bir yerleşim oluşturuldu.
+
+---
+
 ## Version V1.08
 
 #### ENGLISH
@@ -154,6 +166,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 9.  **Paragraph & Newline Preservation:** Paragraphs and newlines entered by the user in the text area must be preserved and reflected in the final designs.
 10. **Unified Layout:** On all screen sizes, the control panel and the design preview area should be displayed **one below the other**, not side-by-side.
 11. **Initial View:** The main content input area should be vertically centered on the screen. The "Designs" section should be hidden by default and only appear after content generation.
+12. **Vertical Sizing:** The header should have a height of `10vh`, and the main content area should have a height of `90vh`.
 
 #### Türkçe Çekirdek Kurallar
 1.  **Yapay Zeka Geliştirme Öncesi Kontrol:** Yapay zeka, herhangi bir geliştirmeye başlamadan önce, mevcut tüm kuralları ve projenin mevcut durumunu anlamak için `app-rules.md` dosyasını gözden geçirmelidir.
@@ -167,7 +180,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 9.  **Paragraf ve Satır Başı Koruma:** Kullanıcının metin alanına girdiği paragraflar ve satır başları korunmalı ve oluşturulan tasarımlara aynen yansıtılmalıdır.
 10. **Birleşik Yerleşim:** Tüm ekran boyutlarında, kontrol panel ve tasarım önizleme alanı yan yana değil, **alt alta** görüntülenmelidir.
 11. **Başlangıç Görünümü:** Ana içerik giriş alanı ekranın dikeyinde ortalanmalıdır. "Designs" bölümü varsayılan olarak gizli olmalı ve yalnızca içerik oluşturulduktan sonra görünmelidir.
-
+12. **Dikey Boyutlandırma:** Header `10vh` yüksekliğe, ana içerik alanı ise `90vh` yüksekliğe sahip olmalıdır.
 
 #### ENGLISH
 

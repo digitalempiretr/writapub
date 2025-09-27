@@ -303,11 +303,11 @@ export default function Home() {
 
   return (
     <>
-      <header className="w-full text-left mb-10 p-4 md:p-8">
+      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center">
         <Logo className="text-[2rem]" />
       </header>
 
-      <main className="container mx-auto p-4 md:p-8 pt-0 flex flex-col min-h-[calc(100vh-130px)]">
+      <main className="container mx-auto p-4 md:p-8 pt-0 flex flex-col h-[90vh]">
         <div className="flex-grow flex items-center justify-center">
             <div className="space-y-6 max-w-[800px] mx-auto w-full">
               <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
