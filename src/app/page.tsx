@@ -307,9 +307,9 @@ export default function Home() {
         <Logo className="text-[2rem]" />
       </header>
 
-      <main className="container mx-auto p-4 md:p-8 pt-0">
-        <div className="grid grid-cols-1 gap-8 items-start">
-          <div className="space-y-6 max-w-[800px] mx-auto w-full">
+      <main className="container mx-auto p-4 md:p-8 pt-0 flex flex-col min-h-[calc(100vh-130px)]">
+        <div className="flex-grow flex items-center justify-center">
+            <div className="space-y-6 max-w-[800px] mx-auto w-full">
               <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
               <div className="space-y-4">
                   <Textarea
@@ -336,8 +336,10 @@ export default function Home() {
                       </Button>
                   </div>
               </div>
-          </div>
+            </div>
+        </div>
 
+        { isClient && designs.length > 0 && (
           <div className="mt-8 max-w-[800px] mx-auto w-full space-y-6">
             <div className="flex items-center justify-between">
               <CardTitle className="text-primary-foreground">Designs</CardTitle>
@@ -348,45 +350,34 @@ export default function Home() {
             </div>
             
             <div className="w-full">
-              { isClient && designs.length > 0 ? (
-                  <Carousel className="w-full max-w-lg mx-auto" setApi={(api) => api?.reInit()}>
-                    <CarouselContent>
-                      {designs.map((design, index) => (
-                        <CarouselItem key={index} data-index={index}>
-                          <div className="p-1">
-                            <Card className="overflow-hidden">
-                              <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
-                                {renderCanvas(design, index)}
-                              </CardContent>
-                              <CardFooter className="py-2 px-4 justify-end">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleDownload(index)}
-                                >
-                                  <Download className="mr-2 h-4 w-4" />
-                                  JPG İndir
-                                </Button>
-                              </CardFooter>
-                            </Card>
-                          </div>
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                    <CarouselPrevious className="-left-4 md:-left-12" />
-                    <CarouselNext className="-right-4 md:-right-12" />
-                  </Carousel>
-              ) : (
-                <div className="aspect-[1080/1350] max-w-lg mx-auto flex flex-col items-center justify-center rounded-lg border-2 border-dashed bg-muted/50 text-center p-8">
-                    <Wand2 className="w-16 h-16 text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground">
-                      Görselleriniz burada görünecek.
-                    </p>
-                    <p className="text-sm text-muted-foreground/80">
-                      Başlamak için soldaki panelden metninizi girip "Oluştur" butonuna tıklayın.
-                    </p>
-                </div>
-              )}
+                <Carousel className="w-full max-w-lg mx-auto" setApi={(api) => api?.reInit()}>
+                  <CarouselContent>
+                    {designs.map((design, index) => (
+                      <CarouselItem key={index} data-index={index}>
+                        <div className="p-1">
+                          <Card className="overflow-hidden">
+                            <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
+                              {renderCanvas(design, index)}
+                            </CardContent>
+                            <CardFooter className="py-2 px-4 justify-end">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDownload(index)}
+                              >
+                                <Download className="mr-2 h-4 w-4" />
+                                JPG İndir
+                              </Button>
+                            </CardFooter>
+                          </Card>
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="-left-4 md:-left-12" />
+                  <CarouselNext className="-right-4 md:-right-12" />
+                </Carousel>
+              
                 <Separator className="my-6" />
                 <div className="space-y-4 px-1">
                   <div className="space-y-4">
@@ -572,7 +563,7 @@ export default function Home() {
                 </div>
             </div>
           </div>
-        </div>
+        )}
       </main>
     </>
   );

@@ -14,6 +14,28 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.08
+
+#### ENGLISH
+### 1. UI & Layout Updates
+-   **Vertically Centered Input:** The main content input area ("Creative Magic") is now vertically centered on the screen, creating a focused starting point for the user.
+-   **Dynamic Design Section:** The "Designs" section is now hidden by default. It only appears after the user clicks the "Generate" button, providing a cleaner initial view and revealing the results contextually.
+-   **Full-Width Header:** The header containing the logo is now full-width, independent of the main content container.
+-   **Consistent Section Styling:** The "Creative Magic" and "Designs" sections now share a consistent, transparent background and heading style, removing the card-like appearance for a more integrated UI.
+-   **Redesigned Generate Button:** The "Generate" text button has been replaced with a circular icon button featuring an "Arrow Up" icon. It's now positioned neatly next to the character counter.
+-   **UI Polish:** The text area's border has been removed to blend it seamlessly with its background.
+
+#### TURKCE
+### 1. Arayüz ve Yerleşim Güncellemeleri
+-   **Dikeyde Ortalanmış Giriş Alanı:** Ana içerik giriş alanı ("Creative Magic") artık ekranın dikeyinde ortalanarak kullanıcı için odaklanmış bir başlangıç noktası oluşturur.
+-   **Dinamik Tasarım Bölümü:** "Designs" bölümü artık varsayılan olarak gizlidir. Sadece kullanıcı "Oluştur" butonuna bastıktan sonra belirerek daha temiz bir başlangıç görünümü sunar ve sonuçları bağlamsal olarak ortaya çıkarır.
+-   **Tam Genişlik Başlık:** Logoyu içeren başlık (header) alanı artık ana içerik kapsayıcısından bağımsız olarak tam genişliktedir.
+-   **Tutarlı Bölüm Stili:** "Creative Magic" ve "Designs" bölümleri artık daha entegre bir kullanıcı arayüzü için kart benzeri görünümü kaldıran, tutarlı, şeffaf bir arka plana ve başlık stiline sahiptir.
+-   **Yeniden Tasarlanan Oluştur Butonu:** "Oluştur" metinli buton, "Yukarı Ok" ikonu içeren dairesel bir ikon buton ile değiştirildi. Artık karakter sayacının yanında düzgün bir şekilde konumlandırılmıştır.
+-   **Arayüz İyileştirmeleri:** Metin alanının kenarlığı, arka planıyla sorunsuz bir şekilde bütünleşmesi için kaldırıldı.
+
+---
+
 ## Version V1.07
 
 #### ENGLISH
@@ -131,8 +153,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 8.  **Automatic Title Logic:** If the user has not specified a title, the first sentence of the entered text is automatically used as the title. In this case, this sentence used as the title **must be removed** from the beginning of the main text.
 9.  **Paragraph & Newline Preservation:** Paragraphs and newlines entered by the user in the text area must be preserved and reflected in the final designs.
 10. **Unified Layout:** On all screen sizes, the control panel and the design preview area should be displayed **one below the other**, not side-by-side.
-11. **"Sticky" Control Panel:** On wider screens like desktops, the left-side control panel should be **fixed (`sticky`)** to the left of the screen when the user scrolls down.
-12. **Portrait Background Previews:** The thumbnail previews in the Gradient and Image selection tabs must be portrait-oriented to reflect the final design's 1080x1350 aspect ratio.
+11. **Initial View:** The main content input area should be vertically centered on the screen. The "Designs" section should be hidden by default and only appear after content generation.
 
 #### Türkçe Çekirdek Kurallar
 1.  **Yapay Zeka Geliştirme Öncesi Kontrol:** Yapay zeka, herhangi bir geliştirmeye başlamadan önce, mevcut tüm kuralları ve projenin mevcut durumunu anlamak için `app-rules.md` dosyasını gözden geçirmelidir.
@@ -145,8 +166,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 8.  **Otomatik Başlık Mantığı:** Kullanıcı bir başlık belirtmemişse, girilen metnin ilk cümlesi otomatik olarak başlık olarak kullanılır. Bu durumda, başlık olarak kullanılan bu cümle ana metnin başından **kesinlikle çıkarılmalıdır**.
 9.  **Paragraf ve Satır Başı Koruma:** Kullanıcının metin alanına girdiği paragraflar ve satır başları korunmalı ve oluşturulan tasarımlara aynen yansıtılmalıdır.
 10. **Birleşik Yerleşim:** Tüm ekran boyutlarında, kontrol panel ve tasarım önizleme alanı yan yana değil, **alt alta** görüntülenmelidir.
-11. **"Yapışkan" Kontrol Paneli:** Masaüstü gibi daha geniş ekranlarda, kullanıcı sayfayı aşağı kaydırdığında sol taraftaki kontrol paneli ekranın soluna **sabitlenmelidir** (`sticky`).
-12. **Dikey Arka Plan Önizlemesi:** Gradyan ve Görsel seçimi sekmelerindeki küçük resim önizlemeleri, nihai tasarımın 1080x1350 en-boy oranını yansıtacak şekilde dikey olmalıdır.
+11. **Başlangıç Görünümü:** Ana içerik giriş alanı ekranın dikeyinde ortalanmalıdır. "Designs" bölümü varsayılan olarak gizli olmalı ve yalnızca içerik oluşturulduktan sonra görünmelidir.
 
 
 #### ENGLISH
