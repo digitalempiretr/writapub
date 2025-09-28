@@ -35,7 +35,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Brush, Download, Loader2, Palette, Search, Type } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Brush, Dice5, Download, Loader2, Palette, Search, Type } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -96,11 +96,14 @@ const gradientTemplates = [
 ];
 
 const imageTemplates = [
+    { name: "Abstract", imageUrl: "https://picsum.photos/id/184/1080/1350" },
+    { name: "Abstract", imageUrl: "https://picsum.photos/id/213/1080/1350" },   
     { name: "Parchment", imageUrl: "https://picsum.photos/seed/paper/1080/1350" },
     { name: "Dark Wood", imageUrl: "https://picsum.photos/seed/darkwood/1080/1350" },
     { name: "Marble", imageUrl: "https://picsum.photos/seed/marble/1080/1350" },
     { name: "Concrete", imageUrl: "https://picsum.photos/seed/concrete/1080/1350" },
     { name: "Abstract", imageUrl: "https://picsum.photos/seed/abstract/1080/1350" },
+        
 ];
 
 const defaultText = `BİR İŞ NASIL YAPILMAZ kursları açılıyor! Usta kadrosu ile Büyükşehir herhalde Komek vasıtası ile öğretir artık!
@@ -274,6 +277,11 @@ export default function Home() {
       setIsSearching(false);
     }
   };
+
+  const handleFeelLucky = () => {
+    const randomImageUrl = `https://picsum.photos/1080/1350?random=${new Date().getTime()}`;
+    setImageBgUrl(randomImageUrl);
+  };
   
   const renderCanvas = useCallback((design: Design, index: number) => {
     let currentBg: string | undefined;
@@ -430,21 +438,26 @@ export default function Home() {
                                           </Carousel>
                                         </TabsContent>
                                         <TabsContent value="image" className="pt-4 space-y-4">
-                                          <Carousel className="w-full" setApi={(api) => api?.reInit()}>
-                                            <CarouselContent>
-                                              {imageTemplates.map((image) => (
-                                                <CarouselItem key={image.name} className="basis-1/3">
-                                                  <Card className="overflow-hidden cursor-pointer" onClick={() => setImageBgUrl(image.imageUrl)}>
-                                                    <CardContent className="h-32 relative">
-                                                      <Image src={image.imageUrl} alt={image.name} fill className="object-cover" />
-                                                    </CardContent>
-                                                  </Card>
-                                                </CarouselItem>
-                                              ))}
-                                            </CarouselContent>
-                                            <CarouselPrevious className="-left-4" />
-                                            <CarouselNext className="-right-4" />
-                                          </Carousel>
+                                          <div className="flex items-center gap-2">
+                                            <Carousel className="w-full" setApi={(api) => api?.reInit()}>
+                                              <CarouselContent>
+                                                {imageTemplates.map((image) => (
+                                                  <CarouselItem key={image.name} className="basis-1/3">
+                                                    <Card className="overflow-hidden cursor-pointer" onClick={() => setImageBgUrl(image.imageUrl)}>
+                                                      <CardContent className="h-32 relative">
+                                                        <Image src={image.imageUrl} alt={image.name} fill className="object-cover" />
+                                                      </CardContent>
+                                                    </Card>
+                                                  </CarouselItem>
+                                                ))}
+                                              </CarouselContent>
+                                              <CarouselPrevious className="-left-4" />
+                                              <CarouselNext className="-right-4" />
+                                            </Carousel>
+                                            <Button onClick={handleFeelLucky} size="icon" variant="outline" className="h-32 w-20 flex-shrink-0">
+                                              <Dice5 className="h-8 w-8" />
+                                            </Button>
+                                          </div>
 
                                           <div className="flex items-center space-x-2">
                                             <Input
