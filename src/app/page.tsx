@@ -36,7 +36,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Baseline, Brush, Dice5, Download, Loader2, Palette, Search, Type } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Baseline, Brush, Dice5, Download, Loader2, Search, Type } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -461,7 +461,7 @@ export default function Home() {
                 <CardFooter className="flex-col items-start p-0 bg-[#f4fdff]">
                     <Tabs defaultValue="background" className="w-full">
                       <TabsList className="grid w-full grid-cols-3 bg-card text-card-foreground p-2">
-                        <TabsTrigger value="background"><Palette /></TabsTrigger>
+                        <TabsTrigger value="background"><Baseline /></TabsTrigger>
                         <TabsTrigger value="text"><Type /></TabsTrigger>
                         <TabsTrigger value="download"><Download /></TabsTrigger>
                       </TabsList>
