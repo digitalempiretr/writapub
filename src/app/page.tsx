@@ -437,8 +437,7 @@ export default function Home() {
                                           </Carousel>
                                         </TabsContent>
                                         <TabsContent value="image" className="pt-4 space-y-4">
-                                        <div className="flex items-center gap-2">
-                                          <Carousel className="flex-grow" setApi={(api) => api?.reInit()}>
+                                          <Carousel className="w-full" setApi={(api) => api?.reInit()}>
                                             <CarouselContent>
                                               {imageTemplates.map((image) => (
                                                 <CarouselItem key={image.name} className="basis-1/3">
@@ -453,11 +452,7 @@ export default function Home() {
                                             <CarouselPrevious className="-left-4" />
                                             <CarouselNext className="-right-4" />
                                           </Carousel>
-                                          <Button onClick={handleFeelLucky} size="icon" variant="outline" className="h-32 w-20 flex-shrink-0">
-                                            <Dice5 className="h-8 w-8" />
-                                          </Button>
-                                        </div>
-
+                                          
                                           <div className="flex items-center space-x-2">
                                             <Input
                                               type="text"
@@ -465,12 +460,15 @@ export default function Home() {
                                               value={searchQuery}
                                               onChange={(e) => setSearchQuery(e.target.value)}
                                             />
-                                            <Button onClick={handleSearchImages} disabled={isSearching}>
+                                            <Button onClick={handleSearchImages} disabled={isSearching} size="icon">
                                               {isSearching ? (
                                                 <Loader2 className="h-4 w-4 animate-spin" />
                                               ) : (
                                                 <Search className="h-4 w-4" />
                                               )}
+                                            </Button>
+                                             <Button onClick={handleFeelLucky} size="icon" variant="outline" >
+                                              <Dice5 className="h-4 w-4" />
                                             </Button>
                                           </div>
 
