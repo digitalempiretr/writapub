@@ -177,7 +177,7 @@ export default function Home() {
     }
   }, []);
 
-  const handleGenerate = async () => {
+  const handleGenerate = useCallback(async () => {
     if (!text && !title) {
       toast({
         title: "Metin Girilmedi",
@@ -226,7 +226,7 @@ export default function Home() {
             designsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }, 3000);
-  };
+  }, [text, title, toast]);
   
   const handleDownload = (index: number) => {
     const canvas = canvasRefs.current[index];
@@ -252,6 +252,20 @@ export default function Home() {
     const newFont = fontOptions.find(f => f.value === value) || fontOptions[0];
     setActiveFont(newFont);
   }
+  
+  const hasGeneratedOnce = useRef(false);
+  
+  useEffect(() => {
+      if (hasGeneratedOnce.current) {
+          handleGenerate();
+      }
+  }, [activeFont, handleGenerate]);
+
+  const handleGenerateClick = () => {
+      hasGeneratedOnce.current = true;
+      handleGenerate();
+  }
+
 
   const handleSearchImages = async () => {
     if (!searchQuery) return;
@@ -339,7 +353,7 @@ export default function Home() {
                   <div className="flex items-center justify-end gap-4">
                      <p className="text-xs text-muted-foreground">{text.length} karakter</p>
                      <Button
-                        onClick={handleGenerate}
+                        onClick={handleGenerateClick}
                         disabled={isLoading}
                         size="icon"
                         className="rounded-full bg-[#2C5364] hover:bg-[#203a43]"
