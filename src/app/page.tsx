@@ -97,11 +97,29 @@ const gradientTemplates = [
 ];
 
 const imageTemplates = [
-    { name: "Parchment", imageUrl: "https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=2070&auto=format&fit=crop" },
-    { name: "Dark Wood", imageUrl: "https://images.unsplash.com/photo-1594786377582-5190c8416421?q=80&w=1974&auto=format&fit=crop" },
-    { name: "Marble", imageUrl: "https://images.unsplash.com/photo-1581362624440-2ea47e9e4369?q=80&w=2127&auto=format&fit=crop" },
-    { name: "Concrete", imageUrl: "https://images.unsplash.com/photo-1549488344-cbb6c34cf08b?q=80&w=1974&auto=format&fit=crop" },
-    { name: "Abstract", imageUrl: "https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?q=80&w=1974&auto=format&fit=crop" },
+  { name: "bgImage-1", imageUrl: "https://i.ibb.co/cSNxXVn5/1.jpg" },
+  { name: "bgImage-2", imageUrl: "https://i.ibb.co/21RBM4zK/2.jpg" },
+  { name: "bgImage-3", imageUrl: "https://i.ibb.co/fG4jwVJk/3.jpg" },
+  { name: "bgImage-4", imageUrl: "https://i.ibb.co/DmLYr9c/4.jpg" },
+  { name: "bgImage-5", imageUrl: "https://i.ibb.co/NngKdzDr/5.jpg" },
+  { name: "bgImage-6", imageUrl: "https://i.ibb.co/kVJS28vc/6.jpg" },
+  { name: "bgImage-7", imageUrl: "https://i.ibb.co/DDZ3y2Lk/7.jpg" },
+  { name: "bgImage-8", imageUrl: "https://i.ibb.co/qMsVxTVP/8.jpg" },
+  { name: "bgImage-9", imageUrl: "https://i.ibb.co/dwpMznqZ/9.jpg" },
+  { name: "bgImage-10", imageUrl: "https://i.ibb.co/20LWKfg2/10.jpg" },
+  { name: "bgImage-11", imageUrl: "https://i.ibb.co/0pPsjhzm/11.jpg" },
+  { name: "bgImage-12", imageUrl: "https://i.ibb.co/60jqfPL0/12.jpg" },
+  { name: "bgImage-13", imageUrl: "https://i.ibb.co/prMd6Jrx/13.jpg" },
+  { name: "bgImage-14", imageUrl: "https://i.ibb.co/HTRtS40v/14.jpg" },
+  { name: "bgImage-15", imageUrl: "https://i.ibb.co/kVzt8JY3/15.jpg" },
+  { name: "bgImage-16", imageUrl: "https://i.ibb.co/DqpzHmd/16.jpg" },
+  { name: "bgImage-17", imageUrl: "https://i.ibb.co/pBgc28z1/17.jpg" },
+  { name: "bgImage-18", imageUrl: "https://i.ibb.co/KzSvH8MX/18.jpg" },
+  { name: "bgImage-19", imageUrl: "https://i.ibb.co/Qj8wydws/19.jpg" },
+  { name: "bgImage-20", imageUrl: "https://i.ibb.co/nsNShDnK/20.jpg" },
+  { name: "bgImage-21", imageUrl: "https://i.ibb.co/xq1cZcmL/21.jpg" },
+  { name: "bgImage-22", imageUrl: "https://i.ibb.co/ym0R346S/22.jpg" },
+  { name: "bgImage-23", imageUrl: "https://i.ibb.co/1Jtzn1X6/23.jpg" }
 ];
 
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea"];
