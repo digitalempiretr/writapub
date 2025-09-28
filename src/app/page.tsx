@@ -225,7 +225,7 @@ export default function Home() {
         if(designsRef.current) {
             designsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-    }, 3000);
+    }, 1618);
   }, [text, title, toast]);
   
   const handleDownload = (index: number) => {
