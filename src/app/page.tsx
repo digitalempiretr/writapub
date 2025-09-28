@@ -96,14 +96,16 @@ const gradientTemplates = [
 ];
 
 const imageTemplates = [
-    { name: "Desert", imageUrl: "https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?q=80&w=1080" },
-    { name: "Sea", imageUrl: "https://images.unsplash.com/photo-1544198365-f5d60b6d8190?q=80&w=1080" },
-    { name: "Parchment", imageUrl: "https://images.unsplash.com/photo-1594248408665-2401a75508a8?q=80&w=1080" },
-    { name: "Dark Wood", imageUrl: "https://images.unsplash.com/photo-1596700201369-02c3884df84c?q=80&w=1080" },
-    { name: "Marble", imageUrl: "https://images.unsplash.com/photo-1603989989694-8179b544d673?q=80&w=1080" },
-    { name: "Concrete", imageUrl: "https://images.unsplash.com/photo-1550601335-7a6b4b455115?q=80&w=1080" },
-    { name: "Abstract", imageUrl: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=1080" },
+    { name: "Parchment", imageUrl: "https://images.pexels.com/photos/833045/pexels-photo-833045.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
+    { name: "Dark Wood", imageUrl: "https://images.pexels.com/photos/172289/pexels-photo-172289.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
+    { name: "Marble", imageUrl: "https://images.pexels.com/photos/5898031/pexels-photo-5898031.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
+    { name: "Concrete", imageUrl: "https://images.pexels.com/photos/1078884/pexels-photo-1078884.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
+    { name: "Nature", imageUrl: "https://images.pexels.com/photos/933054/pexels-photo-933054.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
+    { name: "Sea", imageUrl: "https://images.pexels.com/photos/355321/pexels-photo-355321.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
+    { name: "Wallpaper", imageUrl: "https://images.pexels.com/photos/1939485/pexels-photo-1939485.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
 ];
+
+const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea"];
 
 const defaultText = `BİR İŞ NASIL YAPILMAZ kursları açılıyor! Usta kadrosu ile Büyükşehir herhalde Komek vasıtası ile öğretir artık!
 Yahu 20 kere yaptığınız Mistik Müzik Festivalimizin içine etmek değilse bu nedir?
@@ -155,6 +157,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchedImages, setSearchedImages] = useState<string[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [searchPage, setSearchPage] = useState(1);
 
   const [rectBgColor, setRectBgColor] = useState("#2C5364");
   const [rectOpacity, setRectOpacity] = useState(0.5);
@@ -258,13 +261,20 @@ export default function Home() {
     }
   }
 
-  const handleSearchImages = async () => {
+  const handleSearchImages = async (page = 1) => {
     if (!searchQuery) return;
     setIsSearching(true);
-    setSearchedImages([]);
+    if (page === 1) {
+      setSearchedImages([]);
+    }
     try {
-      const result = await findImages({ query: searchQuery });
-      setSearchedImages(result.imageUrls);
+      const result = await findImages({ query: searchQuery, page: page, per_page: 6 });
+      if (page > 2) {
+          setSearchedImages(prev => [...prev.slice(6), ...result.imageUrls]);
+      } else {
+          setSearchedImages(prev => [...prev, ...result.imageUrls]);
+      }
+      setSearchPage(page);
     } catch (error) {
       console.error(error);
       toast({
@@ -276,6 +286,19 @@ export default function Home() {
       setIsSearching(false);
     }
   };
+
+  const handleKeywordSearch = (keyword: string) => {
+    setSearchQuery(keyword);
+    setSearchPage(1);
+    handleSearchImages(1);
+  };
+
+
+  useEffect(() => {
+    if (searchQuery && searchPage === 1) {
+        handleSearchImages(1);
+    }
+  }, [searchQuery, searchPage]);
 
   const handleFeelLucky = () => {
     const randomSeed = Math.floor(Math.random() * 1000);
@@ -454,15 +477,24 @@ export default function Home() {
                                             <CarouselNext className="-right-4" />
                                           </Carousel>
                                           
+                                          <div className="flex flex-wrap gap-2">
+                                            {searchKeywords.map(keyword => (
+                                                <Button key={keyword} variant="outline" size="sm" onClick={() => handleKeywordSearch(keyword)}>
+                                                    {keyword}
+                                                </Button>
+                                            ))}
+                                          </div>
+
                                           <div className="flex items-center space-x-2">
                                             <Input
                                               type="text"
                                               placeholder="Görsel ara..."
                                               value={searchQuery}
                                               onChange={(e) => setSearchQuery(e.target.value)}
+                                              onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
                                             />
-                                            <Button onClick={handleSearchImages} disabled={isSearching} size="icon">
-                                              {isSearching ? (
+                                            <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon">
+                                              {isSearching && searchPage === 1 ? (
                                                 <Loader2 className="h-4 w-4 animate-spin" />
                                               ) : (
                                                 <Search className="h-4 w-4" />
@@ -474,6 +506,7 @@ export default function Home() {
                                           </div>
 
                                           {searchedImages.length > 0 && (
+                                            <>
                                             <div className="grid grid-cols-3 gap-2">
                                               {searchedImages.map((imageUrl, index) => (
                                                 <button key={index} onClick={() => setImageBgUrl(imageUrl)}>
@@ -481,6 +514,10 @@ export default function Home() {
                                                 </button>
                                               ))}
                                             </div>
+                                            <Button onClick={() => handleSearchImages(searchPage + 1)} disabled={isSearching} className="w-full">
+                                                {isSearching && searchPage > 1 ? <Loader2 className="h-4 w-4 animate-spin" /> : "Daha Fazla"}
+                                            </Button>
+                                            </>
                                           )}
                                         </TabsContent>
                                       </Tabs>

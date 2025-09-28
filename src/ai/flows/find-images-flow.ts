@@ -9,6 +9,8 @@ import { createClient, type Photos } from 'pexels';
 
 const FindImagesInputSchema = z.object({
   query: z.string().describe('The search query for images.'),
+  per_page: z.number().optional().default(6),
+  page: z.number().optional().default(1),
 });
 export type FindImagesInput = z.infer<typeof FindImagesInputSchema>;
 
@@ -21,10 +23,12 @@ export type FindImagesOutput = z.infer<typeof FindImagesOutputSchema>;
 async function searchPexelsImages(
   query: string,
   apiKey: string,
+  per_page: number,
+  page: number
 ): Promise<string[]> {
   try {
     const client = createClient(apiKey);
-    const response = await client.photos.search({ query, per_page: 10 });
+    const response = await client.photos.search({ query, per_page, page });
 
     if ('photos' in response) {
       return response.photos.map((photo) => photo.src.large);
@@ -51,7 +55,7 @@ export const findImagesFlow = ai.defineFlow(
       );
     }
 
-    const imageUrls = await searchPexelsImages(input.query, apiKey);
+    const imageUrls = await searchPexelsImages(input.query, apiKey, input.per_page!, input.page!);
 
     return {
       imageUrls,
