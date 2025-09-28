@@ -440,7 +440,7 @@ export default function Home() {
                   <CarouselNext className="-right-4 md:-right-12" />
                 </Carousel>
 
-                <CardFooter className="flex-col items-start p-0">
+                <CardFooter className="flex-col items-start p-0 bg-[#f4fdff]">
                     <Tabs defaultValue="background" className="w-full">
                       <TabsList className="grid w-full grid-cols-3 bg-card text-card-foreground p-2">
                         <TabsTrigger value="background"><Palette /></TabsTrigger>
