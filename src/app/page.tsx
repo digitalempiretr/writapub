@@ -25,12 +25,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, Loader2, Search } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, Loader2, Palette, PanelTop, Search, Type } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -140,7 +139,7 @@ export default function Home() {
 
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'special-elite') || fontOptions[0]);
   const [textAlign, setTextAlign] = useState<TextAlign>('left');
-  const [designTab, setDesignTab] = useState("flat");
+  const [backgroundTab, setBackgroundTab] = useState("flat");
   const [bgColor, setBgColor] = useState("#f4fdff");
   const [textColor, setTextColor] = useState("#172554");
   const [gradientBg, setGradientBg] = useState(gradientTemplates[0].css);
@@ -271,7 +270,7 @@ export default function Home() {
     let currentBg: string | undefined;
     let imageUrl: string | undefined;
 
-    switch(designTab) {
+    switch(backgroundTab) {
         case "flat":
             currentBg = bgColor;
             imageUrl = undefined;
@@ -292,7 +291,7 @@ export default function Home() {
     
     return (
         <ImageCanvas
-          key={`${designTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${index}-${design.text}-${textAlign}`}
+          key={`${backgroundTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${index}-${design.text}-${textAlign}`}
           font={activeFont}
           text={design.text}
           isTitle={design.isTitle}
@@ -310,7 +309,7 @@ export default function Home() {
           textAlign={textAlign}
         />
     )
-  }, [designTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, handleTextRemaining, rectBgColor, rectOpacity, textAlign]);
+  }, [backgroundTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, handleTextRemaining, rectBgColor, rectOpacity, textAlign]);
 
   return (
     <>
@@ -362,35 +361,229 @@ export default function Home() {
 
         { isClient && designs.length > 0 && (
           <div className="w-full pt-8 pb-8">
-            <div ref={designsRef} className="text-2xl h-10 pt-5 text-[#f4fdff]">Reels</div>
+            <div ref={designsRef} className="text-2xl h-10 pt-1 text-[#f4fdff]">Reels</div>
             <div className="max-w-[800px] mx-auto w-full space-y-6">
                 <Carousel className="w-full max-w-lg mx-auto" setApi={(api) => api?.reInit()}>
                   <CarouselContent>
                     {designs.map((design, index) => (
                       <CarouselItem key={index} data-index={index}>
                         <div className="p-1">
-                          <Card className="overflow-hidden">
+                          <Card className="overflow-hidden border-0">
                             <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
                               {renderCanvas(design, index)}
                             </CardContent>
-                            <CardFooter className="py-2 px-4 flex items-center justify-between">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={handleDownloadAll}
-                                disabled={designs.length === 0}
-                              >
-                                <Download className="mr-2 h-4 w-4" />
-                                Tümünü İndir
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleDownload(index)}
-                              >
-                                <Download className="mr-2 h-4 w-4" />
-                                Bu Tasarımı İndir
-                              </Button>
+                            <CardFooter className="flex-col items-start p-0">
+                                <Tabs defaultValue="background" className="w-full">
+                                  <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2">
+                                    <TabsTrigger value="background"><Palette /></TabsTrigger>
+                                    <TabsTrigger value="text"><Type /></TabsTrigger>
+                                    <TabsTrigger value="layout"><PanelTop /></TabsTrigger>
+                                    <TabsTrigger value="download"><Download /></TabsTrigger>
+                                  </TabsList>
+                                  <TabsContent value="background" className="p-4 bg-card-foreground/5 rounded-b-lg">
+                                    <div className="space-y-4">
+                                      <Label className="text-foreground">Arka Plan</Label>
+                                      <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
+                                        <TabsList className="grid w-full grid-cols-3">
+                                          <TabsTrigger value="flat">Düz Renk</TabsTrigger>
+                                          <TabsTrigger value="gradient">Gradyan</TabsTrigger>
+                                          <TabsTrigger value="image">Görsel</TabsTrigger>
+                                        </TabsList>
+                                        <TabsContent value="flat" className="pt-4 space-y-4">
+                                          <div className="flex items-center gap-4">
+                                            <Label className="text-foreground">Arka Plan:</Label>
+                                            <Input
+                                              type="color"
+                                              value={bgColor}
+                                              onChange={(e) => setBgColor(e.target.value)}
+                                              className="h-9 w-12 p-0 border-0 bg-transparent shadow-none"
+                                            />
+                                            <Input
+                                              type="text"
+                                              value={bgColor}
+                                              onChange={(e) => setBgColor(e.target.value)}
+                                              className="h-9 w-32"
+                                            />
+                                          </div>
+                                        </TabsContent>
+                                        <TabsContent value="gradient" className="pt-4 space-y-4">
+                                          <Carousel className="w-full" setApi={(api) => api?.reInit()}>
+                                            <CarouselContent>
+                                              {gradientTemplates.map((gradient) => (
+                                                <CarouselItem key={gradient.name} className="basis-1/3">
+                                                  <Card className="overflow-hidden cursor-pointer" onClick={() => setGradientBg(gradient.css)}>
+                                                    <CardContent className="h-32" style={{ background: gradient.css }} />
+                                                  </Card>
+                                                </CarouselItem>
+                                              ))}
+                                            </CarouselContent>
+                                            <CarouselPrevious className="-left-4" />
+                                            <CarouselNext className="-right-4" />
+                                          </Carousel>
+                                        </TabsContent>
+                                        <TabsContent value="image" className="pt-4 space-y-4">
+                                          <Carousel className="w-full" setApi={(api) => api?.reInit()}>
+                                            <CarouselContent>
+                                              {imageTemplates.map((image) => (
+                                                <CarouselItem key={image.name} className="basis-1/3">
+                                                  <Card className="overflow-hidden cursor-pointer" onClick={() => setImageBgUrl(image.imageUrl)}>
+                                                    <CardContent className="h-32 relative">
+                                                      <Image src={image.imageUrl} alt={image.name} fill className="object-cover" />
+                                                    </CardContent>
+                                                  </Card>
+                                                </CarouselItem>
+                                              ))}
+                                            </CarouselContent>
+                                            <CarouselPrevious className="-left-4" />
+                                            <CarouselNext className="-right-4" />
+                                          </Carousel>
+
+                                          <div className="flex items-center space-x-2">
+                                            <Input
+                                              type="text"
+                                              placeholder="Görsel ara..."
+                                              value={searchQuery}
+                                              onChange={(e) => setSearchQuery(e.target.value)}
+                                            />
+                                            <Button onClick={handleSearchImages} disabled={isSearching}>
+                                              {isSearching ? (
+                                                <Loader2 className="h-4 w-4 animate-spin" />
+                                              ) : (
+                                                <Search className="h-4 w-4" />
+                                              )}
+                                            </Button>
+                                          </div>
+
+                                          {searchedImages.length > 0 && (
+                                            <div className="grid grid-cols-3 gap-2">
+                                              {searchedImages.map((imageUrl, index) => (
+                                                <button key={index} onClick={() => setImageBgUrl(imageUrl)}>
+                                                  <Image src={imageUrl} alt={`Search Result ${index}`} width={200} height={250} className="object-cover aspect-[2/3] rounded-md" />
+                                                </button>
+                                              ))}
+                                            </div>
+                                          )}
+                                        </TabsContent>
+                                      </Tabs>
+                                    </div>
+                                  </TabsContent>
+                                  <TabsContent value="text" className="p-4 bg-card-foreground/5 rounded-b-lg space-y-4">
+                                     <div className="space-y-2">
+                                        <Label htmlFor="textColor" className="text-foreground">Yazı Rengi</Label>
+                                        <div className="flex items-center gap-4">
+                                          <Input
+                                            type="color"
+                                            id="textColor"
+                                            value={textColor}
+                                            onChange={(e) => setTextColor(e.target.value)}
+                                            className="h-9 w-12 p-0 border-0 bg-transparent shadow-none"
+                                          />
+                                          <Input
+                                            type="text"
+                                            id="textColorText"
+                                            value={textColor}
+                                            onChange={(e) => setTextColor(e.target.value)}
+                                            className="h-9 w-32"
+                                          />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                      <Label className="text-foreground">Yazı Tipi</Label>
+                                      <Select value={activeFont.value} onValueChange={handleFontChange}>
+                                        <SelectTrigger className="w-full">
+                                          <SelectValue placeholder="Yazı Tipi Seçin" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          {fontOptions.map((font) => (
+                                            <SelectItem key={font.value} value={font.value}>
+                                              {font.label}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                    </div>
+                                    <div className="space-y-2">
+                                      <Label className="text-foreground">Yazı Hizalama</Label>
+                                      <div className="flex items-center gap-2">
+                                        <Button
+                                          variant={textAlign === 'left' ? 'default' : 'outline'}
+                                          onClick={() => setTextAlign('left')}
+                                          size="icon"
+                                        >
+                                          <AlignLeft className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                          variant={textAlign === 'center' ? 'default' : 'outline'}
+                                          onClick={() => setTextAlign('center')}
+                                          size="icon"
+                                        >
+                                          <AlignCenter className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                          variant={textAlign === 'right' ? 'default' : 'outline'}
+                                          onClick={() => setTextAlign('right')}
+                                          size="icon"
+                                        >
+                                          <AlignRight className="h-4 w-4" />
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  </TabsContent>
+                                  <TabsContent value="layout" className="p-4 bg-card-foreground/5 rounded-b-lg space-y-4">
+                                     <div className="space-y-2">
+                                        <Label htmlFor="rectBgColor" className="text-foreground">Zemin Rengi</Label>
+                                        <div className="flex items-center gap-4">
+                                          <Input
+                                            type="color"
+                                            id="rectBgColor"
+                                            value={rectBgColor}
+                                            onChange={(e) => setRectBgColor(e.target.value)}
+                                            className="h-9 w-12 p-0 border-0 bg-transparent shadow-none"
+                                          />
+                                          <Input
+                                            type="text"
+                                            id="rectBgColorText"
+                                            value={rectBgColor}
+                                            onChange={(e) => setRectBgColor(e.target.value)}
+                                            className="h-9 w-32"
+                                          />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                      <Label htmlFor="rectOpacity" className="text-foreground">Zemin Opaklığı</Label>
+                                      <Slider
+                                        id="rectOpacity"
+                                        max={1}
+                                        min={0}
+                                        step={0.05}
+                                        value={[rectOpacity]}
+                                        onValueChange={(value) => setRectOpacity(value[0])}
+                                      />
+                                    </div>
+                                  </TabsContent>
+                                  <TabsContent value="download" className="p-4 bg-card-foreground/5 rounded-b-lg space-y-4">
+                                      <div className="flex justify-around items-center">
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={handleDownloadAll}
+                                          disabled={designs.length === 0}
+                                        >
+                                          <Download className="mr-2 h-4 w-4" />
+                                          Tümünü İndir
+                                        </Button>
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          onClick={() => handleDownload(index)}
+                                        >
+                                          <Download className="mr-2 h-4 w-4" />
+                                          Bu Tasarımı İndir
+                                        </Button>
+                                      </div>
+                                  </TabsContent>
+                                </Tabs>
                             </CardFooter>
                           </Card>
                         </div>
@@ -401,189 +594,6 @@ export default function Home() {
                   <CarouselNext className="-right-4 md:-right-12" />
                 </Carousel>
               
-                <Separator className="my-6" />
-                <div className="space-y-4 px-1">
-                  <div className="space-y-4">
-                    <Label className="text-[#f4fdff]">Arka Plan</Label>
-                    <Tabs value={designTab} onValueChange={setDesignTab} className="w-full">
-                      <TabsList className="grid w-full grid-cols-3">
-                        <TabsTrigger value="flat">Düz Renk</TabsTrigger>
-                        <TabsTrigger value="gradient">Gradyan</TabsTrigger>
-                        <TabsTrigger value="image">Görsel</TabsTrigger>
-                      </TabsList>
-                      <TabsContent value="flat" className="pt-4 space-y-4">
-                        <div className="flex items-center gap-4">
-                          <Label className="text-[#f4fdff]">Arka Plan:</Label>
-                          <Input
-                            type="color"
-                            value={bgColor}
-                            onChange={(e) => setBgColor(e.target.value)}
-                            className="h-9 w-12 p-0 border-0 bg-transparent shadow-none"
-                          />
-                          <Input
-                            type="text"
-                            value={bgColor}
-                            onChange={(e) => setBgColor(e.target.value)}
-                            className="h-9 w-32"
-                          />
-                        </div>
-                      </TabsContent>
-                      <TabsContent value="gradient" className="pt-4 space-y-4">
-                        <Carousel className="w-full" setApi={(api) => api?.reInit()}>
-                          <CarouselContent>
-                            {gradientTemplates.map((gradient) => (
-                              <CarouselItem key={gradient.name} className="basis-1/3">
-                                <Card className="overflow-hidden cursor-pointer" onClick={() => setGradientBg(gradient.css)}>
-                                  <CardContent className="h-32" style={{ background: gradient.css }} />
-                                </Card>
-                              </CarouselItem>
-                            ))}
-                          </CarouselContent>
-                          <CarouselPrevious className="-left-4" />
-                          <CarouselNext className="-right-4" />
-                        </Carousel>
-                      </TabsContent>
-                      <TabsContent value="image" className="pt-4 space-y-4">
-                        <Carousel className="w-full" setApi={(api) => api?.reInit()}>
-                          <CarouselContent>
-                            {imageTemplates.map((image) => (
-                              <CarouselItem key={image.name} className="basis-1/3">
-                                <Card className="overflow-hidden cursor-pointer" onClick={() => setImageBgUrl(image.imageUrl)}>
-                                  <CardContent className="h-32 relative">
-                                    <Image src={image.imageUrl} alt={image.name} fill className="object-cover" />
-                                  </CardContent>
-                                </Card>
-                              </CarouselItem>
-                            ))}
-                          </CarouselContent>
-                          <CarouselPrevious className="-left-4" />
-                          <CarouselNext className="-right-4" />
-                        </Carousel>
-
-                        <div className="flex items-center space-x-2">
-                          <Input
-                            type="text"
-                            placeholder="Görsel ara..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                          />
-                          <Button onClick={handleSearchImages} disabled={isSearching}>
-                            {isSearching ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <Search className="h-4 w-4" />
-                            )}
-                          </Button>
-                        </div>
-
-                        {searchedImages.length > 0 && (
-                          <div className="grid grid-cols-3 gap-2">
-                            {searchedImages.map((imageUrl, index) => (
-                              <button key={index} onClick={() => setImageBgUrl(imageUrl)}>
-                                <Image src={imageUrl} alt={`Search Result ${index}`} width={200} height={250} className="object-cover aspect-[2/3] rounded-md" />
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </TabsContent>
-                    </Tabs>
-                  </div>
-
-                  <div className="space-y-2">
-                      <Label htmlFor="textColor" className="text-[#f4fdff]">Yazı Rengi</Label>
-                      <div className="flex items-center gap-4">
-                        <Input
-                          type="color"
-                          id="textColor"
-                          value={textColor}
-                          onChange={(e) => setTextColor(e.target.value)}
-                          className="h-9 w-12 p-0 border-0 bg-transparent shadow-none"
-                        />
-                        <Input
-                          type="text"
-                          id="textColorText"
-                          value={textColor}
-                          onChange={(e) => setTextColor(e.target.value)}
-                          className="h-9 w-32"
-                        />
-                      </div>
-                  </div>
-
-                  <div className="space-y-2">
-                      <Label htmlFor="rectBgColor" className="text-[#f4fdff]">Zemin Rengi</Label>
-                      <div className="flex items-center gap-4">
-                        <Input
-                          type="color"
-                          id="rectBgColor"
-                          value={rectBgColor}
-                          onChange={(e) => setRectBgColor(e.target.value)}
-                          className="h-9 w-12 p-0 border-0 bg-transparent shadow-none"
-                        />
-                        <Input
-                          type="text"
-                          id="rectBgColorText"
-                          value={rectBgColor}
-                          onChange={(e) => setRectBgColor(e.target.value)}
-                          className="h-9 w-32"
-                        />
-                      </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="rectOpacity" className="text-[#f4fdff]">Zemin Opaklığı</Label>
-                    <Slider
-                      id="rectOpacity"
-                      max={1}
-                      min={0}
-                      step={0.05}
-                      value={[rectOpacity]}
-                      onValueChange={(value) => setRectOpacity(value[0])}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label className="text-[#f4fdff]">Yazı Tipi</Label>
-                    <Select value={activeFont.value} onValueChange={handleFontChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Yazı Tipi Seçin" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {fontOptions.map((font) => (
-                          <SelectItem key={font.value} value={font.value}>
-                            {font.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label className="text-[#f4fdff]">Yazı Hizalama</Label>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant={textAlign === 'left' ? 'default' : 'outline'}
-                        onClick={() => setTextAlign('left')}
-                        size="icon"
-                      >
-                        <AlignLeft className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant={textAlign === 'center' ? 'default' : 'outline'}
-                        onClick={() => setTextAlign('center')}
-                        size="icon"
-                      >
-                        <AlignCenter className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant={textAlign === 'right' ? 'default' : 'outline'}
-                        onClick={() => setTextAlign('right')}
-                        size="icon"
-                      >
-                        <AlignRight className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
             </div>
           </div>
         )}
