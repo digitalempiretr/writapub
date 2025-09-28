@@ -96,14 +96,13 @@ const gradientTemplates = [
 ];
 
 const imageTemplates = [
-    { name: "Desert", imageUrl: "https://picsum.photos/id/184/1080/1350" },
-    { name: "Sea", imageUrl: "https://picsum.photos/id/213/1080/1350" },   
-    { name: "Parchment", imageUrl: "https://picsum.photos/seed/paper/1080/1350" },
-    { name: "Dark Wood", imageUrl: "https://picsum.photos/seed/darkwood/1080/1350" },
-    { name: "Marble", imageUrl: "https://picsum.photos/seed/marble/1080/1350" },
-    { name: "Concrete", imageUrl: "https://picsum.photos/seed/concrete/1080/1350" },
-    { name: "Abstract", imageUrl: "https://picsum.photos/seed/abstract/1080/1350" },
-        
+    { name: "Desert", imageUrl: "https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?q=80&w=1080" },
+    { name: "Sea", imageUrl: "https://images.unsplash.com/photo-1544198365-f5d60b6d8190?q=80&w=1080" },
+    { name: "Parchment", imageUrl: "https://images.unsplash.com/photo-1594248408665-2401a75508a8?q=80&w=1080" },
+    { name: "Dark Wood", imageUrl: "https://images.unsplash.com/photo-1596700201369-02c3884df84c?q=80&w=1080" },
+    { name: "Marble", imageUrl: "https://images.unsplash.com/photo-1603989989694-8179b544d673?q=80&w=1080" },
+    { name: "Concrete", imageUrl: "https://images.unsplash.com/photo-1550601335-7a6b4b455115?q=80&w=1080" },
+    { name: "Abstract", imageUrl: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=1080" },
 ];
 
 const defaultText = `BİR İŞ NASIL YAPILMAZ kursları açılıyor! Usta kadrosu ile Büyükşehir herhalde Komek vasıtası ile öğretir artık!
@@ -438,26 +437,26 @@ export default function Home() {
                                           </Carousel>
                                         </TabsContent>
                                         <TabsContent value="image" className="pt-4 space-y-4">
-                                          <div className="flex items-center gap-2">
-                                            <Carousel className="w-full" setApi={(api) => api?.reInit()}>
-                                              <CarouselContent>
-                                                {imageTemplates.map((image) => (
-                                                  <CarouselItem key={image.name} className="basis-1/3">
-                                                    <Card className="overflow-hidden cursor-pointer" onClick={() => setImageBgUrl(image.imageUrl)}>
-                                                      <CardContent className="h-32 relative">
-                                                        <Image src={image.imageUrl} alt={image.name} fill className="object-cover" />
-                                                      </CardContent>
-                                                    </Card>
-                                                  </CarouselItem>
-                                                ))}
-                                              </CarouselContent>
-                                              <CarouselPrevious className="-left-4" />
-                                              <CarouselNext className="-right-4" />
-                                            </Carousel>
-                                            <Button onClick={handleFeelLucky} size="icon" variant="outline" className="h-32 w-20 flex-shrink-0">
-                                              <Dice5 className="h-8 w-8" />
-                                            </Button>
-                                          </div>
+                                        <div className="flex items-center gap-2">
+                                          <Carousel className="flex-grow" setApi={(api) => api?.reInit()}>
+                                            <CarouselContent>
+                                              {imageTemplates.map((image) => (
+                                                <CarouselItem key={image.name} className="basis-1/3">
+                                                  <Card className="overflow-hidden cursor-pointer" onClick={() => setImageBgUrl(image.imageUrl)}>
+                                                    <CardContent className="h-32 relative">
+                                                      <Image src={image.imageUrl} alt={image.name} fill className="object-cover" />
+                                                    </CardContent>
+                                                  </Card>
+                                                </CarouselItem>
+                                              ))}
+                                            </CarouselContent>
+                                            <CarouselPrevious className="-left-4" />
+                                            <CarouselNext className="-right-4" />
+                                          </Carousel>
+                                          <Button onClick={handleFeelLucky} size="icon" variant="outline" className="h-32 w-20 flex-shrink-0">
+                                            <Dice5 className="h-8 w-8" />
+                                          </Button>
+                                        </div>
 
                                           <div className="flex items-center space-x-2">
                                             <Input
