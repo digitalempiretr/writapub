@@ -278,7 +278,8 @@ export default function Home() {
   };
 
   const handleFeelLucky = () => {
-    const randomImageUrl = `https://picsum.photos/1080/1350?random=${new Date().getTime()}`;
+    const randomSeed = Math.floor(Math.random() * 1000);
+    const randomImageUrl = `https://picsum.photos/seed/${randomSeed}/1080/1350`;
     setImageBgUrl(randomImageUrl);
   };
   
