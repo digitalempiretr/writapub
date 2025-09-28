@@ -14,6 +14,32 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.10
+
+#### ENGLISH
+### 1. UI & Feature Updates
+-   **Random Background Button ("Feel Lucky"):** A button with a `Dice5` icon has been added next to the image search bar. Clicking it selects a random background image from `picsum.photos` using a stable seed, ensuring the chosen image remains consistent across re-renders.
+-   **Image Search Keywords:** Five predefined keyword buttons ("Texture," "Background," "Wallpaper," "Nature," "Sea") have been added to allow users to quickly perform common image searches.
+-   **Advanced Search Pagination:**
+    -   Image search results are now displayed in groups of 6.
+    -   A "More" button loads the next 6 images, displaying 12 in total.
+    -   Subsequent clicks on "More" replace the oldest 6 images with a new set, creating a "sliding window" of the 12 most recent results.
+-   **Carousel Slider Bug Fix:** Fixed a critical UI bug where the entire settings panel would slide along with the design previews. The settings panel is now separate from the carousel and remains static.
+-   **UI Color Adjustments:** The background color of the settings panel has been changed to `#f4fdff` to make it opaque and visually distinct.
+
+#### TURKCE
+### 1. Arayüz ve Özellik Güncellemeleri
+-   **Rastgele Arka Plan Butonu ("Kendimi Şanslı Hissediyorum"):** Görsel arama çubuğunun yanına `Dice5` (zar) ikonu içeren bir buton eklendi. Tıklandığında, `picsum.photos` servisinden rastgele bir arka plan görseli seçer. Seçilen görselin yeniden render'larda değişmemesi için sabit bir "seed" kullanılır.
+-   **Görsel Arama Anahtar Kelimeleri:** Kullanıcıların yaygın aramaları hızla yapabilmesi için beş adet önceden tanımlanmış anahtar kelime butonu ("Texture," "Background," "Wallpaper," "Nature," "Sea") eklendi.
+-   **Gelişmiş Arama Sayfalaması:**
+    -   Görsel arama sonuçları artık 6'lı gruplar halinde gösteriliyor.
+    -   "Daha Fazla" butonu sonraki 6 görseli yükleyerek toplamda 12 görsel gösterir.
+    -   Sonraki tıklamalarda, en eski 6 görseli listeden çıkarıp yeni bir set ekleyerek en güncel 12 sonucu gösteren bir "kayan pencere" mantığı uygulanır.
+-   **Karusel (Slider) Hata Düzeltmesi:** Tasarım ayar panelinin, görsellerle birlikte kaymasına neden olan kritik arayüz hatası düzeltildi. Ayar paneli artık karuselden bağımsızdır ve sabit kalır.
+-   **Arayüz Renk Düzenlemeleri:** Ayar panelinin arka plan rengi, opak ve görsel olarak daha belirgin olması için `#f4fdff` olarak değiştirildi.
+
+---
+
 ## Version V1.09
 
 #### ENGLISH
@@ -164,7 +190,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 7.  **No Overflow:** Both the title and body text must always remain **inside** the text box area in the center of the canvas. The text must **never** overflow vertically or horizontally outside this area. Long titles must automatically wrap to new lines.
 8.  **Automatic Title Logic:** If the user has not specified a title, the first sentence of the entered text is automatically used as the title. In this case, this sentence used as the title **must be removed** from the beginning of the main text.
 9.  **Paragraph & Newline Preservation:** Paragraphs and newlines entered by the user in the text area must be preserved and reflected in the final designs.
-10. **Unified Layout:** On all screen sizes, the control panel and the design preview area should be displayed **one below the other**, not side-by-side.
+10. **Unified Layout & Carousel Behavior:** On all screen sizes, the control panel and the design preview area are displayed one below the other. The carousel navigation (slider arrows) must only affect the design previews, while the control panel below it remains static.
 11. **Initial View:** The main content input area should be vertically centered on the screen. The "Designs" section should be hidden by default and only appear after content generation.
 12. **Vertical Sizing:** The header should have a height of `10vh`, and the main content area should have a height of `90vh`.
 
@@ -178,7 +204,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 7.  **Taşma Engeli:** Hem başlık hem de gövde metni, her zaman kanvasın ortasındaki metin kutusu alanının **içinde kalmalıdır**. Metin, bu alanın dışına dikey veya yatay olarak **asla taşmamalıdır**. Uzun başlıklar otomatik olarak alt satırlara sarılmalıdır.
 8.  **Otomatik Başlık Mantığı:** Kullanıcı bir başlık belirtmemişse, girilen metnin ilk cümlesi otomatik olarak başlık olarak kullanılır. Bu durumda, başlık olarak kullanılan bu cümle ana metnin başından **kesinlikle çıkarılmalıdır**.
 9.  **Paragraf ve Satır Başı Koruma:** Kullanıcının metin alanına girdiği paragraflar ve satır başları korunmalı ve oluşturulan tasarımlara aynen yansıtılmalıdır.
-10. **Birleşik Yerleşim:** Tüm ekran boyutlarında, kontrol panel ve tasarım önizleme alanı yan yana değil, **alt alta** görüntülenmelidir.
+10. **Birleşik Yerleşim ve Karusel Davranışı:** Tüm ekran boyutlarında, kontrol paneli ve tasarım önizleme alanı alt alta görüntülenmelidir. Karusel navigasyonu (kaydırma okları) sadece tasarım önizlemelerini etkilemeli, altındaki kontrol paneli ise sabit kalmalıdır.
 11. **Başlangıç Görünümü:** Ana içerik giriş alanı ekranın dikeyinde ortalanmalıdır. "Designs" bölümü varsayılan olarak gizli olmalı ve yalnızca içerik oluşturulduktan sonra görünmelidir.
 12. **Dikey Boyutlandırma:** Header `10vh` yüksekliğe, ana içerik alanı ise `90vh` yüksekliğe sahip olmalıdır.
 
