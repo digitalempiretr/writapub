@@ -476,7 +476,9 @@ export default function Home() {
                                   <TabsContent value="text" className="p-4 bg-card-foreground/5 rounded-b-lg space-y-4">
                                     <div className="flex items-center gap-4">
                                       <div className="flex items-center gap-2">
-                                        <Type className="h-5 w-5 text-foreground" />
+                                        <div className="text-foreground font-bold text-lg leading-none">
+                                          <span className="inline-block border-b-2 border-current">A</span>
+                                        </div>
                                         <div className="relative">
                                           <div
                                             className="w-6 h-6 rounded-full border"
