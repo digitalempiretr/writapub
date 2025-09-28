@@ -97,13 +97,11 @@ const gradientTemplates = [
 ];
 
 const imageTemplates = [
-    { name: "Parchment", imageUrl: "https://images.pexels.com/photos/833045/pexels-photo-833045.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
-    { name: "Dark Wood", imageUrl: "https://images.pexels.com/photos/172289/pexels-photo-172289.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
-    { name: "Marble", imageUrl: "https://images.pexels.com/photos/5898031/pexels-photo-5898031.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
-    { name: "Concrete", imageUrl: "https://images.pexels.com/photos/1078884/pexels-photo-1078884.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
-    { name: "Nature", imageUrl: "https://images.pexels.com/photos/933054/pexels-photo-933054.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
-    { name: "Sea", imageUrl: "https://images.pexels.com/photos/355321/pexels-photo-355321.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
-    { name: "Wallpaper", imageUrl: "https://images.pexels.com/photos/1939485/pexels-photo-1939485.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
+    { name: "Parchment", imageUrl: "https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=2070&auto=format&fit=crop" },
+    { name: "Dark Wood", imageUrl: "https://images.unsplash.com/photo-1594786377582-5190c8416421?q=80&w=1974&auto=format&fit=crop" },
+    { name: "Marble", imageUrl: "https://images.unsplash.com/photo-1581362624440-2ea47e9e4369?q=80&w=2127&auto=format&fit=crop" },
+    { name: "Concrete", imageUrl: "https://images.unsplash.com/photo-1549488344-cbb6c34cf08b?q=80&w=1974&auto=format&fit=crop" },
+    { name: "Abstract", imageUrl: "https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?q=80&w=1974&auto=format&fit=crop" },
 ];
 
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea"];
@@ -170,7 +168,7 @@ export default function Home() {
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'special-elite') || fontOptions[0]);
   const [textAlign, setTextAlign] = useState<TextAlign>('left');
   const [backgroundTab, setBackgroundTab] = useState("flat");
-  const [bgColor, setBgColor] = useState("#f4fdff");
+  const [bgColor, setBgColor] = useState("#ffffff");
   const [textColor, setTextColor] = useState("#172554");
   const [gradientBg, setGradientBg] = useState(gradientTemplates[0].css);
   const [imageBgUrl, setImageBgUrl] = useState(imageTemplates[0].imageUrl);
@@ -318,7 +316,8 @@ export default function Home() {
     if (searchQuery && searchPage === 1) {
         handleSearchImages(1);
     }
-  }, [searchQuery, searchPage]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery]);
 
   const handleFeelLucky = () => {
     const randomSeed = Math.floor(Math.random() * 1000);
@@ -448,9 +447,9 @@ export default function Home() {
                         <TabsTrigger value="text"><Type /></TabsTrigger>
                         <TabsTrigger value="download"><Download /></TabsTrigger>
                       </TabsList>
-                      <TabsContent value="background" className="p-4 bg-card-foreground/5 rounded-b-lg">
+                      <TabsContent value="background" className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg">
                         <div className="space-y-4">
-                          <Label className="text-foreground">Arka Plan</Label>
+                          <Label>Arka Plan</Label>
                           <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
                             <TabsList className="grid w-full grid-cols-3">
                               <TabsTrigger value="flat">Düz Renk</TabsTrigger>
@@ -459,7 +458,7 @@ export default function Home() {
                             </TabsList>
                             <TabsContent value="flat" className="pt-4 space-y-4">
                               <div className="flex items-center gap-4">
-                                <Label className="text-foreground">Arka Plan:</Label>
+                                <Label>Arka Plan:</Label>
                                 <Input
                                   type="color"
                                   value={bgColor}
@@ -552,11 +551,11 @@ export default function Home() {
                           </Tabs>
                         </div>
                       </TabsContent>
-                      <TabsContent value="text" className="p-4 bg-card-foreground/5 rounded-b-lg space-y-4">
+                      <TabsContent value="text" className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
                         <div className="grid grid-cols-[auto_auto_1fr_auto] gap-x-4 gap-y-4 items-center">
                           {/* Row 1: Text Color */}
                           <div className="flex items-center justify-center">
-                            <Palette className="h-5 w-5 text-foreground" />
+                            <Palette className="h-5 w-5" />
                           </div>
                           <div className="relative">
                             <div
@@ -587,7 +586,7 @@ export default function Home() {
                           
                            {/* Row 2: Text Box Background */}
                           <div className="flex items-center justify-center">
-                            <Brush className="h-5 w-5 text-foreground" />
+                            <Brush className="h-5 w-5" />
                           </div>
                           <div className="relative">
                             <div
@@ -639,7 +638,7 @@ export default function Home() {
                         </div>
                       </TabsContent>
 
-                      <TabsContent value="download" className="p-4 bg-card-foreground/5 rounded-b-lg space-y-4">
+                      <TabsContent value="download" className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
                           <div className="flex justify-around items-center">
                             <Button
                               variant="ghost"
