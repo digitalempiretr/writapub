@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import {
   Carousel,
+  CarouselApi,
   CarouselContent,
   CarouselItem,
   CarouselNext,
@@ -141,11 +142,30 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [isGeneratingAnimation, setIsGeneratingAnimation] = useState(false);
-
+  const [carouselApi, setCarouselApi] = useState<CarouselApi | undefined>();
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
     setIsClient(true)
   }, [])
+  
+  useEffect(() => {
+    if (!carouselApi) {
+      return
+    }
+
+    setCurrentSlide(carouselApi.selectedScrollSnap())
+
+    const onSelect = () => {
+      setCurrentSlide(carouselApi.selectedScrollSnap())
+    }
+
+    carouselApi.on("select", onSelect)
+    return () => {
+      carouselApi.off("select", onSelect)
+    }
+  }, [carouselApi]);
+
 
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'special-elite') || fontOptions[0]);
   const [textAlign, setTextAlign] = useState<TextAlign>('left');
@@ -402,8 +422,8 @@ export default function Home() {
         { isClient && designs.length > 0 && (
           <div className="w-full pt-8 pb-8">
             <div ref={designsRef} className="text-2xl h-10 pt-1 text-[#f4fdff]">Reels</div>
-            <div className="max-w-[800px] mx-auto w-full space-y-6">
-                <Carousel className="w-full max-w-lg mx-auto" setApi={(api) => api?.reInit()}>
+            <div className="max-w-lg mx-auto w-full space-y-6">
+                <Carousel className="w-full" setApi={setCarouselApi}>
                   <CarouselContent>
                     {designs.map((design, index) => (
                       <CarouselItem key={index} data-index={index}>
@@ -412,227 +432,6 @@ export default function Home() {
                             <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
                               {renderCanvas(design, index)}
                             </CardContent>
-                            <CardFooter className="flex-col items-start p-0">
-                                <Tabs defaultValue="background" className="w-full">
-                                  <TabsList className="grid w-full grid-cols-3 bg-card text-card-foreground p-2">
-                                    <TabsTrigger value="background"><Palette /></TabsTrigger>
-                                    <TabsTrigger value="text"><Type /></TabsTrigger>
-                                    <TabsTrigger value="download"><Download /></TabsTrigger>
-                                  </TabsList>
-                                  <TabsContent value="background" className="p-4 bg-card-foreground/5 rounded-b-lg">
-                                    <div className="space-y-4">
-                                      <Label className="text-foreground">Arka Plan</Label>
-                                      <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
-                                        <TabsList className="grid w-full grid-cols-3">
-                                          <TabsTrigger value="flat">Düz Renk</TabsTrigger>
-                                          <TabsTrigger value="gradient">Gradyan</TabsTrigger>
-                                          <TabsTrigger value="image">Görsel</TabsTrigger>
-                                        </TabsList>
-                                        <TabsContent value="flat" className="pt-4 space-y-4">
-                                          <div className="flex items-center gap-4">
-                                            <Label className="text-foreground">Arka Plan:</Label>
-                                            <Input
-                                              type="color"
-                                              value={bgColor}
-                                              onChange={(e) => setBgColor(e.target.value)}
-                                              className="h-9 w-12 p-0 border-0 bg-transparent shadow-none"
-                                            />
-                                            <Input
-                                              type="text"
-                                              value={bgColor}
-                                              onChange={(e) => setBgColor(e.target.value)}
-                                              className="h-9 w-32"
-                                            />
-                                          </div>
-                                        </TabsContent>
-                                        <TabsContent value="gradient" className="pt-4 space-y-4">
-                                          <Carousel className="w-full" setApi={(api) => api?.reInit()}>
-                                            <CarouselContent>
-                                              {gradientTemplates.map((gradient) => (
-                                                <CarouselItem key={gradient.name} className="basis-1/3">
-                                                  <Card className="overflow-hidden cursor-pointer" onClick={() => setGradientBg(gradient.css)}>
-                                                    <CardContent className="h-32" style={{ background: gradient.css }} />
-                                                  </Card>
-                                                </CarouselItem>
-                                              ))}
-                                            </CarouselContent>
-                                            <CarouselPrevious className="-left-4" />
-                                            <CarouselNext className="-right-4" />
-                                          </Carousel>
-                                        </TabsContent>
-                                        <TabsContent value="image" className="pt-4 space-y-4">
-                                          <Carousel className="w-full" setApi={(api) => api?.reInit()}>
-                                            <CarouselContent>
-                                              {imageTemplates.map((image) => (
-                                                <CarouselItem key={image.name} className="basis-1/3">
-                                                  <Card className="overflow-hidden cursor-pointer" onClick={() => setImageBgUrl(image.imageUrl)}>
-                                                    <CardContent className="h-32 relative">
-                                                      <Image src={image.imageUrl} alt={image.name} fill className="object-cover" />
-                                                    </CardContent>
-                                                  </Card>
-                                                </CarouselItem>
-                                              ))}
-                                            </CarouselContent>
-                                            <CarouselPrevious className="-left-4" />
-                                            <CarouselNext className="-right-4" />
-                                          </Carousel>
-                                          
-                                          <div className="flex flex-wrap gap-2">
-                                            {searchKeywords.map(keyword => (
-                                                <Button key={keyword} variant="outline" size="sm" onClick={() => handleKeywordSearch(keyword)}>
-                                                    {keyword}
-                                                </Button>
-                                            ))}
-                                          </div>
-
-                                          <div className="flex items-center space-x-2">
-                                            <Input
-                                              type="text"
-                                              placeholder="Görsel ara..."
-                                              value={searchQuery}
-                                              onChange={(e) => setSearchQuery(e.target.value)}
-                                              onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
-                                            />
-                                            <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon">
-                                              {isSearching && searchPage === 1 ? (
-                                                <Loader2 className="h-4 w-4 animate-spin" />
-                                              ) : (
-                                                <Search className="h-4 w-4" />
-                                              )}
-                                            </Button>
-                                             <Button onClick={handleFeelLucky} size="icon" variant="outline" >
-                                              <Dice5 className="h-4 w-4" />
-                                            </Button>
-                                          </div>
-
-                                          {searchedImages.length > 0 && (
-                                            <>
-                                            <div className="grid grid-cols-3 gap-2">
-                                              {searchedImages.map((imageUrl, index) => (
-                                                <button key={index} onClick={() => setImageBgUrl(imageUrl)}>
-                                                  <Image src={imageUrl} alt={`Search Result ${index}`} width={200} height={250} className="object-cover aspect-[2/3] rounded-md" />
-                                                </button>
-                                              ))}
-                                            </div>
-                                            <Button onClick={() => handleSearchImages(searchPage + 1)} disabled={isSearching} className="w-full">
-                                                {isSearching && searchPage > 1 ? <Loader2 className="h-4 w-4 animate-spin" /> : "Daha Fazla"}
-                                            </Button>
-                                            </>
-                                          )}
-                                        </TabsContent>
-                                      </Tabs>
-                                    </div>
-                                  </TabsContent>
-                                  <TabsContent value="text" className="p-4 bg-card-foreground/5 rounded-b-lg space-y-4">
-                                    <div className="grid grid-cols-[auto_auto_1fr_auto] gap-x-4 gap-y-4 items-center">
-                                      {/* Row 1: Text Color */}
-                                      <div className="flex items-center justify-center">
-                                        <Palette className="h-5 w-5 text-foreground" />
-                                      </div>
-                                      <div className="relative">
-                                        <div
-                                          className="w-6 h-6 rounded-full border"
-                                          style={{ backgroundColor: textColor }}
-                                        />
-                                        <Input
-                                          type="color"
-                                          value={textColor}
-                                          onChange={(e) => setTextColor(e.target.value)}
-                                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                        />
-                                      </div>
-                                      <div className="col-span-2">
-                                        <Select value={activeFont.value} onValueChange={handleFontChange}>
-                                          <SelectTrigger className="w-full border-0">
-                                            <SelectValue placeholder="Yazı Tipi Seçin" />
-                                          </SelectTrigger>
-                                          <SelectContent>
-                                            {fontOptions.map((font) => (
-                                              <SelectItem key={font.value} value={font.value}>
-                                                {font.label}
-                                              </SelectItem>
-                                            ))}
-                                          </SelectContent>
-                                        </Select>
-                                      </div>
-                                      
-                                       {/* Row 2: Text Box Background */}
-                                      <div className="flex items-center justify-center">
-                                        <Brush className="h-5 w-5 text-foreground" />
-                                      </div>
-                                      <div className="relative">
-                                        <div
-                                          className="w-6 h-6 rounded-full border"
-                                          style={{ backgroundColor: rectBgColor }}
-                                        />
-                                        <Input
-                                          type="color"
-                                          value={rectBgColor}
-                                          onChange={(e) => setRectBgColor(e.target.value)}
-                                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                        />
-                                      </div>
-                                      <div className="col-span-1">
-                                        <Slider
-                                          max={1}
-                                          min={0}
-                                          step={0.05}
-                                          value={[rectOpacity]}
-                                          onValueChange={(value) => setRectOpacity(value[0])}
-                                          style={{'--slider-track-bg': rectBgColor} as React.CSSProperties}
-                                          className="[&>span:first-child]:bg-[var(--slider-track-bg)]"
-                                        />
-                                      </div>
-
-                                      <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                          <Button variant="outline" size="icon">
-                                            {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
-                                            {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
-                                            {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
-                                          </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent>
-                                          <DropdownMenuItem onClick={() => setTextAlign('left')}>
-                                            <AlignLeft className="mr-2 h-4 w-4" />
-                                            <span>Sola Hizala</span>
-                                          </DropdownMenuItem>
-                                          <DropdownMenuItem onClick={() => setTextAlign('center')}>
-                                            <AlignCenter className="mr-2 h-4 w-4" />
-                                            <span>Ortala</span>
-                                          </DropdownMenuItem>
-                                          <DropdownMenuItem onClick={() => setTextAlign('right')}>
-                                            <AlignRight className="mr-2 h-4 w-4" />
-                                            <span>Sağa Hizala</span>
-                                          </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                      </DropdownMenu>
-                                    </div>
-                                  </TabsContent>
-
-                                  <TabsContent value="download" className="p-4 bg-card-foreground/5 rounded-b-lg space-y-4">
-                                      <div className="flex justify-around items-center">
-                                        <Button
-                                          variant="ghost"
-                                          size="sm"
-                                          onClick={handleDownloadAll}
-                                          disabled={designs.length === 0}
-                                        >
-                                          <Download className="mr-2 h-4 w-4" />
-                                          Tümünü İndir
-                                        </Button>
-                                        <Button
-                                          variant="outline"
-                                          size="sm"
-                                          onClick={() => handleDownload(index)}
-                                        >
-                                          <Download className="mr-2 h-4 w-4" />
-                                          Bu Tasarımı İndir
-                                        </Button>
-                                      </div>
-                                  </TabsContent>
-                                </Tabs>
-                            </CardFooter>
                           </Card>
                         </div>
                       </CarouselItem>
@@ -641,7 +440,228 @@ export default function Home() {
                   <CarouselPrevious className="-left-4 md:-left-12" />
                   <CarouselNext className="-right-4 md:-right-12" />
                 </Carousel>
-              
+
+                <CardFooter className="flex-col items-start p-0">
+                    <Tabs defaultValue="background" className="w-full">
+                      <TabsList className="grid w-full grid-cols-3 bg-card text-card-foreground p-2">
+                        <TabsTrigger value="background"><Palette /></TabsTrigger>
+                        <TabsTrigger value="text"><Type /></TabsTrigger>
+                        <TabsTrigger value="download"><Download /></TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="background" className="p-4 bg-card-foreground/5 rounded-b-lg">
+                        <div className="space-y-4">
+                          <Label className="text-foreground">Arka Plan</Label>
+                          <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
+                            <TabsList className="grid w-full grid-cols-3">
+                              <TabsTrigger value="flat">Düz Renk</TabsTrigger>
+                              <TabsTrigger value="gradient">Gradyan</TabsTrigger>
+                              <TabsTrigger value="image">Görsel</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="flat" className="pt-4 space-y-4">
+                              <div className="flex items-center gap-4">
+                                <Label className="text-foreground">Arka Plan:</Label>
+                                <Input
+                                  type="color"
+                                  value={bgColor}
+                                  onChange={(e) => setBgColor(e.target.value)}
+                                  className="h-9 w-12 p-0 border-0 bg-transparent shadow-none"
+                                />
+                                <Input
+                                  type="text"
+                                  value={bgColor}
+                                  onChange={(e) => setBgColor(e.target.value)}
+                                  className="h-9 w-32"
+                                />
+                              </div>
+                            </TabsContent>
+                            <TabsContent value="gradient" className="pt-4 space-y-4">
+                              <Carousel className="w-full">
+                                <CarouselContent>
+                                  {gradientTemplates.map((gradient) => (
+                                    <CarouselItem key={gradient.name} className="basis-1/3">
+                                      <Card className="overflow-hidden cursor-pointer" onClick={() => setGradientBg(gradient.css)}>
+                                        <CardContent className="h-32" style={{ background: gradient.css }} />
+                                      </Card>
+                                    </CarouselItem>
+                                  ))}
+                                </CarouselContent>
+                                <CarouselPrevious className="-left-4" />
+                                <CarouselNext className="-right-4" />
+                              </Carousel>
+                            </TabsContent>
+                            <TabsContent value="image" className="pt-4 space-y-4">
+                              <Carousel className="w-full">
+                                <CarouselContent>
+                                  {imageTemplates.map((image) => (
+                                    <CarouselItem key={image.name} className="basis-1/3">
+                                      <Card className="overflow-hidden cursor-pointer" onClick={() => setImageBgUrl(image.imageUrl)}>
+                                        <CardContent className="h-32 relative">
+                                          <Image src={image.imageUrl} alt={image.name} fill className="object-cover" />
+                                        </CardContent>
+                                      </Card>
+                                    </CarouselItem>
+                                  ))}
+                                </CarouselContent>
+                                <CarouselPrevious className="-left-4" />
+                                <CarouselNext className="-right-4" />
+                              </Carousel>
+                              
+                              <div className="flex flex-wrap gap-2">
+                                {searchKeywords.map(keyword => (
+                                    <Button key={keyword} variant="outline" size="sm" onClick={() => handleKeywordSearch(keyword)}>
+                                        {keyword}
+                                    </Button>
+                                ))}
+                              </div>
+
+                              <div className="flex items-center space-x-2">
+                                <Input
+                                  type="text"
+                                  placeholder="Görsel ara..."
+                                  value={searchQuery}
+                                  onChange={(e) => setSearchQuery(e.target.value)}
+                                  onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
+                                />
+                                <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon">
+                                  {isSearching && searchPage === 1 ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    <Search className="h-4 w-4" />
+                                  )}
+                                </Button>
+                                 <Button onClick={handleFeelLucky} size="icon" variant="outline" >
+                                  <Dice5 className="h-4 w-4" />
+                                </Button>
+                              </div>
+
+                              {searchedImages.length > 0 && (
+                                <>
+                                <div className="grid grid-cols-3 gap-2">
+                                  {searchedImages.map((imageUrl, index) => (
+                                    <button key={index} onClick={() => setImageBgUrl(imageUrl)}>
+                                      <Image src={imageUrl} alt={`Search Result ${index}`} width={200} height={250} className="object-cover aspect-[2/3] rounded-md" />
+                                    </button>
+                                  ))}
+                                </div>
+                                <Button onClick={() => handleSearchImages(searchPage + 1)} disabled={isSearching} className="w-full">
+                                    {isSearching && searchPage > 1 ? <Loader2 className="h-4 w-4 animate-spin" /> : "Daha Fazla"}
+                                </Button>
+                                </>
+                              )}
+                            </TabsContent>
+                          </Tabs>
+                        </div>
+                      </TabsContent>
+                      <TabsContent value="text" className="p-4 bg-card-foreground/5 rounded-b-lg space-y-4">
+                        <div className="grid grid-cols-[auto_auto_1fr_auto] gap-x-4 gap-y-4 items-center">
+                          {/* Row 1: Text Color */}
+                          <div className="flex items-center justify-center">
+                            <Palette className="h-5 w-5 text-foreground" />
+                          </div>
+                          <div className="relative">
+                            <div
+                              className="w-6 h-6 rounded-full border"
+                              style={{ backgroundColor: textColor }}
+                            />
+                            <Input
+                              type="color"
+                              value={textColor}
+                              onChange={(e) => setTextColor(e.target.value)}
+                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            />
+                          </div>
+                          <div className="col-span-2">
+                            <Select value={activeFont.value} onValueChange={handleFontChange}>
+                              <SelectTrigger className="w-full border-0">
+                                <SelectValue placeholder="Yazı Tipi Seçin" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {fontOptions.map((font) => (
+                                  <SelectItem key={font.value} value={font.value}>
+                                    {font.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                           {/* Row 2: Text Box Background */}
+                          <div className="flex items-center justify-center">
+                            <Brush className="h-5 w-5 text-foreground" />
+                          </div>
+                          <div className="relative">
+                            <div
+                              className="w-6 h-6 rounded-full border"
+                              style={{ backgroundColor: rectBgColor }}
+                            />
+                            <Input
+                              type="color"
+                              value={rectBgColor}
+                              onChange={(e) => setRectBgColor(e.target.value)}
+                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            />
+                          </div>
+                          <div className="col-span-1">
+                            <Slider
+                              max={1}
+                              min={0}
+                              step={0.05}
+                              value={[rectOpacity]}
+                              onValueChange={(value) => setRectOpacity(value[0])}
+                              style={{'--slider-track-bg': rectBgColor} as React.CSSProperties}
+                              className="[&>span:first-child]:bg-[var(--slider-track-bg)]"
+                            />
+                          </div>
+
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="outline" size="icon">
+                                {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
+                                {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
+                                {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuItem onClick={() => setTextAlign('left')}>
+                                <AlignLeft className="mr-2 h-4 w-4" />
+                                <span>Sola Hizala</span>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => setTextAlign('center')}>
+                                <AlignCenter className="mr-2 h-4 w-4" />
+                                <span>Ortala</span>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => setTextAlign('right')}>
+                                <AlignRight className="mr-2 h-4 w-4" />
+                                <span>Sağa Hizala</span>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </TabsContent>
+
+                      <TabsContent value="download" className="p-4 bg-card-foreground/5 rounded-b-lg space-y-4">
+                          <div className="flex justify-around items-center">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={handleDownloadAll}
+                              disabled={designs.length === 0}
+                            >
+                              <Download className="mr-2 h-4 w-4" />
+                              Tümünü İndir
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDownload(currentSlide)}
+                            >
+                              <Download className="mr-2 h-4 w-4" />
+                              Bu Tasarımı İndir
+                            </Button>
+                          </div>
+                      </TabsContent>
+                    </Tabs>
+                </CardFooter>
             </div>
           </div>
         )}
