@@ -35,7 +35,7 @@ const wrapText = (
   text: string,
   maxWidth: number
 ): string[] => {
-  const words = text.split(' ');
+  const words = text.toLocaleUpperCase('tr-TR').split(' ');
   let lines: string[] = [];
   let currentLine = words[0] || '';
 
