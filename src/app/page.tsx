@@ -36,7 +36,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Brush, Dice5, Download, Loader2, Palette, Search, Type } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Baseline, Brush, Dice5, Download, Loader2, Palette, Search, Type } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -580,7 +580,7 @@ export default function Home() {
                           <div className="grid grid-cols-[auto_auto_1fr_auto] gap-x-4 gap-y-4 items-center">
                             {/* Row 1: Text Color */}
                             <div className="flex items-center justify-center">
-                              <Palette className="h-5 w-5" />
+                              <Baseline className="h-5 w-5" />
                             </div>
                             <div className="relative">
                               <div
@@ -696,3 +696,5 @@ export default function Home() {
     </>
   );
 }
+
+    
