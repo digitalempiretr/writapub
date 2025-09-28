@@ -35,7 +35,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignJustify, AlignLeft, AlignRight, ArrowUp, Download, Loader2, Palette, PanelTop, Search, Type } from "lucide-react";
+import { AlignCenter, AlignJustify, AlignLeft, AlignRight, ArrowUp, Brush, Download, Loader2, Palette, PanelTop, Search, Type } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -154,8 +154,8 @@ export default function Home() {
   const [searchedImages, setSearchedImages] = useState<string[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
-  const [rectBgColor, setRectBgColor] = useState("#f4fdff");
-  const [rectOpacity, setRectOpacity] = useState(0.9);
+  const [rectBgColor, setRectBgColor] = useState("#2C5364");
+  const [rectOpacity, setRectOpacity] = useState(0.5);
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const designsRef = useRef<HTMLDivElement>(null);
@@ -256,10 +256,10 @@ export default function Home() {
   const hasGeneratedOnce = useRef(false);
   
   useEffect(() => {
-      if (hasGeneratedOnce.current) {
+      if (hasGeneratedOnce.current && designs.length > 0) {
           handleGenerate();
       }
-  }, [activeFont, handleGenerate]);
+  }, [activeFont, handleGenerate, designs.length]);
 
   const handleGenerateClick = () => {
       hasGeneratedOnce.current = true;
@@ -394,10 +394,9 @@ export default function Home() {
                             </CardContent>
                             <CardFooter className="flex-col items-start p-0">
                                 <Tabs defaultValue="background" className="w-full">
-                                  <TabsList className="grid w-full grid-cols-4 bg-card text-card-foreground p-2">
+                                  <TabsList className="grid w-full grid-cols-3 bg-card text-card-foreground p-2">
                                     <TabsTrigger value="background"><Palette /></TabsTrigger>
                                     <TabsTrigger value="text"><Type /></TabsTrigger>
-                                    <TabsTrigger value="layout"><PanelTop /></TabsTrigger>
                                     <TabsTrigger value="download"><Download /></TabsTrigger>
                                   </TabsList>
                                   <TabsContent value="background" className="p-4 bg-card-foreground/5 rounded-b-lg">
@@ -544,38 +543,31 @@ export default function Home() {
                                         </DropdownMenuContent>
                                       </DropdownMenu>
                                     </div>
-                                  </TabsContent>
-                                  <TabsContent value="layout" className="p-4 bg-card-foreground/5 rounded-b-lg space-y-4">
-                                     <div className="space-y-2">
-                                        <Label htmlFor="rectBgColor" className="text-foreground">Zemin Rengi</Label>
-                                        <div className="flex items-center gap-4">
+                                     <div className="flex items-center gap-4 pt-4">
+                                        <Brush className="h-5 w-5 text-foreground" />
+                                        <div className="relative">
+                                          <div
+                                            className="w-6 h-6 rounded-full border"
+                                            style={{ backgroundColor: rectBgColor }}
+                                          />
                                           <Input
                                             type="color"
-                                            id="rectBgColor"
                                             value={rectBgColor}
                                             onChange={(e) => setRectBgColor(e.target.value)}
-                                            className="h-9 w-12 p-0 border-0 bg-transparent shadow-none"
-                                          />
-                                          <Input
-                                            type="text"
-                                            id="rectBgColorText"
-                                            value={rectBgColor}
-                                            onChange={(e) => setRectBgColor(e.target.value)}
-                                            className="h-9 w-32"
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                           />
                                         </div>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                      <Label htmlFor="rectOpacity" className="text-foreground">Zemin Opaklığı</Label>
-                                      <Slider
-                                        id="rectOpacity"
-                                        max={1}
-                                        min={0}
-                                        step={0.05}
-                                        value={[rectOpacity]}
-                                        onValueChange={(value) => setRectOpacity(value[0])}
-                                      />
+                                        <div className="flex-grow">
+                                            <Slider
+                                                max={1}
+                                                min={0}
+                                                step={0.05}
+                                                value={[rectOpacity]}
+                                                onValueChange={(value) => setRectOpacity(value[0])}
+                                                style={{'--slider-track-bg': rectBgColor} as React.CSSProperties}
+                                                className="[&>span:first-child]:bg-[var(--slider-track-bg)]"
+                                            />
+                                        </div>
                                     </div>
                                   </TabsContent>
                                   <TabsContent value="download" className="p-4 bg-card-foreground/5 rounded-b-lg space-y-4">
