@@ -96,8 +96,8 @@ const gradientTemplates = [
 ];
 
 const imageTemplates = [
-    { name: "Abstract", imageUrl: "https://picsum.photos/id/184/1080/1350" },
-    { name: "Abstract", imageUrl: "https://picsum.photos/id/213/1080/1350" },   
+    { name: "Desert", imageUrl: "https://picsum.photos/id/184/1080/1350" },
+    { name: "Sea", imageUrl: "https://picsum.photos/id/213/1080/1350" },   
     { name: "Parchment", imageUrl: "https://picsum.photos/seed/paper/1080/1350" },
     { name: "Dark Wood", imageUrl: "https://picsum.photos/seed/darkwood/1080/1350" },
     { name: "Marble", imageUrl: "https://picsum.photos/seed/marble/1080/1350" },
