@@ -447,8 +447,8 @@ export default function Home() {
                         <TabsTrigger value="text"><Type /></TabsTrigger>
                         <TabsTrigger value="download"><Download /></TabsTrigger>
                       </TabsList>
-                      <TabsContent value="background" className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg">
-                        <div className="space-y-4">
+                      <TabsContent value="background">
+                        <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
                           <Label>Arka Plan</Label>
                           <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
                             <TabsList className="grid w-full grid-cols-3">
