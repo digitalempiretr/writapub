@@ -218,7 +218,7 @@ export default function Home() {
     }
     setDesigns(newDesigns);
 
-    // Show animation for 3 seconds, then reveal content and scroll
+    // Show animation for 1.6 seconds, then reveal content and scroll
     setTimeout(() => {
         setIsGeneratingAnimation(false);
         setIsLoading(false);
@@ -476,37 +476,65 @@ export default function Home() {
                                     </div>
                                   </TabsContent>
                                   <TabsContent value="text" className="p-4 bg-card-foreground/5 rounded-b-lg space-y-4">
-                                    <div className="flex items-center gap-4">
-                                      <div className="flex items-center gap-2">
-                                        <div className="text-foreground font-bold text-lg leading-none">
-                                          <span className="inline-block border-b-2 border-current">A</span>
-                                        </div>
-                                        <div className="relative">
-                                          <div
-                                            className="w-6 h-6 rounded-full border"
-                                            style={{ backgroundColor: textColor }}
-                                          />
-                                          <Input
-                                            type="color"
-                                            value={textColor}
-                                            onChange={(e) => setTextColor(e.target.value)}
-                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                          />
-                                        </div>
+                                    <div className="grid grid-cols-[auto_auto_1fr_auto] gap-x-4 gap-y-4 items-center">
+                                      {/* Row 1: Text Color */}
+                                      <div className="flex items-center justify-center">
+                                        <Palette className="h-5 w-5 text-foreground" />
                                       </div>
-
-                                      <Select value={activeFont.value} onValueChange={handleFontChange}>
-                                        <SelectTrigger className="w-auto flex-grow border-0">
-                                          <SelectValue placeholder="Yazı Tipi Seçin" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                          {fontOptions.map((font) => (
-                                            <SelectItem key={font.value} value={font.value}>
-                                              {font.label}
-                                            </SelectItem>
-                                          ))}
-                                        </SelectContent>
-                                      </Select>
+                                      <div className="relative">
+                                        <div
+                                          className="w-6 h-6 rounded-full border"
+                                          style={{ backgroundColor: textColor }}
+                                        />
+                                        <Input
+                                          type="color"
+                                          value={textColor}
+                                          onChange={(e) => setTextColor(e.target.value)}
+                                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                        />
+                                      </div>
+                                      <div className="col-span-2">
+                                        <Select value={activeFont.value} onValueChange={handleFontChange}>
+                                          <SelectTrigger className="w-full border-0">
+                                            <SelectValue placeholder="Yazı Tipi Seçin" />
+                                          </SelectTrigger>
+                                          <SelectContent>
+                                            {fontOptions.map((font) => (
+                                              <SelectItem key={font.value} value={font.value}>
+                                                {font.label}
+                                              </SelectItem>
+                                            ))}
+                                          </SelectContent>
+                                        </Select>
+                                      </div>
+                                      
+                                       {/* Row 2: Text Box Background */}
+                                      <div className="flex items-center justify-center">
+                                        <Brush className="h-5 w-5 text-foreground" />
+                                      </div>
+                                      <div className="relative">
+                                        <div
+                                          className="w-6 h-6 rounded-full border"
+                                          style={{ backgroundColor: rectBgColor }}
+                                        />
+                                        <Input
+                                          type="color"
+                                          value={rectBgColor}
+                                          onChange={(e) => setRectBgColor(e.target.value)}
+                                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                        />
+                                      </div>
+                                      <div className="col-span-1">
+                                        <Slider
+                                          max={1}
+                                          min={0}
+                                          step={0.05}
+                                          value={[rectOpacity]}
+                                          onValueChange={(value) => setRectOpacity(value[0])}
+                                          style={{'--slider-track-bg': rectBgColor} as React.CSSProperties}
+                                          className="[&>span:first-child]:bg-[var(--slider-track-bg)]"
+                                        />
+                                      </div>
 
                                       <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
@@ -532,33 +560,8 @@ export default function Home() {
                                         </DropdownMenuContent>
                                       </DropdownMenu>
                                     </div>
-                                     <div className="flex items-center gap-4 pt-4">
-                                        <Brush className="h-5 w-5 text-foreground" />
-                                        <div className="relative">
-                                          <div
-                                            className="w-6 h-6 rounded-full border"
-                                            style={{ backgroundColor: rectBgColor }}
-                                          />
-                                          <Input
-                                            type="color"
-                                            value={rectBgColor}
-                                            onChange={(e) => setRectBgColor(e.target.value)}
-                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                          />
-                                        </div>
-                                        <div className="flex-grow">
-                                            <Slider
-                                                max={1}
-                                                min={0}
-                                                step={0.05}
-                                                value={[rectOpacity]}
-                                                onValueChange={(value) => setRectOpacity(value[0])}
-                                                style={{'--slider-track-bg': rectBgColor} as React.CSSProperties}
-                                                className="[&>span:first-child]:bg-[var(--slider-track-bg)]"
-                                            />
-                                        </div>
-                                    </div>
                                   </TabsContent>
+
                                   <TabsContent value="download" className="p-4 bg-card-foreground/5 rounded-b-lg space-y-4">
                                       <div className="flex justify-around items-center">
                                         <Button
