@@ -185,7 +185,7 @@ export default function Home() {
 
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'special-elite') || fontOptions[0]);
   const [textAlign, setTextAlign] = useState<TextAlign>('left');
-  const [backgroundTab, setBackgroundTab] = useState("flat");
+  const [backgroundTab, setBackgroundTab] = useState("image");
   const [bgColor, setBgColor] = useState("#f4fdff");
   const [textColor, setTextColor] = useState("#0F2027");
   const [gradientBg, setGradientBg] = useState(gradientTemplates[0].css);
@@ -696,3 +696,5 @@ export default function Home() {
     </>
   );
 }
+
+    
