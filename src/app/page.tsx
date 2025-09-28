@@ -35,7 +35,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignJustify, AlignLeft, AlignRight, ArrowUp, Brush, Download, Loader2, Palette, PanelTop, Search, Type } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Brush, Download, Loader2, Palette, Search, Type } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -251,21 +251,10 @@ export default function Home() {
   const handleFontChange = (value: string) => {
     const newFont = fontOptions.find(f => f.value === value) || fontOptions[0];
     setActiveFont(newFont);
-  }
-  
-  const hasGeneratedOnce = useRef(false);
-  
-  useEffect(() => {
-      if (hasGeneratedOnce.current && designs.length > 0) {
-          handleGenerate();
-      }
-  }, [activeFont, handleGenerate, designs.length]);
-
-  const handleGenerateClick = () => {
-      hasGeneratedOnce.current = true;
+     if (designs.length > 0) {
       handleGenerate();
+    }
   }
-
 
   const handleSearchImages = async () => {
     if (!searchQuery) return;
@@ -353,7 +342,7 @@ export default function Home() {
                   <div className="flex items-center justify-end gap-4">
                      <p className="text-xs text-muted-foreground">{text.length} karakter</p>
                      <Button
-                        onClick={handleGenerateClick}
+                        onClick={handleGenerate}
                         disabled={isLoading}
                         size="icon"
                         className="rounded-full bg-[#2C5364] hover:bg-[#203a43]"
