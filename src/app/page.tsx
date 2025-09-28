@@ -16,6 +16,12 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -29,7 +35,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, Loader2, Palette, PanelTop, Search, Type } from "lucide-react";
+import { AlignCenter, AlignJustify, AlignLeft, AlignRight, ArrowUp, Download, Loader2, Palette, PanelTop, Search, Type } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -374,7 +380,7 @@ export default function Home() {
                             </CardContent>
                             <CardFooter className="flex-col items-start p-0">
                                 <Tabs defaultValue="background" className="w-full">
-                                  <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2">
+                                  <TabsList className="grid w-full grid-cols-4 bg-card text-card-foreground p-2">
                                     <TabsTrigger value="background"><Palette /></TabsTrigger>
                                     <TabsTrigger value="text"><Type /></TabsTrigger>
                                     <TabsTrigger value="layout"><PanelTop /></TabsTrigger>
@@ -468,29 +474,25 @@ export default function Home() {
                                     </div>
                                   </TabsContent>
                                   <TabsContent value="text" className="p-4 bg-card-foreground/5 rounded-b-lg space-y-4">
-                                     <div className="space-y-2">
-                                        <Label htmlFor="textColor" className="text-foreground">Yazı Rengi</Label>
-                                        <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-4">
+                                      <div className="flex items-center gap-2">
+                                        <Type className="h-5 w-5 text-foreground" />
+                                        <div className="relative">
+                                          <div
+                                            className="w-6 h-6 rounded-full border"
+                                            style={{ backgroundColor: textColor }}
+                                          />
                                           <Input
                                             type="color"
-                                            id="textColor"
                                             value={textColor}
                                             onChange={(e) => setTextColor(e.target.value)}
-                                            className="h-9 w-12 p-0 border-0 bg-transparent shadow-none"
-                                          />
-                                          <Input
-                                            type="text"
-                                            id="textColorText"
-                                            value={textColor}
-                                            onChange={(e) => setTextColor(e.target.value)}
-                                            className="h-9 w-32"
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                           />
                                         </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                      <Label className="text-foreground">Yazı Tipi</Label>
+                                      </div>
+
                                       <Select value={activeFont.value} onValueChange={handleFontChange}>
-                                        <SelectTrigger className="w-full">
+                                        <SelectTrigger className="w-auto flex-grow border-0">
                                           <SelectValue placeholder="Yazı Tipi Seçin" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -501,32 +503,30 @@ export default function Home() {
                                           ))}
                                         </SelectContent>
                                       </Select>
-                                    </div>
-                                    <div className="space-y-2">
-                                      <Label className="text-foreground">Yazı Hizalama</Label>
-                                      <div className="flex items-center gap-2">
-                                        <Button
-                                          variant={textAlign === 'left' ? 'default' : 'outline'}
-                                          onClick={() => setTextAlign('left')}
-                                          size="icon"
-                                        >
-                                          <AlignLeft className="h-4 w-4" />
-                                        </Button>
-                                        <Button
-                                          variant={textAlign === 'center' ? 'default' : 'outline'}
-                                          onClick={() => setTextAlign('center')}
-                                          size="icon"
-                                        >
-                                          <AlignCenter className="h-4 w-4" />
-                                        </Button>
-                                        <Button
-                                          variant={textAlign === 'right' ? 'default' : 'outline'}
-                                          onClick={() => setTextAlign('right')}
-                                          size="icon"
-                                        >
-                                          <AlignRight className="h-4 w-4" />
-                                        </Button>
-                                      </div>
+
+                                      <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                          <Button variant="outline" size="icon">
+                                            {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
+                                            {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
+                                            {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
+                                          </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent>
+                                          <DropdownMenuItem onClick={() => setTextAlign('left')}>
+                                            <AlignLeft className="mr-2 h-4 w-4" />
+                                            <span>Sola Hizala</span>
+                                          </DropdownMenuItem>
+                                          <DropdownMenuItem onClick={() => setTextAlign('center')}>
+                                            <AlignCenter className="mr-2 h-4 w-4" />
+                                            <span>Ortala</span>
+                                          </DropdownMenuItem>
+                                          <DropdownMenuItem onClick={() => setTextAlign('right')}>
+                                            <AlignRight className="mr-2 h-4 w-4" />
+                                            <span>Sağa Hizala</span>
+                                          </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                      </DropdownMenu>
                                     </div>
                                   </TabsContent>
                                   <TabsContent value="layout" className="p-4 bg-card-foreground/5 rounded-b-lg space-y-4">
