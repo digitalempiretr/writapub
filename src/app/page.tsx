@@ -84,7 +84,7 @@ const fontOptions: FontOption[] = [
 
 const gradientTemplates = [
   { name: "Sunrise", css: "linear-gradient(to top right, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)" },
-  { name: "Ocean", css: "linear-gradient(to top right, #2E3192 0%, #1BFFFF 100%)" },
+  { name: "Dark Ocean", css: "linear-gradient(to right, #373b44, #4286f4);" },
   { name: "Sunset", css: "linear-gradient(to top right, #F3904F 0%, #3B4371 100%)" },
   { name: "Forest", css: "linear-gradient(to top right, #13547a 0%, #80d0c7 100%)" },
   { name: "Royal", css: "linear-gradient(to top right, #473B7B 0%, #3584A7 50%, #30D2BE 100%)" },
@@ -463,49 +463,50 @@ export default function Home() {
                               <TabsTrigger value="image">Görsel</TabsTrigger>
                             </TabsList>
                             <TabsContent value="flat" className="pt-4 space-y-4">
-                               <div className="space-y-2">
-                                <Label>Varsayılan Düz Renkler</Label>
-                                <div className="grid grid-cols-7 gap-y-2 gap-x-0">
-                                   <Popover>
-                                    <PopoverTrigger asChild>
-                                      <button className="w-8 h-8 rounded-full border bg-gray-100 flex items-center justify-center">
-                                        <Plus className="h-4 w-4 text-gray-600" />
-                                      </button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-2" align="start">
-                                       <div className="flex items-center gap-4">
-                                        <div className="relative">
+                              <Carousel className="w-full">
+                                <CarouselContent>
+                                  <CarouselItem className="basis-1/4">
+                                    <Popover>
+                                      <PopoverTrigger asChild>
+                                        <Card className="overflow-hidden cursor-pointer h-32 flex items-center justify-center bg-gray-100">
+                                          <Plus className="h-8 w-8 text-gray-600" />
+                                        </Card>
+                                      </PopoverTrigger>
+                                      <PopoverContent className="w-auto p-2" align="start">
+                                        <div className="flex items-center gap-4">
+                                          <div className="relative">
                                             <div
-                                                className="w-6 h-6 rounded-full border"
-                                                style={{ backgroundColor: bgColor }}
+                                              className="w-6 h-6 rounded-full border"
+                                              style={{ backgroundColor: bgColor }}
                                             />
                                             <Input
-                                                type="color"
-                                                value={bgColor}
-                                                onChange={(e) => setBgColor(e.target.value)}
-                                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                              type="color"
+                                              value={bgColor}
+                                              onChange={(e) => setBgColor(e.target.value)}
+                                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                             />
+                                          </div>
+                                          <Input
+                                            type="text"
+                                            value={bgColor}
+                                            onChange={(e) => setBgColor(e.target.value)}
+                                            className="h-9 w-32"
+                                          />
                                         </div>
-                                        <Input
-                                          type="text"
-                                          value={bgColor}
-                                          onChange={(e) => setBgColor(e.target.value)}
-                                          className="h-9 w-32"
-                                        />
-                                      </div>
-                                    </PopoverContent>
-                                  </Popover>
+                                      </PopoverContent>
+                                    </Popover>
+                                  </CarouselItem>
                                   {defaultSolidColors.map(color => (
-                                    <button
-                                      key={color}
-                                      onClick={() => setBgColor(color)}
-                                      className="w-8 h-8 rounded-full border"
-                                      style={{ backgroundColor: color }}
-                                      aria-label={`Select color ${color}`}
-                                    />
+                                    <CarouselItem key={color} className="basis-1/4">
+                                      <Card className="overflow-hidden cursor-pointer" onClick={() => setBgColor(color)}>
+                                        <CardContent className="h-32" style={{ backgroundColor: color }} />
+                                      </Card>
+                                    </CarouselItem>
                                   ))}
-                                </div>
-                              </div>
+                                </CarouselContent>
+                                <CarouselPrevious className="-left-4" />
+                                <CarouselNext className="-right-4" />
+                              </Carousel>
                             </TabsContent>
                             <TabsContent value="gradient" className="pt-4 space-y-4">
                               <Carousel className="w-full">
