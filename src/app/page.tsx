@@ -97,7 +97,7 @@ const gradientTemplates = [
 ];
 
 const imageTemplates = [
-  { name: "bgImage-1", imageUrl: "https://i.ibb.co/cSNxXVn5/1.jpg" },
+  { name: "bgImage-1", imageUrl: "https://i.ibb.co/cSNxXVn/1.jpg" },
   { name: "bgImage-2", imageUrl: "https://i.ibb.co/21RBM4zK/2.jpg" },
   { name: "bgImage-3", imageUrl: "https://i.ibb.co/fG4jwVJk/3.jpg" },
   { name: "bgImage-4", imageUrl: "https://i.ibb.co/DmLYr9c/4.jpg" },
@@ -577,8 +577,8 @@ export default function Home() {
                       </TabsContent>
                       <TabsContent value="text">
                         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
-                          <div className="grid grid-cols-[auto_auto_1fr_auto] gap-x-4 gap-y-4 items-center">
-                            {/* Row 1: Text Color */}
+                           <div className="grid grid-cols-[auto_auto_1fr_auto] gap-x-4 gap-y-4 items-center">
+                            {/* Row 1: Text Color & Font */}
                             <div className="flex items-center justify-center">
                               <Baseline className="h-5 w-5" />
                             </div>
@@ -594,7 +594,7 @@ export default function Home() {
                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                               />
                             </div>
-                            <div className="col-span-2">
+                            <div className="col-span-1">
                               <Select value={activeFont.value} onValueChange={handleFontChange}>
                                 <SelectTrigger className="w-full border-0">
                                   <SelectValue placeholder="Yazı Tipi Seçin" />
@@ -608,35 +608,6 @@ export default function Home() {
                                 </SelectContent>
                               </Select>
                             </div>
-                            
-                            {/* Row 2: Text Box Background */}
-                            <div className="flex items-center justify-center">
-                              <Brush className="h-5 w-5" />
-                            </div>
-                            <div className="relative">
-                              <div
-                                className="w-6 h-6 rounded-full border"
-                                style={{ backgroundColor: rectBgColor }}
-                              />
-                              <Input
-                                type="color"
-                                value={rectBgColor}
-                                onChange={(e) => setRectBgColor(e.target.value)}
-                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                              />
-                            </div>
-                            <div className="col-span-1">
-                              <Slider
-                                max={1}
-                                min={0}
-                                step={0.05}
-                                value={[rectOpacity]}
-                                onValueChange={(value) => setRectOpacity(value[0])}
-                                style={{'--slider-track-bg': rectBgColor} as React.CSSProperties}
-                                className="[&>span:first-child]:bg-[var(--slider-track-bg)]"
-                              />
-                            </div>
-
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
                                 <Button variant="outline" size="icon">
@@ -660,6 +631,32 @@ export default function Home() {
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
+
+                            {/* Row 2: Text Box Background */}
+                            <div className="col-span-4 flex items-center gap-2">
+                              <Brush className="h-5 w-5" />
+                              <div className="relative">
+                                <div
+                                  className="w-6 h-6 rounded-full border"
+                                  style={{ backgroundColor: rectBgColor }}
+                                />
+                                <Input
+                                  type="color"
+                                  value={rectBgColor}
+                                  onChange={(e) => setRectBgColor(e.target.value)}
+                                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                />
+                              </div>
+                              <Slider
+                                max={1}
+                                min={0}
+                                step={0.05}
+                                value={[rectOpacity]}
+                                onValueChange={(value) => setRectOpacity(value[0])}
+                                style={{'--slider-track-bg': rectBgColor} as React.CSSProperties}
+                                className="flex-grow [&>span:first-child]:bg-[var(--slider-track-bg)]"
+                              />
+                            </div>
                           </div>
                         </div>
                       </TabsContent>
@@ -696,5 +693,3 @@ export default function Home() {
     </>
   );
 }
-
-    
