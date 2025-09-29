@@ -84,7 +84,7 @@ const fontOptions: FontOption[] = [
 
 const gradientTemplates = [
   { name: "Sunrise", css: "linear-gradient(to top right, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)" },
-  { name: "Dark Ocean", css: "linear-gradient(to right, #373b44, #4286f4);" },
+  { name: "Dark Ocean", css: "linear-gradient(to right, #373b44, #4286f4)" },
   { name: "Sunset", css: "linear-gradient(to top right, #F3904F 0%, #3B4371 100%)" },
   { name: "Forest", css: "linear-gradient(to top right, #13547a 0%, #80d0c7 100%)" },
   { name: "Royal", css: "linear-gradient(to top right, #473B7B 0%, #3584A7 50%, #30D2BE 100%)" },
