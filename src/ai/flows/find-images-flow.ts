@@ -51,7 +51,7 @@ export const findImagesFlow = ai.defineFlow(
 
     if (!apiKey) {
       throw new Error(
-        'Pexels API Anahtarınız yapılandırılmamış. Lütfen projenizin ana dizinindeki `.env` dosyasını kontrol edin ve `PEXELS_API_KEY` anahtarını ekleyin.'
+        'Your Pexels API Key is not configured. Please check the `.env` file in the root directory of your project and add the `PEXELS_API_KEY`.'
       );
     }
 
