@@ -36,7 +36,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Baseline, Brush, Dice5, Download, Loader2, Palette, Search, Type } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Baseline, Dice5, Download, Loader2, Palette, Search, Type } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -101,6 +101,14 @@ const gradientTemplates = [
   { name: "Steel", css: "linear-gradient(to right, #65799b, #5e2563)" },
   { name: "Cosmic", css: "linear-gradient(to right, #ff00cc, #333399)" },
 ];
+
+const defaultSolidColors = [
+  '#000000', '#555555', '#808080', '#AAAAAA', '#CCCCCC', '#E0E0E0', '#FFFFFF',
+  '#FF5252', '#FF4081', '#E040FB', '#7C4DFF', '#536DFE', '#448AFF', '#03A9F4',
+  '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107',
+  '#FF9800', '#FF5722', '#795548', '#9E9E9E', '#607D8B'
+];
+
 
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea"];
 
@@ -475,6 +483,20 @@ export default function Home() {
                                   onChange={(e) => setBgColor(e.target.value)}
                                   className="h-9 w-32"
                                 />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Varsayılan Düz Renkler</Label>
+                                <div className="grid grid-cols-7 gap-2">
+                                  {defaultSolidColors.map(color => (
+                                    <button
+                                      key={color}
+                                      onClick={() => setBgColor(color)}
+                                      className="w-8 h-8 rounded-full border"
+                                      style={{ backgroundColor: color }}
+                                      aria-label={`Select color ${color}`}
+                                    />
+                                  ))}
+                                </div>
                               </div>
                             </TabsContent>
                             <TabsContent value="gradient" className="pt-4 space-y-4">
