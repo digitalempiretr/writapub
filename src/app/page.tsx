@@ -42,6 +42,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
+import { imageTemplates } from "@/lib/image-templates";
 
 type Design = {
   text: string;
@@ -94,32 +95,6 @@ const gradientTemplates = [
   { name: "Emerald", css: "linear-gradient(to right, #348f50, #56b4d3)" },
   { name: "Steel", css: "linear-gradient(to right, #65799b, #5e2563)" },
   { name: "Cosmic", css: "linear-gradient(to right, #ff00cc, #333399)" },
-];
-
-const imageTemplates = [
-  { name: "bgImage-1", imageUrl: "https://i.ibb.co/cSNxXVn/1.jpg" },
-  { name: "bgImage-2", imageUrl: "https://i.ibb.co/21RBM4zK/2.jpg" },
-  { name: "bgImage-3", imageUrl: "https://i.ibb.co/fG4jwVJk/3.jpg" },
-  { name: "bgImage-4", imageUrl: "https://i.ibb.co/DmLYr9c/4.jpg" },
-  { name: "bgImage-5", imageUrl: "https://i.ibb.co/NngKdzDr/5.jpg" },
-  { name: "bgImage-6", imageUrl: "https://i.ibb.co/kVJS28vc/6.jpg" },
-  { name: "bgImage-7", imageUrl: "https://i.ibb.co/DDZ3y2Lk/7.jpg" },
-  { name: "bgImage-8", imageUrl: "https://i.ibb.co/qMsVxTVP/8.jpg" },
-  { name: "bgImage-9", imageUrl: "https://i.ibb.co/dwpMznqZ/9.jpg" },
-  { name: "bgImage-10", imageUrl: "https://i.ibb.co/20LWKfg2/10.jpg" },
-  { name: "bgImage-11", imageUrl: "https://i.ibb.co/0pPsjhzm/11.jpg" },
-  { name: "bgImage-12", imageUrl: "https://i.ibb.co/60jqfPL0/12.jpg" },
-  { name: "bgImage-13", imageUrl: "https://i.ibb.co/prMd6Jrx/13.jpg" },
-  { name: "bgImage-14", imageUrl: "https://i.ibb.co/HTRtS40v/14.jpg" },
-  { name: "bgImage-15", imageUrl: "https://i.ibb.co/kVzt8JY3/15.jpg" },
-  { name: "bgImage-16", imageUrl: "https://i.ibb.co/DqpzHmd/16.jpg" },
-  { name: "bgImage-17", imageUrl: "https://i.ibb.co/pBgc28z1/17.jpg" },
-  { name: "bgImage-18", imageUrl: "https://i.ibb.co/KzSvH8MX/18.jpg" },
-  { name: "bgImage-19", imageUrl: "https://i.ibb.co/Qj8wydws/19.jpg" },
-  { name: "bgImage-20", imageUrl: "https://i.ibb.co/nsNShDnK/20.jpg" },
-  { name: "bgImage-21", imageUrl: "https://i.ibb.co/xq1cZcmL/21.jpg" },
-  { name: "bgImage-22", imageUrl: "https://i.ibb.co/ym0R346S/22.jpg" },
-  { name: "bgImage-23", imageUrl: "https://i.ibb.co/1Jtzn1X6/23.jpg" }
 ];
 
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea"];
