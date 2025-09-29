@@ -36,7 +36,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Baseline, Brush, Dice5, Download, Loader2, Palette, Search, Type } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Baseline, Dice5, Download, Loader2, Plus, Search, Type } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -463,30 +463,38 @@ export default function Home() {
                               <TabsTrigger value="image">Görsel</TabsTrigger>
                             </TabsList>
                             <TabsContent value="flat" className="pt-4 space-y-4">
-                              <div className="flex items-center gap-4">
-                                <Label>Arka Plan:</Label>
-                                <div className="relative">
-                                    <div
-                                        className="w-6 h-6 rounded-full border"
-                                        style={{ backgroundColor: bgColor }}
-                                    />
-                                    <Input
-                                        type="color"
-                                        value={bgColor}
-                                        onChange={(e) => setBgColor(e.target.value)}
-                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                    />
-                                </div>
-                                <Input
-                                  type="text"
-                                  value={bgColor}
-                                  onChange={(e) => setBgColor(e.target.value)}
-                                  className="h-9 w-32"
-                                />
-                              </div>
-                              <div className="space-y-2">
+                               <div className="space-y-2">
                                 <Label>Varsayılan Düz Renkler</Label>
                                 <div className="grid grid-cols-7 gap-y-2 gap-x-0">
+                                   <Popover>
+                                    <PopoverTrigger asChild>
+                                      <button className="w-8 h-8 rounded-full border bg-gray-100 flex items-center justify-center">
+                                        <Plus className="h-4 w-4 text-gray-600" />
+                                      </button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-2" align="start">
+                                       <div className="flex items-center gap-4">
+                                        <div className="relative">
+                                            <div
+                                                className="w-6 h-6 rounded-full border"
+                                                style={{ backgroundColor: bgColor }}
+                                            />
+                                            <Input
+                                                type="color"
+                                                value={bgColor}
+                                                onChange={(e) => setBgColor(e.target.value)}
+                                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                            />
+                                        </div>
+                                        <Input
+                                          type="text"
+                                          value={bgColor}
+                                          onChange={(e) => setBgColor(e.target.value)}
+                                          className="h-9 w-32"
+                                        />
+                                      </div>
+                                    </PopoverContent>
+                                  </Popover>
                                   {defaultSolidColors.map(color => (
                                     <button
                                       key={color}
@@ -711,5 +719,3 @@ export default function Home() {
     </>
   );
 }
-
-    
