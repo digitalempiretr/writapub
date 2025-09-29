@@ -26,6 +26,8 @@ type ImageCanvasProps = {
   onTextRemaining: (remainingText: string, fromIndex: number) => void;
   rectColor: string;
   rectOpacity: number;
+  overlayColor?: string;
+  overlayOpacity?: number;
   textAlign: 'left' | 'center' | 'right';
 };
 
@@ -182,6 +184,8 @@ export function ImageCanvas({
   onTextRemaining,
   rectColor,
   rectOpacity,
+  overlayColor,
+  overlayOpacity,
   textAlign,
 }: ImageCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -236,6 +240,12 @@ export function ImageCanvas({
       }
 
       const drawLayout = () => {
+        // Draw overlay if an image is used
+        if (backgroundImageUrl && overlayColor && (overlayOpacity || overlayOpacity === 0)) {
+          ctx.fillStyle = hexToRgba(overlayColor, overlayOpacity);
+          ctx.fillRect(0, 0, width, height);
+        }
+
         // Draw the text box rectangle
         ctx.fillStyle = hexToRgba(rectColor, rectOpacity);
         ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
@@ -316,7 +326,7 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, textAlign]);
+  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign]);
 
   return (
     <canvas
