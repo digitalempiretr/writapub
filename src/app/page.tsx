@@ -36,7 +36,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Baseline, Dice5, Download, Loader2, Palette, Search, Type } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Baseline, Brush, Dice5, Download, Loader2, Palette, Search, Type } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -103,10 +103,10 @@ const gradientTemplates = [
 ];
 
 const defaultSolidColors = [
-  '#000000', '#555555', '#808080', '#AAAAAA', '#CCCCCC', '#E0E0E0', '#FFFFFF',
-  '#FF5252', '#FF4081', '#E040FB', '#7C4DFF', '#536DFE', '#448AFF', '#03A9F4',
-  '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107',
-  '#FF9800', '#FF5722', '#795548', '#9E9E9E', '#607D8B'
+  '#000000', '#545454', '#737373', '#A6A6A6', '#B4B4B4', '#D9D9D9', '#FFFFFF',
+  '#FF3131', '#FF5757', '#FF66C4', '#E2A9F1', '#CB6CE6', '#8C52FF', '#5E17EB',
+  '#0097B2', '#0CC0DF', '#5CE1E6', '#38B6FF', '#5170FF', '#004AAD', '#1800AD',
+  '#00BF63', '#7ED957', '#C1FF72', '#FFDE59', '#FFBD59', '#FF914D', '#FF751F'
 ];
 
 
@@ -486,7 +486,7 @@ export default function Home() {
                               </div>
                               <div className="space-y-2">
                                 <Label>Varsayılan Düz Renkler</Label>
-                                <div className="grid grid-cols-7 gap-2">
+                                <div className="grid grid-cols-7 gap-y-2 gap-x-0">
                                   {defaultSolidColors.map(color => (
                                     <button
                                       key={color}
@@ -711,3 +711,5 @@ export default function Home() {
     </>
   );
 }
+
+    
