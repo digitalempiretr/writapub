@@ -1,5 +1,6 @@
+
 export const imageTemplates = [
-  { name: "bgImage-1", imageUrl: "https://i.ibb.co/cSNxXVn/1.jpg" },
+  { name: "bgImage-1", imageUrl: "https://i.ibb.co/cSNxXVn5/1.jpg" },
   { name: "bgImage-2", imageUrl: "https://i.ibb.co/21RBM4zK/2.jpg" },
   { name: "bgImage-3", imageUrl: "https://i.ibb.co/fG4jwVJk/3.jpg" },
   { name: "bgImage-4", imageUrl: "https://i.ibb.co/DmLYr9c/4.jpg" },

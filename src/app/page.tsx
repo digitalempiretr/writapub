@@ -476,7 +476,7 @@ export default function Home() {
                               <Carousel className="w-full">
                                 <CarouselContent>
                                   {gradientTemplates.map((gradient) => (
-                                    <CarouselItem key={gradient.name} className="basis-1/3">
+                                    <CarouselItem key={gradient.name} className="basis-1/4">
                                       <Card className="overflow-hidden cursor-pointer" onClick={() => setGradientBg(gradient.css)}>
                                         <CardContent className="h-32" style={{ background: gradient.css }} />
                                       </Card>
@@ -491,7 +491,7 @@ export default function Home() {
                               <Carousel className="w-full">
                                 <CarouselContent>
                                   {imageTemplates.map((image) => (
-                                    <CarouselItem key={image.name} className="basis-1/3">
+                                    <CarouselItem key={image.name} className="basis-1/4">
                                       <Card className="overflow-hidden cursor-pointer" onClick={() => setImageBgUrl(image.imageUrl)}>
                                         <CardContent className="h-32 relative">
                                           <Image src={image.imageUrl} alt={image.name} fill className="object-cover" />
