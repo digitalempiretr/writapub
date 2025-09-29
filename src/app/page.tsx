@@ -112,31 +112,32 @@ const defaultSolidColors = [
 
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea"];
 
-const defaultText = `How NOT to do a job courses are starting! With its master staff, the Metropolitan Municipality will probably teach it through Komek!
-What is this if not ruining our Mystical Music Festival, which you have done 20 times?
-We had to say sorry 100 times to the tourists who will come to our city for @mistikmuzikfestivali, we don't know.
-There are only 10 days left for the festival! Tickets are still not on sale.
-Man will come from the other side of the world!
-Why should he come if he can't buy a ticket?
-I ask you? Dear President @u_ibrahim_altay.
-Isn't your team really undermining these things while you are sponsoring them?
-Isn't it a pity?
-Why aren't the tickets for an organization on sale from last year, let alone a year, why aren't they sold a month or two in advance?
-We call the cultural directorate, they have no information!
-The Metropolitan is doing it!
-I have never heard of such a thing in my life!
-You click on Biletinial, there is no such event!
-If you're going to do it, do it!
-If you are not going to do it, do not play with our bread!
-Who is really doing this job???
-Find the owner of this mistake, my president!
-Give a lesson to these friends who are eager to do everything themselves!
-I canceled dozens of reservations today!
-The customer says there are no tickets!
-We can't explain.
-If you ask the tourism professionals, the mystical music festival is as important as shebi arus for us!
-No offense.
-Tourism requires planning. Don't you make plans when you travel?`;
+const defaultText = `BİR İŞ NASIL YAPILMAZ kursları açılıyor! Usta kadrosu ile Büyükşehir herhalde Komek vasıtası ile öğretir artık!
+Yahu 20 kere yaptığınız Mistik Müzik Festivalimizin içine etmek değilse bu nedir?
+@mistikmuzikfestivali için şehrimize gelecek turistlere 100 kere kusura bakmayın bilmiyoruz demek zorunda kaldık.
+Festivale hepi topu 10 gün var! Halen biletler satışa çıkmadı.
+Yahu dünyanın öbür ucundan gelecek adam!
+Bilet alamazsa neden gelsin?
+Soruyorum size? Sayın @u_ibrahim_altay başkanım.
+Ekibiniz gerçekten siz sponsor olurken bu işleri baltalamıyor mu?
+Yazık değil mi?
+Bir organizasyonun biletleri neden geçen seneden satışa
+sunulmaz hadi seneyi bırak bir iki ay öncesinden neden satılmaz?
+Kültür müdürlüğünü arıyoruz bilgileri yok!
+Büyükşehir yapıyormuş!
+Ben hayatımda duymadım böyle bir şey!
+Biletinial a tıklıyorsun böyle bir etkinlik yok!
+Yapacaksanız yapın!
+Yapmayacaksanız bizlerin ekmeği ile oynamayın!
+Gerçekten kim yapıyor bu işi???
+Bu hatanın sahibini bulun başkanım!
+Her şeyi kendisi yapmaya hevesli bu arkadaşlar kimse bi ders verin!
+Onlarca rezervasyonu iptal ettim bugün!
+Müşteri bilet yok diyor!
+Anlatamıyoruz.
+Mistik müzik festivali turizmcilere sorsanız şebi arus gibi  önemli bizler için!
+Kimse kusura bakmasın.
+Turizm planlama ister. Siz seyahat ederken plan yapmıyor musunuz?`;
 
 export default function Home() {
   const [text, setText] = useState(defaultText);
@@ -328,6 +329,7 @@ export default function Home() {
     const randomSeed = Math.floor(Math.random() * 1000);
     const randomImageUrl = `https://picsum.photos/seed/${randomSeed}/1080/1350`;
     setImageBgUrl(randomImageUrl);
+    setRectOpacity(0.8);
   };
   
   const renderCanvas = useCallback((design: Design, index: number) => {
@@ -715,3 +717,5 @@ export default function Home() {
     </>
   );
 }
+
+    
