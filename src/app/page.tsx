@@ -36,7 +36,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Baseline, Brush, Dice5, Download, Loader2, Search, Type } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Baseline, Dice5, Download, Loader2, Search, Type } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -561,7 +561,6 @@ export default function Home() {
                       <TabsContent value="text">
                         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
                            <div className="grid grid-cols-[auto_auto_1fr_auto_auto] gap-x-2 items-center">
-                            {/* Row 1: Text Color, Font, Alignment */}
                             <div className="flex items-center justify-center">
                               <Baseline className="h-5 w-5" />
                             </div>
@@ -591,7 +590,7 @@ export default function Home() {
                                 </SelectContent>
                               </Select>
                             </div>
-                            <DropdownMenu>
+                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
                                 <Button variant="outline" size="icon">
                                   {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
@@ -614,7 +613,20 @@ export default function Home() {
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
-
+                             <div className="relative">
+                                <div
+                                    className="w-6 h-6 rounded-full border"
+                                    style={{ backgroundColor: rectBgColor }}
+                                />
+                                <Input
+                                    type="color"
+                                    value={rectBgColor}
+                                    onChange={(e) => setRectBgColor(e.target.value)}
+                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                />
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-[auto_1fr] gap-x-2 items-center">
                              <Popover>
                                 <PopoverTrigger asChild>
                                     <Button variant="outline" size="icon">
@@ -622,29 +634,15 @@ export default function Home() {
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-full space-y-4">
-                                     <div className="flex items-center gap-2">
-                                        <div className="relative">
-                                            <div
-                                            className="w-6 h-6 rounded-full border"
-                                            style={{ backgroundColor: rectBgColor }}
-                                            />
-                                            <Input
-                                            type="color"
-                                            value={rectBgColor}
-                                            onChange={(e) => setRectBgColor(e.target.value)}
-                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                            />
-                                        </div>
-                                        <Slider
-                                            max={1}
-                                            min={0}
-                                            step={0.05}
-                                            value={[rectOpacity]}
-                                            onValueChange={(value) => setRectOpacity(value[0])}
-                                            style={{'--slider-track-bg': rectBgColor} as React.CSSProperties}
-                                            className="flex-grow [&>span:first-child]:bg-[var(--slider-track-bg)]"
-                                        />
-                                    </div>
+                                     <Slider
+                                        max={1}
+                                        min={0}
+                                        step={0.05}
+                                        value={[rectOpacity]}
+                                        onValueChange={(value) => setRectOpacity(value[0])}
+                                        style={{'--slider-track-bg': rectBgColor} as React.CSSProperties}
+                                        className="flex-grow [&>span:first-child]:bg-[var(--slider-track-bg)]"
+                                    />
                                 </PopoverContent>
                             </Popover>
                           </div>
