@@ -397,7 +397,7 @@ export default function Home() {
                       <TabsList className="grid w-full grid-cols-3 bg-card text-card-foreground p-2">
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <TabsTrigger value="background"><Icon path={`<path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.56 10.81l-2.35 3.02-1.56-1.88c-.2-.25-.58-.24-.78.01l-1.74 2.23c-.26.33-.02.81.39.81h8.98c.41 0 .65-.47.4-.8l-2.55-3.39c-.19-.26-.59-.26-.79 0zM2 5c-.55 0-1 .45-1 1v15c0 1.1.9 2 2 2h15c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1-.45-1-1V6c0-.55-.45-1-1-1zm19-4H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-1 16H8c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1z"/>`} /></TabsTrigger>
+                            <TabsTrigger value="background"><Icon path='<path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.56 10.81l-2.35 3.02-1.56-1.88c-.2-.25-.58-.24-.78.01l-1.74 2.23c-.26.33-.02.81.39.81h8.98c.41 0 .65-.47.4-.8l-2.55-3.39c-.19-.26-.59-.26-.79 0zM2 5c-.55 0-1 .45-1 1v15c0 1.1.9 2 2 2h15c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1-.45-1-1V6c0-.55-.45-1-1-1zm19-4H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-1 16H8c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1z"/>' /></TabsTrigger>
                           </TooltipTrigger>
                           <TooltipContent>
                             <p>Arka Plan Ayarları</p>
@@ -424,11 +424,23 @@ export default function Home() {
                         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
                           <Label>Background</Label>
                           <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
-                            <TabsList className="grid w-full grid-cols-3">
-                              <TabsTrigger value="flat">Solid Color</TabsTrigger>
-                              <TabsTrigger value="gradient">Gradient</TabsTrigger>
-                              <TabsTrigger value="image">Image</TabsTrigger>
-                            </TabsList>
+                            <div className="flex items-center gap-2">
+                                <TabsList className="grid w-full grid-cols-3 flex-grow">
+                                    <TabsTrigger value="flat">Solid Color</TabsTrigger>
+                                    <TabsTrigger value="gradient">Gradient</TabsTrigger>
+                                    <TabsTrigger value="image">Image</TabsTrigger>
+                                </TabsList>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button onClick={handleFeelLucky} variant="outline" size="icon" className="h-10 w-10">
+                                            <Dice5 className="h-6 w-6" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Kendimi Şanslı Hissediyorum</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </div>
                             <TabsContent value="flat" className="pt-4 space-y-4">
                               <Carousel className="w-full">
                                 <CarouselContent>
@@ -541,16 +553,6 @@ export default function Home() {
                                     <p>Görsel Ara</p>
                                   </TooltipContent>
                                 </Tooltip>
-                                 <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button onClick={handleFeelLucky} variant="outline" size="icon" className="h-10 w-10">
-                                      <Dice5 className="h-6 w-6" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Kendimi Şanslı Hissediyorum</p>
-                                  </TooltipContent>
-                                 </Tooltip>
                               </div>
 
                               {searchedImages.length > 0 && (
@@ -575,7 +577,7 @@ export default function Home() {
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                           <div className="relative">
-                                            <Icon path={`<path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.56 10.81l-2.35 3.02-1.56-1.88c-.2-.25-.58-.24-.78.01l-1.74 2.23c-.26.33-.02.81.39.81h8.98c.41 0 .65-.47.4-.8l-2.55-3.39c-.19-.26-.59-.26-.79 0zM2 5c-.55 0-1 .45-1 1v15c0 1.1.9 2 2 2h15c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1-.45-1-1V6c0-.55-.45-1-1-1zm19-4H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-1 16H8c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1z"/>`} size={24} fill={overlayColor} />
+                                            <Icon path='<path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.56 10.81l-2.35 3.02-1.56-1.88c-.2-.25-.58-.24-.78.01l-1.74 2.23c-.26.33-.02.81.39.81h8.98c.41 0 .65-.47.4-.8l-2.55-3.39c-.19-.26-.59-.26-.79 0zM2 5c-.55 0-1 .45-1 1v15c0 1.1.9 2 2 2h15c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1-.45-1-1V6c0-.55-.45-1-1-1zm19-4H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-1 16H8c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1z"/>' size={24} fill={overlayColor} />
                                             <Input
                                             type="color"
                                             value={overlayColor}
@@ -594,7 +596,7 @@ export default function Home() {
                                       <TooltipTrigger asChild>
                                         <PopoverTrigger asChild>
                                           <Button variant="outline" size="icon">
-                                            <Icon path={`<path d="M0 0h24v24H0z" fill="none"/><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0-2-.9-2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM11 7h2v2h-2zM7 7h2v2H7zm8 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/>`} size={30} fill={'#3F87A5'} />
+                                            <Icon path='<path d="M0 0h24v24H0z" fill="none"/><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0-2-.9-2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM11 7h2v2h-2zM7 7h2v2H7zm8 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/>' size={30} fill={'#3F87A5'} />
                                           </Button>
                                         </PopoverTrigger>
                                       </TooltipTrigger>
@@ -638,7 +640,7 @@ export default function Home() {
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                         <div className="relative">
-                                            <Icon path={`<path d="M200-200v-80h560v80H200Zm76-160 164-440h80l164 440h-76l-38-112H392l-40 112h-76Zm138-176h132l-64-182h-4l-64 182Z"/>`} size={24} fill={textColor} />
+                                            <Icon path='<path d="M200-200v-80h560v80H200Zm76-160 164-440h80l164 440h-76l-38-112H392l-40 112h-76Zm138-176h132l-64-182h-4l-64 182Z"/>' size={24} fill={textColor} />
                                             <Input
                                             type="color"
                                             value={textColor}
@@ -713,7 +715,7 @@ export default function Home() {
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <div className="relative">
-                                                <Icon path={`<path d="M320-240h320v-480H320v480Zm480 80q0 33-23.5 56.5T720-80H240q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640Zm-80 0v-640H240v640h480Zm0-640H240h480Z"/>`} size={30} fill={rectBgColor} />
+                                                <Icon path='<path d="M320-240h320v-480H320v480Zm480 80q0 33-23.5 56.5T720-80H240q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640Zm-80 0v-640H240v640h480Zm0-640H240h480Z"/>' size={30} fill={rectBgColor} />
                                                 <Input
                                                 type="color"
                                                 value={rectBgColor}
@@ -733,7 +735,7 @@ export default function Home() {
                                     <TooltipTrigger asChild>
                                         <PopoverTrigger asChild>
                                         <Button variant="outline" size="icon">
-                                            <Icon path={`<path d="M11 9h2v2h-2V9zm-2 2h2v2H9v-2zm4 0h2v2h-2v-2zm2-2h2v2h-2V9zM7 9h2v2H7V9zm12-6H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm2-7h-2v2h2v2h-2v-2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2h2v-2H5V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v5z"/>`} fill={'#3F87A5'} />
+                                            <Icon path='<path d="M11 9h2v2h-2V9zm-2 2h2v2H9v-2zm4 0h2v2h-2v-2zm2-2h2v2h-2V9zM7 9h2v2H7V9zm12-6H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm2-7h-2v2h2v2h-2v-2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2h2v-2H5V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v5z"/>' fill={'#3F87A5'} />
                                         </Button>
                                         </PopoverTrigger>
                                     </TooltipTrigger>
