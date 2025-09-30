@@ -555,7 +555,7 @@ export default function Home() {
                                 />
                                 <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon">
+                                    <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10">
                                       {isSearching && searchPage === 1 ? (
                                         <Loader2 className="h-6 w-6 animate-spin" />
                                       ) : (
@@ -569,7 +569,7 @@ export default function Home() {
                                 </Tooltip>
                                  <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <Button onClick={handleFeelLucky} variant="outline" size="icon">
+                                    <Button onClick={handleFeelLucky} variant="outline" size="icon" className="h-10 w-10">
                                       <Dice5 className="h-6 w-6" />
                                     </Button>
                                   </TooltipTrigger>
@@ -656,135 +656,139 @@ export default function Home() {
                       <TabsContent value="text">
                         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
                           <div className="flex flex-col gap-y-4">
-                            <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
-                              {/* Text Color */}
-                              <div className="relative border rounded-md p-1">
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                      <div className="relative">
-                                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill={textColor}>
-                                            <path d="M200-200v-80h560v80H200Zm76-160 164-440h80l164 440h-76l-38-112H392l-40 112h-76Zm138-176h132l-64-182h-4l-64 182Z"/>
-                                          </svg>
-                                          <Input
-                                          type="color"
-                                          value={textColor}
-                                          onChange={(e) => setTextColor(e.target.value)}
-                                          className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                                          />
-                                      </div>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Metin Rengini Seç</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </div>
-
-                              {/* Font Selection */}
-                              <Select value={activeFont.value} onValueChange={handleFontChange}>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <SelectTrigger className="w-full border-0">
-                                      <SelectValue placeholder="Select Font" />
-                                    </SelectTrigger>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Yazı Tipini Seç</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                                <SelectContent>
-                                  {fontOptions.map((font) => (
-                                    <SelectItem key={font.value} value={font.value}>
-                                      {font.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-
-                              {/* Alignment */}
-                               <DropdownMenu>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <DropdownMenuTrigger asChild>
-                                      <Button variant="outline" size="icon">
-                                        {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
-                                        {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
-                                        {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
-                                      </Button>
-                                    </DropdownMenuTrigger>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Metin Hizalama</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                                <DropdownMenuContent>
-                                  <DropdownMenuItem onClick={() => setTextAlign('left')}>
-                                    <AlignLeft className="mr-2 h-4 w-4" />
-                                    <span>Align Left</span>
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => setTextAlign('center')}>
-                                    <AlignCenter className="mr-2 h-4 w-4" />
-                                    <span>Center</span>
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => setTextAlign('right')}>
-                                    <AlignRight className="mr-2 h-4 w-4" />
-                                    <span>Align Right</span>
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </div>
-                            <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
-                              {/* Text Box Color */}
-                              <div className="relative border rounded-md p-1">
-                                <Tooltip>
+                            <div className="space-y-2">
+                              <Label>Font Settings</Label>
+                              <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
+                                {/* Text Color */}
+                                <div className="relative border rounded-md p-1">
+                                  <Tooltip>
                                     <TooltipTrigger asChild>
                                         <div className="relative">
-                                            <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill={rectBgColor}><path d="M320-240h320v-480H320v480Zm480 80q0 33-23.5 56.5T720-80H240q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640Zm-80 0v-640H240v640h480Zm0-640H240h480Z"/></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill={textColor}>
+                                              <path d="M200-200v-80h560v80H200Zm76-160 164-440h80l164 440h-76l-38-112H392l-40 112h-76Zm138-176h132l-64-182h-4l-64 182Z"/>
+                                            </svg>
                                             <Input
                                             type="color"
-                                            value={rectBgColor}
-                                            onChange={(e) => setRectBgColor(e.target.value)}
+                                            value={textColor}
+                                            onChange={(e) => setTextColor(e.target.value)}
                                             className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                                             />
                                         </div>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>Metin Kutusu Rengi</p>
+                                      <p>Metin Rengini Seç</p>
                                     </TooltipContent>
-                                </Tooltip>
-                              </div>
-                              {/* Opacity */}
-                              <Popover>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <PopoverTrigger asChild>
+                                  </Tooltip>
+                                </div>
+
+                                {/* Font Selection */}
+                                <Select value={activeFont.value} onValueChange={handleFontChange}>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <SelectTrigger className="w-full border-0">
+                                        <SelectValue placeholder="Select Font" />
+                                      </SelectTrigger>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Yazı Tipini Seç</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                  <SelectContent>
+                                    {fontOptions.map((font) => (
+                                      <SelectItem key={font.value} value={font.value}>
+                                        {font.label}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+
+                                {/* Alignment */}
+                                <DropdownMenu>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
                                       <Button variant="outline" size="icon">
-                                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h200v720H200Zm280 0q-17 0-28.5-11.5T440-160q0-17 11.5-28.5T480-200q17 0 28.5 11.5T520-160q0 17-11.5 28.5T480-120Zm0-160q-17 0-28.5-11.5T440-320q0-17 11.5-28.5T480-360q17 0 28.5 11.5T520-320q0 17-11.5 28.5T480-280Zm0-160q-17 0-28.5-11.5T440-480q0-17 11.5-28.5T480-520q17 0 28.5 11.5T520-480q0 17-11.5 28.5T480-440Zm0-160q-17 0-28.5-11.5T440-640q0-17 11.5-28.5T480-680q17 0 28.5 11.5T520-640q0 17-11.5 28.5T480-600Zm0-160q-17 0-28.5-11.5T440-800q0-17 11.5-28.5T480-840q17 0 28.5 11.5T520-800q0 17-11.5 28.5T480-760Zm80 560q-17 0-28.5-11.5T520-240q0-17 11.5-28.5T560-280q17 0 28.5 11.5T600-240q0 17-11.5 28.5T560-200Zm0-160q-17 0-28.5-11.5T520-400q0-17 11.5-28.5T560-440q17 0 28.5 11.5T600-400q0 17-11.5 28.5T560-360Zm0-160q-17 0-28.5-11.5T520-560q0-17 11.5-28.5T560-600q17 0 28.5 11.5T600-560q0 17-11.5 28.5T560-520Zm0-160q-17 0-28.5-11.5T520-720q0-17 11.5-28.5T560-760q17 0 28.5 11.5T600-720q0 17-11.5 28.5T560-680Zm80 560q-17 0-28.5-11.5T600-160q0-17 11.5-28.5T640-200q17 0 28.5 11.5T680-160q0 17-11.5 28.5T640-120Zm0-160q-17 0-28.5-11.5T600-320q0-17 11.5-28.5T640-360q17 0 28.5 11.5T680-320q0 17-11.5 28.5T640-280Zm0-160q-17 0-28.5-11.5T600-480q0-17 11.5-28.5T640-520q17 0 28.5 11.5T680-480q0 17-11.5 28.5T640-440Zm0-160q-17 0-28.5-11.5T600-640q0-17 11.5-28.5T640-680q17 0 28.5 11.5T680-640q0 17-11.5 28.5T640-600Zm0-160q-17 0-28.5-11.5T600-800q0-17 11.5-28.5T640-840q17 0 28.5 11.5T680-800q0 17-11.5 28.5T640-760Zm80 560q-17 0-28.5-11.5T680-240q0-17 11.5-28.5T720-280q17 0 28.5 11.5T760-240q0 17-11.5 28.5T720-200Zm0-160q-17 0-28.5-11.5T680-400q0-17 11.5-28.5T720-440q17 0 28.5 11.5T760-400q0 17-11.5 28.5T720-360Zm0-160q-17 0-28.5-11.5T680-560q0-17 11.5-28.5T720-600q17 0 28.5 11.5T760-560q0 17-11.5 28.5T720-520Zm0-160q-17 0-28.5-11.5T680-720q0-17 11.5-28.5T720-760q17 0 28.5 11.5T760-720q0 17-11.5 28.5T720-680Zm80 560q-17 0-28.5-11.5T760-160q0-17 11.5-28.5T800-200q17 0 28.5 11.5T840-160q0 17-11.5 28.5T800-120Zm0-160q-17 0-28.5-11.5T760-320q0-17 11.5-28.5T800-360q17 0 28.5 11.5T840-320q0 17-11.5 28.5T800-280Zm0-160q-17 0-28.5-11.5T760-480q0-17 11.5-28.5T800-520q17 0 28.5 11.5T840-480q0 17-11.5 28.5T800-440Zm0-160q-17 0-28.5-11.5T760-640q0-17 11.5-28.5T800-680q17 0 28.5 11.5T840-640q0 17-11.5 28.5T800-600Zm0-160q-17 0-28.5-11.5T760-800q0-17 11.5-28.5T800-840q17 0 28.5 11.5T840-800q0 17-11.5 28.5T800-760Z"/></svg>
+                                        {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
+                                        {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
+                                        {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
                                       </Button>
-                                    </PopoverTrigger>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Metin Kutusu Şeffaflığı</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                                <PopoverContent className="w-56 space-y-4">
-                                  <div className="space-y-2">
-                                    <Label>Transparency</Label>
-                                    <div className="flex items-center gap-2">
-                                      <Slider
-                                        max={1}
-                                        min={0}
-                                        step={0.01}
-                                        value={[rectOpacity]}
-                                        onValueChange={(value) => setRectOpacity(value[0])}
-                                        className="flex-grow"
-                                      />
-                                      <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
-                                        {Math.round(rectOpacity * 100)}
-                                      </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Metin Hizalama</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                  <DropdownMenuContent>
+                                    <DropdownMenuItem onClick={() => setTextAlign('left')}>
+                                      <AlignLeft className="mr-2 h-4 w-4" />
+                                      <span>Align Left</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setTextAlign('center')}>
+                                      <AlignCenter className="mr-2 h-4 w-4" />
+                                      <span>Center</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setTextAlign('right')}>
+                                      <AlignRight className="mr-2 h-4 w-4" />
+                                      <span>Align Right</span>
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Font Background Settings</Label>
+                                <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
+                                {/* Text Box Color */}
+                                <div className="relative border rounded-md p-1">
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <div className="relative">
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill={rectBgColor}><path d="M320-240h320v-480H320v480Zm480 80q0 33-23.5 56.5T720-80H240q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640Zm-80 0v-640H240v640h480Zm0-640H240h480Z"/></svg>
+                                                <Input
+                                                type="color"
+                                                value={rectBgColor}
+                                                onChange={(e) => setRectBgColor(e.target.value)}
+                                                className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                                />
+                                            </div>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Metin Kutusu Rengi</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </div>
+                                {/* Opacity */}
+                                <Popover>
+                                    <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <PopoverTrigger asChild>
+                                        <Button variant="outline" size="icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h200v720H200Zm280 0q-17 0-28.5-11.5T440-160q0-17 11.5-28.5T480-200q17 0 28.5 11.5T520-160q0 17-11.5 28.5T480-120Zm0-160q-17 0-28.5-11.5T440-320q0-17 11.5-28.5T480-360q17 0 28.5 11.5T520-320q0 17-11.5 28.5T480-280Zm0-160q-17 0-28.5-11.5T440-480q0-17 11.5-28.5T480-520q17 0 28.5 11.5T520-480q0 17-11.5 28.5T480-440Zm0-160q-17 0-28.5-11.5T440-640q0-17 11.5-28.5T480-680q17 0 28.5 11.5T520-640q0 17-11.5 28.5T480-600Zm0-160q-17 0-28.5-11.5T440-800q0-17 11.5-28.5T480-840q17 0 28.5 11.5T520-800q0 17-11.5 28.5T480-760Zm80 560q-17 0-28.5-11.5T520-240q0-17 11.5-28.5T560-280q17 0 28.5 11.5T600-240q0 17-11.5 28.5T560-200Zm0-160q-17 0-28.5-11.5T520-400q0-17 11.5-28.5T560-440q17 0 28.5 11.5T600-400q0 17-11.5 28.5T560-360Zm0-160q-17 0-28.5-11.5T520-560q0-17 11.5-28.5T560-600q17 0 28.5 11.5T600-560q0 17-11.5 28.5T560-520Zm0-160q-17 0-28.5-11.5T520-720q0-17 11.5-28.5T560-760q17 0 28.5 11.5T600-720q0 17-11.5 28.5T560-680Zm80 560q-17 0-28.5-11.5T600-160q0-17 11.5-28.5T640-200q17 0 28.5 11.5T680-160q0 17-11.5 28.5T640-120Zm0-160q-17 0-28.5-11.5T600-320q0-17 11.5-28.5T640-360q17 0 28.5 11.5T680-320q0 17-11.5 28.5T640-280Zm0-160q-17 0-28.5-11.5T600-480q0-17 11.5-28.5T640-520q17 0 28.5 11.5T680-480q0 17-11.5 28.5T640-440Zm0-160q-17 0-28.5-11.5T600-640q0-17 11.5-28.5T640-680q17 0 28.5 11.5T680-640q0 17-11.5 28.5T640-600Zm0-160q-17 0-28.5-11.5T600-800q0-17 11.5-28.5T640-840q17 0 28.5 11.5T680-800q0 17-11.5 28.5T640-760Zm80 560q-17 0-28.5-11.5T680-240q0-17 11.5-28.5T720-280q17 0 28.5 11.5T760-240q0 17-11.5 28.5T720-200Zm0-160q-17 0-28.5-11.5T680-400q0-17 11.5-28.5T720-440q17 0 28.5 11.5T760-400q0 17-11.5 28.5T720-360Zm0-160q-17 0-28.5-11.5T680-560q0-17 11.5-28.5T720-600q17 0 28.5 11.5T760-560q0 17-11.5 28.5T720-520Zm0-160q-17 0-28.5-11.5T680-720q0-17 11.5-28.5T720-760q17 0 28.5 11.5T760-720q0 17-11.5 28.5T720-680Zm80 560q-17 0-28.5-11.5T760-160q0-17 11.5-28.5T800-200q17 0 28.5 11.5T840-160q0 17-11.5 28.5T800-120Zm0-160q-17 0-28.5-11.5T760-320q0-17 11.5-28.5T800-360q17 0 28.5 11.5T840-320q0 17-11.5 28.5T800-280Zm0-160q-17 0-28.5-11.5T760-480q0-17 11.5-28.5T800-520q17 0 28.5 11.5T840-480q0 17-11.5 28.5T800-440Zm0-160q-17 0-28.5-11.5T760-640q0-17 11.5-28.5T800-680q17 0 28.5 11.5T840-640q0 17-11.5 28.5T800-600Zm0-160q-17 0-28.5-11.5T760-800q0-17 11.5-28.5T800-840q17 0 28.5 11.5T840-800q0 17-11.5 28.5T800-760Z"/></svg>
+                                        </Button>
+                                        </PopoverTrigger>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Metin Kutusu Şeffaflığı</p>
+                                    </TooltipContent>
+                                    </Tooltip>
+                                    <PopoverContent className="w-56 space-y-4">
+                                    <div className="space-y-2">
+                                        <Label>Transparency</Label>
+                                        <div className="flex items-center gap-2">
+                                        <Slider
+                                            max={1}
+                                            min={0}
+                                            step={0.01}
+                                            value={[rectOpacity]}
+                                            onValueChange={(value) => setRectOpacity(value[0])}
+                                            className="flex-grow"
+                                        />
+                                        <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
+                                            {Math.round(rectOpacity * 100)}
+                                        </div>
+                                        </div>
                                     </div>
-                                  </div>
-                                </PopoverContent>
-                              </Popover>
+                                    </PopoverContent>
+                                </Popover>
+                                </div>
                             </div>
                           </div>
                         </div>
@@ -822,3 +826,5 @@ export default function Home() {
     </>
   );
 }
+
+    
