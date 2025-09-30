@@ -596,7 +596,7 @@ export default function Home() {
                                 <Label>Overlay Settings</Label>
                                 <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
                                   <div className="relative border rounded-md p-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill={overlayColor}><path d="M320-240h320v-480H320v480Zm480 80q0 33-23.5 56.5T720-80H240q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640Zm-80 0v-640H240v640h480Zm0-640H240h480Z"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 0 24 24" width="40px" fill={overlayColor}><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7 17h14V3H7v14zm4.25-5.53l1.96 2.36 2.75-3.54L19.5 15h-11l2.75-3.53z" opacity=".3"/><path d="M1 21c0 1.1.9 2 2 2h16v-2H3V5H1v16zM21 1H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm0 16H7V3h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L8.5 15h11z"/></svg>
                                     <Input
                                       type="color"
                                       value={overlayColor}
@@ -694,7 +694,7 @@ export default function Home() {
                             <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
                               {/* Text Box Color */}
                               <div className="relative border rounded-md p-1">
-                                  <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill={rectBgColor}><path d="M320-240h320v-480H320v480Zm480 80q0 33-23.5 56.5T720-80H240q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640Zm-80 0v-640H240v640h480Zm0-640H240h480Z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill={rectBgColor}><path d="M320-240h320v-480H320v480Zm480 80q0 33-23.5 56.5T720-80H240q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640Zm-80 0v-640H240v640h480Zm0-640H240h480Z"/></svg>
                                 <Input
                                   type="color"
                                   value={rectBgColor}
