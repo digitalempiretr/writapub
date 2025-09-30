@@ -50,6 +50,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { gradientTemplates } from "@/lib/gradient-templates";
+import { fontOptions } from "@/lib/font-options";
 
 type Design = {
   text: string;
@@ -57,31 +58,6 @@ type Design = {
 };
 
 type TextAlign = 'left' | 'center' | 'right';
-
-
-const fontOptions: FontOption[] = [
-    { value: 'anton', label: 'Anton', fontFamily: 'Anton', bodyWeight: '400', titleWeight: '400', titleSize: 100, bodySize: 58, lineHeight: 74 },
-    { value: 'bree-serif', label: 'Bree Serif', fontFamily: 'Bree Serif', bodyWeight: '400', titleWeight: '400', titleSize: 84, bodySize: 50, lineHeight: 68 },
-    { value: 'catamaran', label: 'Catamaran', fontFamily: 'Catamaran', bodyWeight: '400', titleWeight: '700', titleSize: 90, bodySize: 50, lineHeight: 68 },
-    { value: 'dosis', label: 'Dosis', fontFamily: 'Dosis', bodyWeight: '400', titleWeight: '700', titleSize: 88, bodySize: 52, lineHeight: 68 },
-    { value: 'exo-2', label: 'Exo 2', fontFamily: 'Exo 2', bodyWeight: '400', titleWeight: '700', titleSize: 84, bodySize: 48, lineHeight: 64 },
-    { value: 'inter', label: 'Inter', fontFamily: 'Inter', bodyWeight: '600', titleWeight: '600', titleSize: 80, bodySize: 52, lineHeight: 70 },
-    { value: 'josefin-sans', label: 'Josefin Sans', fontFamily: 'Josefin Sans', bodyWeight: '400', titleWeight: '700', titleSize: 80, bodySize: 48, lineHeight: 64 },
-    { value: 'lato', label: 'Lato', fontFamily: 'Lato', bodyWeight: '400', titleWeight: '700', titleSize: 80, bodySize: 48, lineHeight: 64 },
-    { value: 'lobster', label: 'Lobster', fontFamily: 'Lobster', bodyWeight: '400', titleWeight: '400', titleSize: 92, bodySize: 54, lineHeight: 72 },
-    { value: 'open-sans', label: 'Open Sans', fontFamily: 'Open Sans', bodyWeight: '400', titleWeight: '700', titleSize: 80, bodySize: 48, lineHeight: 64 },
-    { value: 'oswald', label: 'Oswald', fontFamily: 'Oswald', bodyWeight: '400', titleWeight: '700', titleSize: 86, bodySize: 46, lineHeight: 62 },
-    { value: 'oxygen', label: 'Oxygen', fontFamily: 'Oxygen', bodyWeight: '400', titleWeight: '700', titleSize: 80, bodySize: 48, lineHeight: 64 },
-    { value: 'playfair-display', label: 'Playfair Display', fontFamily: 'Playfair Display', bodyWeight: '700', titleWeight: '700', titleSize: 90, bodySize: 52, lineHeight: 70 },
-    { value: 'plus-jakarta-sans', label: 'Plus Jakarta Sans', fontFamily: 'Plus Jakarta Sans', bodyWeight: '400', titleWeight: '700', titleSize: 80, bodySize: 48, lineHeight: 64 },
-    { value: 'raleway', label: 'Raleway', fontFamily: 'Raleway', bodyWeight: '400', titleWeight: '700', titleSize: 80, bodySize: 48, lineHeight: 64 },
-    { value: 'roboto', label: 'Roboto', fontFamily: 'Roboto', bodyWeight: '400', titleWeight: '700', titleSize: 82, bodySize: 48, lineHeight: 64 },
-    { value: 'roboto-slab', label: 'Roboto Slab', fontFamily: 'Roboto Slab', bodyWeight: '400', titleWeight: '700', titleSize: 78, bodySize: 46, lineHeight: 64 },
-    { value: 'slabo-27px', label: 'Slabo 27px', fontFamily: 'Slabo 27px', bodyWeight: '400', titleWeight: '400', titleSize: 88, bodySize: 50, lineHeight: 68 },
-    { value: 'special-elite', label: 'Special Elite', fontFamily: 'Special Elite', bodyWeight: '400', titleWeight: '400', titleSize: 72, bodySize: 50, lineHeight: 68 },
-    { value: 'titillium-web', label: 'Titillium Web', fontFamily: 'Titillium Web', bodyWeight: '400', titleWeight: '700', titleSize: 82, bodySize: 46, lineHeight: 62 },
-    { value: 'ubuntu', label: 'Ubuntu', fontFamily: 'Ubuntu', bodyWeight: '400', titleWeight: '700', titleSize: 80, bodySize: 48, lineHeight: 64 },
-];
 
 const defaultSolidColors = [
   '#000000', '#545454', '#737373', '#A6A6A6', '#B4B4B4', '#D9D9D9', '#FFFFFF',
@@ -175,20 +151,29 @@ export default function Home() {
   const { toast } = useToast();
 
   const handleTextRemaining = useCallback((remaining: string, fromIndex: number) => {
-    if (remaining) {
-      setDesigns(prevDesigns => {
-        // Only add a new design if it's from the last canvas.
-        if (fromIndex === prevDesigns.length - 1) {
-          // And also check if the next design doesn't already have this text.
-          const nextDesign = prevDesigns[fromIndex + 1];
-          if (!nextDesign || nextDesign.text !== remaining) {
-            return [...prevDesigns, { text: remaining, isTitle: false }];
-          }
+    const nextDesignIndex = fromIndex + 1;
+    setDesigns(prevDesigns => {
+        // If there's remaining text and we have a next slide to update
+        if (remaining && prevDesigns[nextDesignIndex]) {
+            const newDesigns = [...prevDesigns];
+            // Check if the text is different to prevent infinite loops
+            if (newDesigns[nextDesignIndex].text !== remaining) {
+                newDesigns[nextDesignIndex].text = remaining;
+                return newDesigns;
+            }
         }
+        // If there is remaining text but no next slide, create one
+        else if (remaining && !prevDesigns[nextDesignIndex]) {
+             return [...prevDesigns, { text: remaining, isTitle: false }];
+        }
+        // If there is no remaining text, but there are slides after this one, remove them
+        else if (!remaining && prevDesigns.length > nextDesignIndex) {
+            return prevDesigns.slice(0, nextDesignIndex);
+        }
+        
         return prevDesigns;
-      });
-    }
-  }, []);
+    });
+}, []);
 
   const handleGenerate = useCallback(async () => {
     if (!text && !title) {
@@ -264,9 +249,6 @@ export default function Home() {
   const handleFontChange = (value: string) => {
     const newFont = fontOptions.find(f => f.value === value) || fontOptions[0];
     setActiveFont(newFont);
-     if (designs.length > 0) {
-      handleGenerate();
-    }
   }
 
   const handleSearchImages = async (page = 1) => {
