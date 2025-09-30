@@ -555,7 +555,7 @@ export default function Home() {
                                 />
                                 <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <Button onClick={() => handleSearchImages(1)} disabled={isSearching} className="h-12 w-12">
+                                    <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon">
                                       {isSearching && searchPage === 1 ? (
                                         <Loader2 className="h-6 w-6 animate-spin" />
                                       ) : (
@@ -569,7 +569,7 @@ export default function Home() {
                                 </Tooltip>
                                  <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <Button onClick={handleFeelLucky} variant="outline" className="h-12 w-12">
+                                    <Button onClick={handleFeelLucky} variant="outline" size="icon">
                                       <Dice5 className="h-6 w-6" />
                                     </Button>
                                   </TooltipTrigger>
