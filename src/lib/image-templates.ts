@@ -1,5 +1,7 @@
 
 export const imageTemplates = [
+  { name: "bgImage-27", imageUrl: "https://i.ibb.co/W4nLHRZd/27.jpg" },
+  { name: "bgImage-25", imageUrl: "https://i.ibb.co/5hRnrGqX/25.jpg" },
   { name: "bgImage-1", imageUrl: "https://i.ibb.co/cSNxXVn5/1.jpg" },
   { name: "bgImage-2", imageUrl: "https://i.ibb.co/21RBM4zK/2.jpg" },
   { name: "bgImage-3", imageUrl: "https://i.ibb.co/fG4jwVJk/3.jpg" },
@@ -22,5 +24,7 @@ export const imageTemplates = [
   { name: "bgImage-20", imageUrl: "https://i.ibb.co/nsNShDnK/20.jpg" },
   { name: "bgImage-21", imageUrl: "https://i.ibb.co/xq1cZcmL/21.jpg" },
   { name: "bgImage-22", imageUrl: "https://i.ibb.co/ym0R346S/22.jpg" },
-  { name: "bgImage-23", imageUrl: "https://i.ibb.co/1Jtzn1X6/23.jpg" }
+  { name: "bgImage-23", imageUrl: "https://i.ibb.co/1Jtzn1X6/23.jpg" },
+  { name: "bgImage-24", imageUrl: "https://i.ibb.co/395BJVBs/24.jpg" },
+  { name: "bgImage-28", imageUrl: "https://i.ibb.co/1jZdJPV/28.jpg" }
 ];

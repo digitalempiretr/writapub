@@ -551,14 +551,15 @@ export default function Home() {
                                   value={searchQuery}
                                   onChange={(e) => setSearchQuery(e.target.value)}
                                   onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
+                                  className="flex-grow"
                                 />
                                 <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon">
+                                    <Button onClick={() => handleSearchImages(1)} disabled={isSearching} className="h-12 w-12">
                                       {isSearching && searchPage === 1 ? (
-                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                        <Loader2 className="h-6 w-6 animate-spin" />
                                       ) : (
-                                        <Search className="h-4 w-4" />
+                                        <Search className="h-6 w-6" />
                                       )}
                                     </Button>
                                   </TooltipTrigger>
@@ -568,8 +569,8 @@ export default function Home() {
                                 </Tooltip>
                                  <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <Button onClick={handleFeelLucky} size="icon" variant="outline" >
-                                      <Dice5 className="h-4 w-4" />
+                                    <Button onClick={handleFeelLucky} variant="outline" className="h-12 w-12">
+                                      <Dice5 className="h-6 w-6" />
                                     </Button>
                                   </TooltipTrigger>
                                   <TooltipContent>
@@ -600,7 +601,7 @@ export default function Home() {
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                           <div className="relative">
-                                            <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 0 24 24" width="32px" fill={overlayColor}><path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.56 10.81l-2.35 3.02-1.56-1.88c-.2-.25-.58-.24-.78.01l-1.74 2.23c-.26.33-.02.81.39.81h8.98c.41 0 .65-.47.4-.8l-2.55-3.39c-.19-.26-.59-.26-.79 0zM2 5c-.55 0-1 .45-1 1v15c0 1.1.9 2 2 2h15c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1-.45-1-1V6c0-.55-.45-1-1-1zm19-4H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-1 16H8c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1z"/></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill={overlayColor}><path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.56 10.81l-2.35 3.02-1.56-1.88c-.2-.25-.58-.24-.78.01l-1.74 2.23c-.26.33-.02.81.39.81h8.98c.41 0 .65-.47.4-.8l-2.55-3.39c-.19-.26-.59-.26-.79 0zM2 5c-.55 0-1 .45-1 1v15c0 1.1.9 2 2 2h15c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1-.45-1-1V6c0-.55-.45-1-1-1zm19-4H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-1 16H8c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1z"/></svg>
                                             <Input
                                             type="color"
                                             value={overlayColor}
@@ -821,5 +822,3 @@ export default function Home() {
     </>
   );
 }
-
-    
