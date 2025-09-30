@@ -1,6 +1,9 @@
 
 import { FontOption } from "@/components/image-canvas";
 
+
+
+
 export const fontOptions: FontOption[] = [
     { value: 'anton', label: 'Anton', fontFamily: 'Anton', bodyWeight: '400', titleWeight: '400', titleSize: 100, bodySize: 58, lineHeight: 74 },
     { value: 'bree-serif', label: 'Bree Serif', fontFamily: 'Bree Serif', bodyWeight: '400', titleWeight: '400', titleSize: 84, bodySize: 50, lineHeight: 68 },
