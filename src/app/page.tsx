@@ -187,7 +187,7 @@ export default function Home() {
   const [rectOpacity, setRectOpacity] = useState(0);
 
   const [overlayColor, setOverlayColor] = useState("#000000");
-  const [overlayOpacity, setOverlayOpacity] = useState(0.5);
+  const [overlayOpacity, setOverlayOpacity] = useState(0);
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const designsRef = useRef<HTMLDivElement>(null);
@@ -594,9 +594,9 @@ export default function Home() {
 
                               <div className="space-y-4 pt-4 border-t">
                                 <Label>Overlay Settings</Label>
-                                <div className="grid grid-cols-[auto_1fr] items-center gap-x-2">
-                                  <div className="relative">
-                                    <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill={overlayColor}><path d="M320-240h320v-480H320v480Zm480 80q0 33-23.5 56.5T720-80H240q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640Zm-80 0v-640H240v640h480Zm0-640H240h480Z"/></svg>
+                                <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
+                                  <div className="relative border rounded-md p-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill={overlayColor}><path d="M320-240h320v-480H320v480Zm480 80q0 33-23.5 56.5T720-80H240q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640Zm-80 0v-640H240v640h480Zm0-640H240h480Z"/></svg>
                                     <Input
                                       type="color"
                                       value={overlayColor}
@@ -640,7 +640,7 @@ export default function Home() {
                           <div className="flex flex-col gap-y-4">
                             <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
                               {/* Text Color */}
-                              <div className="relative w-6 h-6">
+                              <div className="relative border rounded-md p-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill={textColor}>
                                   <path d="M200-200v-80h560v80H200Zm76-160 164-440h80l164 440h-76l-38-112H392l-40 112h-76Zm138-176h132l-64-182h-4l-64 182Z"/>
                                 </svg>
@@ -691,9 +691,9 @@ export default function Home() {
                                 </DropdownMenuContent>
                               </DropdownMenu>
                             </div>
-                            <div className="grid grid-cols-[auto_1fr] items-center gap-x-2">
+                            <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
                               {/* Text Box Color */}
-                              <div className="relative">
+                              <div className="relative border rounded-md p-1">
                                   <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill={rectBgColor}><path d="M320-240h320v-480H320v480Zm480 80q0 33-23.5 56.5T720-80H240q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640Zm-80 0v-640H240v640h480Zm0-640H240h480Z"/></svg>
                                 <Input
                                   type="color"
