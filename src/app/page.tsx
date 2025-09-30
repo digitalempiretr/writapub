@@ -1,3 +1,4 @@
+
 "use client";
 
 import { findImages } from "@/ai/flows/find-images-flow";
@@ -48,6 +49,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { gradientTemplates } from "@/lib/gradient-templates";
 
 type Design = {
   text: string;
@@ -79,27 +81,6 @@ const fontOptions: FontOption[] = [
     { value: 'special-elite', label: 'Special Elite', fontFamily: 'Special Elite', bodyWeight: '400', titleWeight: '400', titleSize: 72, bodySize: 50, lineHeight: 68 },
     { value: 'titillium-web', label: 'Titillium Web', fontFamily: 'Titillium Web', bodyWeight: '400', titleWeight: '700', titleSize: 82, bodySize: 46, lineHeight: 62 },
     { value: 'ubuntu', label: 'Ubuntu', fontFamily: 'Ubuntu', bodyWeight: '400', titleWeight: '700', titleSize: 80, bodySize: 48, lineHeight: 64 },
-];
-
-
-const gradientTemplates = [
-  { name: "Sunrise", css: "linear-gradient(to top right, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)" },
-  { name: "Dark Ocean", css: "linear-gradient(to right, #373b44, #4286f4)" },
-  { name: "Sunset", css: "linear-gradient(to top right, #F3904F 0%, #3B4371 100%)" },
-  { name: "Forest", css: "linear-gradient(to top right, #13547a 0%, #80d0c7 100%)" },
-  { name: "Royal", css: "linear-gradient(to top right, #473B7B 0%, #3584A7 50%, #30D2BE 100%)" },
-  { name: "Mojito", css: "linear-gradient(to top, #1d976c, #93f9b9)" },
-  { name: "Cherry", css: "linear-gradient(to top, #eb3349, #f45c43)" },
-  { name: "Pinky", css: "linear-gradient(to top, #dd5e89, #f7bb97)" },
-  { name: "Purple", css: "linear-gradient(to top right, #6a11cb 0%, #2575fc 100%)" },
-  { name: "Sky", css: "linear-gradient(to top right, #4facfe 0%, #00f2fe 100%)" },
-  { name: "Fire", css: "linear-gradient(to top right, #f12711 0%, #f5af19 100%)" },
-  { name: "Aqua", css: "linear-gradient(to top right, #1a2980 0%, #26d0ce 100%)" },
-  { name: "Peach", css: "linear-gradient(to right, #ffecd2 0%, #fcb69f 100%)" },
-  { name: "Violet", css: "linear-gradient(to right, #8e2de2, #4a00e0)" },
-  { name: "Emerald", css: "linear-gradient(to right, #348f50, #56b4d3)" },
-  { name: "Steel", css: "linear-gradient(to right, #65799b, #5e2563)" },
-  { name: "Cosmic", css: "linear-gradient(to right, #ff00cc, #333399)" },
 ];
 
 const defaultSolidColors = [
@@ -596,7 +577,7 @@ export default function Home() {
                                 <Label>Overlay Settings</Label>
                                 <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
                                   <div className="relative border rounded-md p-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 0 24 24" width="40px" fill={overlayColor}><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7 17h14V3H7v14zm4.25-5.53l1.96 2.36 2.75-3.54L19.5 15h-11l2.75-3.53z" opacity=".3"/><path d="M1 21c0 1.1.9 2 2 2h16v-2H3V5H1v16zM21 1H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm0 16H7V3h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L8.5 15h11z"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 0 24 24" width="28px" fill={overlayColor}><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7 17h14V3H7v14zm4.25-5.53l1.96 2.36 2.75-3.54L19.5 15h-11l2.75-3.53z" opacity=".3"/><path d="M1 21c0 1.1.9 2 2 2h16v-2H3V5H1v16zM21 1H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm0 16H7V3h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L8.5 15h11z"/></svg>
                                     <Input
                                       type="color"
                                       value={overlayColor}
@@ -607,7 +588,7 @@ export default function Home() {
                                   <Popover>
                                     <PopoverTrigger asChild>
                                       <Button variant="outline" size="icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h200v720H200Zm280 0q-17 0-28.5-11.5T440-160q0-17 11.5-28.5T480-200q17 0 28.5 11.5T520-160q0 17-11.5 28.5T480-120Zm0-160q-17 0-28.5-11.5T440-320q0-17 11.5-28.5T480-360q17 0 28.5 11.5T520-320q0 17-11.5 28.5T480-280Zm0-160q-17 0-28.5-11.5T440-480q0-17 11.5-28.5T480-520q17 0 28.5 11.5T520-480q0 17-11.5 28.5T480-440Zm0-160q-17 0-28.5-11.5T440-640q0-17 11.5-28.5T480-680q17 0 28.5 11.5T520-640q0 17-11.5 28.5T480-600Zm0-160q-17 0-28.5-11.5T440-800q0-17 11.5-28.5T480-840q17 0 28.5 11.5T520-800q0 17-11.5 28.5T480-760Zm80 560q-17 0-28.5-11.5T520-240q0-17 11.5-28.5T560-280q17 0 28.5 11.5T600-240q0 17-11.5 28.5T560-200Zm0-160q-17 0-28.5-11.5T520-400q0-17 11.5-28.5T560-440q17 0 28.5 11.5T600-400q0 17-11.5 28.5T560-360Zm0-160q-17 0-28.5-11.5T520-560q0-17 11.5-28.5T560-600q17 0 28.5 11.5T600-560q0 17-11.5 28.5T560-520Zm0-160q-17 0-28.5-11.5T520-720q0-17 11.5-28.5T560-760q17 0 28.5 11.5T600-720q0 17-11.5 28.5T560-680Zm80 560q-17 0-28.5-11.5T600-160q0-17 11.5-28.5T640-200q17 0 28.5 11.5T680-160q0 17-11.5 28.5T640-120Zm0-160q-17 0-28.5-11.5T600-320q0-17 11.5-28.5T640-360q17 0 28.5 11.5T680-320q0 17-11.5 28.5T640-280Zm0-160q-17 0-28.5-11.5T600-480q0-17 11.5-28.5T640-520q17 0 28.5 11.5T680-480q0 17-11.5 28.5T640-440Zm0-160q-17 0-28.5-11.5T600-640q0-17 11.5-28.5T640-680q17 0 28.5 11.5T680-640q0 17-11.5 28.5T640-600Zm0-160q-17 0-28.5-11.5T600-800q0-17 11.5-28.5T640-840q17 0 28.5 11.5T680-800q0 17-11.5 28.5T640-760Zm80 560q-17 0-28.5-11.5T680-240q0-17 11.5-28.5T720-280q17 0 28.5 11.5T760-240q0 17-11.5 28.5T720-200Zm0-160q-17 0-28.5-11.5T680-400q0-17 11.5-28.5T720-440q17 0 28.5 11.5T760-400q0 17-11.5 28.5T720-360Zm0-160q-17 0-28.5-11.5T680-560q0-17 11.5-28.5T720-600q17 0 28.5 11.5T760-560q0 17-11.5 28.5T720-520Zm0-160q-17 0-28.5-11.5T680-720q0-17 11.5-28.5T720-760q17 0 28.5 11.5T760-720q0 17-11.5 28.5T720-680Zm80 560q-17 0-28.5-11.5T760-160q0-17 11.5-28.5T800-200q17 0 28.5 11.5T840-160q0 17-11.5 28.5T800-120Zm0-160q-17 0-28.5-11.5T760-320q0-17 11.5-28.5T800-360q17 0 28.5 11.5T840-320q0 17-11.5 28.5T800-280Zm0-160q-17 0-28.5-11.5T760-480q0-17 11.5-28.5T800-520q17 0 28.5 11.5T840-480q0 17-11.5 28.5T800-440Zm0-160q-17 0-28.5-11.5T760-640q0-17 11.5-28.5T800-680q17 0 28.5 11.5T840-640q0 17-11.5 28.5T800-600Zm0-160q-17 0-28.5-11.5T760-800q0-17 11.5-28.5T800-840q17 0 28.5 11.5T840-800q0 17-11.5 28.5T800-760Z"/></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="44px" viewBox="0 -960 960 960" width="44px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h200v720H200Zm280 0q-17 0-28.5-11.5T440-160q0-17 11.5-28.5T480-200q17 0 28.5 11.5T520-160q0 17-11.5 28.5T480-120Zm0-160q-17 0-28.5-11.5T440-320q0-17 11.5-28.5T480-360q17 0 28.5 11.5T520-320q0 17-11.5 28.5T480-280Zm0-160q-17 0-28.5-11.5T440-480q0-17 11.5-28.5T480-520q17 0 28.5 11.5T520-480q0 17-11.5 28.5T480-440Zm0-160q-17 0-28.5-11.5T440-640q0-17 11.5-28.5T480-680q17 0 28.5 11.5T520-640q0 17-11.5 28.5T480-600Zm0-160q-17 0-28.5-11.5T440-800q0-17 11.5-28.5T480-840q17 0 28.5 11.5T520-800q0 17-11.5 28.5T480-760Zm80 560q-17 0-28.5-11.5T520-240q0-17 11.5-28.5T560-280q17 0 28.5 11.5T600-240q0 17-11.5 28.5T560-200Zm0-160q-17 0-28.5-11.5T520-400q0-17 11.5-28.5T560-440q17 0 28.5 11.5T600-400q0 17-11.5 28.5T560-360Zm0-160q-17 0-28.5-11.5T520-560q0-17 11.5-28.5T560-600q17 0 28.5 11.5T600-560q0 17-11.5 28.5T560-520Zm0-160q-17 0-28.5-11.5T520-720q0-17 11.5-28.5T560-760q17 0 28.5 11.5T600-720q0 17-11.5 28.5T560-680Zm80 560q-17 0-28.5-11.5T600-160q0-17 11.5-28.5T640-200q17 0 28.5 11.5T680-160q0 17-11.5 28.5T640-120Zm0-160q-17 0-28.5-11.5T600-320q0-17 11.5-28.5T640-360q17 0 28.5 11.5T680-320q0 17-11.5 28.5T640-280Zm0-160q-17 0-28.5-11.5T600-480q0-17 11.5-28.5T640-520q17 0 28.5 11.5T680-480q0 17-11.5 28.5T640-440Zm0-160q-17 0-28.5-11.5T600-640q0-17 11.5-28.5T640-680q17 0 28.5 11.5T680-640q0 17-11.5 28.5T640-600Zm0-160q-17 0-28.5-11.5T600-800q0-17 11.5-28.5T640-840q17 0 28.5 11.5T680-800q0 17-11.5 28.5T640-760Zm80 560q-17 0-28.5-11.5T680-240q0-17 11.5-28.5T720-280q17 0 28.5 11.5T760-240q0 17-11.5 28.5T720-200Zm0-160q-17 0-28.5-11.5T680-400q0-17 11.5-28.5T720-440q17 0 28.5 11.5T760-400q0 17-11.5 28.5T720-360Zm0-160q-17 0-28.5-11.5T680-560q0-17 11.5-28.5T720-600q17 0 28.5 11.5T760-560q0 17-11.5 28.5T720-520Zm0-160q-17 0-28.5-11.5T680-720q0-17 11.5-28.5T720-760q17 0 28.5 11.5T760-720q0 17-11.5 28.5T720-680Zm80 560q-17 0-28.5-11.5T760-160q0-17 11.5-28.5T800-200q17 0 28.5 11.5T840-160q0 17-11.5 28.5T800-120Zm0-160q-17 0-28.5-11.5T760-320q0-17 11.5-28.5T800-360q17 0 28.5 11.5T840-320q0 17-11.5 28.5T800-280Zm0-160q-17 0-28.5-11.5T760-480q0-17 11.5-28.5T800-520q17 0 28.5 11.5T840-480q0 17-11.5 28.5T800-440Zm0-160q-17 0-28.5-11.5T760-640q0-17 11.5-28.5T800-680q17 0 28.5 11.5T840-640q0 17-11.5 28.5T800-600Zm0-160q-17 0-28.5-11.5T760-800q0-17 11.5-28.5T800-840q17 0 28.5 11.5T840-800q0 17-11.5 28.5T800-760Z"/></svg>
                                       </Button>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-56 space-y-4">
@@ -764,5 +745,3 @@ export default function Home() {
     </>
   );
 }
-
-    
