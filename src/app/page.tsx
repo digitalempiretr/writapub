@@ -51,6 +51,7 @@ import {
 } from "@/components/ui/popover"
 import { gradientTemplates } from "@/lib/gradient-templates";
 import { fontOptions } from "@/lib/font-options";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type Design = {
   text: string;
@@ -69,7 +70,8 @@ const defaultSolidColors = [
 
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea"];
 
-const defaultText = `BİR İŞ NASIL YAPILMAZ kursları açılıyor! Usta kadrosu ile Büyükşehir herhalde Komek vasıtası ile öğretir artık!
+const defaultText = `BİR İŞ NASIL YAPILMAZ kursları açılıyor! 
+Usta kadrosu ile Büyükşehir herhalde Komek vasıtası ile öğretir artık!
 Yahu 20 kere yaptığınız Mistik Müzik Festivalimizin içine etmek değilse bu nedir?
 @mistikmuzikfestivali için şehrimize gelecek turistlere 100 kere kusura bakmayın bilmiyoruz demek zorunda kaldık.
 Festivale hepi topu 10 gün var! Halen biletler satışa çıkmadı.
@@ -416,11 +418,33 @@ export default function Home() {
                 </Carousel>
 
                 <CardFooter className="flex-col items-start p-0 bg-[#f4fdff]">
+                  <TooltipProvider>
                     <Tabs defaultValue="background" className="w-full">
                       <TabsList className="grid w-full grid-cols-3 bg-card text-card-foreground p-2">
-                        <TabsTrigger value="background"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm40-80h480L570-480 450-320l-90-120-120 160Zm-40 80v-560 560Zm140-360q25 0 42.5-17.5T400-620q0-25-17.5-42.5T340-680q-25 0-42.5 17.5T280-620q0 25 17.5 42.5T340-560Z"/></svg></TabsTrigger>
-                        <TabsTrigger value="text"><Type /></TabsTrigger>
-                        <TabsTrigger value="download"><Download /></TabsTrigger>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <TabsTrigger value="background"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm40-80h480L570-480 450-320l-90-120-120 160Zm-40 80v-560 560Zm140-360q25 0 42.5-17.5T400-620q0-25-17.5-42.5T340-680q-25 0-42.5 17.5T280-620q0 25 17.5 42.5T340-560Z"/></svg></TabsTrigger>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Arka Plan Ayarları</p>
+                          </TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <TabsTrigger value="text"><Type /></TabsTrigger>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Metin Ayarları</p>
+                          </TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <TabsTrigger value="download"><Download /></TabsTrigger>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>İndirme Seçenekleri</p>
+                          </TooltipContent>
+                        </Tooltip>
                       </TabsList>
                       <TabsContent value="background">
                         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
@@ -528,16 +552,30 @@ export default function Home() {
                                   onChange={(e) => setSearchQuery(e.target.value)}
                                   onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
                                 />
-                                <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon">
-                                  {isSearching && searchPage === 1 ? (
-                                    <Loader2 className="h-4 w-4 animate-spin" />
-                                  ) : (
-                                    <Search className="h-4 w-4" />
-                                  )}
-                                </Button>
-                                 <Button onClick={handleFeelLucky} size="icon" variant="outline" >
-                                  <Dice5 className="h-4 w-4" />
-                                </Button>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon">
+                                      {isSearching && searchPage === 1 ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                      ) : (
+                                        <Search className="h-4 w-4" />
+                                      )}
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Görsel Ara</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                                 <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button onClick={handleFeelLucky} size="icon" variant="outline" >
+                                      <Dice5 className="h-4 w-4" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Kendimi Şanslı Hissediyorum</p>
+                                  </TooltipContent>
+                                 </Tooltip>
                               </div>
 
                               {searchedImages.length > 0 && (
@@ -559,20 +597,36 @@ export default function Home() {
                                 <Label>Overlay Settings</Label>
                                 <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
                                   <div className="relative border rounded-md p-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 0 24 24" width="28px" fill={overlayColor}><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7 17h14V3H7v14zm4.25-5.53l1.96 2.36 2.75-3.54L19.5 15h-11l2.75-3.53z" opacity=".3"/><path d="M1 21c0 1.1.9 2 2 2h16v-2H3V5H1v16zM21 1H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm0 16H7V3h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L8.5 15h11z"/></svg>
-                                    <Input
-                                      type="color"
-                                      value={overlayColor}
-                                      onChange={(e) => setOverlayColor(e.target.value)}
-                                      className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                                    />
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                          <div className="relative">
+                                              <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 0 24 24" width="28px" fill={overlayColor}><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7 17h14V3H7v14zm4.25-5.53l1.96 2.36 2.75-3.54L19.5 15h-11l2.75-3.53z" opacity=".3"/><path d="M1 21c0 1.1.9 2 2 2h16v-2H3V5H1v16zM21 1H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm0 16H7V3h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L8.5 15h11z"/></svg>
+                                              <Input
+                                              type="color"
+                                              value={overlayColor}
+                                              onChange={(e) => setOverlayColor(e.target.value)}
+                                              className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                              />
+                                          </div>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Katman Rengini Seç</p>
+                                      </TooltipContent>
+                                    </Tooltip>
                                   </div>
                                   <Popover>
-                                    <PopoverTrigger asChild>
-                                      <Button variant="outline" size="icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" height="44px" viewBox="0 -960 960 960" width="44px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h200v720H200Zm280 0q-17 0-28.5-11.5T440-160q0-17 11.5-28.5T480-200q17 0 28.5 11.5T520-160q0 17-11.5 28.5T480-120Zm0-160q-17 0-28.5-11.5T440-320q0-17 11.5-28.5T480-360q17 0 28.5 11.5T520-320q0 17-11.5 28.5T480-280Zm0-160q-17 0-28.5-11.5T440-480q0-17 11.5-28.5T480-520q17 0 28.5 11.5T520-480q0 17-11.5 28.5T480-440Zm0-160q-17 0-28.5-11.5T440-640q0-17 11.5-28.5T480-680q17 0 28.5 11.5T520-640q0 17-11.5 28.5T480-600Zm0-160q-17 0-28.5-11.5T440-800q0-17 11.5-28.5T480-840q17 0 28.5 11.5T520-800q0 17-11.5 28.5T480-760Zm80 560q-17 0-28.5-11.5T520-240q0-17 11.5-28.5T560-280q17 0 28.5 11.5T600-240q0 17-11.5 28.5T560-200Zm0-160q-17 0-28.5-11.5T520-400q0-17 11.5-28.5T560-440q17 0 28.5 11.5T600-400q0 17-11.5 28.5T560-360Zm0-160q-17 0-28.5-11.5T520-560q0-17 11.5-28.5T560-600q17 0 28.5 11.5T600-560q0 17-11.5 28.5T560-520Zm0-160q-17 0-28.5-11.5T520-720q0-17 11.5-28.5T560-760q17 0 28.5 11.5T600-720q0 17-11.5 28.5T560-680Zm80 560q-17 0-28.5-11.5T600-160q0-17 11.5-28.5T640-200q17 0 28.5 11.5T680-160q0 17-11.5 28.5T640-120Zm0-160q-17 0-28.5-11.5T600-320q0-17 11.5-28.5T640-360q17 0 28.5 11.5T680-320q0 17-11.5 28.5T640-280Zm0-160q-17 0-28.5-11.5T600-480q0-17 11.5-28.5T640-520q17 0 28.5 11.5T680-480q0 17-11.5 28.5T640-440Zm0-160q-17 0-28.5-11.5T600-640q0-17 11.5-28.5T640-680q17 0 28.5 11.5T680-640q0 17-11.5 28.5T640-600Zm0-160q-17 0-28.5-11.5T600-800q0-17 11.5-28.5T640-840q17 0 28.5 11.5T680-800q0 17-11.5 28.5T640-760Zm80 560q-17 0-28.5-11.5T680-240q0-17 11.5-28.5T720-280q17 0 28.5 11.5T760-240q0 17-11.5 28.5T720-200Zm0-160q-17 0-28.5-11.5T680-400q0-17 11.5-28.5T720-440q17 0 28.5 11.5T760-400q0 17-11.5 28.5T720-360Zm0-160q-17 0-28.5-11.5T680-560q0-17 11.5-28.5T720-600q17 0 28.5 11.5T760-560q0 17-11.5 28.5T720-520Zm0-160q-17 0-28.5-11.5T680-720q0-17 11.5-28.5T720-760q17 0 28.5 11.5T760-720q0 17-11.5 28.5T720-680Zm80 560q-17 0-28.5-11.5T760-160q0-17 11.5-28.5T800-200q17 0 28.5 11.5T840-160q0 17-11.5 28.5T800-120Zm0-160q-17 0-28.5-11.5T760-320q0-17 11.5-28.5T800-360q17 0 28.5 11.5T840-320q0 17-11.5 28.5T800-280Zm0-160q-17 0-28.5-11.5T760-480q0-17 11.5-28.5T800-520q17 0 28.5 11.5T840-480q0 17-11.5 28.5T800-440Zm0-160q-17 0-28.5-11.5T760-640q0-17 11.5-28.5T800-680q17 0 28.5 11.5T840-640q0 17-11.5 28.5T800-600Zm0-160q-17 0-28.5-11.5T760-800q0-17 11.5-28.5T800-840q17 0 28.5 11.5T840-800q0 17-11.5 28.5T800-760Z"/></svg>
-                                      </Button>
-                                    </PopoverTrigger>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <PopoverTrigger asChild>
+                                          <Button variant="outline" size="icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h200v720H200Zm280 0q-17 0-28.5-11.5T440-160q0-17 11.5-28.5T480-200q17 0 28.5 11.5T520-160q0 17-11.5 28.5T480-120Zm0-160q-17 0-28.5-11.5T440-320q0-17 11.5-28.5T480-360q17 0 28.5 11.5T520-320q0 17-11.5 28.5T480-280Zm0-160q-17 0-28.5-11.5T440-480q0-17 11.5-28.5T480-520q17 0 28.5 11.5T520-480q0 17-11.5 28.5T480-440Zm0-160q-17 0-28.5-11.5T440-640q0-17 11.5-28.5T480-680q17 0 28.5 11.5T520-640q0 17-11.5 28.5T480-600Zm0-160q-17 0-28.5-11.5T440-800q0-17 11.5-28.5T480-840q17 0 28.5 11.5T520-800q0 17-11.5 28.5T480-760Zm80 560q-17 0-28.5-11.5T520-240q0-17 11.5-28.5T560-280q17 0 28.5 11.5T600-240q0 17-11.5 28.5T560-200Zm0-160q-17 0-28.5-11.5T520-400q0-17 11.5-28.5T560-440q17 0 28.5 11.5T600-400q0 17-11.5 28.5T560-360Zm0-160q-17 0-28.5-11.5T520-560q0-17 11.5-28.5T560-600q17 0 28.5 11.5T600-560q0 17-11.5 28.5T560-520Zm0-160q-17 0-28.5-11.5T520-720q0-17 11.5-28.5T560-760q17 0 28.5 11.5T600-720q0 17-11.5 28.5T560-680Zm80 560q-17 0-28.5-11.5T600-160q0-17 11.5-28.5T640-200q17 0 28.5 11.5T680-160q0 17-11.5 28.5T640-120Zm0-160q-17 0-28.5-11.5T600-320q0-17 11.5-28.5T640-360q17 0 28.5 11.5T680-320q0 17-11.5 28.5T640-280Zm0-160q-17 0-28.5-11.5T600-480q0-17 11.5-28.5T640-520q17 0 28.5 11.5T680-480q0 17-11.5 28.5T640-440Zm0-160q-17 0-28.5-11.5T600-640q0-17 11.5-28.5T640-680q17 0 28.5 11.5T680-640q0 17-11.5 28.5T640-600Zm0-160q-17 0-28.5-11.5T600-800q0-17 11.5-28.5T640-840q17 0 28.5 11.5T680-800q0 17-11.5 28.5T640-760Zm80 560q-17 0-28.5-11.5T680-240q0-17 11.5-28.5T720-280q17 0 28.5 11.5T760-240q0 17-11.5 28.5T720-200Zm0-160q-17 0-28.5-11.5T680-400q0-17 11.5-28.5T720-440q17 0 28.5 11.5T760-400q0 17-11.5 28.5T720-360Zm0-160q-17 0-28.5-11.5T680-560q0-17 11.5-28.5T720-600q17 0 28.5 11.5T760-560q0 17-11.5 28.5T720-520Zm0-160q-17 0-28.5-11.5T680-720q0-17 11.5-28.5T720-760q17 0 28.5 11.5T760-720q0 17-11.5 28.5T720-680Zm80 560q-17 0-28.5-11.5T760-160q0-17 11.5-28.5T800-200q17 0 28.5 11.5T840-160q0 17-11.5 28.5T800-120Zm0-160q-17 0-28.5-11.5T760-320q0-17 11.5-28.5T800-360q17 0 28.5 11.5T840-320q0 17-11.5 28.5T800-280Zm0-160q-17 0-28.5-11.5T760-480q0-17 11.5-28.5T800-520q17 0 28.5 11.5T840-480q0 17-11.5 28.5T800-440Zm0-160q-17 0-28.5-11.5T760-640q0-17 11.5-28.5T800-680q17 0 28.5 11.5T840-640q0 17-11.5 28.5T800-600Zm0-160q-17 0-28.5-11.5T760-800q0-17 11.5-28.5T800-840q17 0 28.5 11.5T840-800q0 17-11.5 28.5T800-760Z"/></svg>
+                                          </Button>
+                                        </PopoverTrigger>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Katman Şeffaflığı</p>
+                                      </TooltipContent>
+                                    </Tooltip>
                                     <PopoverContent className="w-56 space-y-4">
                                       <div className="space-y-2">
                                         <Label>Overlay Opacity</Label>
@@ -604,22 +658,38 @@ export default function Home() {
                             <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
                               {/* Text Color */}
                               <div className="relative border rounded-md p-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill={textColor}>
-                                  <path d="M200-200v-80h560v80H200Zm76-160 164-440h80l164 440h-76l-38-112H392l-40 112h-76Zm138-176h132l-64-182h-4l-64 182Z"/>
-                                </svg>
-                                <Input
-                                  type="color"
-                                  value={textColor}
-                                  onChange={(e) => setTextColor(e.target.value)}
-                                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                                />
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                      <div className="relative">
+                                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill={textColor}>
+                                            <path d="M200-200v-80h560v80H200Zm76-160 164-440h80l164 440h-76l-38-112H392l-40 112h-76Zm138-176h132l-64-182h-4l-64 182Z"/>
+                                          </svg>
+                                          <Input
+                                          type="color"
+                                          value={textColor}
+                                          onChange={(e) => setTextColor(e.target.value)}
+                                          className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                          />
+                                      </div>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Metin Rengini Seç</p>
+                                  </TooltipContent>
+                                </Tooltip>
                               </div>
 
                               {/* Font Selection */}
                               <Select value={activeFont.value} onValueChange={handleFontChange}>
-                                <SelectTrigger className="w-full border-0">
-                                  <SelectValue placeholder="Select Font" />
-                                </SelectTrigger>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <SelectTrigger className="w-full border-0">
+                                      <SelectValue placeholder="Select Font" />
+                                    </SelectTrigger>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Yazı Tipini Seç</p>
+                                  </TooltipContent>
+                                </Tooltip>
                                 <SelectContent>
                                   {fontOptions.map((font) => (
                                     <SelectItem key={font.value} value={font.value}>
@@ -630,14 +700,21 @@ export default function Home() {
                               </Select>
 
                               {/* Alignment */}
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button variant="outline" size="icon">
-                                    {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
-                                    {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
-                                    {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
-                                  </Button>
-                                </DropdownMenuTrigger>
+                               <DropdownMenu>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button variant="outline" size="icon">
+                                        {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
+                                        {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
+                                        {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Metin Hizalama</p>
+                                  </TooltipContent>
+                                </Tooltip>
                                 <DropdownMenuContent>
                                   <DropdownMenuItem onClick={() => setTextAlign('left')}>
                                     <AlignLeft className="mr-2 h-4 w-4" />
@@ -657,21 +734,37 @@ export default function Home() {
                             <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
                               {/* Text Box Color */}
                               <div className="relative border rounded-md p-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill={rectBgColor}><path d="M320-240h320v-480H320v480Zm480 80q0 33-23.5 56.5T720-80H240q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640Zm-80 0v-640H240v640h480Zm0-640H240h480Z"/></svg>
-                                <Input
-                                  type="color"
-                                  value={rectBgColor}
-                                  onChange={(e) => setRectBgColor(e.target.value)}
-                                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                                />
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <div className="relative">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill={rectBgColor}><path d="M320-240h320v-480H320v480Zm480 80q0 33-23.5 56.5T720-80H240q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640Zm-80 0v-640H240v640h480Zm0-640H240h480Z"/></svg>
+                                            <Input
+                                            type="color"
+                                            value={rectBgColor}
+                                            onChange={(e) => setRectBgColor(e.target.value)}
+                                            className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                            />
+                                        </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Metin Kutusu Rengi</p>
+                                    </TooltipContent>
+                                </Tooltip>
                               </div>
                               {/* Opacity */}
                               <Popover>
-                                <PopoverTrigger asChild>
-                                  <Button variant="outline" size="icon">
-                                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h200v720H200Zm280 0q-17 0-28.5-11.5T440-160q0-17 11.5-28.5T480-200q17 0 28.5 11.5T520-160q0 17-11.5 28.5T480-120Zm0-160q-17 0-28.5-11.5T440-320q0-17 11.5-28.5T480-360q17 0 28.5 11.5T520-320q0 17-11.5 28.5T480-280Zm0-160q-17 0-28.5-11.5T440-480q0-17 11.5-28.5T480-520q17 0 28.5 11.5T520-480q0 17-11.5 28.5T480-440Zm0-160q-17 0-28.5-11.5T440-640q0-17 11.5-28.5T480-680q17 0 28.5 11.5T520-640q0 17-11.5 28.5T480-600Zm0-160q-17 0-28.5-11.5T440-800q0-17 11.5-28.5T480-840q17 0 28.5 11.5T520-800q0 17-11.5 28.5T480-760Zm80 560q-17 0-28.5-11.5T520-240q0-17 11.5-28.5T560-280q17 0 28.5 11.5T600-240q0 17-11.5 28.5T560-200Zm0-160q-17 0-28.5-11.5T520-400q0-17 11.5-28.5T560-440q17 0 28.5 11.5T600-400q0 17-11.5 28.5T560-360Zm0-160q-17 0-28.5-11.5T520-560q0-17 11.5-28.5T560-600q17 0 28.5 11.5T600-560q0 17-11.5 28.5T560-520Zm0-160q-17 0-28.5-11.5T520-720q0-17 11.5-28.5T560-760q17 0 28.5 11.5T600-720q0 17-11.5 28.5T560-680Zm80 560q-17 0-28.5-11.5T600-160q0-17 11.5-28.5T640-200q17 0 28.5 11.5T680-160q0 17-11.5 28.5T640-120Zm0-160q-17 0-28.5-11.5T600-320q0-17 11.5-28.5T640-360q17 0 28.5 11.5T680-320q0 17-11.5 28.5T640-280Zm0-160q-17 0-28.5-11.5T600-480q0-17 11.5-28.5T640-520q17 0 28.5 11.5T680-480q0 17-11.5 28.5T640-440Zm0-160q-17 0-28.5-11.5T600-640q0-17 11.5-28.5T640-680q17 0 28.5 11.5T680-640q0 17-11.5 28.5T640-600Zm0-160q-17 0-28.5-11.5T600-800q0-17 11.5-28.5T640-840q17 0 28.5 11.5T680-800q0 17-11.5 28.5T640-760Zm80 560q-17 0-28.5-11.5T680-240q0-17 11.5-28.5T720-280q17 0 28.5 11.5T760-240q0 17-11.5 28.5T720-200Zm0-160q-17 0-28.5-11.5T680-400q0-17 11.5-28.5T720-440q17 0 28.5 11.5T760-400q0 17-11.5 28.5T720-360Zm0-160q-17 0-28.5-11.5T680-560q0-17 11.5-28.5T720-600q17 0 28.5 11.5T760-560q0 17-11.5 28.5T720-520Zm0-160q-17 0-28.5-11.5T680-720q0-17 11.5-28.5T720-760q17 0 28.5 11.5T760-720q0 17-11.5 28.5T720-680Zm80 560q-17 0-28.5-11.5T760-160q0-17 11.5-28.5T800-200q17 0 28.5 11.5T840-160q0 17-11.5 28.5T800-120Zm0-160q-17 0-28.5-11.5T760-320q0-17 11.5-28.5T800-360q17 0 28.5 11.5T840-320q0 17-11.5 28.5T800-280Zm0-160q-17 0-28.5-11.5T760-480q0-17 11.5-28.5T800-520q17 0 28.5 11.5T840-480q0 17-11.5 28.5T800-440Zm0-160q-17 0-28.5-11.5T760-640q0-17 11.5-28.5T800-680q17 0 28.5 11.5T840-640q0 17-11.5 28.5T800-600Zm0-160q-17 0-28.5-11.5T760-800q0-17 11.5-28.5T800-840q17 0 28.5 11.5T840-800q0 17-11.5 28.5T800-760Z"/></svg>
-                                  </Button>
-                                </PopoverTrigger>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <PopoverTrigger asChild>
+                                      <Button variant="outline" size="icon">
+                                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h200v720H200Zm280 0q-17 0-28.5-11.5T440-160q0-17 11.5-28.5T480-200q17 0 28.5 11.5T520-160q0 17-11.5 28.5T480-120Zm0-160q-17 0-28.5-11.5T440-320q0-17 11.5-28.5T480-360q17 0 28.5 11.5T520-320q0 17-11.5 28.5T480-280Zm0-160q-17 0-28.5-11.5T440-480q0-17 11.5-28.5T480-520q17 0 28.5 11.5T520-480q0 17-11.5 28.5T480-440Zm0-160q-17 0-28.5-11.5T440-640q0-17 11.5-28.5T480-680q17 0 28.5 11.5T520-640q0 17-11.5 28.5T480-600Zm0-160q-17 0-28.5-11.5T440-800q0-17 11.5-28.5T480-840q17 0 28.5 11.5T520-800q0 17-11.5 28.5T480-760Zm80 560q-17 0-28.5-11.5T520-240q0-17 11.5-28.5T560-280q17 0 28.5 11.5T600-240q0 17-11.5 28.5T560-200Zm0-160q-17 0-28.5-11.5T520-400q0-17 11.5-28.5T560-440q17 0 28.5 11.5T600-400q0 17-11.5 28.5T560-360Zm0-160q-17 0-28.5-11.5T520-560q0-17 11.5-28.5T560-600q17 0 28.5 11.5T600-560q0 17-11.5 28.5T560-520Zm0-160q-17 0-28.5-11.5T520-720q0-17 11.5-28.5T560-760q17 0 28.5 11.5T600-720q0 17-11.5 28.5T560-680Zm80 560q-17 0-28.5-11.5T600-160q0-17 11.5-28.5T640-200q17 0 28.5 11.5T680-160q0 17-11.5 28.5T640-120Zm0-160q-17 0-28.5-11.5T600-320q0-17 11.5-28.5T640-360q17 0 28.5 11.5T680-320q0 17-11.5 28.5T640-280Zm0-160q-17 0-28.5-11.5T600-480q0-17 11.5-28.5T640-520q17 0 28.5 11.5T680-480q0 17-11.5 28.5T640-440Zm0-160q-17 0-28.5-11.5T600-640q0-17 11.5-28.5T640-680q17 0 28.5 11.5T680-640q0 17-11.5 28.5T640-600Zm0-160q-17 0-28.5-11.5T600-800q0-17 11.5-28.5T640-840q17 0 28.5 11.5T680-800q0 17-11.5 28.5T640-760Zm80 560q-17 0-28.5-11.5T680-240q0-17 11.5-28.5T720-280q17 0 28.5 11.5T760-240q0 17-11.5 28.5T720-200Zm0-160q-17 0-28.5-11.5T680-400q0-17 11.5-28.5T720-440q17 0 28.5 11.5T760-400q0 17-11.5 28.5T720-360Zm0-160q-17 0-28.5-11.5T680-560q0-17 11.5-28.5T720-600q17 0 28.5 11.5T760-560q0 17-11.5 28.5T720-520Zm0-160q-17 0-28.5-11.5T680-720q0-17 11.5-28.5T720-760q17 0 28.5 11.5T760-720q0 17-11.5 28.5T720-680Zm80 560q-17 0-28.5-11.5T760-160q0-17 11.5-28.5T800-200q17 0 28.5 11.5T840-160q0 17-11.5 28.5T800-120Zm0-160q-17 0-28.5-11.5T760-320q0-17 11.5-28.5T800-360q17 0 28.5 11.5T840-320q0 17-11.5 28.5T800-280Zm0-160q-17 0-28.5-11.5T760-480q0-17 11.5-28.5T800-520q17 0 28.5 11.5T840-480q0 17-11.5 28.5T800-440Zm0-160q-17 0-28.5-11.5T760-640q0-17 11.5-28.5T800-680q17 0 28.5 11.5T840-640q0 17-11.5 28.5T800-600Zm0-160q-17 0-28.5-11.5T760-800q0-17 11.5-28.5T800-840q17 0 28.5 11.5T840-800q0 17-11.5 28.5T800-760Z"/></svg>
+                                      </Button>
+                                    </PopoverTrigger>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Metin Kutusu Şeffaflığı</p>
+                                  </TooltipContent>
+                                </Tooltip>
                                 <PopoverContent className="w-56 space-y-4">
                                   <div className="space-y-2">
                                     <Label>Transparency</Label>
@@ -681,7 +774,7 @@ export default function Home() {
                                         min={0}
                                         step={0.01}
                                         value={[rectOpacity]}
-                                        onValueChange={(value) => setRectOpacity(value[0])}
+                                        onChange={(value) => setRectOpacity(value[0])}
                                         className="flex-grow"
                                       />
                                       <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
@@ -719,6 +812,7 @@ export default function Home() {
                         </div>
                       </TabsContent>
                     </Tabs>
+                    </TooltipProvider>
                 </CardFooter>
             </div>
           </div>
@@ -727,3 +821,5 @@ export default function Home() {
     </>
   );
 }
+
+    
