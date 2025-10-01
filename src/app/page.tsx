@@ -507,11 +507,18 @@ export default function Home() {
                                 <CarouselContent>
                                   {imageTemplates.map((image) => (
                                     <CarouselItem key={image.name} className="basis-1/4">
-                                      <Card className="overflow-hidden cursor-pointer" onClick={() => setImageBgUrl(image.imageUrl)}>
-                                        <CardContent className="h-32 relative">
-                                          <Image src={image.imageUrl} alt={image.name} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
-                                        </CardContent>
-                                      </Card>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Card className="overflow-hidden cursor-pointer" onClick={() => setImageBgUrl(image.imageUrl)}>
+                                            <CardContent className="h-32 relative">
+                                              <Image src={image.imageUrl} alt={image.name} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
+                                            </CardContent>
+                                          </Card>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>{image.name}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
                                     </CarouselItem>
                                   ))}
                                 </CarouselContent>

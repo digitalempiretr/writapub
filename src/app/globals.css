@@ -6,13 +6,13 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   background: #4BC0C8; /* fallback for old browsers */
   background: -webkit-linear-gradient(
-    to bottom,
+    to top right,
     #FEAC5E,
     #C779D0,
     #4BC0C8
   ); /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(
-    to bottom,
+    to top right,
     #FEAC5E,
     #C779D0,
     #4BC0C8
