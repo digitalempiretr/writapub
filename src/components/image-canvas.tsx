@@ -307,11 +307,12 @@ export function ImageCanvas({
           drawLayout();
         }
       } else if (backgroundColor && backgroundColor.startsWith("linear-gradient")) {
-        const colors = backgroundColor.match(/#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})/g);
+        const colors = backgroundColor.match(/#([0-9a-fA-F]{3,6})/g);
         if (colors && colors.length >= 2) {
-          const gradient = ctx.createLinearGradient(0, 0, width, height);
+          const gradient = ctx.createLinearGradient(0, 0, 0, height);
           gradient.addColorStop(0, colors[0]);
-          gradient.addColorStop(1, colors[1]);
+          gradient.addColorStop(0.5, colors[1]);
+          gradient.addColorStop(1, colors[2] || colors[1]);
           ctx.fillStyle = gradient;
         } else {
            ctx.fillStyle = "#ffffff";

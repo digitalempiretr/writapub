@@ -4,18 +4,18 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  background: #0f2027; /* fallback for old browsers */
+  background: #4BC0C8; /* fallback for old browsers */
   background: -webkit-linear-gradient(
     to bottom,
-    #2c5364,
-    #203a43,
-    #0f2027
+    #FEAC5E,
+    #C779D0,
+    #4BC0C8
   ); /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(
     to bottom,
-    #2c5364,
-    #203a43,
-    #0f2027
+    #FEAC5E,
+    #C779D0,
+    #4BC0C8
   ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   min-height: 100vh;
   background-attachment: fixed;
@@ -29,13 +29,13 @@ body {
     --card-foreground: 221 52% 25%;
     --popover: 210 20% 98%;
     --popover-foreground: 221 52% 25%;
-    --primary: 198 56% 39%; /* #2C5364 */
+    --primary: 33 99% 68%; /* #FEAC5E */
     --primary-foreground: 0 0% 98%;
     --secondary: 210 16% 90%;
     --secondary-foreground: 222 84% 5%;
     --muted: 210 16% 90%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 204 77% 72%; /* #80C8EE */
+    --accent: 292 55% 65%; /* #C779D0 */
     --accent-foreground: 221 52% 25%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;

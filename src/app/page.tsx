@@ -116,7 +116,7 @@ export default function Home() {
   const [isSearching, setIsSearching] = useState(false);
   const [searchPage, setSearchPage] = useState(1);
 
-  const [rectBgColor, setRectBgColor] = useState("#2C5364");
+  const [rectBgColor, setRectBgColor] = useState("#FEAC5E");
   const [rectOpacity, setRectOpacity] = useState(0);
 
   const [overlayColor, setOverlayColor] = useState("#000000");
@@ -338,7 +338,7 @@ export default function Home() {
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   rows={8}
-                  className="bg-[#2C5364] text-primary-foreground placeholder:text-gray-400 border-0"
+                  className="bg-[#FEAC5E] text-primary-foreground placeholder:text-gray-400 border-0"
                   />
                   <div className="flex items-center justify-end gap-4">
                      <p className="text-xs text-muted-foreground">{text.length} characters</p>
@@ -346,7 +346,7 @@ export default function Home() {
                         onClick={handleGenerate}
                         disabled={isLoading}
                         size="icon"
-                        className="rounded-full bg-[#2C5364] hover:bg-[#203a43]"
+                        className="rounded-full bg-[#FEAC5E] hover:bg-[#C779D0]"
                       >
                         {isLoading ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
@@ -361,7 +361,7 @@ export default function Home() {
         
         {isGeneratingAnimation && (
             <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
-              background: 'linear-gradient(to bottom, #2c5364, #203a43, #0f2027)'
+              background: 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)'
             }}>
                 <div className="w-64 h-64">
                     <Lottie animationData={webflowAnimation} loop={true} />
@@ -596,7 +596,7 @@ export default function Home() {
                                       <TooltipTrigger asChild>
                                         <PopoverTrigger asChild>
                                           <Button variant="outline" size="icon">
-                                            <Icon path={`<path d="M11 9h2v2h-2V9zm-2 2h2v2H9v-2zm4 0h2v2h-2v-2zm2-2h2v2h-2V9zM7 9h2v2H7V9zm12-6H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm2-7h-2v2h2v2h-2v-2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2h2v-2H5V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v5z"/>`} size={36} fill={'#203a43'} />
+                                            <Icon path={`<path d="M11 9h2v2h-2V9zm-2 2h2v2H9v-2zm4 0h2v2h-2v-2zm2-2h2v2h-2V9zM7 9h2v2H7V9zm12-6H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm2-7h-2v2h2v2h-2v-2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2h2v-2H5V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v5z"/>`} size={36} fill={'#C779D0'} />
                                           </Button>
                                         </PopoverTrigger>
                                       </TooltipTrigger>
