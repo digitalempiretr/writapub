@@ -338,7 +338,7 @@ export default function Home() {
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   rows={8}
-                  className="bg-[#EC5E27] text-[#2b323f] placeholder:text-gray-400 border-0"
+                  className="bg-primary text-[#2b323f] placeholder:text-gray-400 border-0"
                   />
                   <div className="flex items-center justify-end gap-4">
                      <p className="text-xs text-muted-foreground">{text.length} characters</p>
@@ -346,7 +346,7 @@ export default function Home() {
                         onClick={handleGenerate}
                         disabled={isLoading}
                         size="icon"
-                        className="rounded-full bg-[#FEAC5E] hover:bg-[#C779D0]"
+                        className="rounded-full bg-primary hover:bg-[#C779D0]"
                       >
                         {isLoading ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
