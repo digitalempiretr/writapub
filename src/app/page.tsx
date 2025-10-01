@@ -338,7 +338,7 @@ export default function Home() {
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   rows={8}
-                  className="bg-primary text-[#2b323f] placeholder:text-gray-400 border-0"
+                  className="bg-[hsl(60,75%,97%)] text-[#2b323f] placeholder:text-gray-400 border-0"
                   />
                   <div className="flex items-center justify-end gap-4">
                      <p className="text-xs text-muted-foreground">{text.length} characters</p>
@@ -397,7 +397,7 @@ export default function Home() {
                       <TabsList className="grid w-full grid-cols-3 bg-card text-card-foreground p-2">
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <TabsTrigger value="background"><Icon path={`<path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.56 10.81l-2.35 3.02-1.56-1.88c-.2-.25-.58-.24-.78.01l-1.74 2.23c-.26.33-.02.81.39.81h8.98c.41 0 .65-.47.4-.8l-2.55-3.39c-.19-.26-.59-.26-.79 0zM2 5c-.55 0-1 .45-1 1v15c0 1.1.9 2 2 2h15c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1-.45-1-1V6c0-.55-.45-1-1-1zm19-4H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-1 16H8c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1z"/>`} /></TabsTrigger>
+                            <TabsTrigger value="background"><Icon path="M0 0h24v24H0V0z" d="M15.56 10.81l-2.35 3.02-1.56-1.88c-.2-.25-.58-.24-.78.01l-1.74 2.23c-.26.33-.02.81.39.81h8.98c.41 0 .65-.47.4-.8l-2.55-3.39c-.19-.26-.59-.26-.79 0zM2 5c-.55 0-1 .45-1 1v15c0 1.1.9 2 2 2h15c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1-.45-1-1V6c0-.55-.45-1-1-1zm19-4H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-1 16H8c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1z" /></TabsTrigger>
                           </TooltipTrigger>
                           <TooltipContent>
                             <p>Arka Plan Ayarları</p>
@@ -579,12 +579,12 @@ export default function Home() {
 
                               <div className="space-y-4 pt-4 border-t">
                                 <Label>Overlay Settings</Label>
-                                <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
+                                <div className="flex items-center gap-2">
                                   <div className="relative border rounded-md p-1">
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                           <div className="relative">
-                                            <Icon path={`<path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.56 10.81l-2.35 3.02-1.56-1.88c-.2-.25-.58-.24-.78.01l-1.74 2.23c-.26.33-.02.81.39.81h8.98c.41 0 .65-.47.4-.8l-2.55-3.39c-.19-.26-.59-.26-.79 0zM2 5c-.55 0-1 .45-1 1v15c0 1.1.9 2 2 2h15c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1-.45-1-1V6c0-.55-.45-1-1-1zm19-4H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-1 16H8c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1z"/>`} size={24} fill={overlayColor} />
+                                            <Icon path="M0 0h24v24H0V0z" d="M15.56 10.81l-2.35 3.02-1.56-1.88c-.2-.25-.58-.24-.78.01l-1.74 2.23c-.26.33-.02.81.39.81h8.98c.41 0 .65-.47.4-.8l-2.55-3.39c-.19-.26-.59-.26-.79 0zM2 5c-.55 0-1 .45-1 1v15c0 1.1.9 2 2 2h15c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1-.45-1-1V6c0-.55-.45-1-1-1zm19-4H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-1 16H8c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1z" size={24} fill={overlayColor} />
                                             <Input
                                             type="color"
                                             value={overlayColor}
@@ -603,7 +603,7 @@ export default function Home() {
                                       <TooltipTrigger asChild>
                                         <PopoverTrigger asChild>
                                           <Button variant="outline" size="icon">
-                                            <Icon path={`<path d="M11 9h2v2h-2V9zm-2 2h2v2H9v-2zm4 0h2v2h-2v-2zm2-2h2v2h-2V9zM7 9h2v2H7V9zm12-6H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm2-7h-2v2h2v2h-2v-2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2h2v-2H5V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v5z"/>`} size={36} fill={'#C779D0'} />
+                                            <Icon path="M11 9h2v2h-2V9zm-2 2h2v2H9v-2zm4 0h2v2h-2v-2zm2-2h2v2h-2V9zM7 9h2v2H7V9zm12-6H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm2-7h-2v2h2v2h-2v-2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2h2v-2H5V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v5z" size={36} fill={'#C779D0'} />
                                           </Button>
                                         </PopoverTrigger>
                                       </TooltipTrigger>
@@ -647,7 +647,7 @@ export default function Home() {
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                         <div className="relative">
-                                            <Icon path={`<path d="M16,16H4c-1.1,0-2,0.9-2,2s0.9,2,2,2h12c1.1,0,2-0.9,2-2S17.1,16,16,16z"/><path d="M6.51,13L6.51,13c0.34,0,0.65-0.21,0.76-0.53l0.72-2.02h4.04l0.71,2.02c0.11,0.32,0.42,0.54,0.76,0.54 c0.56,0,0.95-0.56,0.75-1.09l-3.03-8.08C11.02,3.33,10.54,3,10,3S8.98,3.33,8.79,3.84l-3.03,8.08C5.56,12.44,5.95,13,6.51,13z M9.57,6.02l0.39-1.16h0.08l0.39,1.16l1.06,2.98H8.51L9.57,6.02z"/>`} size={24} fill={textColor} />
+                                            <Icon path="M16,16H4c-1.1,0-2,0.9-2,2s0.9,2,2,2h12c1.1,0,2-0.9,2-2S17.1,16,16,16z" d="M6.51,13L6.51,13c0.34,0,0.65-0.21,0.76-0.53l0.72-2.02h4.04l0.71,2.02c0.11,0.32,0.42,0.54,0.76,0.54 c0.56,0,0.95-0.56,0.75-1.09l-3.03-8.08C11.02,3.33,10.54,3,10,3S8.98,3.33,8.79,3.84l-3.03,8.08C5.56,12.44,5.95,13,6.51,13z M9.57,6.02l0.39-1.16h0.08l0.39,1.16l1.06,2.98H8.51L9.57,6.02z" size={24} fill={textColor} />
                                             <Input
                                             type="color"
                                             value={textColor}
@@ -716,13 +716,13 @@ export default function Home() {
                             </div>
                             <div className="space-y-2">
                                 <Label>Font Background Settings</Label>
-                                <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
+                                <div className="flex items-center gap-2">
                                 {/* Text Box Color */}
                                 <div className="relative border rounded-md p-1">
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <div className="relative">
-                                                <Icon path={`<path d="M16.5,2h-10C5.67,2,5,2.67,5,3.5v10C5,14.33,5.67,15,6.5,15h10c0.83,0,1.5-0.67,1.5-1.5v-10C18,2.67,17.33,2,16.5,2z M13.41,11.62l-0.49-1.41h-2.83l-0.5,1.41C9.51,11.85,9.3,12,9.06,12h0c-0.39,0-0.67-0.39-0.53-0.76l2.12-5.65 C10.79,5.23,11.12,5,11.5,5h0c0.38,0,0.71,0.23,0.85,0.59l2.12,5.65c0.14,0.37-0.13,0.76-0.53,0.76h0 C13.7,12,13.49,11.85,13.41,11.62z"/><path d="M2.75,5L2.75,5C2.34,5,2,5.34,2,5.75V16.5C2,17.33,2.67,18,3.5,18h10.75c0.41,0,0.75-0.34,0.75-0.75l0,0 c0-0.41-0.34-0.75-0.75-0.75H3.5V5.75C3.5,5.34,3.16,5,2.75,5z"/><polygon points="11.47,6.3 10.45,9.19 12.55,9.19 11.53,6.3"/>`} size={30} fill={rectBgColor} />
+                                                <Icon path="M16.5,2h-10C5.67,2,5,2.67,5,3.5v10C5,14.33,5.67,15,6.5,15h10c0.83,0,1.5-0.67,1.5-1.5v-10C18,2.67,17.33,2,16.5,2z M13.41,11.62l-0.49-1.41h-2.83l-0.5,1.41C9.51,11.85,9.3,12,9.06,12h0c-0.39,0-0.67-0.39-0.53-0.76l2.12-5.65 C10.79,5.23,11.12,5,11.5,5h0c0.38,0,0.71,0.23,0.85,0.59l2.12,5.65c0.14,0.37-0.13,0.76-0.53,0.76h0 C13.7,12,13.49,11.85,13.41,11.62z" d="M2.75,5L2.75,5C2.34,5,2,5.34,2,5.75V16.5C2,17.33,2.67,18,3.5,18h10.75c0.41,0,0.75-0.34,0.75-0.75l0,0 c0-0.41-0.34-0.75-0.75-0.75H3.5V5.75C3.5,5.34,3.16,5,2.75,5z" polygon="11.47,6.3 10.45,9.19 12.55,9.19 11.53,6.3" size={30} fill={rectBgColor} />
                                                 <Input
                                                 type="color"
                                                 value={rectBgColor}
@@ -742,7 +742,7 @@ export default function Home() {
                                     <TooltipTrigger asChild>
                                         <PopoverTrigger asChild>
                                         <Button variant="outline" size="icon">
-                                            <Icon path={`<path d="M11 9h2v2h-2V9zm-2 2h2v2H9v-2zm4 0h2v2h-2v-2zm2-2h2v2h-2V9zM7 9h2v2H7V9zm12-6H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm2-7h-2v2h2v2h-2v-2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2h2v-2H5V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v5z"/>`} size={30} fill={'#3F87A5'} />
+                                            <Icon path="M11 9h2v2h-2V9zm-2 2h2v2H9v-2zm4 0h2v2h-2v-2zm2-2h2v2h-2V9zM7 9h2v2H7V9zm12-6H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm2-7h-2v2h2v2h-2v-2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2h2v-2H5V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v5z" size={30} fill={'hsl(var(--primary))'} />
                                         </Button>
                                         </PopoverTrigger>
                                     </TooltipTrigger>
