@@ -338,7 +338,7 @@ export default function Home() {
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   rows={8}
-                  className="bg-[#FEAC5E] text-primary-foreground placeholder:text-gray-400 border-0"
+                  className="bg-[#EC5E27] text-[#2b323f] placeholder:text-gray-400 border-0"
                   />
                   <div className="flex items-center justify-end gap-4">
                      <p className="text-xs text-muted-foreground">{text.length} characters</p>
