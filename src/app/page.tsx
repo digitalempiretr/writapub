@@ -341,7 +341,7 @@ export default function Home() {
                   className="bg-[hsl(60,75%,97%)] text-[#2b323f] placeholder:text-gray-400 border-0"
                   />
                   <div className="flex items-center justify-end gap-4">
-                     <p className="text-xs text-[#fdfdf2]">{text.length} charactersss</p>
+                     <p className="text-xs text-[#fdfdf2]">{text.length} characters</p>
                      <Button
                         onClick={handleGenerate}
                         disabled={isLoading}
@@ -586,7 +586,7 @@ export default function Home() {
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                           <div className="relative">
-                                            <Icon d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill={overlayColor} />
+                                            <Icon d="M15.56 10.81l-2.35 3.02-1.56-1.88c-.2-.25-.58-.24-.78.01l-1.74 2.23c-.26.33-.02.81.39.81h8.98c.41 0 .65-.47.4-.8l-2.55-3.39c-.19-.26-.59-.26-.79 0zM2 5c-.55 0-1 .45-1 1v15c0 1.1.9 2 2 2h15c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1-.45-1-1V6c0-.55-.45-1-1-1zm19-4H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-1 16H8c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1z" fill={overlayColor} />
                                             <Input
                                             type="color"
                                             value={overlayColor}
@@ -744,7 +744,7 @@ export default function Home() {
                                     <TooltipTrigger asChild>
                                         <PopoverTrigger asChild>
                                         <Button variant="outline" size="icon">
-                                            <Icon path="M11 9h2v2h-2V9zm-2 2h2v2H9v-2zm4 0h2v2h-2v-2zm2-2h2v2h-2V9zM7 9h2v2H7V9zm12-6H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm2-7h-2v2h2v2h-2v-2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2h2v-2H5V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v5z" fill={'hsl(var(--primary))'} />
+                                            <Icon path="M11 9h2v2h-2V9zm-2 2h2v2H9v-2zm4 0h2v2h-2v-2zm2-2h2v2h-2V9zM7 9h2v2H7V9zm12-6H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm2-7h-2v2h2v2h-2v-2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2h2v-2H5V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v5z" fill={'hsl(var(--foreground))'} />
                                         </Button>
                                         </PopoverTrigger>
                                     </TooltipTrigger>
@@ -809,5 +809,3 @@ export default function Home() {
     </>
   );
 }
-
-    
