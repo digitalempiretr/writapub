@@ -644,8 +644,8 @@ export default function Home() {
                         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
                             <div className="space-y-2">
                               <Label>Font Settings</Label>
-                              <div className="flex items-center justify-between">
-                                <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
+                              <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2">
                                   {/* Text Color */}
                                   <div className="relative border rounded-md p-1">
                                     <Tooltip>
@@ -670,7 +670,7 @@ export default function Home() {
                                   <Select value={activeFont.value} onValueChange={handleFontChange}>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
-                                        <SelectTrigger className="w-full border-0">
+                                        <SelectTrigger className="w-48 border-0">
                                           <SelectValue placeholder="Select Font" />
                                         </SelectTrigger>
                                       </TooltipTrigger>
