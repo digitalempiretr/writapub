@@ -54,7 +54,7 @@ import { fontOptions } from "@/lib/font-options";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { defaultText } from "@/lib/default-text";
 import { Separator } from "@/components/ui/separator";
-import { TextColorChooseIcon, SquareIcon, LayersIcon, RectangleHorizontal } from '@/components/ui/icons';
+import { TextColorChooseIcon, LayersIcon, RectangleHorizontal, TextBgBoxIcon } from '@/components/ui/icons';
 
 
 type Design = {
@@ -721,7 +721,7 @@ export default function Home() {
                                   <Tooltip>
                                       <TooltipTrigger asChild>
                                         <Button variant="outline" size="icon" className="relative">
-                                            <div className="w-4 h-4 rounded" style={{backgroundColor: rectBgColor}} />
+                                            <TextBgBoxIcon />
                                             <Input
                                             type="color"
                                             value={rectBgColor}
