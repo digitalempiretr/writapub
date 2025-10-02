@@ -37,7 +37,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Dice5, Download, Loader2, Plus, Search, Type } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Dice5, Download, ImageIcon, Layers, Loader2, Palette, Plus, RectangleHorizontal, Search, Square, Type } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -53,7 +53,7 @@ import { gradientTemplates } from "@/lib/gradient-templates";
 import { fontOptions } from "@/lib/font-options";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { defaultText } from "@/lib/default-text";
-import { Icon } from "@/components/ui/icon";
+import { Separator } from "@/components/ui/separator";
 
 type Design = {
   text: string;
@@ -398,7 +398,7 @@ export default function Home() {
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <TabsTrigger value="background">
-                            <Icon d="M15.56 10.81l-2.35 3.02-1.56-1.88c-.2-.25-.58-.24-.78.01l-1.74 2.23c-.26.33-.02.81.39.81h8.98c.41 0 .65-.47.4-.8l-2.55-3.39c-.19-.26-.59-.26-.79 0zM2 5c-.55 0-1 .45-1 1v15c0 1.1.9 2 2 2h15c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1-.45-1-1V6c0-.55-.45-1-1-1zm19-4H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-1 16H8c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1z" />
+                              <ImageIcon />
                             </TabsTrigger>
                           </TooltipTrigger>
                           <TooltipContent>
@@ -586,7 +586,7 @@ export default function Home() {
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                           <div className="relative">
-                                            <Icon d="M15.56 10.81l-2.35 3.02-1.56-1.88c-.2-.25-.58-.24-.78.01l-1.74 2.23c-.26.33-.02.81.39.81h8.98c.41 0 .65-.47.4-.8l-2.55-3.39c-.19-.26-.59-.26-.79 0zM2 5c-.55 0-1 .45-1 1v15c0 1.1.9 2 2 2h15c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1-.45-1-1V6c0-.55-.45-1-1-1zm19-4H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-1 16H8c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1z" fill={overlayColor} />
+                                            <Layers className="h-6 w-6" style={{ color: overlayColor }} />
                                             <Input
                                             type="color"
                                             value={overlayColor}
@@ -605,7 +605,7 @@ export default function Home() {
                                       <TooltipTrigger asChild>
                                         <PopoverTrigger asChild>
                                           <Button variant="outline" size="icon">
-                                          <Icon path="M11 9h2v2h-2V9zm-2 2h2v2H9v-2zm4 0h2v2h-2v-2zm2-2h2v2h-2V9zM7 9h2v2H7V9zm12-6H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm2-7h-2v2h2v2h-2v-2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2h2v-2H5V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v5z" fill={'hsl(var(--foreground))'} />
+                                            <RectangleHorizontal className="h-6 w-6" />
                                           </Button>
                                         </PopoverTrigger>
                                       </TooltipTrigger>
@@ -640,140 +640,140 @@ export default function Home() {
                       </TabsContent>
                       <TabsContent value="text">
                         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
-                          <div className="flex flex-col gap-y-4">
                             <div className="space-y-2">
                               <Label>Font Settings</Label>
-                              <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
-                                {/* Text Color */}
-                                <div className="relative border rounded-md p-1">
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <div className="relative">
-                                            <Icon d="M6.51,13L6.51,13c0.34,0,0.65-0.21,0.76-0.53l0.72-2.02h4.04l0.71,2.02c0.11,0.32,0.42,0.54,0.76,0.54 c0.56,0,0.95-0.56,0.75-1.09l-3.03-8.08C11.02,3.33,10.54,3,10,3S8.98,3.33,8.79,3.84l-3.03,8.08C5.56,12.44,5.95,13,6.51,13z M9.57,6.02l0.39-1.16h0.08l0.39,1.16l1.06,2.98H8.51L9.57,6.02z" path="M16,16H4c-1.1,0-2,0.9-2,2s0.9,2,2,2h12c1.1,0,2-0.9,2-2S17.1,16,16,16z" fill={textColor} />
-                                            <Input
-                                            type="color"
-                                            value={textColor}
-                                            onChange={(e) => setTextColor(e.target.value)}
-                                            className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                                            />
-                                        </div>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p>Metin Rengini Seç</p>
-                                    </TooltipContent>
-                                  </Tooltip>
+                              <div className="flex items-center justify-between">
+                                <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2">
+                                  {/* Text Color */}
+                                  <div className="relative border rounded-md p-1">
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                          <div className="relative">
+                                            <Palette className="h-6 w-6" style={{ color: textColor }}/>
+                                              <Input
+                                              type="color"
+                                              value={textColor}
+                                              onChange={(e) => setTextColor(e.target.value)}
+                                              className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                              />
+                                          </div>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Metin Rengini Seç</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </div>
+
+                                  {/* Font Selection */}
+                                  <Select value={activeFont.value} onValueChange={handleFontChange}>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <SelectTrigger className="w-full border-0">
+                                          <SelectValue placeholder="Select Font" />
+                                        </SelectTrigger>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Yazı Tipini Seç</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                    <SelectContent>
+                                      {fontOptions.map((font) => (
+                                        <SelectItem key={font.value} value={font.value}>
+                                          {font.label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+
+                                  {/* Alignment */}
+                                  <DropdownMenu>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Button variant="outline" size="icon">
+                                          {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
+                                          {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
+                                          {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
+                                        </Button>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Metin Hizalama</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                    <DropdownMenuContent>
+                                      <DropdownMenuItem onClick={() => setTextAlign('left')}>
+                                        <AlignLeft className="mr-2 h-4 w-4" />
+                                        <span>Align Left</span>
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem onClick={() => setTextAlign('center')}>
+                                        <AlignCenter className="mr-2 h-4 w-4" />
+                                        <span>Center</span>
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem onClick={() => setTextAlign('right')}>
+                                        <AlignRight className="mr-2 h-4 w-4" />
+                                        <span>Align Right</span>
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
                                 </div>
-
-                                {/* Font Selection */}
-                                <Select value={activeFont.value} onValueChange={handleFontChange}>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <SelectTrigger className="w-full border-0">
-                                        <SelectValue placeholder="Select Font" />
-                                      </SelectTrigger>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p>Yazı Tipini Seç</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                  <SelectContent>
-                                    {fontOptions.map((font) => (
-                                      <SelectItem key={font.value} value={font.value}>
-                                        {font.label}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-
-                                {/* Alignment */}
-                                <DropdownMenu>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button variant="outline" size="icon">
-                                        {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
-                                        {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
-                                        {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p>Metin Hizalama</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                  <DropdownMenuContent>
-                                    <DropdownMenuItem onClick={() => setTextAlign('left')}>
-                                      <AlignLeft className="mr-2 h-4 w-4" />
-                                      <span>Align Left</span>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => setTextAlign('center')}>
-                                      <AlignCenter className="mr-2 h-4 w-4" />
-                                      <span>Center</span>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => setTextAlign('right')}>
-                                      <AlignRight className="mr-2 h-4 w-4" />
-                                      <span>Align Right</span>
-                                    </DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
+                                
+                                <Separator orientation="vertical" className="h-8 mx-2 border-l border-border/50 shadow-inner" />
+                                
+                                <div className="flex items-center gap-2">
+                                  {/* Text Box Color */}
+                                  <div className="relative border rounded-md p-1">
+                                      <Tooltip>
+                                          <TooltipTrigger asChild>
+                                              <div className="relative">
+                                                  <Square className="h-6 w-6" style={{ color: rectBgColor }} />
+                                                  <Input
+                                                  type="color"
+                                                  value={rectBgColor}
+                                                  onChange={(e) => setRectBgColor(e.target.value)}
+                                                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                                  />
+                                              </div>
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                              <p>Metin Kutusu Rengi</p>
+                                          </TooltipContent>
+                                      </Tooltip>
+                                  </div>
+                                  {/* Opacity */}
+                                  <Popover>
+                                      <Tooltip>
+                                      <TooltipTrigger asChild>
+                                          <PopoverTrigger asChild>
+                                          <Button variant="outline" size="icon">
+                                              <RectangleHorizontal className="h-6 w-6" />
+                                          </Button>
+                                          </PopoverTrigger>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                          <p>Metin Kutusu Şeffaflığı</p>
+                                      </TooltipContent>
+                                      </Tooltip>
+                                      <PopoverContent className="w-56 space-y-4">
+                                      <div className="space-y-2">
+                                          <Label>Transparency</Label>
+                                          <div className="flex items-center gap-2">
+                                          <Slider
+                                              max={1}
+                                              min={0}
+                                              step={0.01}
+                                              value={[rectOpacity]}
+                                              onValueChange={(value) => setRectOpacity(value[0])}
+                                              className="flex-grow"
+                                          />
+                                          <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
+                                              {Math.round(rectOpacity * 100)}
+                                          </div>
+                                          </div>
+                                      </div>
+                                      </PopoverContent>
+                                  </Popover>
+                                </div>
                               </div>
                             </div>
-                            <div className="space-y-2">
-                                <Label>Font Background Settings</Label>
-                                <div className="flex items-center gap-2">
-                                {/* Text Box Color */}
-                                <div className="relative border rounded-md p-1">
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <div className="relative">
-                                                <Icon d="M2.75,5L2.75,5C2.34,5,2,5.34,2,5.75V16.5C2,17.33,2.67,18,3.5,18h10.75c0.41,0,0.75-0.34,0.75-0.75l0,0 c0-0.41-0.34-0.75-0.75-0.75H3.5V5.75C3.5,5.34,3.16,5,2.75,5z" polygon="11.47,6.3 10.45,9.19 12.55,9.19 11.53,6.3" path="M16.5,2h-10C5.67,2,5,2.67,5,3.5v10C5,14.33,5.67,15,6.5,15h10c0.83,0,1.5-0.67,1.5-1.5v-10C18,2.67,17.33,2,16.5,2z M13.41,11.62l-0.49-1.41h-2.83l-0.5,1.41C9.51,11.85,9.3,12,9.06,12h0c-0.39,0-0.67-0.39-0.53-0.76l2.12-5.65 C10.79,5.23,11.12,5,11.5,5h0c0.38,0,0.71,0.23,0.85,0.59l2.12,5.65c0.14,0.37-0.13,0.76-0.53,0.76h0 C13.7,12,13.49,11.85,13.41,11.62z" fill={rectBgColor} />
-                                                <Input
-                                                type="color"
-                                                value={rectBgColor}
-                                                onChange={(e) => setRectBgColor(e.target.value)}
-                                                className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                                                />
-                                            </div>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <p>Metin Kutusu Rengi</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </div>
-                                {/* Opacity */}
-                                <Popover>
-                                    <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <PopoverTrigger asChild>
-                                        <Button variant="outline" size="icon">
-                                            <Icon path="M11 9h2v2h-2V9zm-2 2h2v2H9v-2zm4 0h2v2h-2v-2zm2-2h2v2h-2V9zM7 9h2v2H7V9zm12-6H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm2-7h-2v2h2v2h-2v-2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2h2v-2H5V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v5z" fill={'hsl(var(--foreground))'} />
-                                        </Button>
-                                        </PopoverTrigger>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>Metin Kutusu Şeffaflığı</p>
-                                    </TooltipContent>
-                                    </Tooltip>
-                                    <PopoverContent className="w-56 space-y-4">
-                                    <div className="space-y-2">
-                                        <Label>Transparency</Label>
-                                        <div className="flex items-center gap-2">
-                                        <Slider
-                                            max={1}
-                                            min={0}
-                                            step={0.01}
-                                            value={[rectOpacity]}
-                                            onValueChange={(value) => setRectOpacity(value[0])}
-                                            className="flex-grow"
-                                        />
-                                        <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
-                                            {Math.round(rectOpacity * 100)}
-                                        </div>
-                                        </div>
-                                    </div>
-                                    </PopoverContent>
-                                </Popover>
-                                </div>
-                            </div>
-                          </div>
                         </div>
                       </TabsContent>
                       <TabsContent value="download">
@@ -809,4 +809,3 @@ export default function Home() {
     </>
   );
 }
-    
