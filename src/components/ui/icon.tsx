@@ -1,9 +1,10 @@
+
 "use client";
 
 import React from 'react';
 
 type IconProps = {
-  path: string;
+  path?: string;
   d?: string;
   polygon?: string;
   size?: number;
@@ -22,9 +23,11 @@ export function Icon({ path, d, polygon, size = 24, className, viewBox = '0 0 24
       fill={fill}
       className={className}
     >
-      <path d={path} />
+      {path && <path d={path} />}
       {d && <path d={d} />}
       {polygon && <polygon points={polygon} />}
     </svg>
   );
 }
+
+    
