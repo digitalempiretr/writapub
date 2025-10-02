@@ -4,7 +4,7 @@
 import React from 'react';
 
 export const TextColorChooseIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="24px" viewBox="0 0 20 20" width="24px" fill="currentColor">
+  <svg xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 20 20" height="24px" viewBox="0 0 20 20" width="24px" fill="currentColor">
     <g><rect fill="none" height="20" width="20"/></g>
     <g><g>
       <path d="M16,16H4c-1.1,0-2,0.9-2,2s0.9,2,2,2h12c1.1,0,2-0.9,2-2S17.1,16,16,16z"/>
@@ -22,7 +22,7 @@ export const LayersIcon = () => (
 );
 
 export const OpacityIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0-0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12.5 2.5a10 10 0 0 1 8.25 4.93"/>
         <path d="M12.5 21.5a10 10 0 0 1-8.25-4.93"/>
         <path d="M2.5 12.5a10 10 0 0 1 4.93-8.25"/>
@@ -37,7 +37,7 @@ export const SquareIcon = () => (
 );
 
 export const RectangleHorizontalIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect width="20" height="12" x="2" y="6" rx="2" />
     </svg>
 );
