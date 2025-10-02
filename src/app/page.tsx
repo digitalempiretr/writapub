@@ -37,7 +37,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Dice5, Download, ImageIcon, Loader2, Plus, Search, Type, Square, RectangleHorizontal as RectangleHorizontalIcon } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Dice5, Download, ImageIcon, Loader2, Plus, Search, Type } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -330,7 +330,7 @@ export default function Home() {
       </header>
 
       <main className="container mx-auto p-4 md:p-8 pt-0 flex flex-col h-[90vh]">
-        <div className="flex items-center justify-center flex-grow h-full">
+        <div className={`flex items-center justify-center flex-grow ${designs.length > 0 ? '' : 'h-full'}`}>
             <div className="space-y-6 max-w-[800px] mx-auto w-full">
               <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
               <div className="space-y-4">
@@ -584,10 +584,9 @@ export default function Home() {
                               <div className="space-y-4 pt-4">
                                 <Label>Overlay Settings</Label>
                                 <div className="flex items-center gap-2">
-                                  <div className="relative border rounded-md p-1">
                                     <Tooltip>
                                       <TooltipTrigger asChild>
-                                          <div className="relative h-6 w-6">
+                                        <Button variant="outline" size="icon" className="relative">
                                             <LayersIcon />
                                             <Input
                                             type="color"
@@ -595,13 +594,12 @@ export default function Home() {
                                             onChange={(e) => setOverlayColor(e.target.value)}
                                             className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                                             />
-                                          </div>
+                                        </Button>
                                       </TooltipTrigger>
                                       <TooltipContent>
                                         <p>Katman Rengini Seç</p>
                                       </TooltipContent>
                                     </Tooltip>
-                                  </div>
                                   <Popover>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
@@ -647,30 +645,28 @@ export default function Home() {
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                   {/* Text Color */}
-                                  <div className="relative border rounded-md p-1">
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                          <div className="relative h-6 w-6">
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button variant="outline" size="icon" className="relative">
                                             <TextColorChooseIcon />
                                             <Input
-                                              type="color"
-                                              value={textColor}
-                                              onChange={(e) => setTextColor(e.target.value)}
-                                              className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                            type="color"
+                                            value={textColor}
+                                            onChange={(e) => setTextColor(e.target.value)}
+                                            className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                                             />
-                                          </div>
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                        <p>Metin Rengini Seç</p>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </div>
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Metin Rengini Seç</p>
+                                    </TooltipContent>
+                                  </Tooltip>
 
                                   {/* Font Selection */}
                                   <Select value={activeFont.value} onValueChange={handleFontChange}>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
-                                        <SelectTrigger className="w-[180px] border-0">
+                                        <SelectTrigger className="w-[180px]">
                                           <SelectValue placeholder="Select Font" />
                                         </SelectTrigger>
                                       </TooltipTrigger>
@@ -722,24 +718,22 @@ export default function Home() {
                                 
                                 <div className="flex items-center gap-2">
                                   {/* Text Box Color */}
-                                  <div className="relative border rounded-md p-1">
-                                      <Tooltip>
-                                          <TooltipTrigger asChild>
-                                              <div className="relative h-6 w-6">
-                                                  <SquareIcon />
-                                                  <Input
-                                                  type="color"
-                                                  value={rectBgColor}
-                                                  onChange={(e) => setRectBgColor(e.target.value)}
-                                                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                                                  />
-                                              </div>
-                                          </TooltipTrigger>
-                                          <TooltipContent>
-                                              <p>Metin Kutusu Rengi</p>
-                                          </TooltipContent>
-                                      </Tooltip>
-                                  </div>
+                                  <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Button variant="outline" size="icon" className="relative">
+                                            <div className="w-4 h-4 rounded" style={{backgroundColor: rectBgColor}} />
+                                            <Input
+                                            type="color"
+                                            value={rectBgColor}
+                                            onChange={(e) => setRectBgColor(e.target.value)}
+                                            className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                            />
+                                        </Button>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                          <p>Metin Kutusu Rengi</p>
+                                      </TooltipContent>
+                                  </Tooltip>
                                   {/* Opacity */}
                                   <Popover>
                                       <Tooltip>
@@ -811,3 +805,5 @@ export default function Home() {
     </>
   );
 }
+
+    
