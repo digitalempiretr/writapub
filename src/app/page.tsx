@@ -37,7 +37,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Dice5, Download, ImageIcon, Loader2, Plus, Search, Type, Square, RectangleHorizontal } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Dice5, Download, ImageIcon, Loader2, Plus, Search, Type, SquareIcon, RectangleHorizontal } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -726,7 +726,7 @@ export default function Home() {
                                       <Tooltip>
                                           <TooltipTrigger asChild>
                                               <div className="relative h-6 w-6">
-                                                  <Square />
+                                                  <SquareIcon />
                                                   <Input
                                                   type="color"
                                                   value={rectBgColor}
