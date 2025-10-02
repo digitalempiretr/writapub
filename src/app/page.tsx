@@ -37,7 +37,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Dice5, Download, ImageIcon, Loader2, Plus, Search, Type } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Dice5, Download, ImageIcon, Loader2, Plus, Search, Type, Square, RectangleHorizontal } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -54,7 +54,7 @@ import { fontOptions } from "@/lib/font-options";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { defaultText } from "@/lib/default-text";
 import { Separator } from "@/components/ui/separator";
-import { TextColorChooseIcon, OpacityIcon, SquareIcon, LayersIcon, RectangleHorizontalIcon } from '@/components/ui/icons';
+import { TextColorChooseIcon, OpacityIcon, LayersIcon } from '@/components/ui/icons';
 
 
 type Design = {
@@ -607,7 +607,7 @@ export default function Home() {
                                       <TooltipTrigger asChild>
                                         <PopoverTrigger asChild>
                                           <Button variant="outline" size="icon">
-                                            <OpacityIcon />
+                                            <RectangleHorizontal />
                                           </Button>
                                         </PopoverTrigger>
                                       </TooltipTrigger>
@@ -644,7 +644,7 @@ export default function Home() {
                         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
                             <div className="space-y-2">
                               <Label>Font Settings</Label>
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                   {/* Text Color */}
                                   <div className="relative border rounded-md p-1">
@@ -670,7 +670,7 @@ export default function Home() {
                                   <Select value={activeFont.value} onValueChange={handleFontChange}>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
-                                        <SelectTrigger className="w-48 border-0">
+                                        <SelectTrigger className="w-[180px] border-0">
                                           <SelectValue placeholder="Select Font" />
                                         </SelectTrigger>
                                       </TooltipTrigger>
@@ -726,7 +726,7 @@ export default function Home() {
                                       <Tooltip>
                                           <TooltipTrigger asChild>
                                               <div className="relative h-6 w-6">
-                                                  <SquareIcon />
+                                                  <Square />
                                                   <Input
                                                   type="color"
                                                   value={rectBgColor}
@@ -746,7 +746,7 @@ export default function Home() {
                                       <TooltipTrigger asChild>
                                           <PopoverTrigger asChild>
                                           <Button variant="outline" size="icon">
-                                              <RectangleHorizontalIcon />
+                                              <RectangleHorizontal />
                                           </Button>
                                           </PopoverTrigger>
                                       </TooltipTrigger>
@@ -811,3 +811,5 @@ export default function Home() {
     </>
   );
 }
+
+    
