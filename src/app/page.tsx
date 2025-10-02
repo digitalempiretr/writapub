@@ -328,7 +328,7 @@ export default function Home() {
       </header>
 
       <main className="container mx-auto p-4 md:p-8 pt-0 flex flex-col h-[90vh]">
-        <div className="flex-grow flex items-center justify-center">
+        <div className={`flex items-center justify-center ${designs.length > 0 ? 'h-auto' : 'flex-grow'}`}>
             <div className="space-y-6 max-w-[800px] mx-auto w-full">
               <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
               <div className="space-y-4">
@@ -370,7 +370,7 @@ export default function Home() {
         )}
 
         { isClient && designs.length > 0 && (
-          <div className="w-full pt-8 pb-8">
+          <div className="w-full pt-8 pb-8 flex-grow flex flex-col">
             <div ref={designsRef} className="text-2xl h-10 pt-1 text-[#f4fdff]">Designs</div>
             <div className="max-w-lg mx-auto w-full space-y-6">
                 <Carousel className="w-full" setApi={setCarouselApi}>
@@ -809,5 +809,4 @@ export default function Home() {
     </>
   );
 }
-
     
