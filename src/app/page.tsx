@@ -54,6 +54,8 @@ import { fontOptions } from "@/lib/font-options";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { defaultText } from "@/lib/default-text";
 import { Separator } from "@/components/ui/separator";
+import { TextColorChooseIcon, OpacityIcon, SquareIcon } from '@/components/ui/icons';
+
 
 type Design = {
   text: string;
@@ -328,7 +330,7 @@ export default function Home() {
       </header>
 
       <main className="container mx-auto p-4 md:p-8 pt-0 flex flex-col h-[90vh]">
-        <div className={`flex items-center justify-center ${designs.length > 0 ? 'h-auto' : 'flex-grow h-full'}`}>
+        <div className="flex items-center justify-center flex-grow h-full">
             <div className="space-y-6 max-w-[800px] mx-auto w-full">
               <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
               <div className="space-y-4">
@@ -585,8 +587,8 @@ export default function Home() {
                                   <div className="relative border rounded-md p-1">
                                     <Tooltip>
                                       <TooltipTrigger asChild>
-                                          <div className="relative">
-                                            <Layers className="h-6 w-6" style={{ color: overlayColor }} />
+                                          <div className="relative h-6 w-6">
+                                            <LayersIcon />
                                             <Input
                                             type="color"
                                             value={overlayColor}
@@ -605,7 +607,7 @@ export default function Home() {
                                       <TooltipTrigger asChild>
                                         <PopoverTrigger asChild>
                                           <Button variant="outline" size="icon">
-                                            <RectangleHorizontal className="h-6 w-6" />
+                                            <OpacityIcon />
                                           </Button>
                                         </PopoverTrigger>
                                       </TooltipTrigger>
@@ -648,14 +650,14 @@ export default function Home() {
                                   <div className="relative border rounded-md p-1">
                                     <Tooltip>
                                       <TooltipTrigger asChild>
-                                          <div className="relative">
-                                            <Palette className="h-6 w-6" style={{ color: textColor }}/>
-                                              <Input
+                                          <div className="relative h-6 w-6">
+                                            <TextColorChooseIcon />
+                                            <Input
                                               type="color"
                                               value={textColor}
                                               onChange={(e) => setTextColor(e.target.value)}
                                               className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                                              />
+                                            />
                                           </div>
                                       </TooltipTrigger>
                                       <TooltipContent>
@@ -723,8 +725,8 @@ export default function Home() {
                                   <div className="relative border rounded-md p-1">
                                       <Tooltip>
                                           <TooltipTrigger asChild>
-                                              <div className="relative">
-                                                  <Square className="h-6 w-6" style={{ color: rectBgColor }} />
+                                              <div className="relative h-6 w-6">
+                                                  <SquareIcon />
                                                   <Input
                                                   type="color"
                                                   value={rectBgColor}
@@ -744,7 +746,7 @@ export default function Home() {
                                       <TooltipTrigger asChild>
                                           <PopoverTrigger asChild>
                                           <Button variant="outline" size="icon">
-                                              <RectangleHorizontal className="h-6 w-6" />
+                                              <OpacityIcon />
                                           </Button>
                                           </PopoverTrigger>
                                       </TooltipTrigger>
