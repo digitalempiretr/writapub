@@ -666,7 +666,7 @@ export default function Home() {
                                   <Select value={activeFont.value} onValueChange={handleFontChange}>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
-                                        <SelectTrigger className="w-[180px]">
+                                        <SelectTrigger className="w-[240px]">
                                           <SelectValue placeholder="Select Font" />
                                         </SelectTrigger>
                                       </TooltipTrigger>
@@ -805,5 +805,3 @@ export default function Home() {
     </>
   );
 }
-
-    
