@@ -37,7 +37,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Dice5, Download, ImageIcon, Layers, Loader2, Palette, Plus, RectangleHorizontal, Search, Square, Type } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Dice5, Download, ImageIcon, Loader2, Plus, Search, Type } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -54,7 +54,7 @@ import { fontOptions } from "@/lib/font-options";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { defaultText } from "@/lib/default-text";
 import { Separator } from "@/components/ui/separator";
-import { TextColorChooseIcon, OpacityIcon, SquareIcon } from '@/components/ui/icons';
+import { TextColorChooseIcon, OpacityIcon, SquareIcon, LayersIcon, RectangleHorizontalIcon } from '@/components/ui/icons';
 
 
 type Design = {
@@ -746,7 +746,7 @@ export default function Home() {
                                       <TooltipTrigger asChild>
                                           <PopoverTrigger asChild>
                                           <Button variant="outline" size="icon">
-                                              <OpacityIcon />
+                                              <RectangleHorizontalIcon />
                                           </Button>
                                           </PopoverTrigger>
                                       </TooltipTrigger>
