@@ -1,6 +1,6 @@
 
 export const imageTemplates = [
-  { name: "paperclip-rose", imageUrl: "https://i.ibb.co/W4nLHRZd/27.jpg" },
+  { name: "bgImage-28", imageUrl: "https://i.ibb.co/1jZdJPV/28.jpg" },
   { name: "square", imageUrl: "https://i.ibb.co/5hRnrGqX/25.jpg" },
   { name: "twoLines", imageUrl: "https://i.ibb.co/cSNxXVn5/1.jpg" },
   { name: "cardboard paper", imageUrl: "https://i.ibb.co/21RBM4zK/2.jpg" },
@@ -26,5 +26,5 @@ export const imageTemplates = [
   { name: "bgImage-22", imageUrl: "https://i.ibb.co/ym0R346S/22.jpg" },
   { name: "bgImage-23", imageUrl: "https://i.ibb.co/1Jtzn1X6/23.jpg" },
   { name: "bgImage-24", imageUrl: "https://i.ibb.co/395BJVBs/24.jpg" },
-  { name: "bgImage-28", imageUrl: "https://i.ibb.co/1jZdJPV/28.jpg" }
+  { name: "paperclip-rose", imageUrl: "https://i.ibb.co/W4nLHRZd/27.jpg" }
 ];
