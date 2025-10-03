@@ -535,7 +535,7 @@ export default function Home() {
                                 <Label>Inspiring Themes</Label>
                                 <div className="flex gap-2">
                                   {searchKeywords.map(keyword => (
-                                      <Button key={keyword} variant="outline" size="sm" onClick={() => handleKeywordSearch(keyword)} className="flex-1">
+                                      <Button key={keyword} variant="outline" size="sm" onClick={() => handleKeywordSearch(keyword)} className="flex-1 responsive-text-sm whitespace-nowrap">
                                           {keyword}
                                       </Button>
                                   ))}
@@ -643,7 +643,7 @@ export default function Home() {
                         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
                             <div className="space-y-2">
                               <Label>Font Settings</Label>
-                              <div className="flex items-center justify-between gap-4">
+                               <div className="flex items-center justify-between gap-4">
                                 <div className="flex items-center gap-2 flex-grow">
                                   {/* Text Color */}
                                   <Tooltip>
