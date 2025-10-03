@@ -532,7 +532,7 @@ export default function Home() {
                               </Carousel>
                               
                               <div className="space-y-2">
-                                <Label>Inspiring Themes</Label>
+                                <Label>Inspiring Search</Label>
                                 <div className="flex gap-2">
                                   {searchKeywords.map(keyword => (
                                       <Button key={keyword} variant="outline" size="sm" onClick={() => handleKeywordSearch(keyword)} className="flex-1 responsive-text-sm whitespace-nowrap">
@@ -641,135 +641,125 @@ export default function Home() {
                       </TabsContent>
                       <TabsContent value="text">
                         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
-                            <div className="space-y-2">
-                              <Label>Font Settings</Label>
-                               <div className="flex items-center justify-between gap-4">
+                           <div className="flex items-center justify-between gap-4">
                                 <div className="flex items-center gap-2 flex-grow">
-                                  {/* Text Color */}
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button variant="outline" size="icon" className="relative">
-                                            <TextColorChooseIcon />
-                                            <Input
-                                            type="color"
-                                            value={textColor}
-                                            onChange={(e) => setTextColor(e.target.value)}
-                                            className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                                            />
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p>Select Text Color</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-
-                                  {/* Font Selection */}
-                                  <Select value={activeFont.value} onValueChange={handleFontChange}>
                                     <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <SelectTrigger className="flex-grow">
-                                          <SelectValue placeholder="Select Font" />
-                                        </SelectTrigger>
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                        <p>Select Font</p>
-                                      </TooltipContent>
+                                        <TooltipTrigger asChild>
+                                            <Button variant="outline" size="icon" className="relative">
+                                                <TextColorChooseIcon />
+                                                <Input
+                                                    type="color"
+                                                    value={textColor}
+                                                    onChange={(e) => setTextColor(e.target.value)}
+                                                    className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                                />
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Select Text Color</p>
+                                        </TooltipContent>
                                     </Tooltip>
-                                    <SelectContent>
-                                      {fontOptions.map((font) => (
-                                        <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
-                                          {font.label}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
 
-                                  {/* Alignment */}
-                                  <DropdownMenu>
+                                    <Select value={activeFont.value} onValueChange={handleFontChange}>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <SelectTrigger className="w-full flex-grow">
+                                                    <SelectValue placeholder="Select Font" />
+                                                </SelectTrigger>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Select Font</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                        <SelectContent>
+                                            {fontOptions.map((font) => (
+                                                <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
+                                                    {font.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
+                                <DropdownMenu>
                                     <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <Button variant="outline" size="icon">
-                                          {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
-                                          {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
-                                          {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
-                                        </Button>
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                        <p>Text Alignment</p>
-                                      </TooltipContent>
+                                        <TooltipTrigger asChild>
+                                            <Button variant="outline" size="icon">
+                                                {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
+                                                {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
+                                                {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Text Alignment</p>
+                                        </TooltipContent>
                                     </Tooltip>
                                     <DropdownMenuContent>
-                                      <DropdownMenuItem onClick={() => setTextAlign('left')}>
-                                        <AlignLeft className="mr-2 h-4 w-4" />
-                                        <span>Align Left</span>
-                                      </DropdownMenuItem>
-                                      <DropdownMenuItem onClick={() => setTextAlign('center')}>
-                                        <AlignCenter className="mr-2 h-4 w-4" />
-                                        <span>Center</span>
-                                      </DropdownMenuItem>
-                                      <DropdownMenuItem onClick={() => setTextAlign('right')}>
-                                        <AlignRight className="mr-2 h-4 w-4" />
-                                        <span>Align Right</span>
-                                      </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => setTextAlign('left')}>
+                                            <AlignLeft className="mr-2 h-4 w-4" />
+                                            <span>Align Left</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => setTextAlign('center')}>
+                                            <AlignCenter className="mr-2 h-4 w-4" />
+                                            <span>Center</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => setTextAlign('right')}>
+                                            <AlignRight className="mr-2 h-4 w-4" />
+                                            <span>Align Right</span>
+                                        </DropdownMenuItem>
                                     </DropdownMenuContent>
-                                  </DropdownMenu>
-                                </div>
-                                
-                                <Separator orientation="vertical" className="h-8 mx-2" />
-                                
+                                </DropdownMenu>
+
                                 <div className="flex items-center gap-2 flex-shrink-0">
-                                  {/* Text Box Color */}
-                                  <Tooltip>
-                                      <TooltipTrigger asChild>
-                                      <Button variant="outline" size="icon" className="relative">
-                                            <TextBgBoxIcon />
-                                            <Input
-                                            type="color"
-                                            value={rectBgColor}
-                                            onChange={(e) => setRectBgColor(e.target.value)}
-                                            className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                                            />
-                                        </Button>
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                          <p>Text Box Color</p>
-                                      </TooltipContent>
-                                  </Tooltip>
-                                  {/* Opacity */}
-                                  <Popover>
-                                      <Tooltip>
-                                      <TooltipTrigger asChild>
-                                          <PopoverTrigger asChild>
-                                          <Button variant="outline" size="icon">
-                                              <RectangleHorizontal />
-                                          </Button>
-                                          </PopoverTrigger>
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                          <p>Text Box Opacity</p>
-                                      </TooltipContent>
-                                      </Tooltip>
-                                      <PopoverContent className="w-56 space-y-4">
-                                      <div className="space-y-2">
-                                          <Label>Transparency</Label>
-                                          <div className="flex items-center gap-2">
-                                          <Slider
-                                              max={1}
-                                              min={0}
-                                              step={0.01}
-                                              value={[rectOpacity]}
-                                              onValueChange={(value) => setRectOpacity(value[0])}
-                                              className="flex-grow"
-                                          />
-                                          <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
-                                              {Math.round(rectOpacity * 100)}
-                                          </div>
-                                          </div>
-                                      </div>
-                                      </PopoverContent>
-                                  </Popover>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button variant="outline" size="icon" className="relative">
+                                                <TextBgBoxIcon />
+                                                <Input
+                                                    type="color"
+                                                    value={rectBgColor}
+                                                    onChange={(e) => setRectBgColor(e.target.value)}
+                                                    className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                                />
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Text Box Color</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                    <Popover>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <PopoverTrigger asChild>
+                                                    <Button variant="outline" size="icon">
+                                                        <RectangleHorizontal />
+                                                    </Button>
+                                                </PopoverTrigger>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Text Box Opacity</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                        <PopoverContent className="w-56 space-y-4">
+                                            <div className="space-y-2">
+                                                <Label>Transparency</Label>
+                                                <div className="flex items-center gap-2">
+                                                    <Slider
+                                                        max={1}
+                                                        min={0}
+                                                        step={0.01}
+                                                        value={[rectOpacity]}
+                                                        onValueChange={(value) => setRectOpacity(value[0])}
+                                                        className="flex-grow"
+                                                    />
+                                                    <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
+                                                        {Math.round(rectOpacity * 100)}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
                                 </div>
-                              </div>
                             </div>
                         </div>
                       </TabsContent>
@@ -806,3 +796,5 @@ export default function Home() {
     </>
   );
 }
+
+    
