@@ -111,7 +111,7 @@ body {
 }
 
 
-@media (max-width: 700px) {
+@media (max-width: 639px) {
   #mobile-settings-panel {
     position: fixed;
     bottom: 0;
