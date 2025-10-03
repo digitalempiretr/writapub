@@ -133,6 +133,9 @@ export default function Home() {
   
   const [comboboxOpen, setComboboxOpen] = useState(false)
   const [comboboxValue, setComboboxValue] = useState("")
+  
+  const [defaultTab, setDefaultTab] = useState('background');
+  const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(true);
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const designsRef = useRef<HTMLDivElement>(null);
@@ -344,8 +347,16 @@ export default function Home() {
   const settingsPanel = (
     <CardFooter className="flex-col items-start p-0 bg-[#f4fdff] sm:rounded-lg sm:claymorphic-base">
       <TooltipProvider>
-        <Tabs defaultValue="background" className="w-full flex flex-col flex-grow">
+        <Tabs 
+          value={defaultTab}
+          onValueChange={(tab) => {
+              setDefaultTab(tab);
+              setIsMobilePanelOpen(true);
+          }}
+          className="w-full flex flex-col flex-grow">
           <div className="flex-grow">
+          {(!isClient || isMobilePanelOpen) && (
+            <>
           <TabsContent value="background">
             <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
               <Label>Background</Label>
@@ -429,30 +440,7 @@ export default function Home() {
                   </Carousel>
                 </TabsContent>
                 <TabsContent value="image" className="pt-4 space-y-4">
-                  <Carousel className="w-full">
-                    <CarouselContent>
-                      {imageTemplates.map((image) => (
-                        <CarouselItem key={image.name} className="basis-1/4">
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Card className="overflow-hidden cursor-pointer" onClick={() => setImageBgUrl(image.imageUrl)}>
-                                <CardContent className="h-32 relative">
-                                  <Image src={image.imageUrl} alt={image.name} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
-                                </CardContent>
-                              </Card>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>{image.name}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                    <CarouselPrevious className="-left-4" />
-                    <CarouselNext className="-right-4" />
-                  </Carousel>
-                  
-                  <div className="space-y-2">
+                <div className="space-y-2">
                     <Label>Inspiring Search</Label>
                     <Carousel
                       opts={{
@@ -500,7 +488,6 @@ export default function Home() {
                       </Tooltip>
                     </div>
                   </div>
-
 
                   {searchedImages.length > 0 && (
                     <>
@@ -723,11 +710,13 @@ export default function Home() {
                 </div>
             </div>
           </TabsContent>
+          </>
+          )}
           </div>
           <TabsList className="grid w-full grid-cols-3 bg-card text-card-foreground p-2">
             <Tooltip>
               <TooltipTrigger asChild>
-                <TabsTrigger value="background">
+                <TabsTrigger value="background" onClick={() => { if (defaultTab === 'background') setIsMobilePanelOpen(!isMobilePanelOpen) }}>
                   <ImageIcon />
                 </TabsTrigger>
               </TooltipTrigger>
@@ -737,7 +726,7 @@ export default function Home() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <TabsTrigger value="text"><Type /></TabsTrigger>
+                <TabsTrigger value="text" onClick={() => { if (defaultTab === 'text') setIsMobilePanelOpen(!isMobilePanelOpen) }}><Type /></TabsTrigger>
               </TooltipTrigger>
               <TooltipContent>
                 <p>Text Settings</p>
@@ -745,7 +734,7 @@ export default function Home() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <TabsTrigger value="download"><Download /></TabsTrigger>
+                <TabsTrigger value="download" onClick={() => { if (defaultTab === 'download') setIsMobilePanelOpen(!isMobilePanelOpen) }}><Download /></TabsTrigger>
               </TooltipTrigger>
               <TooltipContent>
                 <p>Download Options</p>
@@ -807,7 +796,7 @@ export default function Home() {
 
         { isClient && designs.length > 0 && (
           <div id="designs-container" ref={designsRef} className="w-full pt-8 flex-grow flex flex-col items-center">
-             <div className="w-full max-w-full sm:max-w-lg mx-auto">
+             <div className="w-full sm:max-w-lg mx-auto">
               <div className="text-2xl h-10 pt-1 text-[#f4fdff]">Designs</div>
               <Carousel className="w-full" setApi={setCarouselApi}>
                 <CarouselContent>
@@ -829,7 +818,7 @@ export default function Home() {
             </div>
             
             {/* Desktop Settings Panel */}
-            <div className="w-full sm:max-w-lg mt-6 hidden sm:block">
+            <div className="w-full max-w-lg mt-6 hidden sm:block">
               {settingsPanel}
             </div>
           </div>

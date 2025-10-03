@@ -123,10 +123,10 @@ body {
     border-top: 1px solid hsl(var(--border));
     padding-bottom: env(safe-area-inset-bottom);
     display: flex; /* Added */
-    flex-direction: column; /* Added */
+    flex-direction: column; /* Changed from column-reverse */
   }
 
   #designs-container {
-    padding-bottom: 80px; /* Adjust this value to be larger than the tab list height */
+    padding-bottom: 170px; /* Adjust this value to be larger than the tab list height */
   }
 }
