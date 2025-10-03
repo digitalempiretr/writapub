@@ -667,7 +667,7 @@ export default function Home() {
                                   <Select value={activeFont.value} onValueChange={handleFontChange}>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
-                                        <SelectTrigger className="w-[240px]">
+                                        <SelectTrigger className="flex-grow">
                                           <SelectValue placeholder="Select Font" />
                                         </SelectTrigger>
                                       </TooltipTrigger>
