@@ -540,6 +540,19 @@ export default function Home() {
                               
                               <div className="space-y-2">
                                 <Label>Inspiring Search</Label>
+                                  <div className="flex space-x-2">
+                                    {searchKeywords.map((keyword) => (
+                                      <Button
+                                        key={keyword}
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handleKeywordSearch(keyword.toLowerCase())}
+                                        className="whitespace-nowrap responsive-text-sm"
+                                      >
+                                        {keyword}
+                                      </Button>
+                                    ))}
+                                  </div>
                                 <div className="flex items-center space-x-2">
                                   <Input
                                     type="text"
@@ -549,18 +562,6 @@ export default function Home() {
                                     onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
                                     className="flex-grow"
                                   />
-                                  <Select onValueChange={handleKeywordSearch} value={searchQuery}>
-                                    <SelectTrigger className="w-auto min-w-[180px] flex-shrink-0">
-                                      <SelectValue placeholder="Inspiring Search" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {searchKeywords.map((keyword) => (
-                                        <SelectItem key={keyword} value={keyword.toLowerCase()}>
-                                          {keyword}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10 flex-shrink-0">
@@ -809,5 +810,7 @@ export default function Home() {
     </>
   );
 }
+
+    
 
     
