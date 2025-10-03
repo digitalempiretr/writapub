@@ -349,10 +349,6 @@ export default function Home() {
       <TooltipProvider>
         <Tabs 
           value={defaultTab}
-          onValueChange={(tab) => {
-              setDefaultTab(tab);
-              setIsMobilePanelOpen(true);
-          }}
           className="w-full flex flex-col flex-grow">
           <div className="flex-grow">
           {(!isClient || isMobilePanelOpen) && (
@@ -855,5 +851,7 @@ export default function Home() {
     </>
   );
 }
+
+    
 
     
