@@ -72,7 +72,7 @@ const defaultSolidColors = [
 ];
 
 
-const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea"];
+const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "Art", "Minimal", "Abstract"];
 
 export default function Home() {
   const [text, setText] = useState(defaultText);
@@ -540,19 +540,27 @@ export default function Home() {
                               
                               <div className="space-y-2">
                                 <Label>Inspiring Search</Label>
-                                  <div className="flex space-x-2">
+                                <Carousel
+                                  opts={{
+                                    align: "start",
+                                    dragFree: true,
+                                  }}
+                                  className="w-full"
+                                >
+                                  <CarouselContent className="-ml-2">
                                     {searchKeywords.map((keyword) => (
-                                      <Button
-                                        key={keyword}
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => handleKeywordSearch(keyword.toLowerCase())}
-                                        className="whitespace-nowrap responsive-text-sm"
-                                      >
-                                        {keyword}
-                                      </Button>
+                                      <CarouselItem key={keyword} className="basis-auto pl-2">
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          onClick={() => handleKeywordSearch(keyword.toLowerCase())}
+                                        >
+                                          {keyword}
+                                        </Button>
+                                      </CarouselItem>
                                     ))}
-                                  </div>
+                                  </CarouselContent>
+                                </Carousel>
                                 <div className="flex items-center space-x-2">
                                   <Input
                                     type="text"
@@ -810,6 +818,8 @@ export default function Home() {
     </>
   );
 }
+
+    
 
     
 
