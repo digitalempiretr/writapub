@@ -713,7 +713,7 @@ export default function Home() {
           </>
           )}
           </div>
-          <TabsList className="grid w-full grid-cols-3 bg-card text-card-foreground p-2">
+          <TabsList className="grid w-full grid-cols-3 bg-card text-card-foreground p-2 h-12">
             <Tooltip>
               <TooltipTrigger asChild>
                 <TabsTrigger value="background" onClick={() => { if (defaultTab === 'background') setIsMobilePanelOpen(!isMobilePanelOpen) }}>
