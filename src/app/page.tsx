@@ -404,7 +404,7 @@ export default function Home() {
                             </TabsTrigger>
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>Arka Plan Ayarları</p>
+                            <p>Background Settings</p>
                           </TooltipContent>
                         </Tooltip>
                         <Tooltip>
@@ -412,7 +412,7 @@ export default function Home() {
                             <TabsTrigger value="text"><Type /></TabsTrigger>
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>Metin Ayarları</p>
+                            <p>Text Settings</p>
                           </TooltipContent>
                         </Tooltip>
                         <Tooltip>
@@ -420,7 +420,7 @@ export default function Home() {
                             <TabsTrigger value="download"><Download /></TabsTrigger>
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>İndirme Seçenekleri</p>
+                            <p>Download Options</p>
                           </TooltipContent>
                         </Tooltip>
                       </TabsList>
@@ -441,7 +441,7 @@ export default function Home() {
                                         </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>Kendimi Şanslı Hissediyorum</p>
+                                        <p>I'm Feeling Lucky</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </div>
@@ -561,7 +561,7 @@ export default function Home() {
                                     </Button>
                                   </TooltipTrigger>
                                   <TooltipContent>
-                                    <p>Görsel Ara</p>
+                                    <p>Search Images</p>
                                   </TooltipContent>
                                 </Tooltip>
                               </div>
@@ -597,7 +597,7 @@ export default function Home() {
                                         </Button>
                                       </TooltipTrigger>
                                       <TooltipContent>
-                                        <p>Katman Rengini Seç</p>
+                                        <p>Select Overlay Color</p>
                                       </TooltipContent>
                                     </Tooltip>
                                   <Popover>
@@ -610,7 +610,7 @@ export default function Home() {
                                         </PopoverTrigger>
                                       </TooltipTrigger>
                                       <TooltipContent>
-                                        <p>Katman Şeffaflığı</p>
+                                        <p>Overlay Opacity</p>
                                       </TooltipContent>
                                     </Tooltip>
                                     <PopoverContent className="w-56 space-y-4">
@@ -658,7 +658,7 @@ export default function Home() {
                                         </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                      <p>Metin Rengini Seç</p>
+                                      <p>Select Text Color</p>
                                     </TooltipContent>
                                   </Tooltip>
 
@@ -671,7 +671,7 @@ export default function Home() {
                                         </SelectTrigger>
                                       </TooltipTrigger>
                                       <TooltipContent>
-                                        <p>Yazı Tipini Seç</p>
+                                        <p>Select Font</p>
                                       </TooltipContent>
                                     </Tooltip>
                                     <SelectContent>
@@ -694,7 +694,7 @@ export default function Home() {
                                         </Button>
                                       </TooltipTrigger>
                                       <TooltipContent>
-                                        <p>Metin Hizalama</p>
+                                        <p>Text Alignment</p>
                                       </TooltipContent>
                                     </Tooltip>
                                     <DropdownMenuContent>
@@ -720,7 +720,7 @@ export default function Home() {
                                   {/* Text Box Color */}
                                   <Tooltip>
                                       <TooltipTrigger asChild>
-                                        <Button variant="outline" size="icon" className="relative">
+                                      <Button variant="outline" size="icon" className="relative">
                                             <TextBgBoxIcon />
                                             <Input
                                             type="color"
@@ -731,7 +731,7 @@ export default function Home() {
                                         </Button>
                                       </TooltipTrigger>
                                       <TooltipContent>
-                                          <p>Metin Kutusu Rengi</p>
+                                          <p>Text Box Color</p>
                                       </TooltipContent>
                                   </Tooltip>
                                   {/* Opacity */}
@@ -745,7 +745,7 @@ export default function Home() {
                                           </PopoverTrigger>
                                       </TooltipTrigger>
                                       <TooltipContent>
-                                          <p>Metin Kutusu Şeffaflığı</p>
+                                          <p>Text Box Opacity</p>
                                       </TooltipContent>
                                       </Tooltip>
                                       <PopoverContent className="w-56 space-y-4">
