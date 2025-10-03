@@ -538,17 +538,18 @@ export default function Home() {
                                 <CarouselNext className="-right-4" />
                               </Carousel>
                               
-                              <div className="flex items-center space-x-2">
-                                <Input
-                                  type="text"
-                                  placeholder="Search for images..."
-                                  value={searchQuery}
-                                  onChange={(e) => setSearchQuery(e.target.value)}
-                                  onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
-                                  className="flex-grow"
-                                />
-                                <div className="flex-shrink-0">
-                                  <Select onValueChange={handleKeywordSearch}>
+                              <div className="space-y-2">
+                                <Label>Inspiring Search</Label>
+                                <div className="flex items-center space-x-2">
+                                  <Input
+                                    type="text"
+                                    placeholder="Search for images..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
+                                    className="flex-grow"
+                                  />
+                                  <Select onValueChange={handleKeywordSearch} value={searchQuery}>
                                     <SelectTrigger className="w-auto min-w-[180px] flex-shrink-0">
                                       <SelectValue placeholder="Inspiring Search" />
                                     </SelectTrigger>
@@ -560,22 +561,23 @@ export default function Home() {
                                       ))}
                                     </SelectContent>
                                   </Select>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10 flex-shrink-0">
+                                        {isSearching && searchPage === 1 ? (
+                                          <Loader2 className="h-6 w-6 animate-spin" />
+                                        ) : (
+                                          <Search className="h-6 w-6" />
+                                        )}
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Search Images</p>
+                                    </TooltipContent>
+                                  </Tooltip>
                                 </div>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10 flex-shrink-0">
-                                      {isSearching && searchPage === 1 ? (
-                                        <Loader2 className="h-6 w-6 animate-spin" />
-                                      ) : (
-                                        <Search className="h-6 w-6" />
-                                      )}
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Search Images</p>
-                                  </TooltipContent>
-                                </Tooltip>
                               </div>
+
 
                               {searchedImages.length > 0 && (
                                 <>
