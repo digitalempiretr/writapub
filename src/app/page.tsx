@@ -37,7 +37,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Check, ChevronsUpDown, Dice5, Download, ImageIcon, Loader2, Plus, Search, Type } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Dice5, Download, ImageIcon, Loader2, Plus, Search, Type } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -55,13 +55,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { defaultText } from "@/lib/default-text";
 import { Separator } from "@/components/ui/separator";
 import { TextColorChooseIcon, LayersIcon, RectangleHorizontal, TextBgBoxIcon } from '@/components/ui/icons';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command"
 
 
 type Design = {
@@ -90,9 +83,6 @@ export default function Home() {
   const [isGeneratingAnimation, setIsGeneratingAnimation] = useState(false);
   const [carouselApi, setCarouselApi] = useState<CarouselApi | undefined>();
   const [currentSlide, setCurrentSlide] = useState(0);
-
-  const [comboboxOpen, setComboboxOpen] = useState(false);
-  const [comboboxValue, setComboboxValue] = useState("");
 
   useEffect(() => {
     setIsClient(true)
@@ -266,7 +256,6 @@ export default function Home() {
   };
 
   const handleKeywordSearch = (keyword: string) => {
-    setComboboxValue(keyword);
     setSearchQuery(keyword);
     setSearchPage(1);
     handleSearchImages(1);
@@ -558,44 +547,20 @@ export default function Home() {
                                   onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
                                   className="flex-grow"
                                 />
-                                <Popover open={comboboxOpen} onOpenChange={setComboboxOpen}>
-                                    <PopoverTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        role="combobox"
-                                        aria-expanded={comboboxOpen}
-                                        className="w-auto min-w-[180px] justify-between flex-shrink-0"
-                                    >
-                                        {comboboxValue
-                                        ? searchKeywords.find((keyword) => keyword.toLowerCase() === comboboxValue)
-                                        : "Inspiring Search"}
-                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                    </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-[200px] p-0">
-                                    <Command>
-                                        <CommandInput placeholder="Search themes..." />
-                                        <CommandEmpty>No theme found.</CommandEmpty>
-                                        <CommandGroup>
-                                        {searchKeywords.map((keyword) => (
-                                            <CommandItem
-                                            key={keyword}
-                                            value={keyword}
-                                            onSelect={(currentValue) => {
-                                                handleKeywordSearch(currentValue);
-                                                setComboboxOpen(false)
-                                            }}
-                                            >
-                                            <Check
-                                                className={`mr-2 h-4 w-4 ${comboboxValue === keyword.toLowerCase() ? "opacity-100" : "opacity-0"}`}
-                                            />
-                                            {keyword}
-                                            </CommandItem>
-                                        ))}
-                                        </CommandGroup>
-                                    </Command>
-                                    </PopoverContent>
-                                </Popover>
+                                <div className="flex-shrink-0">
+                                  <Select onValueChange={handleKeywordSearch}>
+                                    <SelectTrigger className="w-auto min-w-[180px] flex-shrink-0">
+                                      <SelectValue placeholder="Inspiring Search" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {searchKeywords.map((keyword) => (
+                                        <SelectItem key={keyword} value={keyword.toLowerCase()}>
+                                          {keyword}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10 flex-shrink-0">
@@ -704,26 +669,27 @@ export default function Home() {
                                             <p>Select Text Color</p>
                                         </TooltipContent>
                                     </Tooltip>
-
-                                    <Select value={activeFont.value} onValueChange={handleFontChange}>
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <SelectTrigger className="w-full flex-grow">
-                                                    <SelectValue placeholder="Select Font" />
-                                                </SelectTrigger>
-                                            </TooltipTrigger>
-                                            <TooltipContent>
-                                                <p>Select Font</p>
-                                            </TooltipContent>
-                                        </Tooltip>
-                                        <SelectContent>
-                                            {fontOptions.map((font) => (
-                                                <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
-                                                    {font.label}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                    <div className="flex-grow">
+                                        <Select value={activeFont.value} onValueChange={handleFontChange}>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <SelectTrigger className="w-full flex-grow">
+                                                        <SelectValue placeholder="Select Font" />
+                                                    </SelectTrigger>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Select Font</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                            <SelectContent>
+                                                {fontOptions.map((font) => (
+                                                    <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
+                                                        {font.label}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
                                 </div>
 
                                 <DropdownMenu>
