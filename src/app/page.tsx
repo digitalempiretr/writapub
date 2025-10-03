@@ -677,7 +677,7 @@ export default function Home() {
                                     </Tooltip>
                                     <SelectContent>
                                       {fontOptions.map((font) => (
-                                        <SelectItem key={font.value} value={font.value}>
+                                        <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
                                           {font.label}
                                         </SelectItem>
                                       ))}
