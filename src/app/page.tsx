@@ -716,7 +716,14 @@ export default function Home() {
           <TabsList className="grid w-full grid-cols-3 bg-card text-card-foreground p-2 h-12">
             <Tooltip>
               <TooltipTrigger asChild>
-                <TabsTrigger value="background" onClick={() => { if (defaultTab === 'background') setIsMobilePanelOpen(!isMobilePanelOpen) }}>
+                <TabsTrigger value="background" onClick={() => {
+                  if (defaultTab === 'background') {
+                    setIsMobilePanelOpen(!isMobilePanelOpen);
+                  } else {
+                    setDefaultTab('background');
+                    setIsMobilePanelOpen(true);
+                  }
+                }}>
                   <ImageIcon />
                 </TabsTrigger>
               </TooltipTrigger>
@@ -726,7 +733,14 @@ export default function Home() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <TabsTrigger value="text" onClick={() => { if (defaultTab === 'text') setIsMobilePanelOpen(!isMobilePanelOpen) }}><Type /></TabsTrigger>
+                <TabsTrigger value="text" onClick={() => {
+                  if (defaultTab === 'text') {
+                    setIsMobilePanelOpen(!isMobilePanelOpen);
+                  } else {
+                    setDefaultTab('text');
+                    setIsMobilePanelOpen(true);
+                  }
+                }}><Type /></TabsTrigger>
               </TooltipTrigger>
               <TooltipContent>
                 <p>Text Settings</p>
@@ -734,7 +748,14 @@ export default function Home() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <TabsTrigger value="download" onClick={() => { if (defaultTab === 'download') setIsMobilePanelOpen(!isMobilePanelOpen) }}><Download /></TabsTrigger>
+                <TabsTrigger value="download" onClick={() => {
+                  if (defaultTab === 'download') {
+                    setIsMobilePanelOpen(!isMobilePanelOpen);
+                  } else {
+                    setDefaultTab('download');
+                    setIsMobilePanelOpen(true);
+                  }
+                }}><Download /></TabsTrigger>
               </TooltipTrigger>
               <TooltipContent>
                 <p>Download Options</p>
@@ -834,3 +855,5 @@ export default function Home() {
     </>
   );
 }
+
+    
