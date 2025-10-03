@@ -344,35 +344,8 @@ export default function Home() {
   const settingsPanel = (
     <CardFooter className="flex-col items-start p-0 bg-[#f4fdff] sm:rounded-lg sm:claymorphic-base">
       <TooltipProvider>
-        <Tabs defaultValue="background" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-card text-card-foreground p-2">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <TabsTrigger value="background">
-                  <ImageIcon />
-                </TabsTrigger>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Background Settings</p>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <TabsTrigger value="text"><Type /></TabsTrigger>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Text Settings</p>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <TabsTrigger value="download"><Download /></TabsTrigger>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Download Options</p>
-              </TooltipContent>
-            </Tooltip>
-          </TabsList>
+        <Tabs defaultValue="background" className="w-full flex flex-col flex-grow">
+          <div className="flex-grow">
           <TabsContent value="background">
             <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
               <Label>Background</Label>
@@ -750,6 +723,35 @@ export default function Home() {
                 </div>
             </div>
           </TabsContent>
+          </div>
+          <TabsList className="grid w-full grid-cols-3 bg-card text-card-foreground p-2">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <TabsTrigger value="background">
+                  <ImageIcon />
+                </TabsTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Background Settings</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <TabsTrigger value="text"><Type /></TabsTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Text Settings</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <TabsTrigger value="download"><Download /></TabsTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Download Options</p>
+              </TooltipContent>
+            </Tooltip>
+          </TabsList>
         </Tabs>
         </TooltipProvider>
     </CardFooter>
@@ -804,8 +806,8 @@ export default function Home() {
         )}
 
         { isClient && designs.length > 0 && (
-          <div id="designs-container" ref={designsRef} className="w-full pt-8 pb-8 flex-grow flex flex-col items-center">
-            <div className="w-full sm:max-w-lg">
+          <div id="designs-container" ref={designsRef} className="w-full pt-8 flex-grow flex flex-col items-center">
+             <div className="w-full max-w-full sm:max-w-lg mx-auto">
               <div className="text-2xl h-10 pt-1 text-[#f4fdff]">Designs</div>
               <Carousel className="w-full" setApi={setCarouselApi}>
                 <CarouselContent>
