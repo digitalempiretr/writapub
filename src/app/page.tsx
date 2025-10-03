@@ -273,7 +273,8 @@ export default function Home() {
     const randomSeed = Math.floor(Math.random() * 1000);
     const randomImageUrl = `https://picsum.photos/seed/${randomSeed}/1080/1350`;
     setImageBgUrl(randomImageUrl);
-    setRectOpacity(0.8);
+    setRectBgColor("#f4fdff");
+    setRectOpacity(0.6);
   };
   
   const renderCanvas = useCallback((design: Design, index: number) => {
@@ -642,7 +643,7 @@ export default function Home() {
                         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
                             <div className="space-y-2">
                               <Label>Font Settings</Label>
-                              <div className="flex items-center justify-between">
+                              <div className="flex items-center justify-between gap-2">
                                 <div className="flex items-center gap-2">
                                   {/* Text Color */}
                                   <Tooltip>
