@@ -643,8 +643,8 @@ export default function Home() {
                         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
                             <div className="space-y-2">
                               <Label>Font Settings</Label>
-                              <div className="flex items-center justify-between gap-2">
-                                <div className="flex items-center gap-2">
+                              <div className="flex items-center justify-between gap-4">
+                                <div className="flex items-center gap-2 flex-grow">
                                   {/* Text Color */}
                                   <Tooltip>
                                     <TooltipTrigger asChild>
@@ -715,9 +715,9 @@ export default function Home() {
                                   </DropdownMenu>
                                 </div>
                                 
-                                <Separator orientation="vertical" className="h-8 mx-2 border-l border-border/50 shadow-inner" />
+                                <Separator orientation="vertical" className="h-8 mx-2" />
                                 
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 flex-shrink-0">
                                   {/* Text Box Color */}
                                   <Tooltip>
                                       <TooltipTrigger asChild>
