@@ -330,8 +330,8 @@ export default function Home() {
         <Logo className="text-[2rem]" />
       </header>
 
-      <main className="container mx-auto p-4 md:p-8 pt-0 flex flex-col h-[90vh]">
-        <div className={`flex items-center justify-center flex-grow ${designs.length > 0 ? '' : 'h-full'}`}>
+      <main className="container mx-auto p-4 md:p-8 pt-0">
+        <div className="flex items-center justify-center min-h-[90vh]">
             <div className="space-y-6 max-w-[800px] mx-auto w-full">
               <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
               <div className="space-y-4">
@@ -373,9 +373,9 @@ export default function Home() {
         )}
 
         { isClient && designs.length > 0 && (
-          <div className="w-full pt-8 pb-8 flex-grow flex flex-col">
-            <div ref={designsRef} className="text-2xl h-10 pt-1 text-[#f4fdff]">Designs</div>
-            <div className="max-w-lg mx-auto w-full space-y-6">
+          <div ref={designsRef} className="w-full pt-8 pb-8 flex-grow flex flex-col">
+            <div className="text-2xl h-10 pt-1 text-[#f4fdff]">Designs</div>
+            <div className="sm:max-w-lg mx-auto w-full space-y-6">
                 <Carousel className="w-full" setApi={setCarouselApi}>
                   <CarouselContent>
                     {designs.map((design, index) => (
@@ -553,7 +553,7 @@ export default function Home() {
                                 />
                                 <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10">
+                                    <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10 flex-shrink-0">
                                       {isSearching && searchPage === 1 ? (
                                         <Loader2 className="h-6 w-6 animate-spin" />
                                       ) : (
@@ -796,5 +796,3 @@ export default function Home() {
     </>
   );
 }
-
-    
