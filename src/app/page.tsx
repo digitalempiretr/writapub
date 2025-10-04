@@ -852,15 +852,14 @@ export default function Home() {
         { isClient && designs.length > 0 && (
           <div id="designs-container" ref={designsRef} className="w-full pt-8 flex flex-col items-center">
               <div className="w-full mx-auto flex flex-col items-center">
-                <div className="text-2xl h-10 pt-1 text-[#f4fdff]">Designs</div>
-                  <div className="w-auto max-h-[70vh]">
-                    <Carousel className="w-full h-full" setApi={setCarouselApi}>
-                      <CarouselContent className="h-full">
+                  <div className="w-full max-w-md">
+                    <Carousel className="w-full" setApi={setCarouselApi}>
+                      <CarouselContent>
                         {designs.map((design, index) => (
                           <CarouselItem key={index} data-index={index}>
-                            <div className="p-1 h-full">
-                              <Card className="overflow-hidden border-0 h-full">
-                                <CardContent className="p-0 aspect-[1080/1350] relative bg-card h-full">
+                            <div className="p-1">
+                              <Card className="overflow-hidden border-0">
+                                <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
                                   {renderCanvas(design, index)}
                                 </CardContent>
                               </Card>
