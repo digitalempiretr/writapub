@@ -351,29 +351,8 @@ export default function Home() {
       <TooltipProvider>
         <Tabs
           defaultValue={defaultTab}
-          className="w-full flex flex-col flex-col-reverse md:flex-col"
+          className="w-full flex flex-col-reverse md:flex-col"
         >
-          <div className="flex-grow">
-            <div className="md:hidden">
-              {isMobilePanelOpen && (
-                <TabsContent value={defaultTab} forceMount>
-                  {/* The content is the same, so we can reuse it */}
-                  <TabContentContainer />
-                </TabsContent>
-              )}
-            </div>
-            <div className="hidden md:block">
-              <TabsContent value="background">
-                <TabContentContainer />
-              </TabsContent>
-              <TabsContent value="text">
-                <TabContentContainer />
-              </TabsContent>
-              <TabsContent value="download">
-                <TabContentContainer />
-              </TabsContent>
-            </div>
-          </div>
           <TabsList className="grid w-full grid-cols-3 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md">
             <Tooltip>
               <TooltipTrigger asChild>
@@ -436,6 +415,27 @@ export default function Home() {
               </TooltipContent>
             </Tooltip>
           </TabsList>
+           <div className="flex-grow">
+            <div className="md:hidden">
+              {isMobilePanelOpen && (
+                <TabsContent value={defaultTab} forceMount>
+                  {/* The content is the same, so we can reuse it */}
+                  <TabContentContainer />
+                </TabsContent>
+              )}
+            </div>
+            <div className="hidden md:block">
+              <TabsContent value="background">
+                <TabContentContainer />
+              </TabsContent>
+              <TabsContent value="text">
+                <TabContentContainer />
+              </TabsContent>
+              <TabsContent value="download">
+                <TabContentContainer />
+              </TabsContent>
+            </div>
+          </div>
         </Tabs>
       </TooltipProvider>
     </CardFooter>
@@ -808,7 +808,7 @@ export default function Home() {
       </header>
 
       <main className="container mx-auto p-4 md:p-8 pt-0">
-        <div className="flex flex-col items-center justify-center min-h-[90vh]">
+        <div className="flex flex-col items-center justify-center h-[90vh]">
           <div className="space-y-6 max-w-[800px] mx-auto w-full">
             <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
             <div className="space-y-4">
@@ -853,8 +853,8 @@ export default function Home() {
           <div id="designs-container" ref={designsRef} className="w-full pt-8 flex-grow flex flex-col items-center">
             <div className="w-full md:max-w-4xl mx-auto">
               <div className="text-2xl h-10 pt-1 text-[#f4fdff]">Designs</div>
-              <div className="md:grid md:grid-cols-12 md:gap-8 items-start">
-                  <div className="md:col-span-7">
+              <div className="items-start">
+                  <div>
                     <Carousel className="w-full" setApi={setCarouselApi}>
                       <CarouselContent>
                         {designs.map((design, index) => (
@@ -874,7 +874,7 @@ export default function Home() {
                     </Carousel>
                   </div>
                   {/* Desktop Settings Panel */}
-                  <div className="w-full md:col-span-5 mt-6 hidden md:block">
+                  <div className="w-full mt-6 hidden md:block">
                     {settingsPanel}
                   </div>
               </div>
