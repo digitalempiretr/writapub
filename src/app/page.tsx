@@ -345,382 +345,44 @@ export default function Home() {
   }, [backgroundTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, handleTextRemaining, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign]);
 
   const settingsPanel = (
-    <CardFooter className="flex-col items-start p-0 bg-[#f4fdff] md:rounded-lg md:claymorphic-base">
+    <CardFooter className="flex-col items-start p-0 bg-[#f4fdff] md:rounded-lg">
       <TooltipProvider>
-        <Tabs 
-          value={defaultTab}
-          onValueChange={setDefaultTab}
-          className="w-full flex flex-col flex-grow">
+        <Tabs value={defaultTab} className="w-full flex flex-col flex-grow flex-col-reverse md:flex-col">
           <div className="flex-grow">
-          {(!isClient || isMobilePanelOpen) && (
-            <>
-          <TabsContent value="background">
-            <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
-              <Label>Background</Label>
-              <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
-                <div className="flex items-center gap-2">
-                    <TabsList className="grid w-full grid-cols-3 flex-grow">
-                        <TabsTrigger value="flat">Solid Color</TabsTrigger>
-                        <TabsTrigger value="gradient">Gradient</TabsTrigger>
-                        <TabsTrigger value="image">Image</TabsTrigger>
-                    </TabsList>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button onClick={handleFeelLucky} variant="outline" size="icon" className="h-10 w-10 flex-shrink-0">
-                                <Dice5 className="h-6 w-6" />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>I'm Feeling Lucky</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </div>
-                <TabsContent value="flat" className="pt-4 space-y-4">
-                  <Carousel className="w-full">
-                    <CarouselContent>
-                      <CarouselItem className="basis-1/4">
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Card className="overflow-hidden cursor-pointer h-32 flex items-center justify-center bg-gray-100">
-                              <Plus className="h-8 w-8 text-gray-600" />
-                            </Card>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-2" align="start">
-                            <div className="flex items-center gap-4">
-                              <div className="relative">
-                                <div
-                                  className="w-6 h-6 rounded-full border"
-                                  style={{ backgroundColor: bgColor }}
-                                />
-                                <Input
-                                  type="color"
-                                  value={bgColor}
-                                  onChange={(e) => setBgColor(e.target.value)}
-                                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                />
-                              </div>
-                              <Input
-                                type="text"
-                                value={bgColor}
-                                onChange={(e) => setBgColor(e.target.value)}
-                                className="h-9 w-32"
-                              />
-                            </div>
-                          </PopoverContent>
-                        </Popover>
-                      </CarouselItem>
-                      {defaultSolidColors.map(color => (
-                        <CarouselItem key={color} className="basis-1/4">
-                          <Card className="overflow-hidden cursor-pointer" onClick={() => setBgColor(color)}>
-                            <CardContent className="h-32" style={{ backgroundColor: color }} />
-                          </Card>
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                    <CarouselPrevious className="-left-4" />
-                    <CarouselNext className="-right-4" />
-                  </Carousel>
+            <div className="md:hidden">
+              {isMobilePanelOpen && (
+                <TabsContent value={defaultTab} forceMount>
+                  {/* The content is the same, so we can reuse it */}
+                  <TabContentContainer />
                 </TabsContent>
-                <TabsContent value="gradient" className="pt-4 space-y-4">
-                  <Carousel className="w-full">
-                    <CarouselContent>
-                      {gradientTemplates.map((gradient) => (
-                        <CarouselItem key={gradient.name} className="basis-1/4">
-                          <Card className="overflow-hidden cursor-pointer" onClick={() => setGradientBg(gradient.css)}>
-                            <CardContent className="h-32" style={{ background: gradient.css }} />
-                          </Card>
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                    <CarouselPrevious className="-left-4" />
-                    <CarouselNext className="-right-4" />
-                  </Carousel>
-                </TabsContent>
-                <TabsContent value="image" className="pt-4 space-y-4">
-                <div className="space-y-2">
-                    <Label>Inspiring Search</Label>
-                    <Carousel
-                      opts={{
-                        align: "start",
-                        dragFree: true,
-                      }}
-                      className="w-full"
-                    >
-                      <CarouselContent className="-ml-2">
-                        {searchKeywords.map((keyword) => (
-                          <CarouselItem key={keyword} className="basis-auto pl-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleKeywordSearch(keyword.toLowerCase())}
-                            >
-                              {keyword}
-                            </Button>
-                          </CarouselItem>
-                        ))}
-                      </CarouselContent>
-                    </Carousel>
-                    <div className="flex items-center space-x-2">
-                      <Input
-                        type="text"
-                        placeholder="Search for images..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
-                        className="flex-grow"
-                      />
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10 flex-shrink-0">
-                            {isSearching && searchPage === 1 ? (
-                              <Loader2 className="h-6 w-6 animate-spin" />
-                            ) : (
-                              <Search className="h-6 w-6" />
-                            )}
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Search Images</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                  </div>
-
-                  {searchedImages.length > 0 && (
-                    <>
-                    <div className="grid grid-cols-3 gap-2">
-                      {searchedImages.map((imageUrl, index) => (
-                        <button key={index} onClick={() => setImageBgUrl(imageUrl)}>
-                          <Image src={imageUrl} alt={`Search Result ${index}`} width={200} height={250} className="object-cover aspect-[2/3] rounded-md" />
-                        </button>
-                      ))}
-                    </div>
-                    <Button onClick={() => handleSearchImages(searchPage + 1)} disabled={isSearching} className="w-full">
-                        {isSearching && searchPage > 1 ? <Loader2 className="h-4 w-4 animate-spin" /> : "More"}
-                    </Button>
-                    </>
-                  )}
-
-                  <div className="space-y-4 pt-4">
-                    <Label>Overlay Settings</Label>
-                    <div className="flex items-center gap-2">
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button variant="outline" size="icon" className="relative">
-                                <LayersIcon />
-                                <Input
-                                type="color"
-                                value={overlayColor}
-                                onChange={(e) => setOverlayColor(e.target.value)}
-                                className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                                />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Select Overlay Color</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      <Popover>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <PopoverTrigger 
-                            asChild>
-                              <Button variant="outline" size="icon">
-                                <TextBoxOpacity />
-                              </Button>
-                            </PopoverTrigger>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Overlay Opacity</p>
-                          </TooltipContent>
-                        </Tooltip>
-                        <PopoverContent className="w-56 space-y-4">
-                          <div className="space-y-2">
-                            <Label>Overlay Opacity</Label>
-                            <div className="flex items-center gap-2">
-                              <Slider
-                                max={1}
-                                min={0}
-                                step={0.01}
-                                value={[overlayOpacity]}
-                                onValueChange={(value) => setOverlayOpacity(value[0])}
-                                className="flex-grow"
-                              />
-                              <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
-                                {Math.round(overlayOpacity * 100)}
-                              </div>
-                            </div>
-                          </div>
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                  </div>
-                </TabsContent>
-              </Tabs>
+              )}
             </div>
-          </TabsContent>
-          <TabsContent value="text">
-            <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
-               <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-2 flex-grow">
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button variant="outline" size="icon" className="relative">
-                                    <TextColorChooseIcon />
-                                    <Input
-                                        type="color"
-                                        value={textColor}
-                                        onChange={(e) => setTextColor(e.target.value)}
-                                        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                                    />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Select Text Color</p>
-                            </TooltipContent>
-                        </Tooltip>
-                        <div className="flex-grow">
-                            <Select value={activeFont.value} onValueChange={handleFontChange}>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <SelectTrigger className="w-full flex-grow">
-                                            <SelectValue placeholder="Select Font" />
-                                        </SelectTrigger>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>Select Font</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                                <SelectContent>
-                                    {fontOptions.map((font) => (
-                                        <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
-                                            {font.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-
-                    <DropdownMenu>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button variant="outline" size="icon">
-                                    {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
-                                    {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
-                                    {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Text Alignment</p>
-                            </TooltipContent>
-                        </Tooltip>
-                        <DropdownMenuContent>
-                            <DropdownMenuItem onClick={() => setTextAlign('left')}>
-                                <AlignLeft className="mr-2 h-4 w-4" />
-                                <span>Align Left</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setTextAlign('center')}>
-                                <AlignCenter className="mr-2 h-4 w-4" />
-                                <span>Center</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setTextAlign('right')}>
-                                <AlignRight className="mr-2 h-4 w-4" />
-                                <span>Align Right</span>
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button variant="outline" size="icon" className="relative">
-                                    <TextBgBoxIcon />
-                                    <Input
-                                        type="color"
-                                        value={rectBgColor}
-                                        onChange={(e) => handleRectBgChange(e.target.value)}
-                                        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                                    />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Text Box Color</p>
-                            </TooltipContent>
-                        </Tooltip>
-                        <Popover>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <PopoverTrigger asChild>
-                                        <Button variant="outline" size="icon">
-                                            <TextBoxOpacity />
-                                        </Button>
-                                    </PopoverTrigger>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>Text Box Opacity</p>
-                                </TooltipContent>
-                            </Tooltip>
-                            <PopoverContent className="w-56 space-y-4">
-                                <div className="space-y-2">
-                                    <Label>Transparency</Label>
-                                    <div className="flex items-center gap-2">
-                                        <Slider
-                                            max={1}
-                                            min={0}
-                                            step={0.01}
-                                            value={[rectOpacity]}
-                                            onValueChange={(value) => setRectOpacity(value[0])}
-                                            className="flex-grow"
-                                        />
-                                        <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
-                                            {Math.round(rectOpacity * 100)}
-                                        </div>
-                                    </div>
-                                </div>
-                            </PopoverContent>
-                        </Popover>
-                    </div>
-                </div>
+            <div className="hidden md:block">
+              <TabsContent value="background">
+                <TabContentContainer />
+              </TabsContent>
+              <TabsContent value="text">
+                <TabContentContainer />
+              </TabsContent>
+              <TabsContent value="download">
+                <TabContentContainer />
+              </TabsContent>
             </div>
-          </TabsContent>
-          <TabsContent value="download">
-            <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
-                <div className="flex justify-around items-center">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleDownloadAll}
-                    disabled={designs.length === 0}
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    Download All
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDownload(currentSlide)}
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    Download This Design
-                  </Button>
-                </div>
-            </div>
-          </TabsContent>
-          </>
-          )}
           </div>
-          <TabsList className="grid w-full grid-cols-3 bg-card text-card-foreground p-2 h-12">
+          <TabsList className="grid w-full grid-cols-3 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md">
             <Tooltip>
               <TooltipTrigger asChild>
-                <TabsTrigger value="background" onClick={() => {
-                  if (defaultTab === 'background') {
-                    setIsMobilePanelOpen(!isMobilePanelOpen);
-                  } else {
-                    setDefaultTab('background');
-                    setIsMobilePanelOpen(true);
-                  }
-                }}>
+                <TabsTrigger
+                  value="background"
+                  onClick={() => {
+                    if (defaultTab === 'background') {
+                      setIsMobilePanelOpen(!isMobilePanelOpen);
+                    } else {
+                      setDefaultTab('background');
+                      setIsMobilePanelOpen(true);
+                    }
+                  }}
+                >
                   <ImageIcon />
                 </TabsTrigger>
               </TooltipTrigger>
@@ -730,14 +392,19 @@ export default function Home() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <TabsTrigger value="text" onClick={() => {
-                  if (defaultTab === 'text') {
-                    setIsMobilePanelOpen(!isMobilePanelOpen);
-                  } else {
-                    setDefaultTab('text');
-                    setIsMobilePanelOpen(true);
-                  }
-                }}><Type /></TabsTrigger>
+                <TabsTrigger
+                  value="text"
+                  onClick={() => {
+                    if (defaultTab === 'text') {
+                      setIsMobilePanelOpen(!isMobilePanelOpen);
+                    } else {
+                      setDefaultTab('text');
+                      setIsMobilePanelOpen(true);
+                    }
+                  }}
+                >
+                  <Type />
+                </TabsTrigger>
               </TooltipTrigger>
               <TooltipContent>
                 <p>Text Settings</p>
@@ -745,14 +412,19 @@ export default function Home() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <TabsTrigger value="download" onClick={() => {
-                  if (defaultTab === 'download') {
-                    setIsMobilePanelOpen(!isMobilePanelOpen);
-                  } else {
-                    setDefaultTab('download');
-                    setIsMobilePanelOpen(true);
-                  }
-                }}><Download /></TabsTrigger>
+                <TabsTrigger
+                  value="download"
+                  onClick={() => {
+                    if (defaultTab === 'download') {
+                      setIsMobilePanelOpen(!isMobilePanelOpen);
+                    } else {
+                      setDefaultTab('download');
+                      setIsMobilePanelOpen(true);
+                    }
+                  }}
+                >
+                  <Download />
+                </TabsTrigger>
               </TooltipTrigger>
               <TooltipContent>
                 <p>Download Options</p>
@@ -760,9 +432,369 @@ export default function Home() {
             </Tooltip>
           </TabsList>
         </Tabs>
-        </TooltipProvider>
+      </TooltipProvider>
     </CardFooter>
   );
+
+  function TabContentContainer() {
+    return (
+      <>
+        {defaultTab === 'background' && (
+          <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
+            <Label>Background</Label>
+            <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
+              <div className="flex items-center gap-2">
+                <TabsList className="grid w-full grid-cols-3 flex-grow">
+                  <TabsTrigger value="flat">Solid Color</TabsTrigger>
+                  <TabsTrigger value="gradient">Gradient</TabsTrigger>
+                  <TabsTrigger value="image">Image</TabsTrigger>
+                </TabsList>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button onClick={handleFeelLucky} variant="outline" size="icon" className="h-10 w-10 flex-shrink-0">
+                      <Dice5 className="h-6 w-6" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>I'm Feeling Lucky</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <TabsContent value="flat" className="pt-4 space-y-4">
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    <CarouselItem className="basis-1/4">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Card className="overflow-hidden cursor-pointer h-32 flex items-center justify-center bg-gray-100">
+                            <Plus className="h-8 w-8 text-gray-600" />
+                          </Card>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-2" align="start">
+                          <div className="flex items-center gap-4">
+                            <div className="relative">
+                              <div
+                                className="w-6 h-6 rounded-full border"
+                                style={{ backgroundColor: bgColor }}
+                              />
+                              <Input
+                                type="color"
+                                value={bgColor}
+                                onChange={(e) => setBgColor(e.target.value)}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                              />
+                            </div>
+                            <Input
+                              type="text"
+                              value={bgColor}
+                              onChange={(e) => setBgColor(e.target.value)}
+                              className="h-9 w-32"
+                            />
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    </CarouselItem>
+                    {defaultSolidColors.map(color => (
+                      <CarouselItem key={color} className="basis-1/4">
+                        <Card className="overflow-hidden cursor-pointer" onClick={() => setBgColor(color)}>
+                          <CardContent className="h-32" style={{ backgroundColor: color }} />
+                        </Card>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="-left-4" />
+                  <CarouselNext className="-right-4" />
+                </Carousel>
+              </TabsContent>
+              <TabsContent value="gradient" className="pt-4 space-y-4">
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    {gradientTemplates.map((gradient) => (
+                      <CarouselItem key={gradient.name} className="basis-1/4">
+                        <Card className="overflow-hidden cursor-pointer" onClick={() => setGradientBg(gradient.css)}>
+                          <CardContent className="h-32" style={{ background: gradient.css }} />
+                        </Card>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="-left-4" />
+                  <CarouselNext className="-right-4" />
+                </Carousel>
+              </TabsContent>
+              <TabsContent value="image" className="pt-4 space-y-4">
+              <div className="space-y-2">
+                  <Label>Inspiring Search</Label>
+                  <Carousel
+                    opts={{
+                      align: "start",
+                      dragFree: true,
+                    }}
+                    className="w-full"
+                  >
+                    <CarouselContent className="-ml-2">
+                      {searchKeywords.map((keyword) => (
+                        <CarouselItem key={keyword} className="basis-auto pl-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleKeywordSearch(keyword.toLowerCase())}
+                          >
+                            {keyword}
+                          </Button>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                  </Carousel>
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      type="text"
+                      placeholder="Search for images..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
+                      className="flex-grow"
+                    />
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10 flex-shrink-0">
+                          {isSearching && searchPage === 1 ? (
+                            <Loader2 className="h-6 w-6 animate-spin" />
+                          ) : (
+                            <Search className="h-6 w-6" />
+                          )}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Search Images</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                </div>
+
+                {searchedImages.length > 0 && (
+                  <>
+                  <div className="grid grid-cols-3 gap-2">
+                    {searchedImages.map((imageUrl, index) => (
+                      <button key={index} onClick={() => setImageBgUrl(imageUrl)}>
+                        <Image src={imageUrl} alt={`Search Result ${index}`} width={200} height={250} className="object-cover aspect-[2/3] rounded-md" />
+                      </button>
+                    ))}
+                  </div>
+                  <Button onClick={() => handleSearchImages(searchPage + 1)} disabled={isSearching} className="w-full">
+                      {isSearching && searchPage > 1 ? <Loader2 className="h-4 w-4 animate-spin" /> : "More"}
+                  </Button>
+                  </>
+                )}
+
+                <div className="space-y-4 pt-4">
+                  <Label>Overlay Settings</Label>
+                  <div className="flex items-center gap-2">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="outline" size="icon" className="relative">
+                              <LayersIcon />
+                              <Input
+                              type="color"
+                              value={overlayColor}
+                              onChange={(e) => setOverlayColor(e.target.value)}
+                              className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                              />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Select Overlay Color</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    <Popover>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <PopoverTrigger 
+                          asChild>
+                            <Button variant="outline" size="icon">
+                              <TextBoxOpacity />
+                            </Button>
+                          </PopoverTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Overlay Opacity</p>
+                        </TooltipContent>
+                      </Tooltip>
+                      <PopoverContent className="w-56 space-y-4">
+                        <div className="space-y-2">
+                          <Label>Overlay Opacity</Label>
+                          <div className="flex items-center gap-2">
+                            <Slider
+                              max={1}
+                              min={0}
+                              step={0.01}
+                              value={[overlayOpacity]}
+                              onValueChange={(value) => setOverlayOpacity(value[0])}
+                              className="flex-grow"
+                            />
+                            <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
+                              {Math.round(overlayOpacity * 100)}
+                            </div>
+                          </div>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+        )}
+        {defaultTab === 'text' && (
+           <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
+             <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-2 flex-grow">
+                      <Tooltip>
+                          <TooltipTrigger asChild>
+                              <Button variant="outline" size="icon" className="relative">
+                                  <TextColorChooseIcon />
+                                  <Input
+                                      type="color"
+                                      value={textColor}
+                                      onChange={(e) => setTextColor(e.target.value)}
+                                      className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                  />
+                              </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                              <p>Select Text Color</p>
+                          </TooltipContent>
+                      </Tooltip>
+                      <div className="flex-grow">
+                          <Select value={activeFont.value} onValueChange={handleFontChange}>
+                              <Tooltip>
+                                  <TooltipTrigger asChild>
+                                      <SelectTrigger className="w-full flex-grow">
+                                          <SelectValue placeholder="Select Font" />
+                                      </SelectTrigger>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                      <p>Select Font</p>
+                                  </TooltipContent>
+                              </Tooltip>
+                              <SelectContent>
+                                  {fontOptions.map((font) => (
+                                      <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
+                                          {font.label}
+                                      </SelectItem>
+                                  ))}
+                              </SelectContent>
+                          </Select>
+                      </div>
+                  </div>
+
+                  <DropdownMenu>
+                      <Tooltip>
+                          <TooltipTrigger asChild>
+                              <Button variant="outline" size="icon">
+                                  {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
+                                  {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
+                                  {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
+                              </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                              <p>Text Alignment</p>
+                          </TooltipContent>
+                      </Tooltip>
+                      <DropdownMenuContent>
+                          <DropdownMenuItem onClick={() => setTextAlign('left')}>
+                              <AlignLeft className="mr-2 h-4 w-4" />
+                              <span>Align Left</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setTextAlign('center')}>
+                              <AlignCenter className="mr-2 h-4 w-4" />
+                              <span>Center</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setTextAlign('right')}>
+                              <AlignRight className="mr-2 h-4 w-4" />
+                              <span>Align Right</span>
+                          </DropdownMenuItem>
+                      </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                      <Tooltip>
+                          <TooltipTrigger asChild>
+                              <Button variant="outline" size="icon" className="relative">
+                                  <TextBgBoxIcon />
+                                  <Input
+                                      type="color"
+                                      value={rectBgColor}
+                                      onChange={(e) => handleRectBgChange(e.target.value)}
+                                      className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                  />
+                              </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                              <p>Text Box Color</p>
+                          </TooltipContent>
+                      </Tooltip>
+                      <Popover>
+                          <Tooltip>
+                              <TooltipTrigger asChild>
+                                  <PopoverTrigger asChild>
+                                      <Button variant="outline" size="icon">
+                                          <TextBoxOpacity />
+                                      </Button>
+                                  </PopoverTrigger>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                  <p>Text Box Opacity</p>
+                              </TooltipContent>
+                          </Tooltip>
+                          <PopoverContent className="w-56 space-y-4">
+                              <div className="space-y-2">
+                                  <Label>Transparency</Label>
+                                  <div className="flex items-center gap-2">
+                                      <Slider
+                                          max={1}
+                                          min={0}
+                                          step={0.01}
+                                          value={[rectOpacity]}
+                                          onValueChange={(value) => setRectOpacity(value[0])}
+                                          className="flex-grow"
+                                      />
+                                      <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
+                                          {Math.round(rectOpacity * 100)}
+                                      </div>
+                                  </div>
+                              </div>
+                          </PopoverContent>
+                      </Popover>
+                  </div>
+              </div>
+          </div>
+        )}
+        {defaultTab === 'download' && (
+          <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
+              <div className="flex justify-around items-center">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleDownloadAll}
+                  disabled={designs.length === 0}
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Download All
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleDownload(currentSlide)}
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Download This Design
+                </Button>
+              </div>
+          </div>
+        )}
+      </>
+    );
+  }
 
   return (
     <>
@@ -770,8 +802,8 @@ export default function Home() {
         <Logo className="text-[2rem]" />
       </header>
 
-      <main className="container mx-auto p-4 md:p-8 pt-0 h-[90vh]">
-        <div className="flex flex-col items-center justify-center h-full">
+      <main className="container mx-auto p-4 md:p-8 pt-0">
+        <div className="flex flex-col items-center justify-center h-[90vh]">
             <div className="space-y-6 max-w-[800px] mx-auto w-full">
               <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
               <div className="space-y-4">
@@ -814,30 +846,33 @@ export default function Home() {
 
         { isClient && designs.length > 0 && (
           <div id="designs-container" ref={designsRef} className="w-full pt-8 flex-grow flex flex-col items-center">
-             <div className="w-full md:max-w-lg mx-auto">
+            <div className="w-full md:max-w-4xl mx-auto">
               <div className="text-2xl h-10 pt-1 text-[#f4fdff]">Designs</div>
-              <Carousel className="w-full" setApi={setCarouselApi}>
-                <CarouselContent>
-                  {designs.map((design, index) => (
-                    <CarouselItem key={index} data-index={index}>
-                      <div className="p-1">
-                        <Card className="overflow-hidden border-0">
-                          <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
-                            {renderCanvas(design, index)}
-                          </CardContent>
-                        </Card>
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="-left-4 md:-left-12" />
-                <CarouselNext className="-right-4 md:-right-12" />
-              </Carousel>
-            </div>
-            
-            {/* Desktop Settings Panel */}
-            <div className="w-full max-w-lg mt-6 hidden md:block">
-              {settingsPanel}
+              <div className="md:grid md:grid-cols-12 md:gap-8 items-start">
+                  <div className="md:col-span-7">
+                    <Carousel className="w-full" setApi={setCarouselApi}>
+                      <CarouselContent>
+                        {designs.map((design, index) => (
+                          <CarouselItem key={index} data-index={index}>
+                            <div className="p-1">
+                              <Card className="overflow-hidden border-0">
+                                <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
+                                  {renderCanvas(design, index)}
+                                </CardContent>
+                              </Card>
+                            </div>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="-left-4 md:-left-12" />
+                      <CarouselNext className="-right-4 md:-right-12" />
+                    </Carousel>
+                  </div>
+                  {/* Desktop Settings Panel */}
+                  <div className="w-full md:col-span-5 mt-6 hidden md:block">
+                    {settingsPanel}
+                  </div>
+              </div>
             </div>
           </div>
         )}
@@ -852,9 +887,3 @@ export default function Home() {
     </>
   );
 }
-
-    
-
-    
-
-    
