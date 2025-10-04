@@ -345,14 +345,11 @@ export default function Home() {
   }, [backgroundTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, handleTextRemaining, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign]);
 
   const settingsPanel = (
-    <CardFooter className="flex-col items-start p-0 bg-[#f4fdff] sm:rounded-lg sm:claymorphic-base">
+    <CardFooter className="flex-col items-start p-0 bg-[#f4fdff] md:rounded-lg md:claymorphic-base">
       <TooltipProvider>
         <Tabs 
           value={defaultTab}
-          onValueChange={(value) => {
-            setDefaultTab(value);
-            setIsMobilePanelOpen(true);
-          }}
+          onValueChange={setDefaultTab}
           className="w-full flex flex-col flex-grow">
           <div className="flex-grow">
           {(!isClient || isMobilePanelOpen) && (
@@ -817,7 +814,7 @@ export default function Home() {
 
         { isClient && designs.length > 0 && (
           <div id="designs-container" ref={designsRef} className="w-full pt-8 flex-grow flex flex-col items-center">
-             <div className="w-full sm:max-w-lg mx-auto">
+             <div className="w-full md:max-w-lg mx-auto">
               <div className="text-2xl h-10 pt-1 text-[#f4fdff]">Designs</div>
               <Carousel className="w-full" setApi={setCarouselApi}>
                 <CarouselContent>
@@ -839,7 +836,7 @@ export default function Home() {
             </div>
             
             {/* Desktop Settings Panel */}
-            <div className="w-full max-w-lg mt-6 hidden sm:block">
+            <div className="w-full max-w-lg mt-6 hidden md:block">
               {settingsPanel}
             </div>
           </div>
@@ -848,7 +845,7 @@ export default function Home() {
 
        {/* Mobile-only Fixed Bottom Settings Panel */}
        {isClient && designs.length > 0 && (
-          <div id="mobile-settings-panel" className="sm:hidden">
+          <div id="mobile-settings-panel" className="md:hidden">
               {settingsPanel}
           </div>
         )}
