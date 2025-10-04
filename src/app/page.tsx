@@ -349,6 +349,10 @@ export default function Home() {
       <TooltipProvider>
         <Tabs 
           value={defaultTab}
+          onValueChange={(value) => {
+            setDefaultTab(value);
+            setIsMobilePanelOpen(true);
+          }}
           className="w-full flex flex-col flex-grow">
           <div className="flex-grow">
           {(!isClient || isMobilePanelOpen) && (
@@ -770,7 +774,7 @@ export default function Home() {
       </header>
 
       <main className="container mx-auto p-4 md:p-8 pt-0">
-        <div className="flex flex-col items-center justify-center min-h-[90vh]">
+        <div className="flex flex-col items-center justify-center h-[90vh]">
             <div className="space-y-6 max-w-[800px] mx-auto w-full">
               <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
               <div className="space-y-4">
