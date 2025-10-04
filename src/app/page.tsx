@@ -773,8 +773,8 @@ export default function Home() {
         <Logo className="text-[2rem]" />
       </header>
 
-      <main className="container mx-auto p-4 md:p-8 pt-0">
-        <div className="flex flex-col items-center justify-center h-[90vh]">
+      <main className="container mx-auto p-4 md:p-8 pt-0 h-[90vh]">
+        <div className="flex flex-col items-center justify-center h-full">
             <div className="space-y-6 max-w-[800px] mx-auto w-full">
               <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
               <div className="space-y-4">
@@ -855,6 +855,8 @@ export default function Home() {
     </>
   );
 }
+
+    
 
     
 
