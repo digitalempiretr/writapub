@@ -135,7 +135,7 @@ export default function Home() {
   const [comboboxValue, setComboboxValue] = useState("")
   
   const [defaultTab, setDefaultTab] = useState('background');
-  const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(true);
+  const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const designsRef = useRef<HTMLDivElement>(null);
@@ -206,6 +206,8 @@ export default function Home() {
       newDesigns.push({ text: finalBody, isTitle: false });
     }
     setDesigns(newDesigns);
+    setIsMobilePanelOpen(true);
+
 
     // Show animation for 1.6 seconds, then reveal content and scroll
     setTimeout(() => {
@@ -347,7 +349,11 @@ export default function Home() {
   const settingsPanel = (
     <CardFooter className="flex-col items-start p-0 bg-[#f4fdff] md:rounded-lg">
       <TooltipProvider>
-        <Tabs value={defaultTab} className="w-full flex flex-col flex-grow flex-col-reverse md:flex-col">
+        <Tabs
+          value={defaultTab}
+          onValueChange={setDefaultTab}
+          className="w-full flex flex-col flex-col-reverse md:flex-col"
+        >
           <div className="flex-grow">
             <div className="md:hidden">
               {isMobilePanelOpen && (
@@ -804,34 +810,34 @@ export default function Home() {
 
       <main className="container mx-auto p-4 md:p-8 pt-0">
         <div className="flex flex-col items-center justify-center h-[90vh]">
-            <div className="space-y-6 max-w-[800px] mx-auto w-full">
-              <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
-              <div className="space-y-4">
-                  <Textarea
-                  id="text"
-                  placeholder="Paste your text here..."
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  rows={8}
-                  className="bg-[hsl(60,75%,97%)] text-[#2b323f] placeholder:text-gray-400 border-0"
-                  />
-                  <div className="flex items-center justify-end gap-4">
-                     <p className="text-xs text-[#fdfdf2]">{text.length} characters</p>
-                     <Button
-                        onClick={handleGenerate}
-                        disabled={isLoading}
-                        size="icon"
-                        className="rounded-full bg-primary hover:bg-[#2b323f]"
-                      >
-                        {isLoading ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <ArrowUp className="h-4 w-4" />
-                        )}
-                      </Button>
-                  </div>
-              </div>
+          <div className="space-y-6 max-w-[800px] mx-auto w-full">
+            <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
+            <div className="space-y-4">
+                <Textarea
+                id="text"
+                placeholder="Paste your text here..."
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                rows={8}
+                className="bg-[hsl(60,75%,97%)] text-[#2b323f] placeholder:text-gray-400 border-0"
+                />
+                <div className="flex items-center justify-end gap-4">
+                   <p className="text-xs text-[#fdfdf2]">{text.length} characters</p>
+                   <Button
+                      onClick={handleGenerate}
+                      disabled={isLoading}
+                      size="icon"
+                      className="rounded-full bg-primary hover:bg-[#2b323f]"
+                    >
+                      {isLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <ArrowUp className="h-4 w-4" />
+                      )}
+                    </Button>
+                </div>
             </div>
+          </div>
         </div>
         
         {isGeneratingAnimation && (
@@ -887,3 +893,5 @@ export default function Home() {
     </>
   );
 }
+
+    
