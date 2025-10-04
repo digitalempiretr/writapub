@@ -850,18 +850,17 @@ export default function Home() {
         )}
 
         { isClient && designs.length > 0 && (
-          <div id="designs-container" ref={designsRef} className="w-full pt-8 flex-grow flex flex-col items-center">
-            <div className="w-full md:max-w-4xl mx-auto">
-              <div className="text-2xl h-10 pt-1 text-[#f4fdff]">Designs</div>
-              <div className="items-start">
-                  <div>
-                    <Carousel className="w-full" setApi={setCarouselApi}>
-                      <CarouselContent>
+          <div id="designs-container" ref={designsRef} className="w-full pt-8 flex flex-col items-center">
+              <div className="w-full md:max-w-4xl mx-auto flex flex-col items-center">
+                <div className="text-2xl h-10 pt-1 text-[#f4fdff]">Designs</div>
+                  <div className="h-[80vh] w-auto">
+                    <Carousel className="w-full h-full" setApi={setCarouselApi}>
+                      <CarouselContent className="h-full">
                         {designs.map((design, index) => (
                           <CarouselItem key={index} data-index={index}>
-                            <div className="p-1">
-                              <Card className="overflow-hidden border-0">
-                                <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
+                            <div className="p-1 h-full">
+                              <Card className="overflow-hidden border-0 h-full">
+                                <CardContent className="p-0 aspect-[1080/1350] relative bg-card h-full">
                                   {renderCanvas(design, index)}
                                 </CardContent>
                               </Card>
@@ -879,7 +878,6 @@ export default function Home() {
                   </div>
               </div>
             </div>
-          </div>
         )}
       </main>
 
