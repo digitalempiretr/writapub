@@ -851,9 +851,9 @@ export default function Home() {
 
         { isClient && designs.length > 0 && (
           <div id="designs-container" ref={designsRef} className="w-full pt-8 flex flex-col items-center">
-              <div className="w-full md:max-w-4xl mx-auto flex flex-col items-center">
+              <div className="w-full mx-auto flex flex-col items-center">
                 <div className="text-2xl h-10 pt-1 text-[#f4fdff]">Designs</div>
-                  <div className="h-[70vh] w-auto">
+                  <div className="w-auto max-h-[70vh]">
                     <Carousel className="w-full h-full" setApi={setCarouselApi}>
                       <CarouselContent className="h-full">
                         {designs.map((design, index) => (
@@ -873,7 +873,7 @@ export default function Home() {
                     </Carousel>
                   </div>
                   {/* Desktop Settings Panel */}
-                  <div className="w-full mt-6 hidden md:block">
+                  <div className="w-full mt-6 hidden md:block md:max-w-4xl">
                     {settingsPanel}
                   </div>
               </div>
