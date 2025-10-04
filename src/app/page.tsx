@@ -206,8 +206,7 @@ export default function Home() {
       newDesigns.push({ text: finalBody, isTitle: false });
     }
     setDesigns(newDesigns);
-    setIsMobilePanelOpen(true);
-
+    
 
     // Show animation for 1.6 seconds, then reveal content and scroll
     setTimeout(() => {
@@ -852,7 +851,7 @@ export default function Home() {
         { isClient && designs.length > 0 && (
           <div id="designs-container" ref={designsRef} className="w-full pt-8 flex flex-col items-center">
               <div className="w-full mx-auto flex flex-col items-center">
-                  <div className="w-full max-w-md">
+                  <div className="w-full max-w-md max-h-[70vh]">
                     <Carousel className="w-full" setApi={setCarouselApi}>
                       <CarouselContent>
                         {designs.map((design, index) => (
@@ -889,5 +888,7 @@ export default function Home() {
     </>
   );
 }
+
+    
 
     
