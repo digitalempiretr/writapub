@@ -853,7 +853,7 @@ export default function Home() {
           <div id="designs-container" ref={designsRef} className="w-full pt-8 flex flex-col items-center">
               <div className="w-full md:max-w-4xl mx-auto flex flex-col items-center">
                 <div className="text-2xl h-10 pt-1 text-[#f4fdff]">Designs</div>
-                  <div className="h-[80vh] w-auto">
+                  <div className="h-[70vh] w-auto">
                     <Carousel className="w-full h-full" setApi={setCarouselApi}>
                       <CarouselContent className="h-full">
                         {designs.map((design, index) => (
