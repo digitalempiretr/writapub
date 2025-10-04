@@ -350,8 +350,7 @@ export default function Home() {
     <CardFooter className="flex-col items-start p-0 bg-[#f4fdff] md:rounded-lg">
       <TooltipProvider>
         <Tabs
-          value={defaultTab}
-          onValueChange={setDefaultTab}
+          defaultValue={defaultTab}
           className="w-full flex flex-col flex-col-reverse md:flex-col"
         >
           <div className="flex-grow">
@@ -809,7 +808,7 @@ export default function Home() {
       </header>
 
       <main className="container mx-auto p-4 md:p-8 pt-0">
-        <div className="flex flex-col items-center justify-center h-[90vh]">
+        <div className="flex flex-col items-center justify-center min-h-[90vh]">
           <div className="space-y-6 max-w-[800px] mx-auto w-full">
             <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
             <div className="space-y-4">
