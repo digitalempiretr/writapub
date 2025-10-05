@@ -527,6 +527,25 @@ export default function Home() {
               </TabsContent>
               <TabsContent value="image" className="pt-4 space-y-4">
               <div className="space-y-2">
+                  <Label>Ready-made Images</Label>
+                    <Carousel
+                      opts={{
+                        align: "start",
+                      }}
+                      className="w-full"
+                    >
+                      <CarouselContent className="-ml-2">
+                        {imageTemplates.map((template) => (
+                          <CarouselItem key={template.name} className="basis-1/3 md:basis-1/4 pl-2">
+                            <button onClick={() => setImageBgUrl(template.imageUrl)} className="w-full">
+                              <Image src={template.imageUrl} alt={template.name} width={200} height={250} className="object-cover aspect-[2/3] rounded-md w-full" />
+                            </button>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                    </Carousel>
+                </div>
+              <div className="space-y-2">
                   <Label>Inspiring Search</Label>
                   <Carousel
                     opts={{
@@ -888,6 +907,8 @@ export default function Home() {
     </>
   );
 }
+
+    
 
     
 
