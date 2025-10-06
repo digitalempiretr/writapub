@@ -108,7 +108,8 @@ overlayOpacity,
   currentSlide,
   handleDownload,
   gradientBg,
-  setGradientBg
+  setGradientBg,
+  setSearchCarouselApi,
 }: {
   activeTab: string;
   backgroundTab: string;
@@ -146,6 +147,7 @@ overlayOpacity,
   handleDownload: (index: number) => void;
   gradientBg: string;
   setGradientBg: (css: string) => void;
+  setSearchCarouselApi: (api: CarouselApi | undefined) => void;
 }) {
   const baseId = useId();
   return (
@@ -294,6 +296,7 @@ overlayOpacity,
                       align: "start",
                     }}
                     className="w-full"
+                    setApi={setSearchCarouselApi}
                   >
                   <CarouselContent className="-ml-2">
                     {searchedImages.map((imageUrl, index) => (
@@ -549,6 +552,7 @@ export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [isGeneratingAnimation, setIsGeneratingAnimation] = useState(false);
   const [carouselApi, setCarouselApi] = useState<CarouselApi | undefined>();
+  const [searchCarouselApi, setSearchCarouselApi] = useState<CarouselApi | undefined>();
   const [currentSlide, setCurrentSlide] = useState(0);
   const mainTextAreaId = useId();
 
@@ -723,12 +727,21 @@ export default function Home() {
     }
     try {
       const result = await findImages({ query: searchQuery, page: page, per_page: 6 });
+      let updatedImages;
       if (page > 2) {
-          setSearchedImages(prev => [...prev.slice(6), ...result.imageUrls]);
+          updatedImages = [...searchedImages.slice(6), ...result.imageUrls];
       } else {
-          setSearchedImages(prev => [...prev, ...result.imageUrls]);
+          updatedImages = [...searchedImages, ...result.imageUrls];
       }
+      setSearchedImages(updatedImages);
       setSearchPage(page);
+
+      if (page > 1) {
+        setTimeout(() => {
+          searchCarouselApi?.scrollTo(updatedImages.length - 6);
+        }, 100);
+      }
+
     } catch (error) {
       console.error(error);
       toast({
@@ -851,7 +864,8 @@ export default function Home() {
     currentSlide,
     handleDownload,
     gradientBg,
-    setGradientBg
+    setGradientBg,
+    setSearchCarouselApi
   };
 
   const settingsPanel = (
