@@ -455,7 +455,7 @@ export default function Home() {
                   <CarouselContent>
                     <CarouselItem className="basis-1/3 md:basis-1/4">
                       <div className="relative h-32 w-full">
-                        <div className="h-full w-full flex items-center justify-center bg-gray-100 rounded-md border">
+                        <div className="h-full w-full flex items-center justify-center bg-gray-100 rounded-md border" style={{ backgroundColor: bgColor }}>
                           <Plus className="h-8 w-8 text-gray-600" />
                         </div>
                         <Input
@@ -593,7 +593,7 @@ export default function Home() {
                       <TooltipTrigger asChild>
                         <div className="relative">
                           <Button variant="outline" size="icon">
-                            <BgOverlayIcon />
+                            <BgOverlayIcon color={overlayColor} />
                           </Button>
                           <Input
                             type="color"
@@ -653,7 +653,7 @@ export default function Home() {
                   <TooltipTrigger asChild>
                     <div className="relative">
                       <Button variant="outline" size="icon">
-                        <TextColorChooseIcon />
+                        <TextColorChooseIcon color={textColor} />
                       </Button>
                        <Input
                         type="color"
@@ -726,7 +726,7 @@ export default function Home() {
                   <TooltipTrigger asChild>
                      <div className="relative">
                        <Button variant="outline" size="icon">
-                        <TextBgBoxIcon />
+                        <TextBgBoxIcon color={rectBgColor}/>
                       </Button>
                       <Input
                         type="color"
@@ -895,3 +895,4 @@ export default function Home() {
     
 
     
+
