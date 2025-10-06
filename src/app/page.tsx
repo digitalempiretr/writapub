@@ -454,7 +454,7 @@ export default function Home() {
                 <Carousel className="w-full">
                   <CarouselContent>
                     <CarouselItem className="basis-1/3 md:basis-1/4">
-                      <div className="relative h-32 w-full cursor-pointer">
+                      <div className="relative h-32 w-full">
                         <div className="h-full w-full flex items-center justify-center bg-gray-100 rounded-md border">
                           <Plus className="h-8 w-8 text-gray-600" />
                         </div>
@@ -620,7 +620,7 @@ export default function Home() {
                           <p>Overlay Opacity</p>
                         </TooltipContent>
                       </Tooltip>
-                      <PopoverContent className="w-56 space-y-4">
+                      <PopoverContent className="w-56 space-y-4" onInteractOutside={(e) => e.preventDefault()}>
                         <div className="space-y-2">
                           <Label>Overlay Opacity</Label>
                           <div className="flex items-center gap-2">
@@ -723,7 +723,7 @@ export default function Home() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="relative">
-                      <Button variant="outline" size="icon">
+                       <Button variant="outline" size="icon">
                         <TextBgBoxIcon />
                       </Button>
                       <Input
@@ -751,7 +751,7 @@ export default function Home() {
                       <p>Text Box Opacity</p>
                     </TooltipContent>
                   </Tooltip>
-                  <PopoverContent className="w-56 space-y-4">
+                  <PopoverContent className="w-56 space-y-4" onInteractOutside={(e) => e.preventDefault()}>
                     <div className="space-y-2">
                       <Label>Transparency</Label>
                       <div className="flex items-center gap-2">
@@ -889,5 +889,7 @@ export default function Home() {
     </>
   );
 }
+
+    
 
     
