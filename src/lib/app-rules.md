@@ -14,6 +14,18 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.11
+
+#### ENGLISH
+### 1. Process & Definition Updates
+-   **Mobile View Definition:** A new non-negotiable core rule has been added. "Mobile View" is now officially defined as the layout that applies when the browser window width is less than 768px. This rule is now documented and implemented in the code.
+
+#### TURKCE
+### 1. Süreç ve Tanım Güncellemeleri
+-   **Mobil Görünüm Tanımı:** Değiştirilemez çekirdek kurallara yeni bir kural eklendi. "Mobil Görünüm" artık resmi olarak, tarayıcı pencere genişliği 768 pikselden daha küçük olduğunda geçerli olan düzen olarak tanımlanmıştır. Bu kural, hem dokümantasyona hem de koda işlenmiştir.
+
+---
+
 ## Version V1.10
 
 #### ENGLISH
@@ -193,6 +205,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 10. **Unified Layout & Carousel Behavior:** On all screen sizes, the control panel and the design preview area are displayed one below the other. The carousel navigation (slider arrows) must only affect the design previews, while the control panel below it remains static.
 11. **Initial View:** The main content input area should be vertically centered on the screen. The "Designs" section should be hidden by default and only appear after content generation.
 12. **Vertical Sizing:** The header should have a height of `10vh`, and the main content area should have a height of `90vh`.
+13. **Mobile View Definition:** The "Mobile View" is the layout that applies when the browser window width is less than 768px.
 
 #### Türkçe Çekirdek Kurallar
 1.  **Yapay Zeka Geliştirme Öncesi Kontrol:** Yapay zeka, herhangi bir geliştirmeye başlamadan önce, mevcut tüm kuralları ve projenin mevcut durumunu anlamak için `app-rules.md` dosyasını gözden geçirmelidir.
@@ -207,6 +220,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 10. **Birleşik Yerleşim ve Karusel Davranışı:** Tüm ekran boyutlarında, kontrol paneli ve tasarım önizleme alanı alt alta görüntülenmelidir. Karusel navigasyonu (kaydırma okları) sadece tasarım önizlemelerini etkilemeli, altındaki kontrol paneli ise sabit kalmalıdır.
 11. **Başlangıç Görünümü:** Ana içerik giriş alanı ekranın dikeyinde ortalanmalıdır. "Designs" bölümü varsayılan olarak gizli olmalı ve yalnızca içerik oluşturulduktan sonra görünmelidir.
 12. **Dikey Boyutlandırma:** Header `10vh` yüksekliğe, ana içerik alanı ise `90vh` yüksekliğe sahip olmalıdır.
+13. **Mobil Görünüm Tanımı:** "Mobil Görünüm", tarayıcı pencere genişliği 768 pikselden daha küçük olduğunda geçerli olan düzendir.
 
 #### ENGLISH
 
