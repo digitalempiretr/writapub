@@ -828,7 +828,7 @@ export default function Home() {
           textAlign={textAlign}
         />
     )
-  }, [backgroundTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, handleTextRemaining, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign]);
+  }, [backgroundTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, handleTextRemaining]);
 
   const tabContentProps = {
     activeTab: defaultTab,
@@ -1055,3 +1055,5 @@ export default function Home() {
     </>
   );
 }
+
+    
