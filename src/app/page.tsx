@@ -591,10 +591,10 @@ export default function Home() {
                   <div className="flex items-center gap-2">
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <div className="relative">
-                          <Button variant="outline" size="icon">
+                        <div className="relative h-10 w-10">
+                          <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
                             <BgOverlayIcon color={overlayColor} />
-                          </Button>
+                          </div>
                           <Input
                             type="color"
                             value={overlayColor}
@@ -651,10 +651,10 @@ export default function Home() {
               <div className="flex items-center gap-2 flex-grow">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="relative">
-                      <Button variant="outline" size="icon">
+                    <div className="relative h-10 w-10">
+                       <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
                         <TextColorChooseIcon color={textColor} />
-                      </Button>
+                      </div>
                        <Input
                         type="color"
                         value={textColor}
@@ -724,10 +724,10 @@ export default function Home() {
               <div className="flex items-center gap-2 flex-shrink-0">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                     <div className="relative">
-                       <Button variant="outline" size="icon">
+                     <div className="relative h-10 w-10">
+                       <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
                         <TextBgBoxIcon color={rectBgColor}/>
-                      </Button>
+                      </div>
                       <Input
                         type="color"
                         value={rectBgColor}
@@ -893,6 +893,3 @@ export default function Home() {
 }
 
     
-
-    
-
