@@ -643,14 +643,12 @@ export default function Home() {
                             </TooltipContent>
                         </Tooltip>
                         <PopoverContent className="w-auto p-0" onClick={(e) => e.stopPropagation()}>
-                            <div className="p-4">
-                                <Input
-                                type="color"
-                                value={overlayColor}
-                                onChange={(e) => setOverlayColor(e.target.value)}
-                                className="w-full h-12 cursor-pointer p-0"
-                                />
-                            </div>
+                            <Input
+                            type="color"
+                            value={overlayColor}
+                            onChange={(e) => setOverlayColor(e.target.value)}
+                            className="w-full h-12 cursor-pointer p-0"
+                            />
                         </PopoverContent>
                     </Popover>
                     <Popover>
@@ -710,14 +708,12 @@ export default function Home() {
                             </TooltipContent>
                         </Tooltip>
                          <PopoverContent className="w-auto p-0" onClick={(e) => e.stopPropagation()}>
-                            <div className="p-4">
-                                <Input
-                                    type="color"
-                                    value={textColor}
-                                    onChange={(e) => setTextColor(e.target.value)}
-                                    className="w-full h-12 cursor-pointer p-0"
-                                />
-                            </div>
+                            <Input
+                                type="color"
+                                value={textColor}
+                                onChange={(e) => setTextColor(e.target.value)}
+                                className="w-full h-12 cursor-pointer p-0"
+                            />
                          </PopoverContent>
                      </Popover>
                       <div className="flex-grow">
@@ -787,14 +783,12 @@ export default function Home() {
                               </TooltipContent>
                           </Tooltip>
                           <PopoverContent className="w-auto p-0" onClick={(e) => e.stopPropagation()}>
-                            <div className="p-4">
-                                <Input
-                                    type="color"
-                                    value={rectBgColor}
-                                    onChange={(e) => handleRectBgChange(e.target.value)}
-                                    className="w-full h-12 cursor-pointer p-0"
-                                />
-                            </div>
+                            <Input
+                                type="color"
+                                value={rectBgColor}
+                                onChange={(e) => handleRectBgChange(e.target.value)}
+                                className="w-full h-12 cursor-pointer p-0"
+                            />
                           </PopoverContent>
                       </Popover>
                       <Popover>
@@ -948,11 +942,3 @@ export default function Home() {
     </>
   );
 }
-
-    
-
-    
-
-    
-
-    
