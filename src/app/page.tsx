@@ -258,14 +258,12 @@ export default function Home() {
   };
 
   const handleKeywordSearch = (keyword: string) => {
-    setSearchQuery(keyword);
-    setSearchPage(1);
-    handleSearchImages(1);
+    setSearchQuery(keyword.toLowerCase());
   };
 
 
   useEffect(() => {
-    if (searchQuery && searchPage === 1) {
+    if (searchQuery) {
         handleSearchImages(1);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -435,8 +433,8 @@ export default function Home() {
           <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
             <Label>Background</Label>
             <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
-              <div className="flex w-full items-center gap-2">
-                <TabsList className="grid w-full flex-grow grid-cols-3">
+               <div className="flex items-center gap-2">
+                <TabsList className="grid flex-grow grid-cols-3">
                   <TabsTrigger value="flat">Solid Color</TabsTrigger>
                   <TabsTrigger value="gradient">Gradient</TabsTrigger>
                   <TabsTrigger value="image">Image</TabsTrigger>
@@ -456,16 +454,16 @@ export default function Home() {
                 <Carousel className="w-full">
                   <CarouselContent>
                     <CarouselItem className="basis-1/3 md:basis-1/4">
-                      <Card className="overflow-hidden cursor-pointer h-32 flex items-center justify-center bg-gray-100">
+                      <Card className="overflow-hidden cursor-pointer h-32 flex items-center justify-center bg-gray-100 relative">
                         <div className="relative h-16 w-16">
-                          <Plus className="h-8 w-8 text-gray-600 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-                          <Input
-                              type="color"
-                              value={bgColor}
-                              onChange={(e) => setBgColor(e.target.value)}
-                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                          />
+                            <Plus className="h-8 w-8 text-gray-600 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
                         </div>
+                        <Input
+                            type="color"
+                            value={bgColor}
+                            onChange={(e) => setBgColor(e.target.value)}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
                       </Card>
                     </CarouselItem>
                     {defaultSolidColors.map(color => (
@@ -530,7 +528,7 @@ export default function Home() {
                            <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleKeywordSearch(keyword.toLowerCase())}
+                            onClick={() => handleKeywordSearch(keyword)}
                           >
                             {keyword}
                           </Button>
@@ -594,15 +592,15 @@ export default function Home() {
                     <Tooltip>
                         <TooltipTrigger asChild>
                           <div className="relative">
-                            <Button variant="outline" size="icon">
-                                <BgOverlayIcon />
-                            </Button>
-                            <Input
-                                type="color"
-                                value={overlayColor}
-                                onChange={(e) => setOverlayColor(e.target.value)}
-                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                            />
+                              <Button variant="outline" size="icon">
+                                  <BgOverlayIcon />
+                              </Button>
+                              <Input
+                                  type="color"
+                                  value={overlayColor}
+                                  onChange={(e) => setOverlayColor(e.target.value)}
+                                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                              />
                           </div>
                         </TooltipTrigger>
                         <TooltipContent>
@@ -652,9 +650,9 @@ export default function Home() {
            <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
              <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-2 flex-grow">
-                      <Tooltip>
-                          <TooltipTrigger asChild>
-                              <div className="relative">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <div className="relative">
                                 <Button variant="outline" size="icon">
                                     <TextColorChooseIcon />
                                 </Button>
@@ -664,33 +662,33 @@ export default function Home() {
                                     onChange={(e) => setTextColor(e.target.value)}
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                 />
-                              </div>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                              <p>Select Text Color</p>
-                          </TooltipContent>
-                      </Tooltip>
-                      <div className="flex-grow">
-                          <Select value={activeFont.value} onValueChange={handleFontChange}>
-                              <Tooltip>
-                                  <TooltipTrigger asChild>
-                                      <SelectTrigger className="w-full flex-grow">
-                                          <SelectValue placeholder="Select Font" />
-                                      </SelectTrigger>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                      <p>Select Font</p>
-                                  </TooltipContent>
-                              </Tooltip>
-                              <SelectContent>
-                                  {fontOptions.map((font) => (
-                                      <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
-                                          {font.label}
-                                      </SelectItem>
-                                  ))}
-                              </SelectContent>
-                          </Select>
-                      </div>
+                            </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Select Text Color</p>
+                        </TooltipContent>
+                    </Tooltip>
+                    <div className="flex-grow">
+                        <Select value={activeFont.value} onValueChange={handleFontChange}>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <SelectTrigger className="w-full flex-grow">
+                                        <SelectValue placeholder="Select Font" />
+                                    </SelectTrigger>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Select Font</p>
+                                </TooltipContent>
+                            </Tooltip>
+                            <SelectContent>
+                                {fontOptions.map((font) => (
+                                    <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
+                                        {font.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
                   </div>
 
                   <DropdownMenu>
@@ -723,24 +721,24 @@ export default function Home() {
                   </DropdownMenu>
 
                   <div className="flex items-center gap-2 flex-shrink-0">
-                      <Tooltip>
-                          <TooltipTrigger asChild>
-                              <div className="relative">
-                                  <Button variant="outline" size="icon">
-                                      <TextBgBoxIcon />
-                                  </Button>
-                                  <Input
-                                      type="color"
-                                      value={rectBgColor}
-                                      onChange={(e) => handleRectBgChange(e.target.value)}
-                                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                  />
-                              </div>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                              <p>Text Box Color</p>
-                          </TooltipContent>
-                      </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <div className="relative">
+                                <Button variant="outline" size="icon">
+                                    <TextBgBoxIcon />
+                                </Button>
+                                <Input
+                                    type="color"
+                                    value={rectBgColor}
+                                    onChange={(e) => handleRectBgChange(e.target.value)}
+                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                />
+                            </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Text Box Color</p>
+                        </TooltipContent>
+                    </Tooltip>
                       <Popover>
                           <Tooltip>
                               <TooltipTrigger asChild>
@@ -892,3 +890,4 @@ export default function Home() {
     </>
   );
 }
+
