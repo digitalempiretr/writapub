@@ -454,11 +454,12 @@ export default function Home() {
                 <Carousel className="w-full">
                   <CarouselContent>
                     <CarouselItem className="basis-1/3 md:basis-1/4">
-                      <div className="relative h-32 w-full">
-                        <div className="h-full w-full flex items-center justify-center bg-gray-100 rounded-md border" style={{ backgroundColor: bgColor }}>
+                       <div className="relative h-32 w-full">
+                        <Label htmlFor="bg-color-picker" className="h-full w-full flex items-center justify-center bg-gray-100 rounded-md border" style={{ backgroundColor: bgColor }}>
                           <Plus className="h-8 w-8 text-gray-600" />
-                        </div>
+                        </Label>
                         <Input
+                          id="bg-color-picker"
                           type="color"
                           value={bgColor}
                           onChange={(e) => setBgColor(e.target.value)}
@@ -537,7 +538,9 @@ export default function Home() {
                     </CarouselContent>
                   </Carousel>
                   <div className="flex items-center space-x-2">
+                    <Label htmlFor="search-input" className="sr-only">Search for images</Label>
                     <Input
+                      id="search-input"
                       type="text"
                       placeholder="Search for images..."
                       value={searchQuery}
@@ -596,6 +599,8 @@ export default function Home() {
                             <BgOverlayIcon color={overlayColor} />
                           </div>
                           <Input
+                            id="overlay-color-picker"
+                            name="overlay-color-picker"
                             type="color"
                             value={overlayColor}
                             onChange={(e) => setOverlayColor(e.target.value)}
@@ -620,11 +625,13 @@ export default function Home() {
                           <p>Overlay Opacity</p>
                         </TooltipContent>
                       </Tooltip>
-                      <PopoverContent className="w-56 space-y-4" onInteractOutside={(e) => e.preventDefault()}>
+                      <PopoverContent className="w-56 space-y-4">
                         <div className="space-y-2">
-                          <Label>Overlay Opacity</Label>
+                          <Label htmlFor="overlay-opacity-slider">Overlay Opacity</Label>
                           <div className="flex items-center gap-2">
                             <Slider
+                              id="overlay-opacity-slider"
+                              name="overlay-opacity-slider"
                               max={1}
                               min={0}
                               step={0.01}
@@ -651,11 +658,13 @@ export default function Home() {
               <div className="flex items-center gap-2 flex-grow">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="relative h-10 w-10">
+                     <div className="relative h-10 w-10">
                        <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
                         <TextColorChooseIcon color={textColor} />
                       </div>
                        <Input
+                        id="text-color-picker"
+                        name="text-color-picker"
                         type="color"
                         value={textColor}
                         onChange={(e) => setTextColor(e.target.value)}
@@ -671,7 +680,7 @@ export default function Home() {
                   <Select value={activeFont.value} onValueChange={handleFontChange}>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <SelectTrigger className="w-full flex-grow">
+                        <SelectTrigger className="w-full flex-grow" id="font-select" aria-label="Select Font">
                           <SelectValue placeholder="Select Font" />
                         </SelectTrigger>
                       </TooltipTrigger>
@@ -729,6 +738,8 @@ export default function Home() {
                         <TextBgBoxIcon color={rectBgColor}/>
                       </div>
                       <Input
+                        id="rect-bg-color-picker"
+                        name="rect-bg-color-picker"
                         type="color"
                         value={rectBgColor}
                         onChange={(e) => handleRectBgChange(e.target.value)}
@@ -753,11 +764,13 @@ export default function Home() {
                       <p>Text Box Opacity</p>
                     </TooltipContent>
                   </Tooltip>
-                  <PopoverContent className="w-56 space-y-4" onInteractOutside={(e) => e.preventDefault()}>
+                  <PopoverContent className="w-56 space-y-4">
                     <div className="space-y-2">
-                      <Label>Transparency</Label>
+                      <Label htmlFor="rect-opacity-slider">Transparency</Label>
                       <div className="flex items-center gap-2">
                         <Slider
+                          id="rect-opacity-slider"
+                          name="rect-opacity-slider"
                           max={1}
                           min={0}
                           step={0.01}
@@ -814,8 +827,10 @@ export default function Home() {
           <div className="space-y-6 max-w-[800px] mx-auto w-full">
             <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
             <div className="space-y-4">
+                <Label htmlFor="main-text-area" className="sr-only">Main text area</Label>
                 <Textarea
-                id="text"
+                id="main-text-area"
+                name="main-text-area"
                 placeholder="Paste your text here..."
                 value={text}
                 onChange={(e) => setText(e.target.value)}
@@ -893,3 +908,5 @@ export default function Home() {
 }
 
     
+
+      
