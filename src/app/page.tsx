@@ -54,7 +54,7 @@ import { fontOptions } from "@/lib/font-options";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { defaultText } from "@/lib/default-text";
 import { Separator } from "@/components/ui/separator";
-import { TextColorChooseIcon, LayersIcon, TextBgBoxIcon, TextBoxOpacity } from '@/components/ui/icons';
+import { TextColorChooseIcon, BgOverlayIcon, TextBgBoxIcon, TextBoxOpacity } from '@/components/ui/icons';
 import {
   Command,
   CommandEmpty,
@@ -485,6 +485,7 @@ export default function Home() {
                                 type="color"
                                 value={bgColor}
                                 onChange={(e) => setBgColor(e.target.value)}
+                                onClick={(e) => e.stopPropagation()}
                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                               />
                             </div>
@@ -615,11 +616,12 @@ export default function Home() {
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button variant="outline" size="icon" className="relative">
-                              <LayersIcon />
+                              <BgOverlayIcon />
                               <Input
                               type="color"
                               value={overlayColor}
                               onChange={(e) => setOverlayColor(e.target.value)}
+                              onClick={(e) => e.stopPropagation()}
                               className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                               />
                           </Button>
@@ -679,6 +681,7 @@ export default function Home() {
                                       type="color"
                                       value={textColor}
                                       onChange={(e) => setTextColor(e.target.value)}
+                                      onClick={(e) => e.stopPropagation()}
                                       className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                                   />
                               </Button>
@@ -748,6 +751,7 @@ export default function Home() {
                                       type="color"
                                       value={rectBgColor}
                                       onChange={(e) => handleRectBgChange(e.target.value)}
+                                      onClick={(e) => e.stopPropagation()}
                                       className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                                   />
                               </Button>
@@ -907,6 +911,8 @@ export default function Home() {
     </>
   );
 }
+
+    
 
     
 
