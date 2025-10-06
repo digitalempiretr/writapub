@@ -14,6 +14,46 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.13
+
+#### ENGLISH
+### 1. Major Bug Fixes & UI Enhancements
+-   **Color Picker Interaction Fixed:** A persistent and critical bug where the native color picker would not open or would close immediately has been definitively resolved. The complex component wrappers (`Popover`, `DropdownMenu`) were removed. The solution now uses a standard and reliable HTML/CSS technique: a visually hidden `<Input type="color">` is positioned directly over its corresponding icon/swatch, ensuring clicks are correctly handled by the browser.
+-   **Dynamic Icon Colors:** Color picker icons now dynamically change their color to match the currently selected color, providing immediate visual feedback to the user.
+-   **Comprehensive Accessibility Fixes:** All "duplicate id" and "no label associated" console errors have been eliminated. This was achieved by programmatically generating unique IDs for all form elements using the `useId` hook and correctly associating them with their `<Label>` components via the `htmlFor` attribute.
+-   **Carousel Performance Optimization:** A major performance issue causing a "refresh" effect on every carousel scroll has been fixed. The `renderCanvas` function is now memoized with `useCallback`. This prevents unnecessary re-renders of the canvas images during scrolling, making the interaction smooth and fluid. The carousel now feels significantly more responsive.
+-   **Carousel "Free-Drag" Mode:** The `dragFree: true` option has been enabled for all carousels. This allows the carousel to slide with momentum after a swipe, creating a much more modern and satisfying "buttery smooth" scrolling experience.
+
+### 2. New Features & UX Improvements
+-   **Custom File Name for Downloads:** A text input field has been added to the "Download" tab, allowing users to specify a custom base name for their downloaded designs. Files are now saved as `[custom-name]-[slide-number].jpg`, or "writa-1.jpg" if no name is provided.
+-   **Text Color Palette:** A pre-defined color swatch carousel, identical to the one for background colors, has been added to the "Text Settings" tab, allowing for quick selection of text colors.
+-   **Auto-Scroll on Image Search:** When the "More" button is clicked in the image search results, the carousel now automatically scrolls to bring the newly loaded images into view.
+-   **Mobile UX - Scrollable Settings:** In mobile view (under 767px), the "Background" settings panel is now vertically scrollable if its content exceeds the screen height.
+-   **Mobile UX - Click Outside to Close:** In mobile view, the settings panel now automatically closes when the user taps anywhere outside of the panel area, providing a more intuitive navigation experience.
+
+### 3. Code Refactoring
+-   **Centralized Color Management:** All color definitions (palettes, default colors, gradients) have been moved from `page.tsx` into a new, dedicated `src/lib/colors.ts` file. This centralizes theme management and makes future style updates easier and more consistent.
+
+#### TURKCE
+### 1. Büyük Hata Düzeltmeleri ve Arayüz Geliştirmeleri
+-   **Renk Seçici Etkileşim Hatası Düzeltildi:** Tarayıcının yerel renk seçicisinin açılmamasına veya hemen kapanmasına neden olan inatçı ve kritik bir hata kesin olarak çözüldü. Karmaşık bileşen sarmalayıcıları (`Popover`, `DropdownMenu`) kaldırıldı. Çözüm artık standart ve güvenilir bir HTML/CSS tekniği kullanıyor: görsel olarak gizlenmiş bir `<Input type="color">` elemanı, ilgili ikonun/renk kutusunun tam üzerine konumlandırılarak tıklamaların tarayıcı tarafından doğru şekilde işlenmesi sağlandı.
+-   **Dinamik İkon Renkleri:** Renk seçici ikonları, artık seçili olan rengi yansıtacak şekilde dinamik olarak renk değiştirerek kullanıcıya anında görsel geri bildirim sağlıyor.
+-   **Kapsamlı Erişilebilirlik Düzeltmeleri:** Konsoldaki tüm "duplicate id" ve "no label associated" hataları giderildi. Bu, `useId` hook'u kullanılarak tüm form elemanları için programatik olarak benzersiz ID'ler oluşturarak ve bunları `htmlFor` özelliği aracılığıyla `<Label>` bileşenleriyle doğru şekilde ilişkilendirerek başarıldı.
+-   **Karusel Performans Optimizasyonu:** Karuselin her kaydırılmasında "yenileme" efektine neden olan büyük bir performans sorunu düzeltildi. `renderCanvas` fonksiyonu artık `useCallback` ile hafızaya alınıyor. Bu, kaydırma sırasında kanvas görsellerinin gereksiz yere yeniden çizilmesini engelleyerek etkileşimi akıcı hale getiriyor. Karusel artık belirgin şekilde daha hızlı ve tepkisel.
+-   **Karusel "Serbest Kaydırma" Modu:** Tüm karuseller için `dragFree: true` seçeneği etkinleştirildi. Bu, karuselin bir kaydırma hareketinden sonra momentumla kaymaya devam etmesini sağlayarak çok daha modern ve tatmin edici, "yağ gibi akan" bir kaydırma deneyimi yaratır.
+
+### 2. Yeni Özellikler ve Kullanıcı Deneyimi İyileştirmeleri
+-   **İndirmeler için Özel Dosya Adı:** "İndir" sekmesine, kullanıcıların indirdikleri tasarımlar için özel bir temel ad belirtmelerine olanak tanıyan bir metin giriş alanı eklendi. Dosyalar artık `[ozel-ad]-[slayt-numarasi].jpg` olarak veya bir ad belirtilmezse "writa-1.jpg" olarak kaydediliyor.
+-   **Metin Rengi Paleti:** Arka plan renkleri için kullanılanın aynısı olan, önceden tanımlanmış bir renk paleti karuseli, metin renklerinin hızlıca seçilmesini sağlamak için "Metin Ayarları" sekmesine eklendi.
+-   **Görsel Aramada Otomatik Kaydırma:** Görsel arama sonuçlarında "Daha Fazla" butonuna tıklandığında, karusel artık yeni yüklenen görselleri görüntü alanına getirmek için otomatik olarak kaydırılıyor.
+-   **Mobil UX - Kaydırılabilir Ayarlar:** Mobil görünümde (767px altı), "Arka Plan" ayarları panelinin içeriği ekran yüksekliğini aştığında artık dikey olarak kaydırılabiliyor.
+-   **Mobil UX - Dışarı Tıklayarak Kapatma:** Mobil görünümde, ayarlar paneli artık kullanıcı panel alanının dışındaki herhangi bir yere dokunduğunda otomatik olarak kapanarak daha sezgisel bir gezinme deneyimi sunuyor.
+
+### 3. Kod Yeniden Yapılandırması
+-   **Merkezi Renk Yönetimi:** Tüm renk tanımlamaları (paletler, varsayılan renkler, gradyanlar) `page.tsx` dosyasından yeni ve özel bir `src/lib/colors.ts` dosyasına taşındı. Bu, tema yönetimini merkezileştirir ve gelecekteki stil güncellemelerini daha kolay ve tutarlı hale getirir.
+
+---
+
 ## Version V1.12
 
 #### ENGLISH
