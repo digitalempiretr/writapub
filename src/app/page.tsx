@@ -137,6 +137,12 @@ export default function Home() {
   const [defaultTab, setDefaultTab] = useState('background');
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
 
+  const [isBgColorPopoverOpen, setBgColorPopoverOpen] = useState(false);
+  const [isOverlayColorPopoverOpen, setOverlayColorPopoverOpen] = useState(false);
+  const [isTextColorPopoverOpen, setTextColorPopoverOpen] = useState(false);
+  const [isRectBgColorPopoverOpen, setRectBgColorPopoverOpen] = useState(false);
+
+
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const designsRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -448,11 +454,13 @@ export default function Home() {
             <Label>Background</Label>
             <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
               <div className="flex items-center gap-2">
-                <TabsList className="grid w-full grid-cols-3 flex-grow">
-                  <TabsTrigger value="flat">Solid Color</TabsTrigger>
-                  <TabsTrigger value="gradient">Gradient</TabsTrigger>
-                  <TabsTrigger value="image">Image</TabsTrigger>
-                </TabsList>
+                <div className="flex-grow">
+                  <TabsList className="grid w-full grid-cols-3">
+                    <TabsTrigger value="flat">Solid Color</TabsTrigger>
+                    <TabsTrigger value="gradient">Gradient</TabsTrigger>
+                    <TabsTrigger value="image">Image</TabsTrigger>
+                  </TabsList>
+                </div>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button onClick={handleFeelLucky} variant="outline" size="icon" className="h-10 w-10 flex-shrink-0">
@@ -468,13 +476,13 @@ export default function Home() {
                 <Carousel className="w-full">
                   <CarouselContent>
                     <CarouselItem className="basis-1/4">
-                      <Popover>
+                      <Popover open={isBgColorPopoverOpen} onOpenChange={setBgColorPopoverOpen}>
                         <PopoverTrigger asChild>
                           <Card className="overflow-hidden cursor-pointer h-32 flex items-center justify-center bg-gray-100">
                             <Plus className="h-8 w-8 text-gray-600" />
                           </Card>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-2" align="start">
+                        <PopoverContent className="w-auto p-2" align="start" onClick={(e) => e.stopPropagation()}>
                           <div className="flex items-center gap-4">
                             <div className="relative">
                               <div
@@ -485,7 +493,6 @@ export default function Home() {
                                 type="color"
                                 value={bgColor}
                                 onChange={(e) => setBgColor(e.target.value)}
-                                onClick={(e) => e.stopPropagation()}
                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                               />
                             </div>
@@ -597,13 +604,22 @@ export default function Home() {
 
                 {searchedImages.length > 0 && (
                   <>
-                  <div className="grid grid-cols-3 gap-2">
-                    {searchedImages.map((imageUrl, index) => (
-                      <button key={index} onClick={() => setImageBgUrl(imageUrl)}>
-                        <Image src={imageUrl} alt={`Search Result ${index}`} width={200} height={250} className="object-cover aspect-[2/3] rounded-md" />
-                      </button>
-                    ))}
-                  </div>
+                  <Carousel
+                      opts={{
+                        align: "start",
+                      }}
+                      className="w-full"
+                    >
+                    <CarouselContent className="-ml-2">
+                      {searchedImages.map((imageUrl, index) => (
+                        <CarouselItem key={index} className="basis-1/3 md:basis-1/4 pl-2">
+                          <div onClick={() => setImageBgUrl(imageUrl)} className="cursor-pointer">
+                            <Image src={imageUrl} alt={`Search Result ${index}`} width={200} height={250} className="object-cover aspect-[2/3] rounded-md" />
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                  </Carousel>
                   <Button onClick={() => handleSearchImages(searchPage + 1)} disabled={isSearching} className="w-full">
                       {isSearching && searchPage > 1 ? <Loader2 className="h-4 w-4 animate-spin" /> : "More"}
                   </Button>
@@ -613,23 +629,30 @@ export default function Home() {
                 <div className="space-y-4 pt-4">
                   <Label>Overlay Settings</Label>
                   <div className="flex items-center gap-2">
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button variant="outline" size="icon" className="relative">
-                              <BgOverlayIcon />
-                              <Input
-                              type="color"
-                              value={overlayColor}
-                              onChange={(e) => setOverlayColor(e.target.value)}
-                              onClick={(e) => e.stopPropagation()}
-                              className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                              />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Select Overlay Color</p>
-                        </TooltipContent>
-                      </Tooltip>
+                    <Popover open={isOverlayColorPopoverOpen} onOpenChange={setOverlayColorPopoverOpen}>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <PopoverTrigger asChild>
+                                <Button variant="outline" size="icon" className="relative">
+                                    <BgOverlayIcon />
+                                </Button>
+                                </PopoverTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Select Overlay Color</p>
+                            </TooltipContent>
+                        </Tooltip>
+                        <PopoverContent className="w-auto p-0" onClick={(e) => e.stopPropagation()}>
+                            <div className="p-4">
+                                <Input
+                                type="color"
+                                value={overlayColor}
+                                onChange={(e) => setOverlayColor(e.target.value)}
+                                className="w-full h-12 cursor-pointer p-0"
+                                />
+                            </div>
+                        </PopoverContent>
+                    </Popover>
                     <Popover>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -673,23 +696,30 @@ export default function Home() {
            <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
              <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-2 flex-grow">
-                      <Tooltip>
-                          <TooltipTrigger asChild>
-                              <Button variant="outline" size="icon" className="relative">
-                                  <TextColorChooseIcon />
-                                  <Input
-                                      type="color"
-                                      value={textColor}
-                                      onChange={(e) => setTextColor(e.target.value)}
-                                      onClick={(e) => e.stopPropagation()}
-                                      className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                                  />
-                              </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                              <p>Select Text Color</p>
-                          </TooltipContent>
-                      </Tooltip>
+                     <Popover open={isTextColorPopoverOpen} onOpenChange={setTextColorPopoverOpen}>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <PopoverTrigger asChild>
+                                    <Button variant="outline" size="icon" className="relative">
+                                        <TextColorChooseIcon />
+                                    </Button>
+                                </PopoverTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Select Text Color</p>
+                            </TooltipContent>
+                        </Tooltip>
+                         <PopoverContent className="w-auto p-0" onClick={(e) => e.stopPropagation()}>
+                            <div className="p-4">
+                                <Input
+                                    type="color"
+                                    value={textColor}
+                                    onChange={(e) => setTextColor(e.target.value)}
+                                    className="w-full h-12 cursor-pointer p-0"
+                                />
+                            </div>
+                         </PopoverContent>
+                     </Popover>
                       <div className="flex-grow">
                           <Select value={activeFont.value} onValueChange={handleFontChange}>
                               <Tooltip>
@@ -743,23 +773,30 @@ export default function Home() {
                   </DropdownMenu>
 
                   <div className="flex items-center gap-2 flex-shrink-0">
-                      <Tooltip>
-                          <TooltipTrigger asChild>
-                              <Button variant="outline" size="icon" className="relative">
-                                  <TextBgBoxIcon />
-                                  <Input
-                                      type="color"
-                                      value={rectBgColor}
-                                      onChange={(e) => handleRectBgChange(e.target.value)}
-                                      onClick={(e) => e.stopPropagation()}
-                                      className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                                  />
-                              </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                              <p>Text Box Color</p>
-                          </TooltipContent>
-                      </Tooltip>
+                      <Popover open={isRectBgColorPopoverOpen} onOpenChange={setRectBgColorPopoverOpen}>
+                          <Tooltip>
+                              <TooltipTrigger asChild>
+                                  <PopoverTrigger asChild>
+                                      <Button variant="outline" size="icon" className="relative">
+                                          <TextBgBoxIcon />
+                                      </Button>
+                                  </PopoverTrigger>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                  <p>Text Box Color</p>
+                              </TooltipContent>
+                          </Tooltip>
+                          <PopoverContent className="w-auto p-0" onClick={(e) => e.stopPropagation()}>
+                            <div className="p-4">
+                                <Input
+                                    type="color"
+                                    value={rectBgColor}
+                                    onChange={(e) => handleRectBgChange(e.target.value)}
+                                    className="w-full h-12 cursor-pointer p-0"
+                                />
+                            </div>
+                          </PopoverContent>
+                      </Popover>
                       <Popover>
                           <Tooltip>
                               <TooltipTrigger asChild>
