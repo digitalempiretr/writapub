@@ -595,7 +595,21 @@ export default function Home() {
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const designsRef = useRef<HTMLDivElement>(null);
+  const mobilePanelRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMobilePanelOpen && mobilePanelRef.current && !mobilePanelRef.current.contains(event.target as Node)) {
+        setIsMobilePanelOpen(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobilePanelOpen]);
 
   const handleTextRemaining = useCallback((remaining: string, fromIndex: number) => {
     const nextDesignIndex = fromIndex + 1;
@@ -1016,7 +1030,7 @@ export default function Home() {
 
        {/* Mobile-only Fixed Bottom Settings Panel */}
        {isClient && designs.length > 0 && (
-          <div id="mobile-settings-panel" className="md:hidden">
+          <div id="mobile-settings-panel" ref={mobilePanelRef} className="md:hidden">
               {settingsPanel}
           </div>
         )}
