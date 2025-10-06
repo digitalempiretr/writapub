@@ -49,7 +49,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { gradientTemplates } from "@/lib/gradient-templates";
+import { gradientTemplates, defaultSolidColors, pageInitialColors } from "@/lib/colors";
 import { fontOptions } from "@/lib/font-options";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { defaultText } from "@/lib/default-text";
@@ -61,14 +61,6 @@ type Design = {
 };
 
 type TextAlign = 'left' | 'center' | 'right';
-
-const defaultSolidColors = [
-  '#000000', '#545454', '#737373', '#A6A6A6', '#B4B4B4', '#D9D9D9', '#FFFFFF',
-  '#FF3131', '#FF5757', '#FF66C4', '#E2A9F1', '#CB6CE6', '#8C52FF', '#5E17EB',
-  '#0097B2', '#0CC0DF', '#5CE1E6', '#38B6FF', '#5170FF', '#004AAD', '#1800AD',
-  '#00BF63', '#7ED957', '#C1FF72', '#FFDE59', '#FFBD59', '#FF914D', '#FF751F'
-];
-
 
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "Art", "Minimal", "Abstract"];
 
@@ -598,19 +590,19 @@ export default function Home() {
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'special-elite') || fontOptions[0]);
   const [textAlign, setTextAlign] = useState<TextAlign>('left');
   const [backgroundTab, setBackgroundTab] = useState("image");
-  const [bgColor, setBgColor] = useState("#f4fdff");
-  const [textColor, setTextColor] = useState("#0F2027");
-  const [gradientBg, setGradientBg] = useState(gradientTemplates[0].css);
+  const [bgColor, setBgColor] = useState(pageInitialColors.bgColor);
+  const [textColor, setTextColor] = useState(pageInitialColors.textColor);
+  const [gradientBg, setGradientBg] = useState(pageInitialColors.gradientBg);
   const [imageBgUrl, setImageBgUrl] = useState(imageTemplates[1].imageUrl);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchedImages, setSearchedImages] = useState<string[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchPage, setSearchPage] = useState(1);
 
-  const [rectBgColor, setRectBgColor] = useState("#7585A3");
+  const [rectBgColor, setRectBgColor] = useState(pageInitialColors.rectBgColor);
   const [rectOpacity, setRectOpacity] = useState(0);
 
-  const [overlayColor, setOverlayColor] = useState("#7585A3");
+  const [overlayColor, setOverlayColor] = useState(pageInitialColors.overlayColor);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   
   const [defaultTab, setDefaultTab] = useState('background');
