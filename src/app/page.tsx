@@ -174,7 +174,7 @@ overlayOpacity,
               </Tooltip>
             </div>
             <TabsContent value="flat" className="pt-4 space-y-4">
-              <Carousel className="w-full">
+              <Carousel className="w-full" opts={{ dragFree: true }}>
                 <CarouselContent>
                   <CarouselItem className="basis-1/3 md:basis-1/4">
                      <div className="relative h-32 w-full">
@@ -203,7 +203,7 @@ overlayOpacity,
               </Carousel>
             </TabsContent>
             <TabsContent value="gradient" className="pt-4 space-y-4">
-              <Carousel className="w-full">
+              <Carousel className="w-full" opts={{ dragFree: true }}>
                 <CarouselContent>
                   {gradientTemplates.map((gradient) => (
                     <CarouselItem key={gradient.name} className="basis-1/3 md:basis-1/4">
@@ -223,6 +223,7 @@ overlayOpacity,
                   <Carousel
                     opts={{
                       align: "start",
+                      dragFree: true,
                     }}
                     className="w-full"
                   >
@@ -294,6 +295,7 @@ overlayOpacity,
                 <Carousel
                     opts={{
                       align: "start",
+                      dragFree: true,
                     }}
                     className="w-full"
                     setApi={setSearchCarouselApi}
@@ -1017,7 +1019,7 @@ export default function Home() {
           <div id="designs-container" ref={designsRef} className="w-full pt-8 flex flex-col items-center">
               <div className="w-full mx-auto flex flex-col items-center">
                   <div className="w-full max-w-md max-h-[70vh]">
-                    <Carousel className="w-full" setApi={setCarouselApi}>
+                    <Carousel className="w-full" setApi={setCarouselApi} opts={{ dragFree: true }}>
                       <CarouselContent>
                         {designs.map((design, index) => (
                           <CarouselItem key={index} data-index={index}>
