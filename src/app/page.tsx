@@ -158,16 +158,6 @@ overlayOpacity,
                 <TabsTrigger value="gradient">Gradient</TabsTrigger>
                 <TabsTrigger value="image">Image</TabsTrigger>
               </TabsList>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button onClick={handleFeelLucky} variant="outline" size="icon" className="h-10 w-10 flex-shrink-0">
-                    <FeelLucky />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Feel Lucky</p>
-                </TooltipContent>
-              </Tooltip>
             </div>
             <TabsContent value="flat" className="pt-4 space-y-4">
               <Carousel className="w-full" opts={{ dragFree: true }}>
@@ -269,6 +259,17 @@ overlayOpacity,
                     onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
                     className="flex-grow"
                   />
+                   <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button onClick={handleFeelLucky} variant="outline" className="h-10">
+                        <FeelLucky />
+                        <span>Feel Lucky</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Feel Lucky</p>
+                    </TooltipContent>
+                  </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10 flex-shrink-0">
