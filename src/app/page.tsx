@@ -53,7 +53,7 @@ import { gradientTemplates } from "@/lib/gradient-templates";
 import { fontOptions } from "@/lib/font-options";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { defaultText } from "@/lib/default-text";
-import { TextColorChooseIcon, BgOverlayIcon, TextBgBoxIcon, TextBoxOpacity } from '@/components/ui/icons';
+import { TextColorChooseIcon, BgOverlayIcon, TextBgBoxIcon, TextBoxOpacity, FeelLucky } from '@/components/ui/icons';
 
 type Design = {
   text: string;
@@ -152,7 +152,7 @@ overlayOpacity,
     <>
       {activeTab === 'background' && (
         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4 mobile-tab-content">
-          <Label>Background</Label>
+          <Label className="bg-zinc-200 p-2 px-6 rounded-md">BACKGROUND SETTINGS</Label>
           <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
              <div className="flex items-center gap-2">
               <TabsList className="grid flex-grow grid-cols-3">
@@ -163,11 +163,11 @@ overlayOpacity,
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button onClick={handleFeelLucky} variant="outline" size="icon" className="h-10 w-10 flex-shrink-0">
-                    <Dice5 className="h-6 w-6" />
+                    <FeelLucky />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>I'm Feeling Lucky</p>
+                  <p>Feel Lucky</p>
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -376,6 +376,7 @@ overlayOpacity,
       )}
       {activeTab === 'text' && (
         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
+          <Label className="bg-zinc-200 p-2 px-6 rounded-md">TEXT SETTINGS</Label>
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2 flex-grow">
               <Tooltip>
@@ -513,6 +514,7 @@ overlayOpacity,
       )}
       {activeTab === 'download' && (
         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
+          <Label className="bg-zinc-200 p-2 px-6 rounded-md">DOWNLOAD SETTINGS</Label>
             <div className="flex justify-around items-center">
               <Button
                 variant="ghost"
