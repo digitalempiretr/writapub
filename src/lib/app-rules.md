@@ -14,6 +14,22 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.12
+
+#### ENGLISH
+### 1. Bug Fixes & UI Improvements
+-   **Color Picker Fix (Final):** Resolved a persistent bug where the browser's native color picker would immediately close upon interaction. The problematic `Popover` and `DropdownMenu` wrappers have been completely removed. The fix was implemented by placing a visually hidden `<Input type="color">` directly over the clickable icon/swatch using relative and absolute positioning. This standard HTML/CSS technique ensures that clicking the icon directly and reliably opens the native color palette without any interference from other components. This solution has been applied to all color pickers in the application.
+-   **Dynamic Icon Color:** The color picker icons (`TextColorChooseIcon`, `BgOverlayIcon`, `TextBgBoxIcon`) now dynamically update to reflect the currently selected color. This provides immediate visual feedback to the user.
+-   **Accessibility Fixes:** Corrected multiple accessibility issues reported by the browser console. All form fields (`Input`, `Textarea`, `Slider`) are now properly associated with their corresponding `<Label>` elements using unique `id` and `htmlFor` attributes, eliminating "duplicate id" and "no label associated" errors.
+
+#### TURKCE
+### 1. Hata Düzeltmeleri ve Arayüz İyileştirmeleri
+-   **Renk Seçici Hatası (Nihai Çözüm):** Tarayıcının yerel renk seçicisinin etkileşim anında hemen kapanmasına neden olan inatçı bir hata çözüldü. Sorunlu `Popover` ve `DropdownMenu` sarmalayıcıları tamamen kaldırıldı. Çözüm, görsel olarak gizlenmiş bir `<Input type="color">` elemanını, göreli ve mutlak konumlandırma kullanarak tıklanabilir ikon/renk kutusunun tam üzerine yerleştirerek uygulandı. Bu standart HTML/CSS tekniği, ikona tıklamanın, diğer bileşenlerden etkilenmeden doğrudan ve güvenilir bir şekilde yerel renk paletini açmasını sağlar. Bu çözüm, uygulamadaki tüm renk seçicilere uygulanmıştır.
+-   **Dinamik İkon Rengi:** Renk seçici ikonları (`TextColorChooseIcon`, `BgOverlayIcon`, `TextBgBoxIcon`) artık seçili olan rengi yansıtacak şekilde dinamik olarak güncelleniyor. Bu, kullanıcıya anında görsel bir geri bildirim sağlar.
+-   **Erişilebilirlik Düzeltmeleri:** Tarayıcı konsolunda bildirilen çok sayıda erişilebilirlik sorunu düzeltildi. Tüm form alanları (`Input`, `Textarea`, `Slider`) artık benzersiz `id` ve `htmlFor` öznitelikleri kullanılarak ilgili `<Label>` elemanlarıyla doğru bir şekilde ilişkilendirilerek "yinelenen id" ve "ilişkili etiket yok" hataları giderildi.
+
+---
+
 ## Version V1.11
 
 #### ENGLISH
