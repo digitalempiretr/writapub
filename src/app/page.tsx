@@ -151,7 +151,7 @@ overlayOpacity,
   return (
     <>
       {activeTab === 'background' && (
-        <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
+        <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4 mobile-tab-content">
           <Label>Background</Label>
           <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
              <div className="flex items-center gap-2">
@@ -1023,5 +1023,3 @@ export default function Home() {
     </>
   );
 }
-
-    

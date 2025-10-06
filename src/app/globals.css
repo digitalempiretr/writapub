@@ -126,6 +126,11 @@ body {
     flex-direction: column;
   }
 
+  .mobile-tab-content {
+    overflow-y: auto;
+    max-height: 50vh; /* Adjust as needed */
+  }
+
   #designs-container {
     padding-bottom: 170px; /* Adjust this value to be larger than the tab list height */
   }
