@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 export const metadata: Metadata = {
   title: 'Writa',
   description: 'Are You Writa?',
+  icons: false,
 };
 
 export default function RootLayout({

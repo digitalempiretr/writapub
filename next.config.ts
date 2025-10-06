@@ -42,6 +42,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  webpack: (config, {isServer}) => {
+    // This is to fix a bug in Next.js where it tries to load a favicon chunk.
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      './favicon.ico.mjs': false,
+    };
+    return config;
+  },
 };
 
 export default nextConfig;

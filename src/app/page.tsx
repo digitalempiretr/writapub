@@ -117,7 +117,7 @@ export default function Home() {
   const [textAlign, setTextAlign] = useState<TextAlign>('left');
   const [backgroundTab, setBackgroundTab] = useState("image");
   const [bgColor, setBgColor] = useState("#f4fdff");
-  const [textColor, setTextColor] = useState("#0F2027");
+  const [textColor, setTextColor] useState("#0F2027");
   const [gradientBg, setGradientBg] = useState(gradientTemplates[0].css);
   const [imageBgUrl, setImageBgUrl] = useState(imageTemplates[1].imageUrl);
   const [searchQuery, setSearchQuery] = useState("");
@@ -136,12 +136,6 @@ export default function Home() {
   
   const [defaultTab, setDefaultTab] = useState('background');
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
-
-  const [isBgColorPopoverOpen, setBgColorPopoverOpen] = useState(false);
-  const [isOverlayColorPopoverOpen, setOverlayColorPopoverOpen] = useState(false);
-  const [isTextColorPopoverOpen, setTextColorPopoverOpen] = useState(false);
-  const [isRectBgColorPopoverOpen, setRectBgColorPopoverOpen] = useState(false);
-
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const designsRef = useRef<HTMLDivElement>(null);
@@ -455,7 +449,7 @@ export default function Home() {
             <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
               <div className="flex items-center gap-2">
                 <div className="flex-grow">
-                  <TabsList className="grid w-full grid-cols-3">
+                  <TabsList className="grid w-full grid-cols-3 flex-grow">
                     <TabsTrigger value="flat">Solid Color</TabsTrigger>
                     <TabsTrigger value="gradient">Gradient</TabsTrigger>
                     <TabsTrigger value="image">Image</TabsTrigger>
@@ -475,14 +469,14 @@ export default function Home() {
               <TabsContent value="flat" className="pt-4 space-y-4">
                 <Carousel className="w-full">
                   <CarouselContent>
-                    <CarouselItem className="basis-1/4">
-                      <Popover open={isBgColorPopoverOpen} onOpenChange={setBgColorPopoverOpen}>
+                    <CarouselItem className="basis-1/3 md:basis-1/4">
+                      <Popover>
                         <PopoverTrigger asChild>
                           <Card className="overflow-hidden cursor-pointer h-32 flex items-center justify-center bg-gray-100">
                             <Plus className="h-8 w-8 text-gray-600" />
                           </Card>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-2" align="start" onClick={(e) => e.stopPropagation()}>
+                        <PopoverContent onInteractOutside={(e) => e.preventDefault()} className="w-auto p-2" align="start">
                           <div className="flex items-center gap-4">
                             <div className="relative">
                               <div
@@ -507,7 +501,7 @@ export default function Home() {
                       </Popover>
                     </CarouselItem>
                     {defaultSolidColors.map(color => (
-                      <CarouselItem key={color} className="basis-1/4">
+                      <CarouselItem key={color} className="basis-1/3 md:basis-1/4">
                         <Card className="overflow-hidden cursor-pointer" onClick={() => setBgColor(color)}>
                           <CardContent className="h-32" style={{ backgroundColor: color }} />
                         </Card>
@@ -522,7 +516,7 @@ export default function Home() {
                 <Carousel className="w-full">
                   <CarouselContent>
                     {gradientTemplates.map((gradient) => (
-                      <CarouselItem key={gradient.name} className="basis-1/4">
+                      <CarouselItem key={gradient.name} className="basis-1/3 md:basis-1/4">
                         <Card className="overflow-hidden cursor-pointer" onClick={() => setGradientBg(gradient.css)}>
                           <CardContent className="h-32" style={{ background: gradient.css }} />
                         </Card>
@@ -546,7 +540,7 @@ export default function Home() {
                         {imageTemplates.map((template) => (
                           <CarouselItem key={template.name} className="basis-1/3 md:basis-1/4 pl-2">
                             <button onClick={() => setImageBgUrl(template.imageUrl)} className="w-full">
-                              <Image src={template.imageUrl} alt={template.name} width={200} height={250} className="object-cover aspect-[2/3] rounded-md w-full" />
+                              <Image src={template.imageUrl} alt={template.name} width={100} height={150} className="object-cover aspect-[2/3] rounded-md w-full" />
                             </button>
                           </CarouselItem>
                         ))}
@@ -565,7 +559,7 @@ export default function Home() {
                     <CarouselContent className="-ml-2">
                       {searchKeywords.map((keyword) => (
                         <CarouselItem key={keyword} className="basis-auto pl-2">
-                          <Button
+                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => handleKeywordSearch(keyword.toLowerCase())}
@@ -629,20 +623,20 @@ export default function Home() {
                 <div className="space-y-4 pt-4">
                   <Label>Overlay Settings</Label>
                   <div className="flex items-center gap-2">
-                    <Popover open={isOverlayColorPopoverOpen} onOpenChange={setOverlayColorPopoverOpen}>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <PopoverTrigger asChild>
-                                <Button variant="outline" size="icon" className="relative">
-                                    <BgOverlayIcon />
-                                </Button>
-                                </PopoverTrigger>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Select Overlay Color</p>
-                            </TooltipContent>
-                        </Tooltip>
-                        <PopoverContent className="w-auto p-0" onClick={(e) => e.stopPropagation()}>
+                    <Popover>
+                        <PopoverTrigger asChild>
+                          <Tooltip>
+                              <TooltipTrigger asChild>
+                                  <Button variant="outline" size="icon" className="relative">
+                                      <BgOverlayIcon />
+                                  </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                  <p>Select Overlay Color</p>
+                              </TooltipContent>
+                          </Tooltip>
+                        </PopoverTrigger>
+                        <PopoverContent onInteractOutside={(e) => e.preventDefault()} className="w-auto p-0">
                             <Input
                             type="color"
                             value={overlayColor}
@@ -694,20 +688,20 @@ export default function Home() {
            <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
              <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-2 flex-grow">
-                     <Popover open={isTextColorPopoverOpen} onOpenChange={setTextColorPopoverOpen}>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <PopoverTrigger asChild>
+                     <Popover>
+                        <PopoverTrigger asChild>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
                                     <Button variant="outline" size="icon" className="relative">
                                         <TextColorChooseIcon />
                                     </Button>
-                                </PopoverTrigger>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Select Text Color</p>
-                            </TooltipContent>
-                        </Tooltip>
-                         <PopoverContent className="w-auto p-0" onClick={(e) => e.stopPropagation()}>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Select Text Color</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </PopoverTrigger>
+                         <PopoverContent onInteractOutside={(e) => e.preventDefault()} className="w-auto p-0">
                             <Input
                                 type="color"
                                 value={textColor}
@@ -769,20 +763,20 @@ export default function Home() {
                   </DropdownMenu>
 
                   <div className="flex items-center gap-2 flex-shrink-0">
-                      <Popover open={isRectBgColorPopoverOpen} onOpenChange={setRectBgColorPopoverOpen}>
-                          <Tooltip>
-                              <TooltipTrigger asChild>
-                                  <PopoverTrigger asChild>
+                      <Popover>
+                          <PopoverTrigger asChild>
+                              <Tooltip>
+                                  <TooltipTrigger asChild>
                                       <Button variant="outline" size="icon" className="relative">
                                           <TextBgBoxIcon />
                                       </Button>
-                                  </PopoverTrigger>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                  <p>Text Box Color</p>
-                              </TooltipContent>
-                          </Tooltip>
-                          <PopoverContent className="w-auto p-0" onClick={(e) => e.stopPropagation()}>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                      <p>Text Box Color</p>
+                                  </TooltipContent>
+                              </Tooltip>
+                          </PopoverTrigger>
+                          <PopoverContent onInteractOutside={(e) => e.preventDefault()} className="w-auto p-0">
                             <Input
                                 type="color"
                                 value={rectBgColor}
