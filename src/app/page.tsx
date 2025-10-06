@@ -37,7 +37,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Dice5, Download, ImageIcon, Loader2, Plus, Search, Type } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, ImageIcon, Loader2, Plus, Search, Type } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState, useId } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -110,6 +110,8 @@ overlayOpacity,
   gradientBg,
   setGradientBg,
   setSearchCarouselApi,
+  fileName,
+  setFileName,
 }: {
   activeTab: string;
   backgroundTab: string;
@@ -148,6 +150,8 @@ overlayOpacity,
   gradientBg: string;
   setGradientBg: (css: string) => void;
   setSearchCarouselApi: (api: CarouselApi | undefined) => void;
+  fileName: string;
+  setFileName: (name: string) => void;
 }) {
   const baseId = useId();
   return (
@@ -520,7 +524,18 @@ overlayOpacity,
       {activeTab === 'download' && (
         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
           <Label className="bg-zinc-200 p-2 px-6 rounded-md">DOWNLOAD SETTINGS</Label>
-            <div className="flex justify-around items-center">
+            <div className="space-y-2">
+              <Label htmlFor={`${baseId}-file-name`}>File Name</Label>
+              <Input
+                id={`${baseId}-file-name`}
+                name="file-name"
+                type="text"
+                placeholder="Enter file name..."
+                value={fileName}
+                onChange={(e) => setFileName(e.target.value)}
+              />
+            </div>
+            <div className="flex justify-around items-center pt-2">
               <Button
                 variant="ghost"
                 size="sm"
@@ -600,6 +615,8 @@ export default function Home() {
   
   const [defaultTab, setDefaultTab] = useState('background');
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
+
+  const [fileName, setFileName] = useState("writa");
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const designsRef = useRef<HTMLDivElement>(null);
@@ -696,25 +713,25 @@ export default function Home() {
     }, 1618);
   }, [text, title, toast]);
   
-  const handleDownload = (index: number) => {
+  const handleDownload = useCallback((index: number) => {
     const canvas = canvasRefs.current[index];
     if (canvas) {
       const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
       const link = document.createElement("a");
       link.href = dataUrl;
-      link.download = `writa-${index + 1}.jpg`;
+      link.download = `${fileName || 'writa'}-${index + 1}.jpg`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     }
-  };
+  }, [fileName]);
 
-  const handleDownloadAll = () => {
+  const handleDownloadAll = useCallback(() => {
     if (designs.length === 0) return;
     designs.forEach((_, index) => {
       setTimeout(() => handleDownload(index), index * 300);
     });
-  };
+  }, [designs, handleDownload]);
 
   const handleFontChange = (value: string) => {
     const newFont = fontOptions.find(f => f.value === value) || fontOptions[0];
@@ -867,7 +884,9 @@ export default function Home() {
     handleDownload,
     gradientBg,
     setGradientBg,
-    setSearchCarouselApi
+    setSearchCarouselApi,
+    fileName,
+    setFileName
   };
 
   const settingsPanel = (
@@ -1055,5 +1074,3 @@ export default function Home() {
     </>
   );
 }
-
-    
