@@ -655,7 +655,7 @@ export default function Home() {
                       <Button variant="outline" size="icon">
                         <TextColorChooseIcon />
                       </Button>
-                      <Input
+                       <Input
                         type="color"
                         value={textColor}
                         onChange={(e) => setTextColor(e.target.value)}
@@ -693,11 +693,13 @@ export default function Home() {
               <DropdownMenu>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon">
-                      {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
-                      {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
-                      {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
-                    </Button>
+                     <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="icon">
+                        {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
+                        {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
+                        {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
+                      </Button>
+                    </DropdownMenuTrigger>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Text Alignment</p>
@@ -722,7 +724,7 @@ export default function Home() {
               <div className="flex items-center gap-2 flex-shrink-0">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="relative">
+                     <div className="relative">
                        <Button variant="outline" size="icon">
                         <TextBgBoxIcon />
                       </Button>
