@@ -436,13 +436,11 @@ export default function Home() {
             <Label>Background</Label>
             <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
               <div className="flex w-full items-center gap-2">
-                <div className="flex-grow">
-                  <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="flat">Solid Color</TabsTrigger>
-                    <TabsTrigger value="gradient">Gradient</TabsTrigger>
-                    <TabsTrigger value="image">Image</TabsTrigger>
-                  </TabsList>
-                </div>
+                <TabsList className="grid w-full flex-grow grid-cols-3">
+                  <TabsTrigger value="flat">Solid Color</TabsTrigger>
+                  <TabsTrigger value="gradient">Gradient</TabsTrigger>
+                  <TabsTrigger value="image">Image</TabsTrigger>
+                </TabsList>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button onClick={handleFeelLucky} variant="outline" size="icon" className="h-10 w-10 flex-shrink-0">
@@ -458,40 +456,17 @@ export default function Home() {
                 <Carousel className="w-full">
                   <CarouselContent>
                     <CarouselItem className="basis-1/3 md:basis-1/4">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Card className="overflow-hidden cursor-pointer h-32 flex items-center justify-center bg-gray-100">
-                              <Plus className="h-8 w-8 text-gray-600" />
-                          </Card>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent 
-                          className="w-auto p-2" 
-                          align="start"
-                          onCloseAutoFocus={(e) => e.preventDefault()}
-                        >
-                          <div className="flex items-center gap-4" onClick={(e) => e.stopPropagation()}>
-                            <div className="relative">
-                              <div
-                                className="w-6 h-6 rounded-full border"
-                                style={{ backgroundColor: bgColor }}
-                              />
-                              <Input
-                                type="color"
-                                value={bgColor}
-                                onChange={(e) => setBgColor(e.target.value)}
-                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                onClick={(e) => e.stopPropagation()}
-                              />
-                            </div>
-                            <Input
-                              type="text"
+                      <Card className="overflow-hidden cursor-pointer h-32 flex items-center justify-center bg-gray-100">
+                        <div className="relative h-16 w-16">
+                          <Plus className="h-8 w-8 text-gray-600 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                          <Input
+                              type="color"
                               value={bgColor}
                               onChange={(e) => setBgColor(e.target.value)}
-                              className="h-9 w-32"
-                            />
-                          </div>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          />
+                        </div>
+                      </Card>
                     </CarouselItem>
                     {defaultSolidColors.map(color => (
                       <CarouselItem key={color} className="basis-1/3 md:basis-1/4">
@@ -616,29 +591,24 @@ export default function Home() {
                 <div className="space-y-4 pt-4">
                   <Label>Overlay Settings</Label>
                   <div className="flex items-center gap-2">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                              <Button variant="outline" size="icon" className="relative">
-                                  <BgOverlayIcon />
-                              </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                              <p>Select Overlay Color</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent onCloseAutoFocus={(e) => e.preventDefault()} className="w-auto p-0">
-                          <Input
-                          type="color"
-                          value={overlayColor}
-                          onChange={(e) => setOverlayColor(e.target.value)}
-                          className="w-full h-12 cursor-pointer p-0"
-                          onClick={(e) => e.stopPropagation()}
-                          />
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="relative">
+                            <Button variant="outline" size="icon">
+                                <BgOverlayIcon />
+                            </Button>
+                            <Input
+                                type="color"
+                                value={overlayColor}
+                                onChange={(e) => setOverlayColor(e.target.value)}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Select Overlay Color</p>
+                        </TooltipContent>
+                    </Tooltip>
                     <Popover>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -682,29 +652,24 @@ export default function Home() {
            <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
              <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-2 flex-grow">
-                     <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button variant="outline" size="icon" className="relative">
-                                        <TextColorChooseIcon />
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>Select Text Color</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </DropdownMenuTrigger>
-                         <DropdownMenuContent onCloseAutoFocus={(e) => e.preventDefault()} className="w-auto p-0">
-                            <Input
-                                type="color"
-                                value={textColor}
-                                onChange={(e) => setTextColor(e.target.value)}
-                                className="w-full h-12 cursor-pointer p-0"
-                                onClick={(e) => e.stopPropagation()}
-                            />
-                         </DropdownMenuContent>
-                     </DropdownMenu>
+                      <Tooltip>
+                          <TooltipTrigger asChild>
+                              <div className="relative">
+                                <Button variant="outline" size="icon">
+                                    <TextColorChooseIcon />
+                                </Button>
+                                <Input
+                                    type="color"
+                                    value={textColor}
+                                    onChange={(e) => setTextColor(e.target.value)}
+                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                />
+                              </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                              <p>Select Text Color</p>
+                          </TooltipContent>
+                      </Tooltip>
                       <div className="flex-grow">
                           <Select value={activeFont.value} onValueChange={handleFontChange}>
                               <Tooltip>
@@ -758,29 +723,24 @@ export default function Home() {
                   </DropdownMenu>
 
                   <div className="flex items-center gap-2 flex-shrink-0">
-                      <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                              <Tooltip>
-                                  <TooltipTrigger asChild>
-                                      <Button variant="outline" size="icon" className="relative">
-                                          <TextBgBoxIcon />
-                                      </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                      <p>Text Box Color</p>
-                                  </TooltipContent>
-                              </Tooltip>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent onCloseAutoFocus={(e) => e.preventDefault()} className="w-auto p-0">
-                            <Input
-                                type="color"
-                                value={rectBgColor}
-                                onChange={(e) => handleRectBgChange(e.target.value)}
-                                className="w-full h-12 cursor-pointer p-0"
-                                onClick={(e) => e.stopPropagation()}
-                            />
-                          </DropdownMenuContent>
-                      </DropdownMenu>
+                      <Tooltip>
+                          <TooltipTrigger asChild>
+                              <div className="relative">
+                                  <Button variant="outline" size="icon">
+                                      <TextBgBoxIcon />
+                                  </Button>
+                                  <Input
+                                      type="color"
+                                      value={rectBgColor}
+                                      onChange={(e) => handleRectBgChange(e.target.value)}
+                                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                  />
+                              </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                              <p>Text Box Color</p>
+                          </TooltipContent>
+                      </Tooltip>
                       <Popover>
                           <Tooltip>
                               <TooltipTrigger asChild>
