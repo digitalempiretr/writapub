@@ -39,7 +39,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Dice5, Download, ImageIcon, Loader2, Plus, Search, Type } from "lucide-react";
 import Image from 'next/image';
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useId } from "react";
 import { CardTitle } from "@/components/ui/card";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -72,6 +72,473 @@ const defaultSolidColors = [
 
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "Art", "Minimal", "Abstract"];
 
+function TabContentContainer({
+  activeTab,
+  backgroundTab,
+  setBackgroundTab,
+  handleFeelLucky,
+  bgColor,
+  setBgColor,
+  imageBgUrl,
+  setImageBgUrl,
+  searchQuery,
+  setSearchQuery,
+  handleSearchImages,
+  isSearching,
+  searchedImages,
+  handleKeywordSearch,
+  searchPage,
+  overlayColor,
+  setOverlayColor,
+overlayOpacity,
+  setOverlayOpacity,
+  textColor,
+  setTextColor,
+  activeFont,
+  handleFontChange,
+  textAlign,
+  setTextAlign,
+  rectBgColor,
+  setRectBgColor,
+  handleRectBgChange,
+  rectOpacity,
+  setRectOpacity,
+  designs,
+  handleDownloadAll,
+  currentSlide,
+  handleDownload,
+  gradientBg,
+  setGradientBg
+}: {
+  activeTab: string;
+  backgroundTab: string;
+  setBackgroundTab: (value: string) => void;
+  handleFeelLucky: () => void;
+  bgColor: string;
+  setBgColor: (value: string) => void;
+  imageBgUrl: string;
+  setImageBgUrl: (url: string) => void;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  handleSearchImages: (page?: number) => void;
+  isSearching: boolean;
+  searchedImages: string[];
+  handleKeywordSearch: (keyword: string) => void;
+  searchPage: number;
+  overlayColor: string;
+  setOverlayColor: (color: string) => void;
+  overlayOpacity: number;
+  setOverlayOpacity: (opacity: number) => void;
+  textColor: string;
+  setTextColor: (color: string) => void;
+  activeFont: FontOption;
+  handleFontChange: (value: string) => void;
+  textAlign: TextAlign;
+  setTextAlign: (align: TextAlign) => void;
+  rectBgColor: string;
+  setRectBgColor: (color: string) => void;
+  handleRectBgChange: (color: string) => void;
+  rectOpacity: number;
+  setRectOpacity: (opacity: number) => void;
+  designs: Design[];
+  handleDownloadAll: () => void;
+  currentSlide: number;
+  handleDownload: (index: number) => void;
+  gradientBg: string;
+  setGradientBg: (css: string) => void;
+}) {
+  const baseId = useId();
+  return (
+    <>
+      {activeTab === 'background' && (
+        <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
+          <Label>Background</Label>
+          <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
+             <div className="flex items-center gap-2">
+              <TabsList className="grid flex-grow grid-cols-3">
+                <TabsTrigger value="flat">Solid Color</TabsTrigger>
+                <TabsTrigger value="gradient">Gradient</TabsTrigger>
+                <TabsTrigger value="image">Image</TabsTrigger>
+              </TabsList>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button onClick={handleFeelLucky} variant="outline" size="icon" className="h-10 w-10 flex-shrink-0">
+                    <Dice5 className="h-6 w-6" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>I'm Feeling Lucky</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+            <TabsContent value="flat" className="pt-4 space-y-4">
+              <Carousel className="w-full">
+                <CarouselContent>
+                  <CarouselItem className="basis-1/3 md:basis-1/4">
+                     <div className="relative h-32 w-full">
+                      <Label htmlFor={`${baseId}-bg-color-picker`} className="h-full w-full flex items-center justify-center bg-gray-100 rounded-md border" style={{ backgroundColor: bgColor }}>
+                        <Plus className="h-8 w-8 text-gray-600" />
+                      </Label>
+                      <Input
+                        id={`${baseId}-bg-color-picker`}
+                        type="color"
+                        value={bgColor}
+                        onChange={(e) => setBgColor(e.target.value)}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                    </div>
+                  </CarouselItem>
+                  {defaultSolidColors.map(color => (
+                    <CarouselItem key={color} className="basis-1/3 md:basis-1/4">
+                      <Card className="overflow-hidden cursor-pointer" onClick={() => setBgColor(color)}>
+                        <CardContent className="h-32" style={{ backgroundColor: color }} />
+                      </Card>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="-left-4" />
+                <CarouselNext className="-right-4" />
+              </Carousel>
+            </TabsContent>
+            <TabsContent value="gradient" className="pt-4 space-y-4">
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {gradientTemplates.map((gradient) => (
+                    <CarouselItem key={gradient.name} className="basis-1/3 md:basis-1/4">
+                      <Card className="overflow-hidden cursor-pointer" onClick={() => setGradientBg(gradient.css)}>
+                        <CardContent className="h-32" style={{ background: gradient.css }} />
+                      </Card>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="-left-4" />
+                <CarouselNext className="-right-4" />
+              </Carousel>
+            </TabsContent>
+            <TabsContent value="image" className="pt-4 space-y-4">
+            <div className="space-y-2">
+                <Label>Ready-made Images</Label>
+                  <Carousel
+                    opts={{
+                      align: "start",
+                    }}
+                    className="w-full"
+                  >
+                    <CarouselContent className="-ml-2">
+                      {imageTemplates.map((template) => (
+                        <CarouselItem key={template.name} className="basis-1/3 md:basis-1/4 pl-2">
+                          <button onClick={() => setImageBgUrl(template.imageUrl)} className="w-full">
+                            <Image src={template.imageUrl} alt={template.name} width={100} height={150} className="object-cover aspect-[2/3] rounded-md w-full" />
+                          </button>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                  </Carousel>
+              </div>
+            <div className="space-y-2">
+                <Label>Inspiring Search</Label>
+                <Carousel
+                  opts={{
+                    align: "start",
+                    dragFree: true,
+                  }}
+                  className="w-full"
+                >
+                  <CarouselContent className="-ml-2">
+                    {searchKeywords.map((keyword) => (
+                      <CarouselItem key={keyword} className="basis-auto pl-2">
+                         <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleKeywordSearch(keyword)}
+                        >
+                          {keyword}
+                        </Button>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                </Carousel>
+                <div className="flex items-center space-x-2">
+                  <Label htmlFor={`${baseId}-search-input`} className="sr-only">Search for images</Label>
+                  <Input
+                    id={`${baseId}-search-input`}
+                    name="search-input"
+                    type="text"
+                    placeholder="Search for images..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
+                    className="flex-grow"
+                  />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10 flex-shrink-0">
+                        {isSearching && searchPage === 1 ? (
+                          <Loader2 className="h-6 w-6 animate-spin" />
+                        ) : (
+                          <Search className="h-6 w-6" />
+                        )}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Search Images</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              </div>
+
+              {searchedImages.length > 0 && (
+                <>
+                <Carousel
+                    opts={{
+                      align: "start",
+                    }}
+                    className="w-full"
+                  >
+                  <CarouselContent className="-ml-2">
+                    {searchedImages.map((imageUrl, index) => (
+                      <CarouselItem key={index} className="basis-1/3 md:basis-1/4 pl-2">
+                        <div onClick={() => setImageBgUrl(imageUrl)} className="cursor-pointer">
+                          <Image src={imageUrl} alt={`Search Result ${index}`} width={200} height={250} className="object-cover aspect-[2/3] rounded-md" />
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                </Carousel>
+                <Button onClick={() => handleSearchImages(searchPage + 1)} disabled={isSearching} className="w-full">
+                    {isSearching && searchPage > 1 ? <Loader2 className="h-4 w-4 animate-spin" /> : "More"}
+                </Button>
+                </>
+              )}
+
+              <div className="space-y-4 pt-4">
+                <Label>Overlay Settings</Label>
+                <div className="flex items-center gap-2">
+                   <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="relative h-10 w-10">
+                        <Label htmlFor={`${baseId}-overlay-color-picker`} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
+                          <BgOverlayIcon color={overlayColor} />
+                        </Label>
+                        <Input
+                          id={`${baseId}-overlay-color-picker`}
+                          name="overlay-color-picker"
+                          type="color"
+                          value={overlayColor}
+                          onChange={(e) => setOverlayColor(e.target.value)}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Select Overlay Color</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <Popover>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" size="icon">
+                            <TextBoxOpacity />
+                          </Button>
+                        </PopoverTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Overlay Opacity</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    <PopoverContent className="w-56 space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor={`${baseId}-overlay-opacity-slider`}>Overlay Opacity</Label>
+                        <div className="flex items-center gap-2">
+                          <Slider
+                            id={`${baseId}-overlay-opacity-slider`}
+                            name="overlay-opacity-slider"
+                            max={1}
+                            min={0}
+                            step={0.01}
+                            value={[overlayOpacity]}
+                            onValueChange={(value) => setOverlayOpacity(value[0])}
+                            className="flex-grow"
+                          />
+                          <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
+                            {Math.round(overlayOpacity * 100)}
+                          </div>
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      )}
+      {activeTab === 'text' && (
+        <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2 flex-grow">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                   <div className="relative h-10 w-10">
+                    <Label htmlFor={`${baseId}-text-color-picker`} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
+                      <TextColorChooseIcon color={textColor} />
+                    </Label>
+                     <Input
+                      id={`${baseId}-text-color-picker`}
+                      name="text-color-picker"
+                      type="color"
+                      value={textColor}
+                      onChange={(e) => setTextColor(e.target.value)}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Select Text Color</p>
+                </TooltipContent>
+              </Tooltip>
+              <div className="flex-grow">
+                <Select value={activeFont.value} onValueChange={handleFontChange}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <SelectTrigger className="w-full flex-grow" id={`${baseId}-font-select`} aria-label="Select Font">
+                        <SelectValue placeholder="Select Font" />
+                      </SelectTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Select Font</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <SelectContent>
+                    {fontOptions.map((font) => (
+                      <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
+                        {font.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <DropdownMenu>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                   <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="icon">
+                      {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
+                      {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
+                      {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
+                    </Button>
+                  </DropdownMenuTrigger>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Text Alignment</p>
+                </TooltipContent>
+              </Tooltip>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => setTextAlign('left')}>
+                  <AlignLeft className="mr-2 h-4 w-4" />
+                  <span>Align Left</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTextAlign('center')}>
+                  <AlignCenter className="mr-2 h-4 w-4" />
+                  <span>Center</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTextAlign('right')}>
+                  <AlignRight className="mr-2 h-4 w-4" />
+                  <span>Align Right</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                   <div className="relative h-10 w-10">
+                     <Label htmlFor={`${baseId}-rect-bg-color-picker`} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
+                      <TextBgBoxIcon color={rectBgColor}/>
+                    </Label>
+                    <Input
+                      id={`${baseId}-rect-bg-color-picker`}
+                      name="rect-bg-color-picker"
+                      type="color"
+                      value={rectBgColor}
+                      onChange={(e) => handleRectBgChange(e.target.value)}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Text Box Color</p>
+                </TooltipContent>
+              </Tooltip>
+              <Popover>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" size="icon">
+                        <TextBoxOpacity />
+                      </Button>
+                    </PopoverTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Text Box Opacity</p>
+                  </TooltipContent>
+                </Tooltip>
+                <PopoverContent className="w-56 space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor={`${baseId}-rect-opacity-slider`}>Transparency</Label>
+                    <div className="flex items-center gap-2">
+                      <Slider
+                        id={`${baseId}-rect-opacity-slider`}
+                        name="rect-opacity-slider"
+                        max={1}
+                        min={0}
+                        step={0.01}
+                        value={[rectOpacity]}
+                        onValueChange={(value) => setRectOpacity(value[0])}
+                        className="flex-grow"
+                      />
+                      <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
+                        {Math.round(rectOpacity * 100)}
+                      </div>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+        </div>
+      )}
+      {activeTab === 'download' && (
+        <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
+            <div className="flex justify-around items-center">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleDownloadAll}
+                disabled={designs.length === 0}
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Download All
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleDownload(currentSlide)}
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Download This Design
+              </Button>
+            </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+
 export default function Home() {
   const [text, setText] = useState(defaultText);
   const [title, setTitle] = useState("");
@@ -81,6 +548,7 @@ export default function Home() {
   const [isGeneratingAnimation, setIsGeneratingAnimation] = useState(false);
   const [carouselApi, setCarouselApi] = useState<CarouselApi | undefined>();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const mainTextAreaId = useId();
 
   useEffect(() => {
     setIsClient(true)
@@ -331,6 +799,45 @@ export default function Home() {
     )
   }, [backgroundTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, handleTextRemaining, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign]);
 
+  const tabContentProps = {
+    activeTab: defaultTab,
+    backgroundTab,
+    setBackgroundTab,
+    handleFeelLucky,
+    bgColor,
+    setBgColor,
+    imageBgUrl,
+    setImageBgUrl,
+    searchQuery,
+    setSearchQuery,
+    handleSearchImages,
+    isSearching,
+    searchedImages,
+    handleKeywordSearch,
+    searchPage,
+    overlayColor,
+    setOverlayColor,
+    overlayOpacity,
+    setOverlayOpacity,
+    textColor,
+    setTextColor,
+    activeFont,
+    handleFontChange,
+    textAlign,
+    setTextAlign,
+    rectBgColor,
+    setRectBgColor,
+    handleRectBgChange,
+    rectOpacity,
+    setRectOpacity,
+    designs,
+    handleDownloadAll,
+    currentSlide,
+    handleDownload,
+    gradientBg,
+    setGradientBg
+  };
+
   const settingsPanel = (
     <CardFooter className="flex-col items-start p-0 bg-[#f4fdff] md:rounded-lg">
       <TooltipProvider>
@@ -404,20 +911,19 @@ export default function Home() {
             <div className="md:hidden">
               {isMobilePanelOpen && (
                 <TabsContent value={defaultTab} forceMount>
-                  {/* The content is the same, so we can reuse it */}
-                  <TabContentContainer />
+                  <TabContentContainer {...tabContentProps} />
                 </TabsContent>
               )}
             </div>
             <div className="hidden md:block">
               <TabsContent value="background">
-                <TabContentContainer />
+                <TabContentContainer {...tabContentProps} activeTab="background"/>
               </TabsContent>
               <TabsContent value="text">
-                <TabContentContainer />
+                <TabContentContainer {...tabContentProps} activeTab="text"/>
               </TabsContent>
               <TabsContent value="download">
-                <TabContentContainer />
+                <TabContentContainer {...tabContentProps} activeTab="download"/>
               </TabsContent>
             </div>
           </div>
@@ -426,395 +932,6 @@ export default function Home() {
     </CardFooter>
   );
 
-  function TabContentContainer() {
-    return (
-      <>
-        {defaultTab === 'background' && (
-          <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
-            <Label>Background</Label>
-            <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
-               <div className="flex items-center gap-2">
-                <TabsList className="grid flex-grow grid-cols-3">
-                  <TabsTrigger value="flat">Solid Color</TabsTrigger>
-                  <TabsTrigger value="gradient">Gradient</TabsTrigger>
-                  <TabsTrigger value="image">Image</TabsTrigger>
-                </TabsList>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button onClick={handleFeelLucky} variant="outline" size="icon" className="h-10 w-10 flex-shrink-0">
-                      <Dice5 className="h-6 w-6" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>I'm Feeling Lucky</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-              <TabsContent value="flat" className="pt-4 space-y-4">
-                <Carousel className="w-full">
-                  <CarouselContent>
-                    <CarouselItem className="basis-1/3 md:basis-1/4">
-                       <div className="relative h-32 w-full">
-                        <Label htmlFor="bg-color-picker" className="h-full w-full flex items-center justify-center bg-gray-100 rounded-md border" style={{ backgroundColor: bgColor }}>
-                          <Plus className="h-8 w-8 text-gray-600" />
-                        </Label>
-                        <Input
-                          id="bg-color-picker"
-                          type="color"
-                          value={bgColor}
-                          onChange={(e) => setBgColor(e.target.value)}
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        />
-                      </div>
-                    </CarouselItem>
-                    {defaultSolidColors.map(color => (
-                      <CarouselItem key={color} className="basis-1/3 md:basis-1/4">
-                        <Card className="overflow-hidden cursor-pointer" onClick={() => setBgColor(color)}>
-                          <CardContent className="h-32" style={{ backgroundColor: color }} />
-                        </Card>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious className="-left-4" />
-                  <CarouselNext className="-right-4" />
-                </Carousel>
-              </TabsContent>
-              <TabsContent value="gradient" className="pt-4 space-y-4">
-                <Carousel className="w-full">
-                  <CarouselContent>
-                    {gradientTemplates.map((gradient) => (
-                      <CarouselItem key={gradient.name} className="basis-1/3 md:basis-1/4">
-                        <Card className="overflow-hidden cursor-pointer" onClick={() => setGradientBg(gradient.css)}>
-                          <CardContent className="h-32" style={{ background: gradient.css }} />
-                        </Card>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious className="-left-4" />
-                  <CarouselNext className="-right-4" />
-                </Carousel>
-              </TabsContent>
-              <TabsContent value="image" className="pt-4 space-y-4">
-              <div className="space-y-2">
-                  <Label>Ready-made Images</Label>
-                    <Carousel
-                      opts={{
-                        align: "start",
-                      }}
-                      className="w-full"
-                    >
-                      <CarouselContent className="-ml-2">
-                        {imageTemplates.map((template) => (
-                          <CarouselItem key={template.name} className="basis-1/3 md:basis-1/4 pl-2">
-                            <button onClick={() => setImageBgUrl(template.imageUrl)} className="w-full">
-                              <Image src={template.imageUrl} alt={template.name} width={100} height={150} className="object-cover aspect-[2/3] rounded-md w-full" />
-                            </button>
-                          </CarouselItem>
-                        ))}
-                      </CarouselContent>
-                    </Carousel>
-                </div>
-              <div className="space-y-2">
-                  <Label>Inspiring Search</Label>
-                  <Carousel
-                    opts={{
-                      align: "start",
-                      dragFree: true,
-                    }}
-                    className="w-full"
-                  >
-                    <CarouselContent className="-ml-2">
-                      {searchKeywords.map((keyword) => (
-                        <CarouselItem key={keyword} className="basis-auto pl-2">
-                           <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleKeywordSearch(keyword)}
-                          >
-                            {keyword}
-                          </Button>
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                  </Carousel>
-                  <div className="flex items-center space-x-2">
-                    <Label htmlFor="search-input" className="sr-only">Search for images</Label>
-                    <Input
-                      id="search-input"
-                      type="text"
-                      placeholder="Search for images..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
-                      className="flex-grow"
-                    />
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10 flex-shrink-0">
-                          {isSearching && searchPage === 1 ? (
-                            <Loader2 className="h-6 w-6 animate-spin" />
-                          ) : (
-                            <Search className="h-6 w-6" />
-                          )}
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Search Images</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
-                </div>
-
-                {searchedImages.length > 0 && (
-                  <>
-                  <Carousel
-                      opts={{
-                        align: "start",
-                      }}
-                      className="w-full"
-                    >
-                    <CarouselContent className="-ml-2">
-                      {searchedImages.map((imageUrl, index) => (
-                        <CarouselItem key={index} className="basis-1/3 md:basis-1/4 pl-2">
-                          <div onClick={() => setImageBgUrl(imageUrl)} className="cursor-pointer">
-                            <Image src={imageUrl} alt={`Search Result ${index}`} width={200} height={250} className="object-cover aspect-[2/3] rounded-md" />
-                          </div>
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                  </Carousel>
-                  <Button onClick={() => handleSearchImages(searchPage + 1)} disabled={isSearching} className="w-full">
-                      {isSearching && searchPage > 1 ? <Loader2 className="h-4 w-4 animate-spin" /> : "More"}
-                  </Button>
-                  </>
-                )}
-
-                <div className="space-y-4 pt-4">
-                  <Label>Overlay Settings</Label>
-                  <div className="flex items-center gap-2">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="relative h-10 w-10">
-                          <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
-                            <BgOverlayIcon color={overlayColor} />
-                          </div>
-                          <Input
-                            id="overlay-color-picker"
-                            name="overlay-color-picker"
-                            type="color"
-                            value={overlayColor}
-                            onChange={(e) => setOverlayColor(e.target.value)}
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                          />
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Select Overlay Color</p>
-                      </TooltipContent>
-                    </Tooltip>
-                    <Popover>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <PopoverTrigger asChild>
-                            <Button variant="outline" size="icon">
-                              <TextBoxOpacity />
-                            </Button>
-                          </PopoverTrigger>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Overlay Opacity</p>
-                        </TooltipContent>
-                      </Tooltip>
-                      <PopoverContent className="w-56 space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="overlay-opacity-slider">Overlay Opacity</Label>
-                          <div className="flex items-center gap-2">
-                            <Slider
-                              id="overlay-opacity-slider"
-                              name="overlay-opacity-slider"
-                              max={1}
-                              min={0}
-                              step={0.01}
-                              value={[overlayOpacity]}
-                              onValueChange={(value) => setOverlayOpacity(value[0])}
-                              className="flex-grow"
-                            />
-                            <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
-                              {Math.round(overlayOpacity * 100)}
-                            </div>
-                          </div>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                </div>
-              </TabsContent>
-            </Tabs>
-          </div>
-        )}
-        {defaultTab === 'text' && (
-          <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2 flex-grow">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                     <div className="relative h-10 w-10">
-                       <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
-                        <TextColorChooseIcon color={textColor} />
-                      </div>
-                       <Input
-                        id="text-color-picker"
-                        name="text-color-picker"
-                        type="color"
-                        value={textColor}
-                        onChange={(e) => setTextColor(e.target.value)}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Select Text Color</p>
-                  </TooltipContent>
-                </Tooltip>
-                <div className="flex-grow">
-                  <Select value={activeFont.value} onValueChange={handleFontChange}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <SelectTrigger className="w-full flex-grow" id="font-select" aria-label="Select Font">
-                          <SelectValue placeholder="Select Font" />
-                        </SelectTrigger>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Select Font</p>
-                      </TooltipContent>
-                    </Tooltip>
-                    <SelectContent>
-                      {fontOptions.map((font) => (
-                        <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
-                          {font.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <DropdownMenu>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="icon">
-                        {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
-                        {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
-                        {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
-                      </Button>
-                    </DropdownMenuTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Text Alignment</p>
-                  </TooltipContent>
-                </Tooltip>
-                <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => setTextAlign('left')}>
-                    <AlignLeft className="mr-2 h-4 w-4" />
-                    <span>Align Left</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setTextAlign('center')}>
-                    <AlignCenter className="mr-2 h-4 w-4" />
-                    <span>Center</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setTextAlign('right')}>
-                    <AlignRight className="mr-2 h-4 w-4" />
-                    <span>Align Right</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                     <div className="relative h-10 w-10">
-                       <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
-                        <TextBgBoxIcon color={rectBgColor}/>
-                      </div>
-                      <Input
-                        id="rect-bg-color-picker"
-                        name="rect-bg-color-picker"
-                        type="color"
-                        value={rectBgColor}
-                        onChange={(e) => handleRectBgChange(e.target.value)}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Text Box Color</p>
-                  </TooltipContent>
-                </Tooltip>
-                <Popover>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" size="icon">
-                          <TextBoxOpacity />
-                        </Button>
-                      </PopoverTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Text Box Opacity</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  <PopoverContent className="w-56 space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="rect-opacity-slider">Transparency</Label>
-                      <div className="flex items-center gap-2">
-                        <Slider
-                          id="rect-opacity-slider"
-                          name="rect-opacity-slider"
-                          max={1}
-                          min={0}
-                          step={0.01}
-                          value={[rectOpacity]}
-                          onValueChange={(value) => setRectOpacity(value[0])}
-                          className="flex-grow"
-                        />
-                        <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
-                          {Math.round(rectOpacity * 100)}
-                        </div>
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </div>
-            </div>
-          </div>
-        )}
-        {defaultTab === 'download' && (
-          <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
-              <div className="flex justify-around items-center">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleDownloadAll}
-                  disabled={designs.length === 0}
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  Download All
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleDownload(currentSlide)}
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  Download This Design
-                </Button>
-              </div>
-          </div>
-        )}
-      </>
-    );
-  }
 
   return (
     <>
@@ -827,9 +944,9 @@ export default function Home() {
           <div className="space-y-6 max-w-[800px] mx-auto w-full">
             <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
             <div className="space-y-4">
-                <Label htmlFor="main-text-area" className="sr-only">Main text area</Label>
+                <Label htmlFor={mainTextAreaId} className="sr-only">Main text area</Label>
                 <Textarea
-                id="main-text-area"
+                id={mainTextAreaId}
                 name="main-text-area"
                 placeholder="Paste your text here..."
                 value={text}
@@ -906,7 +1023,3 @@ export default function Home() {
     </>
   );
 }
-
-    
-
-      
