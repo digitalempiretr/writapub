@@ -67,7 +67,7 @@ export const designTemplates: DesignTemplate[] = [
       opacity: 0.3,
     },
   },
-    {
+  {
     id: 'template-3',
     name: "Serene Gradient",
     previewImage: "https://i.ibb.co/k4H8kcn/template-3-preview.jpg",
@@ -88,4 +88,67 @@ export const designTemplates: DesignTemplate[] = [
       opacity: 0,
     },
   },
+  {
+    id: 'template-4',
+    name: "Minimalist Black",
+    previewImage: "https://i.ibb.co/pPZ7hys/image.png",
+    background: {
+      type: 'flat',
+      value: '#000000',
+    },
+    font: {
+      value: 'inter',
+      color: '#FFFFFF',
+    },
+    textBox: {
+      color: '#FFFFFF',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#000000',
+      opacity: 0,
+    },
+  },
+  {
+    id: 'template-5',
+    name: "Sunrise Gradient",
+    previewImage: "https://i.ibb.co/yQWJzC6/image.png",
+    background: {
+      type: 'gradient',
+      value: gradientTemplates.find(g => g.name === 'Peach')?.css || gradientTemplates[12].css,
+    },
+    font: {
+      value: 'bree-serif',
+      color: '#3D2C24',
+    },
+    textBox: {
+      color: '#FFFFFF',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#000000',
+      opacity: 0,
+    },
+  },
+    {
+    id: 'template-6',
+    name: "Oceanic Blue",
+    previewImage: "https://i.ibb.co/3sYK3mG/image.png",
+    background: {
+      type: 'flat',
+      value: '#004AAD',
+    },
+    font: {
+      value: 'lato',
+      color: '#0F2027',
+    },
+    textBox: {
+      color: '#E0F7FF',
+      opacity: 1,
+    },
+    overlay: {
+      color: '#000000',
+      opacity: 0,
+    },
+  }
 ];
