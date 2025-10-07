@@ -259,17 +259,6 @@ overlayOpacity,
                     onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
                     className="flex-grow"
                   />
-                   <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button onClick={handleFeelLucky} variant="outline" className="h-10">
-                        <FeelLucky />
-                        <span>Feel Lucky</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Feel Lucky</p>
-                    </TooltipContent>
-                  </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10 flex-shrink-0">
@@ -282,6 +271,17 @@ overlayOpacity,
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>Search Images</p>
+                    </TooltipContent>
+                  </Tooltip>
+                   <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button onClick={handleFeelLucky} variant="outline" className="h-10">
+                        <FeelLucky />
+                        <span>Feel Lucky</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Feel Lucky</p>
                     </TooltipContent>
                   </Tooltip>
                 </div>
