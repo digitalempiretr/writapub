@@ -128,6 +128,8 @@ function TabContentContainer({
   handleCancelEdit,
   editingName,
   setEditingName,
+  designToDelete,
+  setDesignToDelete,
 }: {
   activeTab: string;
   backgroundTab: string;
@@ -171,13 +173,15 @@ function TabContentContainer({
   handleApplyTemplate: (template: DesignTemplate) => void;
   myDesigns: DesignTemplate[];
   handleSaveDesign: () => void;
-  handleDeleteDesign: (id: string) => void;
+  handleDeleteDesign: () => void;
   handleUpdateDesign: (id: string) => void;
   editingDesignId: string | null;
   handleEditClick: (id: string, name: string) => void;
   handleCancelEdit: () => void;
   editingName: string;
   setEditingName: (name: string) => void;
+  designToDelete: string | null;
+  setDesignToDelete: (id: string | null) => void;
 }) {
   const baseId = useId();
   return (
@@ -229,106 +233,107 @@ function TabContentContainer({
             </Tooltip>
           </div>
           {myDesigns.length > 0 ? (
-            <Carousel
-              opts={{
-                align: "start",
-                dragFree: true,
-              }}
-              className="w-full"
-            >
-              <CarouselContent className="-ml-2">
-                {myDesigns.map((template) => (
-                  <CarouselItem key={template.id} className="basis-1/3 md:basis-1/4 pl-2">
-                    <div className="relative group">
-                       <button onClick={() => editingDesignId !== template.id && handleApplyTemplate(template)} className="w-full" disabled={editingDesignId === template.id}>
-                        <Card className="overflow-hidden">
-                          <CardContent className="p-0">
-                             <Image src={template.previewImage} alt={template.name} width={200} height={250} className="object-cover aspect-[2/3] w-full" />
-                          </CardContent>
-                           <CardFooter className="p-2 justify-center flex-col items-center">
-                             {editingDesignId === template.id ? (
-                               <div className="flex items-center gap-1 w-full">
-                                  <Input 
-                                    type="text" 
-                                    value={editingName} 
-                                    onChange={(e) => setEditingName(e.target.value)} 
-                                    className="h-7 text-xs" 
-                                    autoFocus
-                                    onKeyDown={(e) => e.key === 'Enter' && handleUpdateDesign(template.id)}
-                                  />
-                               </div>
-                             ) : (
-                                <p className="text-xs font-semibold truncate">{template.name}</p>
-                             )}
-                          </CardFooter>
-                        </Card>
-                      </button>
-                      <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        {editingDesignId === template.id ? (
-                          <>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                 <Button variant="outline" size="icon" className="h-7 w-7 bg-green-100 hover:bg-green-200" onClick={() => handleUpdateDesign(template.id)}>
-                                    <Check className="h-4 w-4 text-green-700" />
-                                  </Button>
-                              </TooltipTrigger>
-                              <TooltipContent><p>Save Name</p></TooltipContent>
-                            </Tooltip>
-                             <Tooltip>
-                              <TooltipTrigger asChild>
-                                  <Button variant="outline" size="icon" className="h-7 w-7" onClick={handleCancelEdit}>
-                                    <X className="h-4 w-4" />
-                                  </Button>
-                              </TooltipTrigger>
-                              <TooltipContent><p>Cancel</p></TooltipContent>
-                            </Tooltip>
-                          </>
-                        ) : (
-                          <>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => handleEditClick(template.id, template.name)}>
-                                  <FilePenLine className="h-4 w-4" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent><p>Edit Name</p></TooltipContent>
-                            </Tooltip>
-                            <AlertDialog>
+             <AlertDialog open={!!designToDelete} onOpenChange={(open) => !open && setDesignToDelete(null)}>
+              <Carousel
+                opts={{
+                  align: "start",
+                  dragFree: true,
+                }}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-2">
+                  {myDesigns.map((template) => (
+                    <CarouselItem key={template.id} className="basis-1/3 md:basis-1/4 pl-2">
+                      <div className="relative group">
+                         <button onClick={() => editingDesignId !== template.id && handleApplyTemplate(template)} className="w-full" disabled={editingDesignId === template.id}>
+                          <Card className="overflow-hidden">
+                            <CardContent className="p-0">
+                               <Image src={template.previewImage} alt={template.name} width={200} height={250} className="object-cover aspect-[2/3] w-full" />
+                            </CardContent>
+                             <CardFooter className="p-2 justify-center flex-col items-center">
+                               {editingDesignId === template.id ? (
+                                 <div className="flex items-center gap-1 w-full">
+                                    <Input 
+                                      type="text" 
+                                      value={editingName} 
+                                      onChange={(e) => setEditingName(e.target.value)} 
+                                      className="h-7 text-xs" 
+                                      autoFocus
+                                      onKeyDown={(e) => e.key === 'Enter' && handleUpdateDesign(template.id)}
+                                    />
+                                 </div>
+                               ) : (
+                                  <p className="text-xs font-semibold truncate">{template.name}</p>
+                               )}
+                            </CardFooter>
+                          </Card>
+                        </button>
+                        <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {editingDesignId === template.id ? (
+                            <>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <AlertDialogTrigger asChild>
-                                    <Button variant="destructive" size="icon" className="h-7 w-7">
-                                      <Trash2 className="h-4 w-4" />
+                                   <Button variant="outline" size="icon" className="h-7 w-7 bg-green-100 hover:bg-green-200" onClick={() => handleUpdateDesign(template.id)}>
+                                      <Check className="h-4 w-4 text-green-700" />
                                     </Button>
-                                  </AlertDialogTrigger>
                                 </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Delete Design</p>
-                                </TooltipContent>
+                                <TooltipContent><p>Save Name</p></TooltipContent>
                               </Tooltip>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently delete your custom design.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction onClick={() => handleDeleteDesign(template.id)}>Delete</AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
-                          </>
-                        )}
+                               <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button variant="outline" size="icon" className="h-7 w-7" onClick={handleCancelEdit}>
+                                      <X className="h-4 w-4" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent><p>Cancel</p></TooltipContent>
+                              </Tooltip>
+                            </>
+                          ) : (
+                            <>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => handleEditClick(template.id, template.name)}>
+                                    <FilePenLine className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent><p>Edit Name</p></TooltipContent>
+                              </Tooltip>
+                              
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <AlertDialogTrigger asChild>
+                                      <Button variant="destructive" size="icon" className="h-7 w-7" onClick={() => setDesignToDelete(template.id)}>
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </AlertDialogTrigger>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Delete Design</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                            </>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="-left-4" />
-              <CarouselNext className="-right-4" />
-            </Carousel>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="-left-4" />
+                <CarouselNext className="-right-4" />
+              </Carousel>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete your custom design.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel onClick={() => setDesignToDelete(null)}>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDeleteDesign}>Delete</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           ) : (
             <div className="text-center text-muted-foreground py-8">
               <p>You haven't saved any designs yet.</p>
@@ -772,6 +777,7 @@ export default function Home() {
   const [myDesigns, setMyDesigns] = useLocalStorage<DesignTemplate[]>('writa-designs', []);
   const [editingDesignId, setEditingDesignId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
+  const [designToDelete, setDesignToDelete] = useState<string | null>(null);
 
 
   useEffect(() => {
@@ -827,7 +833,7 @@ export default function Home() {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (isMobilePanelOpen && mobilePanelRef.current && !mobilePanelRef.current.contains(event.target as Node)) {
-        setIsMobilePanelOpen(false);
+        // setIsMobilePanelOpen(false); // This line is commented out to debug the tab issue.
       }
     };
     
@@ -1080,8 +1086,10 @@ export default function Home() {
 
   }, [currentSlide, backgroundTab, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, myDesigns.length, setMyDesigns, toast]);
 
-  const handleDeleteDesign = (id: string) => {
-    setMyDesigns(prev => prev.filter(d => d.id !== id));
+  const handleDeleteDesign = () => {
+    if (!designToDelete) return;
+    setMyDesigns(prev => prev.filter(d => d.id !== designToDelete));
+    setDesignToDelete(null);
     toast({
       title: "Design Deleted",
       description: "The selected design has been removed from 'My Designs'.",
@@ -1206,11 +1214,15 @@ export default function Home() {
     handleCancelEdit,
     editingName,
     setEditingName,
+    designToDelete,
+    setDesignToDelete,
   };
   
   const handleMobileTabChange = (tab: string) => {
     setActiveSettingsTab(tab);
-    setIsMobilePanelOpen(true);
+    if (!isMobilePanelOpen) {
+      setIsMobilePanelOpen(true);
+    }
   };
 
 
@@ -1284,8 +1296,8 @@ export default function Home() {
               </TooltipContent>
             </Tooltip>
           </TabsList>
-           <div className="flex-grow">
-             <div className="md:hidden">
+           <div className="flex-grow w-full">
+            <div className="md:hidden">
               {isMobilePanelOpen && <TabContentContainer {...tabContentProps} />}
             </div>
             <div className="hidden md:block">
