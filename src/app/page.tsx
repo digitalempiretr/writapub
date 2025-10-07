@@ -37,7 +37,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, ImageIcon, LayoutTemplate, Loader2, Plus, Search, Star, Trash2, Type } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, ImageIcon, LayoutTemplate, Loader2, Plus, Search, Star, Trash2, Type, FilePenLine, Check, X } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState, useId } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -122,6 +122,12 @@ function TabContentContainer({
   myDesigns,
   handleSaveDesign,
   handleDeleteDesign,
+  handleUpdateDesign,
+  editingDesignId,
+  handleEditClick,
+  handleCancelEdit,
+  editingName,
+  setEditingName,
 }: {
   activeTab: string;
   backgroundTab: string;
@@ -166,6 +172,12 @@ function TabContentContainer({
   myDesigns: DesignTemplate[];
   handleSaveDesign: () => void;
   handleDeleteDesign: (id: string) => void;
+  handleUpdateDesign: (id: string) => void;
+  editingDesignId: string | null;
+  handleEditClick: (id: string, name: string) => void;
+  handleCancelEdit: () => void;
+  editingName: string;
+  setEditingName: (name: string) => void;
 }) {
   const baseId = useId();
   return (
@@ -205,9 +217,16 @@ function TabContentContainer({
         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4 mobile-tab-content">
           <div className="flex justify-between items-center">
             <Label className="bg-zinc-200 p-2 px-6 rounded-md">MY DESIGNS</Label>
-            <Button onClick={handleSaveDesign} size="sm">
-              <Plus className="mr-2 h-4 w-4" /> Save Current
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button onClick={handleSaveDesign} size="sm">
+                  <Plus className="mr-2 h-4 w-4" /> Save Current
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Save the current settings as a new design.</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
           {myDesigns.length > 0 ? (
             <Carousel
@@ -221,42 +240,88 @@ function TabContentContainer({
                 {myDesigns.map((template) => (
                   <CarouselItem key={template.id} className="basis-1/2 md:basis-1/3 pl-2">
                     <div className="relative group">
-                       <button onClick={() => handleApplyTemplate(template)} className="w-full">
+                       <button onClick={() => editingDesignId !== template.id && handleApplyTemplate(template)} className="w-full" disabled={editingDesignId === template.id}>
                         <Card className="overflow-hidden">
                           <CardContent className="p-0">
                              <Image src={template.previewImage} alt={template.name} width={200} height={250} className="object-cover aspect-[2/3] w-full" />
                           </CardContent>
-                           <CardFooter className="p-2 justify-center">
-                            <p className="text-xs font-semibold truncate">{template.name}</p>
+                           <CardFooter className="p-2 justify-center flex-col items-center">
+                             {editingDesignId === template.id ? (
+                               <div className="flex items-center gap-1 w-full">
+                                  <Input 
+                                    type="text" 
+                                    value={editingName} 
+                                    onChange={(e) => setEditingName(e.target.value)} 
+                                    className="h-7 text-xs" 
+                                    autoFocus
+                                    onKeyDown={(e) => e.key === 'Enter' && handleUpdateDesign(template.id)}
+                                  />
+                               </div>
+                             ) : (
+                                <p className="text-xs font-semibold truncate">{template.name}</p>
+                             )}
                           </CardFooter>
                         </Card>
                       </button>
-                       <AlertDialog>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                             <AlertDialogTrigger asChild>
-                               <Button variant="destructive" size="icon" className="absolute top-1 right-1 h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </AlertDialogTrigger>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Delete Design</p>
-                          </TooltipContent>
-                        </Tooltip>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              This action cannot be undone. This will permanently delete your custom design.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDeleteDesign(template.id)}>Delete</AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                      <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {editingDesignId === template.id ? (
+                          <>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                 <Button variant="outline" size="icon" className="h-7 w-7 bg-green-100 hover:bg-green-200" onClick={() => handleUpdateDesign(template.id)}>
+                                    <Check className="h-4 w-4 text-green-700" />
+                                  </Button>
+                              </TooltipTrigger>
+                              <TooltipContent><p>Save Name</p></TooltipContent>
+                            </Tooltip>
+                             <Tooltip>
+                              <TooltipTrigger asChild>
+                                  <Button variant="outline" size="icon" className="h-7 w-7" onClick={handleCancelEdit}>
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                              </TooltipTrigger>
+                              <TooltipContent><p>Cancel</p></TooltipContent>
+                            </Tooltip>
+                          </>
+                        ) : (
+                          <>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => handleEditClick(template.id, template.name)}>
+                                  <FilePenLine className="h-4 w-4" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent><p>Edit Name</p></TooltipContent>
+                            </Tooltip>
+                            <AlertDialog>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <AlertDialogTrigger asChild>
+                                    <Button variant="destructive" size="icon" className="h-7 w-7">
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Delete Design</p>
+                                </TooltipContent>
+                              </Tooltip>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently delete your custom design.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => handleDeleteDesign(template.id)}>Delete</AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </CarouselItem>
                 ))}
@@ -267,7 +332,7 @@ function TabContentContainer({
           ) : (
             <div className="text-center text-muted-foreground py-8">
               <p>You haven't saved any designs yet.</p>
-              <p className="text-xs">Click the star icon on a preview to save it.</p>
+              <p className="text-xs">Click "Save Current" to add a design.</p>
             </div>
           )}
         </div>
@@ -705,6 +770,9 @@ export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const mainTextAreaId = useId();
   const [myDesigns, setMyDesigns] = useLocalStorage<DesignTemplate[]>('writa-designs', []);
+  const [editingDesignId, setEditingDesignId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState('');
+
 
   useEffect(() => {
     setIsClient(true)
@@ -1015,6 +1083,25 @@ export default function Home() {
       description: "The selected design has been removed from 'My Designs'.",
     });
   };
+
+  const handleEditClick = (id: string, name: string) => {
+    setEditingDesignId(id);
+    setEditingName(name);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingDesignId(null);
+    setEditingName('');
+  };
+
+  const handleUpdateDesign = (id: string) => {
+    setMyDesigns(prev => prev.map(d => d.id === id ? { ...d, name: editingName } : d));
+    handleCancelEdit();
+    toast({
+      title: "Design Updated",
+      description: "The design name has been updated.",
+    });
+  };
   
   const renderCanvas = useCallback((design: Design, index: number) => {
     let currentBg: string | undefined;
@@ -1107,6 +1194,12 @@ export default function Home() {
     myDesigns,
     handleSaveDesign,
     handleDeleteDesign,
+    handleUpdateDesign,
+    editingDesignId,
+    handleEditClick,
+    handleCancelEdit,
+    editingName,
+    setEditingName,
   };
 
   const settingsPanel = (
@@ -1373,3 +1466,5 @@ export default function Home() {
     </>
   );
 }
+
+    
