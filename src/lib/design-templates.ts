@@ -28,10 +28,10 @@ export const designTemplates: DesignTemplate[] = [
   {
     id: 'template-1',
     name: "Classic Read",
-    previewImage: "https://i.ibb.co/60jqfPL0/12.jpg",
+    previewImage: "https://i.ibb.co/60jqfPL/12.jpg",
     background: {
       type: 'image',
-      value: 'https://i.ibb.co/60jqfPL0/12.jpg',
+      value: 'https://images.pexels.com/photos/1209843/pexels-photo-1209843.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
     },
     font: {
       value: 'special-elite',
@@ -49,10 +49,10 @@ export const designTemplates: DesignTemplate[] = [
   {
     id: 'template-2',
     name: "Bold Statement",
-    previewImage: "https://i.ibb.co/395BJVBs/24.jpg",
+    previewImage: "https://i.ibb.co/JqWk8Vk/image.png",
     background: {
       type: 'image',
-      value: 'https://i.ibb.co/395BJVBs/24.jpg',
+      value: 'https://images.pexels.com/photos/1072179/pexels-photo-1072179.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
     },
     font: {
       value: 'anton',
@@ -77,7 +77,7 @@ export const designTemplates: DesignTemplate[] = [
     },
     font: {
       value: 'josefin-sans',
-      color: '#FFFFFF',
+      color: '#FFFFFF', 
     },
     textBox: {
       color: '#FFFFFF',
