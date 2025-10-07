@@ -1209,9 +1209,7 @@ export default function Home() {
   
   const handleMobileTabChange = (tab: string) => {
     setActiveSettingsTab(tab);
-    if (!isMobilePanelOpen) {
-      setIsMobilePanelOpen(true);
-    }
+    setIsMobilePanelOpen(true);
   };
 
 
@@ -1287,11 +1285,9 @@ export default function Home() {
           </TabsList>
            <div className="flex-grow">
             <div className="md:hidden">
-              {isMobilePanelOpen && (
-                <TabsContent value={activeSettingsTab} forceMount>
-                  <TabContentContainer {...tabContentProps} />
-                </TabsContent>
-              )}
+              <TabsContent value={activeSettingsTab} forceMount className={!isMobilePanelOpen ? 'hidden' : ''}>
+                <TabContentContainer {...tabContentProps} />
+              </TabsContent>
             </div>
             <div className="hidden md:block">
               <TabsContent value="designs">
