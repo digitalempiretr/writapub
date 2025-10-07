@@ -211,7 +211,7 @@ function TabContentContainer({
           >
             <CarouselContent className="-ml-2">
               {designTemplates.map((template) => (
-                <CarouselItem key={template.name} className="basis-1/3 pl-2">
+                <CarouselItem key={template.name} className="basis-1/3 md:basis-1/4 pl-2">
                   <button onClick={() => handleApplyTemplate(template)} className="w-full group">
                     <Card className="overflow-hidden">
                       <CardContent className="p-0">
@@ -256,7 +256,7 @@ function TabContentContainer({
               >
                 <CarouselContent className="-ml-2">
                   {myDesigns.map((template) => (
-                    <CarouselItem key={template.id} className="basis-1/3 pl-2">
+                    <CarouselItem key={template.id} className="basis-1/3 md:basis-1/4 pl-2">
                       <div className="relative group">
                          <button onClick={() => editingDesignId !== template.id && handleApplyTemplate(template)} className="w-full" disabled={editingDesignId === template.id}>
                           <Card className="overflow-hidden">
