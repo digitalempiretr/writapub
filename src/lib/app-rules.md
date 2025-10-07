@@ -14,6 +14,42 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.16
+
+#### ENGLISH
+### 1. New Core Feature: "My Designs"
+-   **Personal Template System:** A new "My Designs" tab, represented by a star icon, has been added. This major feature allows users to save, manage, and reuse their own custom design templates.
+-   **Persistent Storage:** User-created designs are saved to the browser's `localStorage`, making them persistent across sessions on the same device. A custom hook (`useLocalStorage`) was created to manage this.
+-   **Saving Designs:**
+    -   Users can save the current combination of background, font, and color settings as a new personal template.
+    -   Saving can be initiated from two places: a "Save Current" button within the "My Designs" tab, and a star icon on the top-right of each preview in the main design carousel.
+-   **Applying & Deleting:** Users can instantly apply any of their saved designs by clicking on them or delete them via a trash icon.
+-   **Editing Names:** A simple editing feature has been implemented. Users can click on a design's name to enter an edit mode, rename it, and save the new name.
+-   **UI Integration:** The settings panel tab list has been updated to a 5-column grid to accommodate the new "My Designs" tab.
+
+### 2. UI & UX Improvements
+-   **Toast Notification Auto-Close:** All toast notifications (e.g., "Template Applied," "Design Saved") now automatically close after 2 seconds for a smoother user experience.
+-   **Carousel Display Update:** The carousels for both "Design Templates" and "My Designs" have been updated to display 4 items at a time on desktop screens, allowing users to see more options at once.
+-   **Tooltip Provider Fix:** A runtime error (`Tooltip must be used within TooltipProvider`) was fixed by correctly wrapping the settings panel and its components, ensuring all tooltips in the application function correctly.
+
+#### TURKCE
+### 1. Yeni Ana Özellik: "My Designs" (Tasarımlarım)
+-   **Kişisel Şablon Sistemi:** Ayarlar paneline yıldız ikonuyla temsil edilen yeni bir "My Designs" sekmesi eklendi. Bu ana özellik, kullanıcıların kendi özel tasarım şablonlarını kaydetmelerine, yönetmelerine ve yeniden kullanmalarına olanak tanır.
+-   **Kalıcı Depolama:** Kullanıcı tarafından oluşturulan tasarımlar, tarayıcının `localStorage`'ına kaydedilir, bu da tasarımların aynı cihazdaki oturumlar arasında kalıcı olmasını sağlar. Bu yönetimi sağlamak için `useLocalStorage` adında özel bir hook oluşturulmuştur.
+-   **Tasarım Kaydetme:**
+    -   Kullanıcılar mevcut arka plan, yazı tipi ve renk ayarları kombinasyonunu yeni bir kişisel şablon olarak kaydedebilirler.
+    -   Kaydetme işlemi iki yerden başlatılabilir: "My Designs" sekmesi içindeki "Mevcut Tasarımı Kaydet" butonu ve ana tasarım karuselindeki her bir önizlemenin sağ üst köşesindeki yıldız ikonu.
+-   **Uygulama ve Silme:** Kullanıcılar, kaydettikleri tasarımlardan herhangi birine tıklayarak anında uygulayabilir veya bir çöp kutusu ikonu aracılığıyla silebilirler.
+-   **İsim Düzenleme:** Basit bir düzenleme özelliği eklendi. Kullanıcılar bir tasarımın adına tıklayarak düzenleme moduna geçebilir, onu yeniden adlandırabilir ve yeni adı kaydedebilirler.
+-   **Arayüz Entegrasyonu:** Ayarlar paneli sekme listesi, yeni "My Designs" sekmesini barındırmak için 5 sütunlu bir grid yapısına güncellendi.
+
+### 2. Arayüz ve Kullanıcı Deneyimi İyileştirmeleri
+-   **Bildirimlerin Otomatik Kapanması:** "Şablon Uygulandı," "Tasarım Kaydedildi" gibi tüm bildirimler (toast), daha akıcı bir kullanıcı deneyimi için artık 2 saniye sonra otomatik olarak kapanmaktadır.
+-   **Karusel Görüntüleme Güncellemesi:** Hem "Tasarım Şablonları" hem de "Tasarımlarım" karuselleri, masaüstü ekranlarda aynı anda 4 öğe gösterecek şekilde güncellenerek kullanıcıların tek seferde daha fazla seçenek görmesi sağlandı.
+-   **Araç İpucu Sağlayıcı Hatası Düzeltmesi:** Bir çalışma zamanı hatası (`Tooltip must be used within TooltipProvider`) ayarlar panelini ve bileşenlerini doğru şekilde sarmalayarak düzeltildi ve uygulamadaki tüm araç ipuçlarının (tooltip) düzgün çalışması sağlandı.
+
+---
+
 ## Version V1.15
 
 #### ENGLISH
