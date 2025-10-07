@@ -75,6 +75,7 @@ type Design = {
 };
 
 type TextAlign = 'left' | 'center' | 'right';
+type BackgroundType = 'flat' | 'gradient' | 'image';
 
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "Art", "Minimal", "Abstract"];
 
@@ -84,9 +85,9 @@ function TabContentContainer({
   setBackgroundTab,
   handleFeelLucky,
   bgColor,
-  setBgColor,
+  handleBgColorSelect,
   imageBgUrl,
-  setImageBgUrl,
+  handleImageBgUrlSelect,
   searchQuery,
   setSearchQuery,
   handleSearchImages,
@@ -114,7 +115,7 @@ function TabContentContainer({
   currentSlide,
   handleDownload,
   gradientBg,
-  setGradientBg,
+  handleGradientBgSelect,
   setSearchCarouselApi,
   fileName,
   setFileName,
@@ -137,9 +138,9 @@ function TabContentContainer({
   setBackgroundTab: (value: string) => void;
   handleFeelLucky: () => void;
   bgColor: string;
-  setBgColor: (value: string) => void;
+  handleBgColorSelect: (color: string) => void;
   imageBgUrl: string;
-  setImageBgUrl: (url: string) => void;
+  handleImageBgUrlSelect: (url: string) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   handleSearchImages: (page?: number) => void;
@@ -167,7 +168,7 @@ function TabContentContainer({
   currentSlide: number;
   handleDownload: (index: number) => void;
   gradientBg: string;
-  setGradientBg: (css: string) => void;
+  handleGradientBgSelect: (css: string) => void;
   setSearchCarouselApi: (api: CarouselApi | undefined) => void;
   fileName: string;
   setFileName: (name: string) => void;
@@ -380,14 +381,14 @@ function TabContentContainer({
                         id={`${baseId}-bg-color-picker`}
                         type="color"
                         value={bgColor}
-                        onChange={(e) => setBgColor(e.target.value)}
+                        onChange={(e) => handleBgColorSelect(e.target.value)}
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                       />
                     </div>
                   </CarouselItem>
                   {defaultSolidColors.map(color => (
                     <CarouselItem key={color} className="basis-1/3 md:basis-1/4">
-                      <Card className="overflow-hidden cursor-pointer" onClick={() => setBgColor(color)}>
+                      <Card className="overflow-hidden cursor-pointer" onClick={() => handleBgColorSelect(color)}>
                         <CardContent className="h-32" style={{ backgroundColor: color }} />
                       </Card>
                     </CarouselItem>
@@ -402,7 +403,7 @@ function TabContentContainer({
                 <CarouselContent>
                   {gradientTemplates.map((gradient) => (
                     <CarouselItem key={gradient.name} className="basis-1/3 md:basis-1/4">
-                      <Card className="overflow-hidden cursor-pointer" onClick={() => setGradientBg(gradient.css)}>
+                      <Card className="overflow-hidden cursor-pointer" onClick={() => handleGradientBgSelect(gradient.css)}>
                         <CardContent className="h-32" style={{ background: gradient.css }} />
                       </Card>
                     </CarouselItem>
@@ -425,7 +426,7 @@ function TabContentContainer({
                     <CarouselContent className="-ml-2">
                       {imageTemplates.map((template) => (
                         <CarouselItem key={template.name} className="basis-1/3 pl-2">
-                          <button onClick={() => setImageBgUrl(template.imageUrl)} className="w-full">
+                          <button onClick={() => handleImageBgUrlSelect(template.imageUrl)} className="w-full">
                             <Image src={template.imageUrl} alt={template.name} width={100} height={150} className="object-cover aspect-[2/3] rounded-md w-full" />
                           </button>
                         </CarouselItem>
@@ -509,7 +510,7 @@ function TabContentContainer({
                   <CarouselContent className="-ml-2">
                     {searchedImages.map((imageUrl, index) => (
                       <CarouselItem key={index} className="basis-1/3 md:basis-1/4 pl-2">
-                        <div onClick={() => setImageBgUrl(imageUrl)} className="cursor-pointer">
+                        <div onClick={() => handleImageBgUrlSelect(imageUrl)} className="cursor-pointer">
                           <Image src={imageUrl} alt={`Search Result ${index}`} width={200} height={250} className="object-cover aspect-[2/3] rounded-md" />
                         </div>
                       </CarouselItem>
@@ -795,6 +796,8 @@ export default function Home() {
   const [editingName, setEditingName] = useState('');
   const [designToDelete, setDesignToDelete] = useState<string | null>(null);
 
+  const [backgroundType, setBackgroundType] = useState<BackgroundType>('image');
+  
   useEffect(() => {
     setIsClient(true)
   }, [])
@@ -835,7 +838,7 @@ export default function Home() {
   const [overlayColor, setOverlayColor] = useState(pageInitialColors.overlayColor);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   
-  const [activeSettingsTab, setActiveSettingsTab] = useState<string>('designs');
+  const [activeSettingsTab, setActiveSettingsTab] = useState<string | null>('designs');
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
 
 
@@ -847,13 +850,13 @@ export default function Home() {
   const { toast } = useToast();
 
    const closePanel = useCallback(() => {
-    setIsMobilePanelOpen(false);
+    setActiveSettingsTab(null)
   }, []);
 
    useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        isMobilePanelOpen &&
+        activeSettingsTab &&
         mobilePanelRef.current &&
         !mobilePanelRef.current.contains(event.target as Node)
       ) {
@@ -873,7 +876,7 @@ export default function Home() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isMobilePanelOpen, closePanel]);
+  }, [activeSettingsTab, closePanel]);
 
 
   const handleTextRemaining = useCallback((remaining: string, fromIndex: number) => {
@@ -910,7 +913,7 @@ export default function Home() {
     setIsLoading(true);
     setIsGeneratingAnimation(true);
     setDesigns([]);
-    setIsMobilePanelOpen(false);
+    setActiveSettingsTab(null)
     
     let finalTitle = title;
     let finalBody = text;
@@ -1011,6 +1014,21 @@ export default function Home() {
     setSearchQuery(keyword.toLowerCase());
   };
 
+  const handleBgColorSelect = (color: string) => {
+    setBgColor(color);
+    setBackgroundType('flat');
+  };
+
+  const handleGradientBgSelect = (css: string) => {
+    setGradientBg(css);
+    setBackgroundType('gradient');
+  };
+
+  const handleImageBgUrlSelect = (url: string) => {
+    setImageBgUrl(url);
+    setBackgroundType('image');
+  };
+
 
   useEffect(() => {
     if (searchQuery) {
@@ -1022,7 +1040,7 @@ export default function Home() {
   const handleFeelLucky = () => {
     const randomSeed = Math.floor(Math.random() * 1000);
     const randomImageUrl = `https://picsum.photos/seed/${randomSeed}/1080/1350`;
-    setImageBgUrl(randomImageUrl);
+    handleImageBgUrlSelect(randomImageUrl);
     setRectBgColor("#f4fdff");
     setRectOpacity(0.6);
   };
@@ -1036,6 +1054,8 @@ export default function Home() {
 
   const handleApplyTemplate = (template: DesignTemplate) => {
     setBackgroundTab(template.background.type);
+    setBackgroundType(template.background.type);
+
     if (template.background.type === 'flat') {
       setBgColor(template.background.value);
     } else if (template.background.type === 'gradient') {
@@ -1076,16 +1096,16 @@ export default function Home() {
     const previewImage = canvas.toDataURL("image/jpeg", 0.5);
 
     let bgValue = '';
-    if (backgroundTab === 'flat') bgValue = bgColor;
-    else if (backgroundTab === 'gradient') bgValue = gradientBg;
-    else if (backgroundTab === 'image') bgValue = imageBgUrl;
+    if (backgroundType === 'flat') bgValue = bgColor;
+    else if (backgroundType === 'gradient') bgValue = gradientBg;
+    else if (backgroundType === 'image') bgValue = imageBgUrl;
 
     const newDesign: DesignTemplate = {
       id: `design-${Date.now()}`,
       name: `My Design ${myDesigns.length + 1}`,
       previewImage: previewImage,
       background: {
-        type: backgroundTab as 'flat' | 'gradient' | 'image',
+        type: backgroundType,
         value: bgValue,
       },
       font: {
@@ -1110,7 +1130,7 @@ export default function Home() {
       duration: 2000,
     });
 
-  }, [currentSlide, backgroundTab, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, myDesigns.length, setMyDesigns, toast]);
+  }, [currentSlide, backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, myDesigns.length, setMyDesigns, toast]);
 
   const handleDeleteDesign = (id: string) => {
     setMyDesigns(prev => prev.filter(d => d.id !== id));
@@ -1146,7 +1166,7 @@ export default function Home() {
     let currentBg: string | undefined;
     let imageUrl: string | undefined;
 
-    switch(backgroundTab) {
+    switch(backgroundType) {
         case "flat":
             currentBg = bgColor;
             imageUrl = undefined;
@@ -1167,7 +1187,7 @@ export default function Home() {
     
     return (
         <ImageCanvas
-          key={`${backgroundTab}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}`}
+          key={`${backgroundType}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}`}
           font={activeFont}
           text={design.text}
           isTitle={design.isTitle}
@@ -1187,7 +1207,15 @@ export default function Home() {
           textAlign={textAlign}
         />
     )
-  }, [backgroundTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, handleTextRemaining]);
+  }, [backgroundType, activeFont, bgColor, textColor, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, handleTextRemaining]);
+
+  const handleMobileTabClick = (tab: string) => {
+    if (activeSettingsTab === tab) {
+      setActiveSettingsTab(null);
+    } else {
+      setActiveSettingsTab(tab);
+    }
+  };
 
   const tabContentProps = {
     activeTab: activeSettingsTab,
@@ -1195,9 +1223,9 @@ export default function Home() {
     setBackgroundTab,
     handleFeelLucky,
     bgColor,
-    setBgColor,
+    handleBgColorSelect,
     imageBgUrl,
-    setImageBgUrl,
+    handleImageBgUrlSelect,
     searchQuery,
     setSearchQuery,
     handleSearchImages,
@@ -1225,7 +1253,7 @@ export default function Home() {
     currentSlide,
     handleDownload,
     gradientBg,
-    setGradientBg,
+    handleGradientBgSelect,
     setSearchCarouselApi,
     fileName,
     setFileName,
@@ -1247,17 +1275,14 @@ export default function Home() {
   const settingsPanel = (
     <CardFooter className="flex-col items-start p-0 bg-[#f4fdff] md:rounded-lg">
        <TooltipProvider>
-        <Tabs
-          value={activeSettingsTab}
-          onValueChange={setActiveSettingsTab}
-          className="w-full flex flex-col-reverse md:flex-col"
-        >
+        <div className="w-full flex flex-col-reverse md:flex-col">
           <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md">
              <Tooltip>
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="designs"
-                  onClick={() => setIsMobilePanelOpen(true)}
+                  onClick={() => handleMobileTabClick('designs')}
+                  className={activeSettingsTab === 'designs' ? 'data-[state=active]:bg-orange-300' : ''}
                 >
                   <LayoutTemplate />
                 </TabsTrigger>
@@ -1270,7 +1295,8 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="my-designs"
-                  onClick={() => setIsMobilePanelOpen(true)}
+                  onClick={() => handleMobileTabClick('my-designs')}
+                   className={activeSettingsTab === 'my-designs' ? 'data-[state=active]:bg-orange-300' : ''}
                 >
                   <Star />
                 </TabsTrigger>
@@ -1283,7 +1309,8 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="background"
-                  onClick={() => setIsMobilePanelOpen(true)}
+                  onClick={() => handleMobileTabClick('background')}
+                   className={activeSettingsTab === 'background' ? 'data-[state=active]:bg-orange-300' : ''}
                 >
                   <ImageIcon />
                 </TabsTrigger>
@@ -1296,7 +1323,8 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="text"
-                  onClick={() => setIsMobilePanelOpen(true)}
+                  onClick={() => handleMobileTabClick('text')}
+                   className={activeSettingsTab === 'text' ? 'data-[state=active]:bg-orange-300' : ''}
                 >
                   <Type />
                 </TabsTrigger>
@@ -1309,7 +1337,8 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="download"
-                  onClick={() => setIsMobilePanelOpen(true)}
+                  onClick={() => handleMobileTabClick('download')}
+                   className={activeSettingsTab === 'download' ? 'data-[state=active]:bg-orange-300' : ''}
                 >
                   <Download />
                 </TabsTrigger>
@@ -1321,27 +1350,29 @@ export default function Home() {
           </TabsList>
            <div className="flex-grow w-full">
             <div className="md:hidden">
-              {isMobilePanelOpen && <TabContentContainer {...tabContentProps} />}
+              {activeSettingsTab && <TabContentContainer {...tabContentProps} />}
             </div>
             <div className="hidden md:block">
-              <TabsContent value="designs">
-                <TabContentContainer {...tabContentProps} activeTab="designs"/>
-              </TabsContent>
-              <TabsContent value="my-designs">
-                <TabContentContainer {...tabContentProps} activeTab="my-designs"/>
-              </TabsContent>
-              <TabsContent value="background">
-                <TabContentContainer {...tabContentProps} activeTab="background"/>
-              </TabsContent>
-              <TabsContent value="text">
-                <TabContentContainer {...tabContentProps} activeTab="text"/>
-              </TabsContent>
-              <TabsContent value="download">
-                <TabContentContainer {...tabContentProps} activeTab="download"/>
-              </TabsContent>
+              <Tabs value={activeSettingsTab || 'designs'} onValueChange={setActiveSettingsTab}>
+                <TabsContent value="designs">
+                  <TabContentContainer {...tabContentProps} activeTab="designs"/>
+                </TabsContent>
+                <TabsContent value="my-designs">
+                  <TabContentContainer {...tabContentProps} activeTab="my-designs"/>
+                </TabsContent>
+                <TabsContent value="background">
+                  <TabContentContainer {...tabContentProps} activeTab="background"/>
+                </TabsContent>
+                <TabsContent value="text">
+                  <TabContentContainer {...tabContentProps} activeTab="text"/>
+                </TabsContent>
+                <TabsContent value="download">
+                  <TabContentContainer {...tabContentProps} activeTab="download"/>
+                </TabsContent>
+              </Tabs>
             </div>
           </div>
-        </Tabs>
+        </div>
       </TooltipProvider>
     </CardFooter>
   );
@@ -1469,5 +1500,3 @@ export default function Home() {
     </>
   );
 }
-
-    
