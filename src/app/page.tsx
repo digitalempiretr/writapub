@@ -173,7 +173,7 @@ function TabContentContainer({
   handleApplyTemplate: (template: DesignTemplate) => void;
   myDesigns: DesignTemplate[];
   handleSaveDesign: () => void;
-  handleDeleteDesign: () => void;
+  handleDeleteDesign: (id: string) => void;
   handleUpdateDesign: (id: string) => void;
   editingDesignId: string | null;
   handleEditClick: (id: string, name: string) => void;
@@ -329,8 +329,8 @@ function TabContentContainer({
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel onClick={() => setDesignToDelete(null)}>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDeleteDesign}>Delete</AlertDialogAction>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => designToDelete && handleDeleteDesign(designToDelete)}>Delete</AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
@@ -820,8 +820,8 @@ export default function Home() {
   const [overlayColor, setOverlayColor] = useState(pageInitialColors.overlayColor);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   
-  const [activeSettingsTab, setActiveSettingsTab] = useState('text');
-  const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(true);
+  const [activeSettingsTab, setActiveSettingsTab] = useState('designs');
+  const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
 
   const [fileName, setFileName] = useState("writa");
 
@@ -830,18 +830,32 @@ export default function Home() {
   const mobilePanelRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
+   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (isMobilePanelOpen && mobilePanelRef.current && !mobilePanelRef.current.contains(event.target as Node)) {
-        // setIsMobilePanelOpen(false); // This line is commented out to debug the tab issue.
+      if (
+        isMobilePanelOpen &&
+        mobilePanelRef.current &&
+        !mobilePanelRef.current.contains(event.target as Node)
+      ) {
+        // Check if the click is on a popover or dialog trigger/content
+        const targetElement = event.target as Element;
+        if (
+          targetElement.closest('[role="dialog"]') ||
+          targetElement.closest('[role="alertdialog"]') ||
+          targetElement.closest('[data-radix-popper-content-wrapper]')
+        ) {
+          return;
+        }
+        setIsMobilePanelOpen(false);
       }
     };
-    
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isMobilePanelOpen]);
+
 
   const handleTextRemaining = useCallback((remaining: string, fromIndex: number) => {
     const nextDesignIndex = fromIndex + 1;
@@ -908,7 +922,6 @@ export default function Home() {
       newDesigns.push({ text: finalBody, isTitle: false });
     }
     setDesigns(newDesigns);
-    setIsMobilePanelOpen(true);
     
 
     // Show animation for 1.6 seconds, then reveal content and scroll
@@ -1086,9 +1099,8 @@ export default function Home() {
 
   }, [currentSlide, backgroundTab, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, myDesigns.length, setMyDesigns, toast]);
 
-  const handleDeleteDesign = () => {
-    if (!designToDelete) return;
-    setMyDesigns(prev => prev.filter(d => d.id !== designToDelete));
+  const handleDeleteDesign = (id: string) => {
+    setMyDesigns(prev => prev.filter(d => d.id !== id));
     setDesignToDelete(null);
     toast({
       title: "Design Deleted",
@@ -1446,5 +1458,7 @@ export default function Home() {
     </>
   );
 }
+
+    
 
     
