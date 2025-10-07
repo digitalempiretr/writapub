@@ -902,6 +902,7 @@ export default function Home() {
       newDesigns.push({ text: finalBody, isTitle: false });
     }
     setDesigns(newDesigns);
+    setIsMobilePanelOpen(true);
     
 
     // Show animation for 1.6 seconds, then reveal content and scroll
@@ -1284,7 +1285,7 @@ export default function Home() {
             </Tooltip>
           </TabsList>
            <div className="flex-grow">
-            <div className="md:hidden">
+             <div className="md:hidden">
               <TabsContent value={activeSettingsTab} forceMount className={!isMobilePanelOpen ? 'hidden' : ''}>
                 <TabContentContainer {...tabContentProps} />
               </TabsContent>
@@ -1435,3 +1436,5 @@ export default function Home() {
     </>
   );
 }
+
+    
