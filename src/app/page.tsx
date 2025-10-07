@@ -37,7 +37,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, ImageIcon, Loader2, Plus, Search, Type } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, ImageIcon, LayoutTemplate, Loader2, Plus, Search, Type } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState, useId } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -54,6 +54,7 @@ import { fontOptions } from "@/lib/font-options";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { defaultText } from "@/lib/default-text";
 import { TextColorChooseIcon, BgOverlayIcon, TextBgBoxIcon, TextBoxOpacity, FeelLucky } from '@/components/ui/icons';
+import { designTemplates, DesignTemplate } from "@/lib/design-templates";
 
 type Design = {
   text: string;
@@ -104,6 +105,7 @@ overlayOpacity,
   setSearchCarouselApi,
   fileName,
   setFileName,
+  handleApplyTemplate,
 }: {
   activeTab: string;
   backgroundTab: string;
@@ -144,10 +146,42 @@ overlayOpacity,
   setSearchCarouselApi: (api: CarouselApi | undefined) => void;
   fileName: string;
   setFileName: (name: string) => void;
+  handleApplyTemplate: (template: DesignTemplate) => void;
 }) {
   const baseId = useId();
   return (
     <>
+      {activeTab === 'designs' && (
+        <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4 mobile-tab-content">
+          <Label className="bg-zinc-200 p-2 px-6 rounded-md">DESIGN TEMPLATES</Label>
+          <Carousel
+            opts={{
+              align: "start",
+              dragFree: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-2">
+              {designTemplates.map((template) => (
+                <CarouselItem key={template.name} className="basis-1/2 md:basis-1/3 pl-2">
+                  <button onClick={() => handleApplyTemplate(template)} className="w-full group">
+                    <Card className="overflow-hidden">
+                      <CardContent className="p-0">
+                         <Image src={template.previewImage} alt={template.name} width={200} height={250} className="object-cover aspect-[2/3] w-full transition-transform duration-300 group-hover:scale-105" />
+                      </CardContent>
+                       <CardFooter className="p-2 justify-center">
+                        <p className="text-xs font-semibold truncate">{template.name}</p>
+                      </CardFooter>
+                    </Card>
+                  </button>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="-left-4" />
+            <CarouselNext className="-right-4" />
+          </Carousel>
+        </div>
+      )}
       {activeTab === 'background' && (
         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4 mobile-tab-content">
           <Label className="bg-zinc-200 p-2 px-6 rounded-md">BACKGROUND SETTINGS</Label>
@@ -621,7 +655,7 @@ export default function Home() {
   const [overlayColor, setOverlayColor] = useState(pageInitialColors.overlayColor);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   
-  const [defaultTab, setDefaultTab] = useState('background');
+  const [activeSettingsTab, setActiveSettingsTab] = useState('designs');
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
 
   const [fileName, setFileName] = useState("writa");
@@ -807,6 +841,32 @@ export default function Home() {
       setRectOpacity(1);
     }
   };
+
+  const handleApplyTemplate = (template: DesignTemplate) => {
+    setBackgroundTab(template.background.type);
+    if (template.background.type === 'flat') {
+      setBgColor(template.background.value);
+    } else if (template.background.type === 'gradient') {
+      setGradientBg(template.background.value);
+    } else if (template.background.type === 'image') {
+      setImageBgUrl(template.background.value);
+    }
+
+    const newFont = fontOptions.find(f => f.value === template.font.value) || fontOptions[0];
+    setActiveFont(newFont);
+    setTextColor(template.font.color);
+
+    setRectBgColor(template.textBox.color);
+    setRectOpacity(template.textBox.opacity);
+
+    setOverlayColor(template.overlay.color);
+    setOverlayOpacity(template.overlay.opacity);
+    
+    toast({
+      title: "Template Applied",
+      description: `"${template.name}" template has been set.`,
+    });
+  };
   
   const renderCanvas = useCallback((design: Design, index: number) => {
     let currentBg: string | undefined;
@@ -856,7 +916,7 @@ export default function Home() {
   }, [backgroundTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, handleTextRemaining]);
 
   const tabContentProps = {
-    activeTab: defaultTab,
+    activeTab: activeSettingsTab,
     backgroundTab,
     setBackgroundTab,
     handleFeelLucky,
@@ -894,26 +954,48 @@ export default function Home() {
     setGradientBg,
     setSearchCarouselApi,
     fileName,
-    setFileName
+    setFileName,
+    handleApplyTemplate,
   };
 
   const settingsPanel = (
     <CardFooter className="flex-col items-start p-0 bg-[#f4fdff] md:rounded-lg">
       <TooltipProvider>
         <Tabs
-          defaultValue={defaultTab}
+          value={activeSettingsTab}
+          onValueChange={setActiveSettingsTab}
           className="w-full flex flex-col-reverse md:flex-col"
         >
-          <TabsList className="grid w-full grid-cols-3 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md">
+          <TabsList className="grid w-full grid-cols-4 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md">
+             <Tooltip>
+              <TooltipTrigger asChild>
+                <TabsTrigger
+                  value="designs"
+                   onClick={() => {
+                    if (activeSettingsTab === 'designs') {
+                      setIsMobilePanelOpen(!isMobilePanelOpen);
+                    } else {
+                      setActiveSettingsTab('designs');
+                      setIsMobilePanelOpen(true);
+                    }
+                  }}
+                >
+                  <LayoutTemplate />
+                </TabsTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Design Templates</p>
+              </TooltipContent>
+            </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="background"
                   onClick={() => {
-                    if (defaultTab === 'background') {
+                    if (activeSettingsTab === 'background') {
                       setIsMobilePanelOpen(!isMobilePanelOpen);
                     } else {
-                      setDefaultTab('background');
+                      setActiveSettingsTab('background');
                       setIsMobilePanelOpen(true);
                     }
                   }}
@@ -930,10 +1012,10 @@ export default function Home() {
                 <TabsTrigger
                   value="text"
                   onClick={() => {
-                    if (defaultTab === 'text') {
+                    if (activeSettingsTab === 'text') {
                       setIsMobilePanelOpen(!isMobilePanelOpen);
                     } else {
-                      setDefaultTab('text');
+                      setActiveSettingsTab('text');
                       setIsMobilePanelOpen(true);
                     }
                   }}
@@ -950,10 +1032,10 @@ export default function Home() {
                 <TabsTrigger
                   value="download"
                   onClick={() => {
-                    if (defaultTab === 'download') {
+                    if (activeSettingsTab === 'download') {
                       setIsMobilePanelOpen(!isMobilePanelOpen);
                     } else {
-                      setDefaultTab('download');
+                      setActiveSettingsTab('download');
                       setIsMobilePanelOpen(true);
                     }
                   }}
@@ -969,12 +1051,15 @@ export default function Home() {
            <div className="flex-grow">
             <div className="md:hidden">
               {isMobilePanelOpen && (
-                <TabsContent value={defaultTab} forceMount>
+                <TabsContent value={activeSettingsTab} forceMount>
                   <TabContentContainer {...tabContentProps} />
                 </TabsContent>
               )}
             </div>
             <div className="hidden md:block">
+              <TabsContent value="designs">
+                <TabContentContainer {...tabContentProps} activeTab="designs"/>
+              </TabsContent>
               <TabsContent value="background">
                 <TabContentContainer {...tabContentProps} activeTab="background"/>
               </TabsContent>

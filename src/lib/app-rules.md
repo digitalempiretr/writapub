@@ -14,6 +14,24 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.15
+
+#### ENGLISH
+### 1. New Features & UI Enhancements
+-   **Design Templates:** A new "Designs" tab has been added to the settings panel. This tab features a carousel of ready-made design templates.
+-   **One-Click Application:** Users can now click on a template to instantly apply a full set of pre-configured design settings, including background (solid, gradient, or image), font, text color, text box color/opacity, and background overlay color/opacity. This allows for rapid and visually consistent design creation.
+-   **Template Data Structure:** A new file, `src/lib/design-templates.ts`, has been created to define and manage the data for all design templates, keeping the main component clean.
+-   **UI Update:** The settings panel tab list has been updated to a 4-column grid to accommodate the new "Designs" tab, which is now the first tab.
+
+#### TURKCE
+### 1. Yeni Özellikler ve Arayüz Geliştirmeleri
+-   **Tasarım Şablonları:** Ayarlar paneline yeni bir "Designs" (Tasarımlar) sekmesi eklendi. Bu sekme, hazır tasarım şablonlarından oluşan bir karusel içerir.
+-   **Tek Tıkla Uygulama:** Kullanıcılar artık bir şablona tıklayarak arka plan (düz renk, gradyan veya görsel), yazı tipi, metin rengi, metin kutusu rengi/opaklığı ve arka plan kaplaması rengi/opaklığı dahil olmak üzere önceden yapılandırılmış bir dizi tasarım ayarını anında uygulayabilir. Bu, hızlı ve görsel olarak tutarlı tasarım oluşturmayı sağlar.
+-   **Şablon Veri Yapısı:** Tüm tasarım şablonlarının verilerini tanımlamak ve yönetmek için yeni bir dosya olan `src/lib/design-templates.ts` oluşturuldu. Bu, ana bileşeni temiz tutar.
+-   **Arayüz Güncellemesi:** Ayarlar paneli sekme listesi, artık ilk sekme olan yeni "Designs" sekmesini barındırmak için 4 sütunlu bir grid yapısına güncellendi.
+
+---
+
 ## Version V1.14
 
 #### ENGLISH
@@ -336,3 +354,5 @@ Uygulamada harici API kullanan 1 adet özellik bulunmaktadır:
 -   Font seçim menüsünde, her bir font seçeneğinin adı kendi yazı tipiyle görüntülenmelidir. Bu, kullanıcının fontları seçmeden önce nasıl göründüklerini önizlemesini sağlar.
 -   Yazı tipi seçim menüsündeki varsayılan font "Special Elite" olarak ayarlanmıştır.
 
+
+```
