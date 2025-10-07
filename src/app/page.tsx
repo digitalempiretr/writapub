@@ -194,7 +194,7 @@ function TabContentContainer({
           >
             <CarouselContent className="-ml-2">
               {designTemplates.map((template) => (
-                <CarouselItem key={template.name} className="basis-1/2 md:basis-1/4 pl-2">
+                <CarouselItem key={template.name} className="basis-1/3 md:basis-1/4 pl-2">
                   <button onClick={() => handleApplyTemplate(template)} className="w-full group">
                     <Card className="overflow-hidden">
                       <CardContent className="p-0">
@@ -238,7 +238,7 @@ function TabContentContainer({
             >
               <CarouselContent className="-ml-2">
                 {myDesigns.map((template) => (
-                  <CarouselItem key={template.id} className="basis-1/2 md:basis-1/4 pl-2">
+                  <CarouselItem key={template.id} className="basis-1/3 md:basis-1/4 pl-2">
                     <div className="relative group">
                        <button onClick={() => editingDesignId !== template.id && handleApplyTemplate(template)} className="w-full" disabled={editingDesignId === template.id}>
                         <Card className="overflow-hidden">
@@ -815,7 +815,7 @@ export default function Home() {
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   
   const [activeSettingsTab, setActiveSettingsTab] = useState('text');
-  const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
+  const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(true);
 
   const [fileName, setFileName] = useState("writa");
 
@@ -1286,9 +1286,7 @@ export default function Home() {
           </TabsList>
            <div className="flex-grow">
              <div className="md:hidden">
-              <TabsContent value={activeSettingsTab} forceMount className={!isMobilePanelOpen ? 'hidden' : ''}>
-                <TabContentContainer {...tabContentProps} />
-              </TabsContent>
+              {isMobilePanelOpen && <TabContentContainer {...tabContentProps} />}
             </div>
             <div className="hidden md:block">
               <TabsContent value="designs">
