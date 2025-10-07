@@ -130,6 +130,7 @@ function TabContentContainer({
   setEditingName,
   designToDelete,
   setDesignToDelete,
+  closePanel,
 }: {
   activeTab: string;
   backgroundTab: string;
@@ -182,10 +183,22 @@ function TabContentContainer({
   setEditingName: (name: string) => void;
   designToDelete: string | null;
   setDesignToDelete: (id: string | null) => void;
+  closePanel: () => void;
 }) {
   const baseId = useId();
   return (
     <>
+      <div className="relative">
+         <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={closePanel} 
+            className="absolute top-2 right-2 z-10 md:hidden h-8 w-8 rounded-full bg-background hover:bg-muted"
+          >
+            <X className="h-5 w-5" />
+            <span className="sr-only">Close Panel</span>
+          </Button>
+
       {activeTab === 'designs' && (
         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4 mobile-tab-content">
           <Label className="bg-zinc-200 p-2 px-6 rounded-md">DESIGN TEMPLATES</Label>
@@ -758,6 +771,7 @@ function TabContentContainer({
             </div>
         </div>
       )}
+      </div>
     </>
   );
 }
@@ -820,7 +834,7 @@ export default function Home() {
   const [overlayColor, setOverlayColor] = useState(pageInitialColors.overlayColor);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   
-  const [activeSettingsTab, setActiveSettingsTab] = useState('designs');
+  const [activeSettingsTab, setActiveSettingsTab] = useState('text');
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
 
   const [fileName, setFileName] = useState("writa");
@@ -923,7 +937,7 @@ export default function Home() {
     }
     setDesigns(newDesigns);
     
-
+    setIsMobilePanelOpen(true);
     // Show animation for 1.6 seconds, then reveal content and scroll
     setTimeout(() => {
         setIsGeneratingAnimation(false);
@@ -1228,6 +1242,7 @@ export default function Home() {
     setEditingName,
     designToDelete,
     setDesignToDelete,
+    closePanel: () => setIsMobilePanelOpen(false),
   };
   
   const handleMobileTabChange = (tab: string) => {
@@ -1462,3 +1477,5 @@ export default function Home() {
     
 
     
+
+      
