@@ -834,7 +834,7 @@ export default function Home() {
   const [overlayColor, setOverlayColor] = useState(pageInitialColors.overlayColor);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   
-  const [activeSettingsTab, setActiveSettingsTab] = useState('text');
+  const [activeSettingsTab, setActiveSettingsTab] = useState('designs');
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
 
   const [fileName, setFileName] = useState("writa");
@@ -937,7 +937,6 @@ export default function Home() {
     }
     setDesigns(newDesigns);
     
-    setIsMobilePanelOpen(true);
     // Show animation for 1.6 seconds, then reveal content and scroll
     setTimeout(() => {
         setIsGeneratingAnimation(false);
@@ -1266,6 +1265,14 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="designs"
+                  onClick={() => {
+                    if (isMobilePanelOpen && activeSettingsTab === 'designs') {
+                      setIsMobilePanelOpen(false);
+                    } else {
+                      setActiveSettingsTab('designs');
+                      setIsMobilePanelOpen(true);
+                    }
+                  }}
                 >
                   <LayoutTemplate />
                 </TabsTrigger>
@@ -1278,6 +1285,14 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="my-designs"
+                  onClick={() => {
+                    if (isMobilePanelOpen && activeSettingsTab === 'my-designs') {
+                      setIsMobilePanelOpen(false);
+                    } else {
+                      setActiveSettingsTab('my-designs');
+                      setIsMobilePanelOpen(true);
+                    }
+                  }}
                 >
                   <Star />
                 </TabsTrigger>
@@ -1290,6 +1305,14 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="background"
+                   onClick={() => {
+                    if (isMobilePanelOpen && activeSettingsTab === 'background') {
+                      setIsMobilePanelOpen(false);
+                    } else {
+                      setActiveSettingsTab('background');
+                      setIsMobilePanelOpen(true);
+                    }
+                  }}
                 >
                   <ImageIcon />
                 </TabsTrigger>
@@ -1302,6 +1325,14 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="text"
+                   onClick={() => {
+                    if (isMobilePanelOpen && activeSettingsTab === 'text') {
+                      setIsMobilePanelOpen(false);
+                    } else {
+                      setActiveSettingsTab('text');
+                      setIsMobilePanelOpen(true);
+                    }
+                  }}
                 >
                   <Type />
                 </TabsTrigger>
@@ -1314,6 +1345,14 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="download"
+                   onClick={() => {
+                    if (isMobilePanelOpen && activeSettingsTab === 'download') {
+                      setIsMobilePanelOpen(false);
+                    } else {
+                      setActiveSettingsTab('download');
+                      setIsMobilePanelOpen(true);
+                    }
+                  }}
                 >
                   <Download />
                 </TabsTrigger>
@@ -1475,7 +1514,3 @@ export default function Home() {
 }
 
     
-
-    
-
-      
