@@ -14,6 +14,27 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.18
+
+#### ENGLISH
+### 1. Major Bug Fix: Mobile Tab Logic Overhaul
+-   **Problem:** The mobile tab panel had multiple conflicting state management issues, causing unpredictable behavior. It would often fail to open if the same tab was clicked after closing, or it would fail to switch correctly when another tab was clicked.
+-   **Solution:** The entire logic for mobile tab interaction has been rewritten and simplified to be robust and predictable.
+    -   **Separated Concerns:** The state for which tab is *active* (`activeSettingsTab`) and the state for whether the panel is *visible* (`isMobilePanelOpen`) are now handled separately and more clearly.
+    -   **Consistent Opening:** Clicking any tab icon now reliably sets `isMobilePanelOpen` to `true`, ensuring the panel always opens when a tab is interacted with.
+    -   **Dedicated Closing:** Closing the panel is now handled exclusively by the 'X' icon button and the "click outside" functionality. These actions only set `isMobilePanelOpen` to `false` without interfering with the active tab state.
+    -   This change removes the previous, buggy "click the same tab to close" feature in favor of a much more stable and reliable system that meets all specified requirements.
+
+#### TURKCE
+### 1. Büyük Hata Düzeltmesi: Mobil Sekme Mantığının Yeniden Yapılandırılması
+-   **Sorun:** Mobil sekme paneli, birden çok çakışan durum yönetimi sorununa sahipti ve bu da öngörülemeyen davranışlara neden oluyordu. Panel kapatıldıktan sonra aynı sekmeye tıklandığında genellikle açılmıyor veya başka bir sekmeye tıklandığında doğru şekilde geçiş yapamıyordu.
+-   **Çözüm:** Mobil sekme etkileşimi için tüm mantık, sağlam ve öngörülebilir olacak şekilde yeniden yazıldı ve basitleştirildi.
+    -   **Sorumlulukların Ayrılması:** Hangi sekmenin *aktif* olduğunu (`activeSettingsTab`) ve panelin *görünür* olup olmadığını (`isMobilePanelOpen`) yöneten durumlar artık ayrı ve daha net bir şekilde ele alınıyor.
+    -   **Tutarlı Açılma:** Herhangi bir sekme ikonuna tıklamak artık güvenilir bir şekilde `isMobilePanelOpen` durumunu `true` olarak ayarlayarak, bir sekme ile etkileşime girildiğinde panelin her zaman açılmasını sağlar.
+    -   **Özelleşmiş Kapatma:** Paneli kapatma işlemi artık yalnızca 'X' ikon butonu ve "dışarı tıklama" işlevselliği tarafından gerçekleştirilir. Bu eylemler, aktif sekme durumuna müdahale etmeden sadece `isMobilePanelOpen` durumunu `false` olarak ayarlar.
+    -   Bu değişiklik, belirtilen tüm gereksinimleri karşılayan çok daha kararlı ve güvenilir bir sistem lehine, önceki hatalı "kapatmak için aynı sekmeye tıkla" özelliğini kaldırır.
+---
+
 ## Version V1.17
 
 #### ENGLISH
@@ -403,5 +424,6 @@ Uygulamada harici API kullanan 1 adet özellik bulunmaktadır:
 -   Google Fonts'tan yüklenen tüm yazı tipleri, Türkçe karakterlerin doğru görüntülenmesini sağlamak için `latin-ext` karakter setini içermelidir.
 -   Font seçim menüsünde, her bir font seçeneğinin adı kendi yazı tipiyle görüntülenmelidir. Bu, kullanıcının fontları seçmeden önce nasıl göründüklerini önizlemesini sağlar.
 -   Yazı tipi seçim menüsündeki varsayılan font "Special Elite" olarak ayarlanmıştır.
+
 
 
