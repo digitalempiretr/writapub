@@ -1,0 +1,48 @@
+
+import { FontOption } from "@/components/image-canvas";
+
+
+
+
+export const fontOptions: FontOption[] = [
+    { value: 'anton', label: 'Anton', fontFamily: 'Anton', bodyWeight: '400', titleWeight: '400', titleSize: 100, bodySize: 58, lineHeight: 74 },
+    { value: 'beau-rivage', label: 'Beau Rivage', fontFamily: 'Beau Rivage', bodyWeight: '400', titleWeight: '400', titleSize: 100, bodySize: 56, lineHeight: 74 },
+    { value: 'bree-serif', label: 'Bree Serif', fontFamily: 'Bree Serif', bodyWeight: '400', titleWeight: '400', titleSize: 84, bodySize: 50, lineHeight: 68 },
+    { value: 'carattere', label: 'Carattere', fontFamily: 'Carattere', bodyWeight: '400', titleWeight: '400', titleSize: 110, bodySize: 60, lineHeight: 78 },
+    { value: 'catamaran', label: 'Catamaran', fontFamily: 'Catamaran', bodyWeight: '400', titleWeight: '700', titleSize: 90, bodySize: 50, lineHeight: 68 },
+    { value: 'cherry-bomb-one', label: 'Cherry Bomb One', fontFamily: 'Cherry Bomb One', bodyWeight: '400', titleWeight: '400', titleSize: 80, bodySize: 48, lineHeight: 66 },
+    { value: 'coiny', label: 'Coiny', fontFamily: 'Coiny', bodyWeight: '400', titleWeight: '400', titleSize: 82, bodySize: 50, lineHeight: 68 },
+    { value: 'dosis', label: 'Dosis', fontFamily: 'Dosis', bodyWeight: '400', titleWeight: '700', titleSize: 88, bodySize: 52, lineHeight: 68 },
+    { value: 'ephesis', label: 'Ephesis', fontFamily: 'Ephesis', bodyWeight: '400', titleWeight: '400', titleSize: 115, bodySize: 62, lineHeight: 80 },
+    { value: 'exo-2', label: 'Exo 2', fontFamily: 'Exo 2', bodyWeight: '400', titleWeight: '700', titleSize: 84, bodySize: 48, lineHeight: 64 },
+    { value: 'fleur-de-leah', label: 'Fleur De Leah', fontFamily: 'Fleur De Leah', bodyWeight: '400', titleWeight: '400', titleSize: 95, bodySize: 54, lineHeight: 72 },
+    { value: 'grand-hotel', label: 'Grand Hotel', fontFamily: 'Grand Hotel', bodyWeight: '400', titleWeight: '400', titleSize: 98, bodySize: 55, lineHeight: 74 },
+    { value: 'inter', label: 'Inter', fontFamily: 'Inter', bodyWeight: '600', titleWeight: '600', titleSize: 80, bodySize: 52, lineHeight: 70 },
+    { value: 'italianno', label: 'Italianno', fontFamily: 'Italianno', bodyWeight: '400', titleWeight: '400', titleSize: 112, bodySize: 60, lineHeight: 78 },
+    { value: 'josefin-sans', label: 'Josefin Sans', fontFamily: 'Josefin Sans', bodyWeight: '400', titleWeight: '700', titleSize: 80, bodySize: 48, lineHeight: 64 },
+    { value: 'kablammo', label: 'Kablammo', fontFamily: 'Kablammo', bodyWeight: '400', titleWeight: '400', titleSize: 80, bodySize: 50, lineHeight: 68 },
+    { value: 'lato', label: 'Lato', fontFamily: 'Lato', bodyWeight: '400', titleWeight: '700', titleSize: 80, bodySize: 48, lineHeight: 64 },
+    { value: 'licorice', label: 'Licorice', fontFamily: 'Licorice', bodyWeight: '400', titleWeight: '400', titleSize: 110, bodySize: 62, lineHeight: 80 },
+    { value: 'lobster', label: 'Lobster', fontFamily: 'Lobster', bodyWeight: '400', titleWeight: '400', titleSize: 92, bodySize: 54, lineHeight: 72 },
+    { value: 'mea-culpa', label: 'Mea Culpa', fontFamily: 'Mea Culpa', bodyWeight: '400', titleWeight: '400', titleSize: 105, bodySize: 58, lineHeight: 76 },
+    { value: 'montez', label: 'Montez', fontFamily: 'Montez', bodyWeight: '400', titleWeight: '400', titleSize: 100, bodySize: 58, lineHeight: 76 },
+    { value: 'norican', label: 'Norican', fontFamily: 'Norican', bodyWeight: '400', titleWeight: '400', titleSize: 95, bodySize: 55, lineHeight: 72 },
+    { value: 'open-sans', label: 'Open Sans', fontFamily: 'Open Sans', bodyWeight: '400', titleWeight: '700', titleSize: 80, bodySize: 48, lineHeight: 64 },
+    { value: 'oswald', label: 'Oswald', fontFamily: 'Oswald', bodyWeight: '400', titleWeight: '700', titleSize: 86, bodySize: 46, lineHeight: 62 },
+    { value: 'oxygen', label: 'Oxygen', fontFamily: 'Oxygen', bodyWeight: '400', titleWeight: '700', titleSize: 80, bodySize: 48, lineHeight: 64 },
+    { value: 'pattaya', label: 'Pattaya', fontFamily: 'Pattaya', bodyWeight: '400', titleWeight: '400', titleSize: 88, bodySize: 52, lineHeight: 70 },
+    { value: 'playfair-display', label: 'Playfair Display', fontFamily: 'Playfair Display', bodyWeight: '700', titleWeight: '700', titleSize: 90, bodySize: 52, lineHeight: 70 },
+    { value: 'plus-jakarta-sans', label: 'Plus Jakarta Sans', fontFamily: 'Plus Jakarta Sans', bodyWeight: '400', titleWeight: '700', titleSize: 80, bodySize: 48, lineHeight: 64 },
+    { value: 'raleway', label: 'Raleway', fontFamily: 'Raleway', bodyWeight: '400', titleWeight: '700', titleSize: 80, bodySize: 48, lineHeight: 64 },
+    { value: 'roboto', label: 'Roboto', fontFamily: 'Roboto', bodyWeight: '400', titleWeight: '700', titleSize: 82, bodySize: 48, lineHeight: 64 },
+    { value: 'roboto-slab', label: 'Roboto Slab', fontFamily: 'Roboto Slab', bodyWeight: '400', titleWeight: '700', titleSize: 78, bodySize: 46, lineHeight: 64 },
+    { value: 'romanesco', label: 'Romanesco', fontFamily: 'Romanesco', bodyWeight: '400', titleWeight: '400', titleSize: 110, bodySize: 60, lineHeight: 78 },
+    { value: 'slabo-27px', label: 'Slabo 27px', fontFamily: 'Slabo 27px', bodyWeight: '400', titleWeight: '400', titleSize: 88, bodySize: 50, lineHeight: 68 },
+    { value: 'special-elite', label: 'Special Elite', fontFamily: 'Special Elite', bodyWeight: '400', titleWeight: '400', titleSize: 72, bodySize: 50, lineHeight: 68 },
+    { value: 'style-script', label: 'Style Script', fontFamily: 'Style Script', bodyWeight: '400', titleWeight: '400', titleSize: 105, bodySize: 58, lineHeight: 76 },
+    { value: 'titillium-web', label: 'Titillium Web', fontFamily: 'Titillium Web', bodyWeight: '400', titleWeight: '700', titleSize: 82, bodySize: 46, lineHeight: 62 },
+    { value: 'ubuntu', label: 'Ubuntu', fontFamily: 'Ubuntu', bodyWeight: '400', titleWeight: '700', titleSize: 80, bodySize: 48, lineHeight: 64 },
+    { value: 'updock', label: 'Updock', fontFamily: 'Updock', bodyWeight: '400', titleWeight: '400', titleSize: 100, bodySize: 58, lineHeight: 76 },
+    { value: 'windsong', label: 'WindSong', fontFamily: 'WindSong', bodyWeight: '400', titleWeight: '400', titleSize: 110, bodySize: 62, lineHeight: 80 },
+    { value: 'yesteryear', label: 'Yesteryear', fontFamily: 'Yesteryear', bodyWeight: '400', titleWeight: '400', titleSize: 100, bodySize: 58, lineHeight: 76 },
+];
