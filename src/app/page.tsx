@@ -211,7 +211,7 @@ function TabContentContainer({
           >
             <CarouselContent className="-ml-2">
               {designTemplates.map((template) => (
-                <CarouselItem key={template.name} className="basis-1/3 md:basis-1/4 pl-2">
+                <CarouselItem key={template.name} className="basis-1/3 pl-2">
                   <button onClick={() => handleApplyTemplate(template)} className="w-full group">
                     <Card className="overflow-hidden">
                       <CardContent className="p-0">
@@ -256,7 +256,7 @@ function TabContentContainer({
               >
                 <CarouselContent className="-ml-2">
                   {myDesigns.map((template) => (
-                    <CarouselItem key={template.id} className="basis-1/3 md:basis-1/4 pl-2">
+                    <CarouselItem key={template.id} className="basis-1/3 pl-2">
                       <div className="relative group">
                          <button onClick={() => editingDesignId !== template.id && handleApplyTemplate(template)} className="w-full" disabled={editingDesignId === template.id}>
                           <Card className="overflow-hidden">
@@ -422,7 +422,7 @@ function TabContentContainer({
                   >
                     <CarouselContent className="-ml-2">
                       {imageTemplates.map((template) => (
-                        <CarouselItem key={template.name} className="basis-1/3 md:basis-1/4 pl-2">
+                        <CarouselItem key={template.name} className="basis-1/3 pl-2">
                           <button onClick={() => setImageBgUrl(template.imageUrl)} className="w-full">
                             <Image src={template.imageUrl} alt={template.name} width={100} height={150} className="object-cover aspect-[2/3] rounded-md w-full" />
                           </button>
@@ -834,7 +834,9 @@ export default function Home() {
   const [overlayColor, setOverlayColor] = useState(pageInitialColors.overlayColor);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   
-  const [activeSettingsTab, setActiveSettingsTab] = useState<string | null>(null);
+  const [activeSettingsTab, setActiveSettingsTab] = useState<string>('designs');
+  const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
+
 
   const [fileName, setFileName] = useState("writa");
 
@@ -843,10 +845,14 @@ export default function Home() {
   const mobilePanelRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
+   const closePanel = useCallback(() => {
+    setIsMobilePanelOpen(false);
+  }, []);
+
    useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        activeSettingsTab &&
+        isMobilePanelOpen &&
         mobilePanelRef.current &&
         !mobilePanelRef.current.contains(event.target as Node)
       ) {
@@ -858,7 +864,7 @@ export default function Home() {
         ) {
           return;
         }
-        setActiveSettingsTab(null);
+        closePanel();
       }
     };
 
@@ -866,7 +872,7 @@ export default function Home() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [activeSettingsTab]);
+  }, [isMobilePanelOpen, closePanel]);
 
 
   const handleTextRemaining = useCallback((remaining: string, fromIndex: number) => {
@@ -903,6 +909,7 @@ export default function Home() {
     setIsLoading(true);
     setIsGeneratingAnimation(true);
     setDesigns([]);
+    setIsMobilePanelOpen(false);
     
     let finalTitle = title;
     let finalBody = text;
@@ -1233,23 +1240,14 @@ export default function Home() {
     setEditingName,
     designToDelete,
     setDesignToDelete,
-    closePanel: () => setActiveSettingsTab(null),
+    closePanel,
   };
   
-  const handleMobileTabClick = (tab: string) => {
-    if (activeSettingsTab === tab) {
-      setActiveSettingsTab(null); // If the same tab is clicked, close the panel
-    } else {
-      setActiveSettingsTab(tab); // If a different tab is clicked, switch to it (panel remains open)
-    }
-  };
-
-
   const settingsPanel = (
     <CardFooter className="flex-col items-start p-0 bg-[#f4fdff] md:rounded-lg">
        <TooltipProvider>
         <Tabs
-          value={activeSettingsTab ?? ""}
+          value={activeSettingsTab}
           onValueChange={setActiveSettingsTab}
           className="w-full flex flex-col-reverse md:flex-col"
         >
@@ -1258,7 +1256,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="designs"
-                  onClick={() => handleMobileTabClick('designs')}
+                  onClick={() => setIsMobilePanelOpen(true)}
                 >
                   <LayoutTemplate />
                 </TabsTrigger>
@@ -1271,7 +1269,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="my-designs"
-                  onClick={() => handleMobileTabClick('my-designs')}
+                  onClick={() => setIsMobilePanelOpen(true)}
                 >
                   <Star />
                 </TabsTrigger>
@@ -1284,7 +1282,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="background"
-                  onClick={() => handleMobileTabClick('background')}
+                  onClick={() => setIsMobilePanelOpen(true)}
                 >
                   <ImageIcon />
                 </TabsTrigger>
@@ -1297,7 +1295,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="text"
-                  onClick={() => handleMobileTabClick('text')}
+                  onClick={() => setIsMobilePanelOpen(true)}
                 >
                   <Type />
                 </TabsTrigger>
@@ -1310,7 +1308,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="download"
-                  onClick={() => handleMobileTabClick('download')}
+                  onClick={() => setIsMobilePanelOpen(true)}
                 >
                   <Download />
                 </TabsTrigger>
@@ -1322,7 +1320,7 @@ export default function Home() {
           </TabsList>
            <div className="flex-grow w-full">
             <div className="md:hidden">
-              {activeSettingsTab && <TabContentContainer {...tabContentProps} activeTab={activeSettingsTab} />}
+              {isMobilePanelOpen && <TabContentContainer {...tabContentProps} activeTab={activeSettingsTab} />}
             </div>
             <div className="hidden md:block">
               <TabsContent value="designs">
