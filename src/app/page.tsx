@@ -383,6 +383,17 @@ function TabContentContainer({
                     onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
                     className="flex-grow"
                   />
+                   <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button onClick={handleFeelLucky} variant="outline" className="h-10">
+                        <FeelLucky />
+                        <span>Feel Lucky</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Feel Lucky</p>
+                    </TooltipContent>
+                  </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10 flex-shrink-0">
@@ -395,17 +406,6 @@ function TabContentContainer({
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>Search Images</p>
-                    </TooltipContent>
-                  </Tooltip>
-                   <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button onClick={handleFeelLucky} variant="outline" className="h-10">
-                        <FeelLucky />
-                        <span>Feel Lucky</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Feel Lucky</p>
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -1316,22 +1316,23 @@ export default function Home() {
                                 </CardContent>
                               </Card>
                                 <AlertDialog>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <AlertDialogTrigger asChild>
-                                        <Button
-                                          variant="ghost"
-                                          size="icon"
-                                          className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/30 text-white hover:bg-black/50 hover:text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"
-                                        >
-                                          <Star className="h-5 w-5" />
-                                        </Button>
-                                      </AlertDialogTrigger>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p>Save to My Designs</p>
-                                    </TooltipContent>
-                                  </Tooltip>
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <AlertDialogTrigger asChild>
+                                          <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/30 text-white hover:bg-black/50 hover:text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                                          >
+                                            <Star className="h-5 w-5" />
+                                          </Button>
+                                        </AlertDialogTrigger>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Save to My Designs</p>
+                                      </TooltipContent>
+                                    </Tooltip>
                                   <AlertDialogContent>
                                     <AlertDialogHeader>
                                       <AlertDialogTitle>Save to My Designs?</AlertDialogTitle>
@@ -1344,6 +1345,7 @@ export default function Home() {
                                       <AlertDialogAction onClick={handleSaveDesign}>Save</AlertDialogAction>
                                     </AlertDialogFooter>
                                   </AlertDialogContent>
+                                  </TooltipProvider>
                                 </AlertDialog>
                             </div>
                           </CarouselItem>
