@@ -448,17 +448,6 @@ function TabContentContainer({
                     onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
                     className="flex-grow"
                   />
-                   <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button onClick={handleFeelLucky} variant="outline" className="h-10">
-                        <FeelLucky />
-                        <span>Feel Lucky</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Feel Lucky</p>
-                    </TooltipContent>
-                  </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10 flex-shrink-0">
@@ -471,6 +460,17 @@ function TabContentContainer({
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>Search Images</p>
+                    </TooltipContent>
+                  </Tooltip>
+                   <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button onClick={handleFeelLucky} variant="outline" className="h-10">
+                        <FeelLucky />
+                        <span>Feel Lucky</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Feel Lucky</p>
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -1024,6 +1024,7 @@ export default function Home() {
     toast({
       title: "Template Applied",
       description: `"${template.name}" template has been set.`,
+      duration: 2000,
     });
   };
 
@@ -1034,6 +1035,7 @@ export default function Home() {
         variant: "destructive",
         title: "Cannot save design",
         description: "The design preview is not ready yet.",
+        duration: 2000,
       });
       return;
     }
@@ -1072,6 +1074,7 @@ export default function Home() {
     toast({
       title: "Design Saved",
       description: "Your current design has been saved to 'My Designs'.",
+      duration: 2000,
     });
 
   }, [currentSlide, backgroundTab, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, myDesigns.length, setMyDesigns, toast]);
@@ -1081,6 +1084,7 @@ export default function Home() {
     toast({
       title: "Design Deleted",
       description: "The selected design has been removed from 'My Designs'.",
+      duration: 2000,
     });
   };
 
@@ -1100,6 +1104,7 @@ export default function Home() {
     toast({
       title: "Design Updated",
       description: "The design name has been updated.",
+      duration: 2000,
     });
   };
   
@@ -1466,5 +1471,7 @@ export default function Home() {
     </>
   );
 }
+
+    
 
     
