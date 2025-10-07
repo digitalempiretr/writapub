@@ -14,6 +14,20 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.17
+
+#### ENGLISH
+### 1. Bug Fixes
+-   **Mobile Tab Navigation Fix:** Resolved a persistent bug in the mobile view where the settings panel would incorrectly close when the user tried to switch between different tabs (e.g., from "Designs" to "Background"). The tab switching logic has been simplified to ensure the panel remains open during navigation, providing a smoother and more predictable user experience.
+-   **Module Not Found Fix:** Fixed a critical build error (`Module not found: Can't resolve '@/componentsui/slider'`) caused by an incorrect import path. The path has been corrected to `@/components/ui/slider`, allowing the application to compile and run successfully.
+
+#### TURKCE
+### 1. Hata Düzeltmeleri
+-   **Mobil Sekme Geçişi Düzeltmesi:** Mobil görünümde, kullanıcı farklı sekmeler arasında (örneğin "Tasarımlar"dan "Arka Plan"a) geçiş yapmaya çalıştığında ayarlar panelinin hatalı bir şekilde kapanmasına neden olan inatçı bir hata çözüldü. Sekme geçiş mantığı, gezinme sırasında panelin açık kalmasını sağlayacak şekilde basitleştirilerek daha akıcı ve öngörülebilir bir kullanıcı deneyimi sunuldu.
+-   **Modül Bulunamadı Hatası Düzeltmesi:** Yanlış bir `import` yolundan kaynaklanan ve uygulamanın derlenmesini engelleyen kritik bir derleme hatası (`Module not found: Can't resolve '@/componentsui/slider'`) düzeltildi. Dosya yolu `@/components/ui/slider` olarak düzeltilerek uygulamanın başarıyla çalışması sağlandı.
+
+---
+
 ## Version V1.16
 
 #### ENGLISH
@@ -391,4 +405,3 @@ Uygulamada harici API kullanan 1 adet özellik bulunmaktadır:
 -   Yazı tipi seçim menüsündeki varsayılan font "Special Elite" olarak ayarlanmıştır.
 
 
-```
