@@ -14,6 +14,30 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.19
+
+#### ENGLISH
+### 1. UI & Feature Enhancements
+-   **Dynamic Template Previews:** The static preview images for the default "Design Templates" have been replaced with dynamically generated previews. The `previewImage` for each template is now created using the actual template settings, ensuring the thumbnail accurately reflects how the design will look when applied. This provides a more consistent and informative user experience, mirroring the functionality of the "My Designs" feature.
+-   **Expanded Template Library:** Added three new design templates to give users more creative options:
+    -   **"Minimalist Black":** A clean, high-contrast template with a solid black background and white text.
+    -   **"Sunrise Gradient":** A warm, inviting template featuring a soft peach-toned gradient.
+    -   **"Oceanic Blue":** A professional-looking template with a solid blue background and an opaque, light-colored text box.
+-   **Expanded Font Library:** Added 19 new decorative, script, and display Google Fonts (including Cherry Bomb One, Mea Culpa, Grand Hotel, etc.) to provide users with a much wider range of typographic styles.
+-   **Carousel Display Update:** The carousels for both "Design Templates" and "My Designs" have been updated to display 4 items at a time on all screen sizes (mobile and desktop), allowing users to see more options at once.
+-   **Bug Fix: Text Case Preservation:** Fixed a bug where the title text was being automatically converted to uppercase. The `.toLocaleUpperCase()` method was removed from the text rendering function, ensuring that text in the design now perfectly matches the casing entered by the user.
+
+#### TURKCE
+### 1. Arayüz ve Özellik Geliştirmeleri
+-   **Dinamik Şablon Önizlemeleri:** Varsayılan "Tasarım Şablonları" için kullanılan statik önizleme görselleri, dinamik olarak oluşturulan önizlemelerle değiştirildi. Artık her şablonun `previewImage` özelliği, şablonun gerçek ayarları kullanılarak oluşturuluyor. Bu, küçük resmin, şablon uygulandığında nasıl görüneceğini doğru bir şekilde yansıtmasını sağlayarak "Tasarımlarım" özelliğinin işlevselliğini kopyalayan daha tutarlı ve bilgilendirici bir kullanıcı deneyimi sunar.
+-   **Genişletilmiş Şablon Kütüphanesi:** Kullanıcılara daha fazla yaratıcı seçenek sunmak için üç yeni tasarım şablonu eklendi:
+    -   **"Minimalist Black":** Düz siyah arka plan ve beyaz metin ile temiz, yüksek kontrastlı bir şablon.
+    -   **"Sunrise Gradient":** Yumuşak şeftali tonlarında bir gradyana sahip, sıcak ve davetkar bir şablon.
+    -   **"Oceanic Blue":** Düz mavi bir arka plana ve opak, açık renkli bir metin kutusuna sahip, profesyonel görünümlü bir şablon.
+-   **Genişletilmiş Font Kütüphanesi:** Kullanıcılara çok daha geniş bir tipografik stil yelpazesi sunmak için 19 yeni dekoratif, el yazısı ve ekran Google Fontu (Cherry Bomb One, Mea Culpa, Grand Hotel vb. dahil) eklendi.
+-   **Karusel Görünüm Güncellemesi:** Hem "Tasarım Şablonları" hem de "Tasarımlarım" karuselleri, tüm ekran boyutlarında (mobil ve masaüstü) aynı anda 4 öğe gösterecek şekilde güncellendi, bu da kullanıcıların tek seferde daha fazla seçenek görmesini sağlar.
+-   **Hata Düzeltmesi: Metin Büyüklüğü Koruma:** Başlık metninin otomatik olarak büyük harfe dönüştürülmesine neden olan bir hata düzeltildi. Metin işleme fonksiyonundan `.toLocaleUpperCase()` metodu kaldırıldı, böylece tasarımdaki metin artık kullanıcının girdiği büyük/küçük harf durumunu tam olarak yansıtıyor.
+
 ## Version V1.18
 
 #### ENGLISH
@@ -365,6 +389,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 11. **Initial View:** The main content input area should be vertically centered on the screen. The "Designs" section should be hidden by default and only appear after content generation.
 12. **Vertical Sizing:** The header should have a height of `10vh`, and the main content area should have a height of `90vh`.
 13. **Mobile View Definition:** The "Mobile View" is the layout that applies when the browser window width is less than 768px.
+14. **Case Preservation**: The casing (uppercase/lowercase) of the user's input text, including the title, must be preserved in the final design. Text should not be automatically converted to uppercase.
 
 #### Türkçe Çekirdek Kurallar
 1.  **Yapay Zeka Geliştirme Öncesi Kontrol:** Yapay zeka, herhangi bir geliştirmeye başlamadan önce, mevcut tüm kuralları ve projenin mevcut durumunu anlamak için `app-rules.md` dosyasını gözden geçirmelidir.
@@ -380,6 +405,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 11. **Başlangıç Görünümü:** Ana içerik giriş alanı ekranın dikeyinde ortalanmalıdır. "Designs" bölümü varsayılan olarak gizli olmalı ve yalnızca içerik oluşturulduktan sonra görünmelidir.
 12. **Dikey Boyutlandırma:** Header `10vh` yüksekliğe, ana içerik alanı ise `90vh` yüksekliğe sahip olmalıdır.
 13. **Mobil Görünüm Tanımı:** "Mobil Görünüm", tarayıcı pencere genişliği 768 pikselden daha küçük olduğunda geçerli olan düzendir.
+14. **Harf Büyüklüğü Koruma**: Kullanıcının girdiği metnin (başlık dahil) büyük/küçük harf durumu, nihai tasarımda korunmalıdır. Metin otomatik olarak büyük harfe çevrilmemelidir.
 
 #### ENGLISH
 
@@ -424,6 +450,7 @@ Uygulamada harici API kullanan 1 adet özellik bulunmaktadır:
 -   Google Fonts'tan yüklenen tüm yazı tipleri, Türkçe karakterlerin doğru görüntülenmesini sağlamak için `latin-ext` karakter setini içermelidir.
 -   Font seçim menüsünde, her bir font seçeneğinin adı kendi yazı tipiyle görüntülenmelidir. Bu, kullanıcının fontları seçmeden önce nasıl göründüklerini önizlemesini sağlar.
 -   Yazı tipi seçim menüsündeki varsayılan font "Special Elite" olarak ayarlanmıştır.
+
 
 
 
