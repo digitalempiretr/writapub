@@ -822,7 +822,7 @@ export default function Home() {
 
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'special-elite') || fontOptions[0]);
   const [textAlign, setTextAlign] = useState<TextAlign>('left');
-  const [backgroundTab, setBackgroundTab] = useState("image");
+  const [backgroundTab, setBackgroundTab] = useState<BackgroundType>("image");
   const [bgColor, setBgColor] = useState(pageInitialColors.bgColor);
   const [textColor, setTextColor] = useState(pageInitialColors.textColor);
   const [gradientBg, setGradientBg] = useState(pageInitialColors.gradientBg);
@@ -838,9 +838,8 @@ export default function Home() {
   const [overlayColor, setOverlayColor] = useState(pageInitialColors.overlayColor);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   
-  const [activeSettingsTab, setActiveSettingsTab] = useState<string | null>('designs');
+  const [activeSettingsTab, setActiveSettingsTab] = useState<string | null>(null);
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
-
 
   const [fileName, setFileName] = useState("writa");
 
@@ -850,13 +849,13 @@ export default function Home() {
   const { toast } = useToast();
 
    const closePanel = useCallback(() => {
-    setActiveSettingsTab(null)
+    setIsMobilePanelOpen(false);
   }, []);
 
    useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        activeSettingsTab &&
+        isMobilePanelOpen &&
         mobilePanelRef.current &&
         !mobilePanelRef.current.contains(event.target as Node)
       ) {
@@ -876,7 +875,7 @@ export default function Home() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [activeSettingsTab, closePanel]);
+  }, [isMobilePanelOpen, closePanel]);
 
 
   const handleTextRemaining = useCallback((remaining: string, fromIndex: number) => {
@@ -913,7 +912,7 @@ export default function Home() {
     setIsLoading(true);
     setIsGeneratingAnimation(true);
     setDesigns([]);
-    setActiveSettingsTab(null)
+    setIsMobilePanelOpen(false);
     
     let finalTitle = title;
     let finalBody = text;
@@ -1209,18 +1208,10 @@ export default function Home() {
     )
   }, [backgroundType, activeFont, bgColor, textColor, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, handleTextRemaining]);
 
-  const handleMobileTabClick = (tab: string) => {
-    if (activeSettingsTab === tab) {
-      setActiveSettingsTab(null);
-    } else {
-      setActiveSettingsTab(tab);
-    }
-  };
-
   const tabContentProps = {
     activeTab: activeSettingsTab,
     backgroundTab,
-    setBackgroundTab,
+    setBackgroundTab: setBackgroundTab as (value: string) => void,
     handleFeelLucky,
     bgColor,
     handleBgColorSelect,
@@ -1274,15 +1265,18 @@ export default function Home() {
   
   const settingsPanel = (
     <CardFooter className="flex-col items-start p-0 bg-[#f4fdff] md:rounded-lg">
-       <TooltipProvider>
-        <div className="w-full flex flex-col-reverse md:flex-col">
+      <TooltipProvider>
+        <Tabs
+          value={activeSettingsTab ?? ''}
+          onValueChange={setActiveSettingsTab}
+          className="w-full flex flex-col-reverse md:flex-col"
+        >
           <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md">
-             <Tooltip>
+            <Tooltip>
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="designs"
-                  onClick={() => handleMobileTabClick('designs')}
-                  className={activeSettingsTab === 'designs' ? 'data-[state=active]:bg-orange-300' : ''}
+                  onClick={() => setIsMobilePanelOpen(true)}
                 >
                   <LayoutTemplate />
                 </TabsTrigger>
@@ -1291,12 +1285,11 @@ export default function Home() {
                 <p>Design Templates</p>
               </TooltipContent>
             </Tooltip>
-             <Tooltip>
+            <Tooltip>
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="my-designs"
-                  onClick={() => handleMobileTabClick('my-designs')}
-                   className={activeSettingsTab === 'my-designs' ? 'data-[state=active]:bg-orange-300' : ''}
+                  onClick={() => setIsMobilePanelOpen(true)}
                 >
                   <Star />
                 </TabsTrigger>
@@ -1309,8 +1302,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="background"
-                  onClick={() => handleMobileTabClick('background')}
-                   className={activeSettingsTab === 'background' ? 'data-[state=active]:bg-orange-300' : ''}
+                  onClick={() => setIsMobilePanelOpen(true)}
                 >
                   <ImageIcon />
                 </TabsTrigger>
@@ -1323,8 +1315,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="text"
-                  onClick={() => handleMobileTabClick('text')}
-                   className={activeSettingsTab === 'text' ? 'data-[state=active]:bg-orange-300' : ''}
+                  onClick={() => setIsMobilePanelOpen(true)}
                 >
                   <Type />
                 </TabsTrigger>
@@ -1337,8 +1328,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="download"
-                  onClick={() => handleMobileTabClick('download')}
-                   className={activeSettingsTab === 'download' ? 'data-[state=active]:bg-orange-300' : ''}
+                  onClick={() => setIsMobilePanelOpen(true)}
                 >
                   <Download />
                 </TabsTrigger>
@@ -1348,31 +1338,29 @@ export default function Home() {
               </TooltipContent>
             </Tooltip>
           </TabsList>
-           <div className="flex-grow w-full">
+          <div className="flex-grow w-full">
             <div className="md:hidden">
-              {activeSettingsTab && <TabContentContainer {...tabContentProps} />}
+              {isMobilePanelOpen && <TabContentContainer {...tabContentProps} />}
             </div>
             <div className="hidden md:block">
-              <Tabs value={activeSettingsTab || 'designs'} onValueChange={setActiveSettingsTab}>
-                <TabsContent value="designs">
-                  <TabContentContainer {...tabContentProps} activeTab="designs"/>
-                </TabsContent>
-                <TabsContent value="my-designs">
-                  <TabContentContainer {...tabContentProps} activeTab="my-designs"/>
-                </TabsContent>
-                <TabsContent value="background">
-                  <TabContentContainer {...tabContentProps} activeTab="background"/>
-                </TabsContent>
-                <TabsContent value="text">
-                  <TabContentContainer {...tabContentProps} activeTab="text"/>
-                </TabsContent>
-                <TabsContent value="download">
-                  <TabContentContainer {...tabContentProps} activeTab="download"/>
-                </TabsContent>
-              </Tabs>
+              <TabsContent value="designs">
+                <TabContentContainer {...tabContentProps} activeTab="designs"/>
+              </TabsContent>
+              <TabsContent value="my-designs">
+                <TabContentContainer {...tabContentProps} activeTab="my-designs"/>
+              </TabsContent>
+              <TabsContent value="background">
+                <TabContentContainer {...tabContentProps} activeTab="background"/>
+              </TabsContent>
+              <TabsContent value="text">
+                <TabContentContainer {...tabContentProps} activeTab="text"/>
+              </TabsContent>
+              <TabsContent value="download">
+                <TabContentContainer {...tabContentProps} activeTab="download"/>
+              </TabsContent>
             </div>
           </div>
-        </div>
+        </Tabs>
       </TooltipProvider>
     </CardFooter>
   );
@@ -1500,3 +1488,5 @@ export default function Home() {
     </>
   );
 }
+
+    
