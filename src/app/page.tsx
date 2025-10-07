@@ -851,7 +851,6 @@ export default function Home() {
         mobilePanelRef.current &&
         !mobilePanelRef.current.contains(event.target as Node)
       ) {
-        // Check if the click is on a popover or dialog trigger/content
         const targetElement = event.target as Element;
         if (
           targetElement.closest('[role="dialog"]') ||
@@ -874,20 +873,16 @@ export default function Home() {
   const handleTextRemaining = useCallback((remaining: string, fromIndex: number) => {
     const nextDesignIndex = fromIndex + 1;
     setDesigns(prevDesigns => {
-        // If there's remaining text and we have a next slide to update
         if (remaining && prevDesigns[nextDesignIndex]) {
             const newDesigns = [...prevDesigns];
-            // Check if the text is different to prevent infinite loops
             if (newDesigns[nextDesignIndex].text !== remaining) {
                 newDesigns[nextDesignIndex].text = remaining;
                 return newDesigns;
             }
         }
-        // If there is remaining text but no next slide, create one
         else if (remaining && !prevDesigns[nextDesignIndex]) {
              return [...prevDesigns, { text: remaining, isTitle: false }];
         }
-        // If there is no remaining text, but there are slides after this one, remove them
         else if (!remaining && prevDesigns.length > nextDesignIndex) {
             return prevDesigns.slice(0, nextDesignIndex);
         }
@@ -908,9 +903,8 @@ export default function Home() {
     
     setIsLoading(true);
     setIsGeneratingAnimation(true);
-    setDesigns([]); // Clear all previous designs
+    setDesigns([]);
     
-    // Prepare designs in the background
     let finalTitle = title;
     let finalBody = text;
 
@@ -937,7 +931,6 @@ export default function Home() {
     }
     setDesigns(newDesigns);
     
-    // Show animation for 1.6 seconds, then reveal content and scroll
     setTimeout(() => {
         setIsGeneratingAnimation(false);
         setIsLoading(false);
@@ -1244,9 +1237,11 @@ export default function Home() {
     closePanel: () => setIsMobilePanelOpen(false),
   };
   
-  const handleMobileTabChange = (tab: string) => {
-    setActiveSettingsTab(tab);
-    if (!isMobilePanelOpen) {
+  const handleMobileTabClick = (tab: string) => {
+    if (isMobilePanelOpen && activeSettingsTab === tab) {
+      setIsMobilePanelOpen(false);
+    } else {
+      setActiveSettingsTab(tab);
       setIsMobilePanelOpen(true);
     }
   };
@@ -1257,7 +1252,7 @@ export default function Home() {
        <TooltipProvider>
         <Tabs
           value={activeSettingsTab}
-          onValueChange={handleMobileTabChange}
+          onValueChange={setActiveSettingsTab}
           className="w-full flex flex-col-reverse md:flex-col"
         >
           <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md">
@@ -1265,14 +1260,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="designs"
-                  onClick={() => {
-                    if (isMobilePanelOpen && activeSettingsTab === 'designs') {
-                      setIsMobilePanelOpen(false);
-                    } else {
-                      setActiveSettingsTab('designs');
-                      setIsMobilePanelOpen(true);
-                    }
-                  }}
+                  onClick={() => handleMobileTabClick('designs')}
                 >
                   <LayoutTemplate />
                 </TabsTrigger>
@@ -1285,14 +1273,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="my-designs"
-                  onClick={() => {
-                    if (isMobilePanelOpen && activeSettingsTab === 'my-designs') {
-                      setIsMobilePanelOpen(false);
-                    } else {
-                      setActiveSettingsTab('my-designs');
-                      setIsMobilePanelOpen(true);
-                    }
-                  }}
+                  onClick={() => handleMobileTabClick('my-designs')}
                 >
                   <Star />
                 </TabsTrigger>
@@ -1305,14 +1286,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="background"
-                   onClick={() => {
-                    if (isMobilePanelOpen && activeSettingsTab === 'background') {
-                      setIsMobilePanelOpen(false);
-                    } else {
-                      setActiveSettingsTab('background');
-                      setIsMobilePanelOpen(true);
-                    }
-                  }}
+                  onClick={() => handleMobileTabClick('background')}
                 >
                   <ImageIcon />
                 </TabsTrigger>
@@ -1325,14 +1299,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="text"
-                   onClick={() => {
-                    if (isMobilePanelOpen && activeSettingsTab === 'text') {
-                      setIsMobilePanelOpen(false);
-                    } else {
-                      setActiveSettingsTab('text');
-                      setIsMobilePanelOpen(true);
-                    }
-                  }}
+                  onClick={() => handleMobileTabClick('text')}
                 >
                   <Type />
                 </TabsTrigger>
@@ -1345,14 +1312,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="download"
-                   onClick={() => {
-                    if (isMobilePanelOpen && activeSettingsTab === 'download') {
-                      setIsMobilePanelOpen(false);
-                    } else {
-                      setActiveSettingsTab('download');
-                      setIsMobilePanelOpen(true);
-                    }
-                  }}
+                  onClick={() => handleMobileTabClick('download')}
                 >
                   <Download />
                 </TabsTrigger>
