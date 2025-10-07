@@ -834,8 +834,7 @@ export default function Home() {
   const [overlayColor, setOverlayColor] = useState(pageInitialColors.overlayColor);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   
-  const [activeSettingsTab, setActiveSettingsTab] = useState('designs');
-  const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
+  const [activeSettingsTab, setActiveSettingsTab] = useState<string | null>(null);
 
   const [fileName, setFileName] = useState("writa");
 
@@ -847,7 +846,7 @@ export default function Home() {
    useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        isMobilePanelOpen &&
+        activeSettingsTab &&
         mobilePanelRef.current &&
         !mobilePanelRef.current.contains(event.target as Node)
       ) {
@@ -859,7 +858,7 @@ export default function Home() {
         ) {
           return;
         }
-        setIsMobilePanelOpen(false);
+        setActiveSettingsTab(null);
       }
     };
 
@@ -867,7 +866,7 @@ export default function Home() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isMobilePanelOpen]);
+  }, [activeSettingsTab]);
 
 
   const handleTextRemaining = useCallback((remaining: string, fromIndex: number) => {
@@ -1183,7 +1182,7 @@ export default function Home() {
   }, [backgroundTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, handleTextRemaining]);
 
   const tabContentProps = {
-    activeTab: activeSettingsTab,
+    activeTab: activeSettingsTab || 'designs',
     backgroundTab,
     setBackgroundTab,
     handleFeelLucky,
@@ -1234,15 +1233,14 @@ export default function Home() {
     setEditingName,
     designToDelete,
     setDesignToDelete,
-    closePanel: () => setIsMobilePanelOpen(false),
+    closePanel: () => setActiveSettingsTab(null),
   };
   
   const handleMobileTabClick = (tab: string) => {
-    if (isMobilePanelOpen && activeSettingsTab === tab) {
-      setIsMobilePanelOpen(false);
+    if (activeSettingsTab === tab) {
+      setActiveSettingsTab(null); // If the same tab is clicked, close the panel
     } else {
-      setActiveSettingsTab(tab);
-      setIsMobilePanelOpen(true);
+      setActiveSettingsTab(tab); // If a different tab is clicked, switch to it (panel remains open)
     }
   };
 
@@ -1251,7 +1249,7 @@ export default function Home() {
     <CardFooter className="flex-col items-start p-0 bg-[#f4fdff] md:rounded-lg">
        <TooltipProvider>
         <Tabs
-          value={activeSettingsTab}
+          value={activeSettingsTab ?? ""}
           onValueChange={setActiveSettingsTab}
           className="w-full flex flex-col-reverse md:flex-col"
         >
@@ -1324,7 +1322,7 @@ export default function Home() {
           </TabsList>
            <div className="flex-grow w-full">
             <div className="md:hidden">
-              {isMobilePanelOpen && <TabContentContainer {...tabContentProps} />}
+              {activeSettingsTab && <TabContentContainer {...tabContentProps} activeTab={activeSettingsTab} />}
             </div>
             <div className="hidden md:block">
               <TabsContent value="designs">
@@ -1472,5 +1470,3 @@ export default function Home() {
     </>
   );
 }
-
-    
