@@ -37,7 +37,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, ImageIcon, LayoutTemplate, Loader2, Plus, Search, Type } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, ImageIcon, LayoutTemplate, Loader2, Plus, Search, Star, Trash2, Type } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState, useId } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -49,12 +49,25 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
 import { gradientTemplates, defaultSolidColors, pageInitialColors } from "@/lib/colors";
 import { fontOptions } from "@/lib/font-options";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { defaultText } from "@/lib/default-text";
 import { TextColorChooseIcon, BgOverlayIcon, TextBgBoxIcon, TextBoxOpacity, FeelLucky } from '@/components/ui/icons';
 import { designTemplates, DesignTemplate } from "@/lib/design-templates";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 type Design = {
   text: string;
@@ -83,7 +96,7 @@ function TabContentContainer({
   searchPage,
   overlayColor,
   setOverlayColor,
-overlayOpacity,
+  overlayOpacity,
   setOverlayOpacity,
   textColor,
   setTextColor,
@@ -106,6 +119,9 @@ overlayOpacity,
   fileName,
   setFileName,
   handleApplyTemplate,
+  myDesigns,
+  handleSaveDesign,
+  handleDeleteDesign,
 }: {
   activeTab: string;
   backgroundTab: string;
@@ -147,6 +163,9 @@ overlayOpacity,
   fileName: string;
   setFileName: (name: string) => void;
   handleApplyTemplate: (template: DesignTemplate) => void;
+  myDesigns: DesignTemplate[];
+  handleSaveDesign: () => void;
+  handleDeleteDesign: (id: string) => void;
 }) {
   const baseId = useId();
   return (
@@ -180,6 +199,77 @@ overlayOpacity,
             <CarouselPrevious className="-left-4" />
             <CarouselNext className="-right-4" />
           </Carousel>
+        </div>
+      )}
+       {activeTab === 'my-designs' && (
+        <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4 mobile-tab-content">
+          <div className="flex justify-between items-center">
+            <Label className="bg-zinc-200 p-2 px-6 rounded-md">MY DESIGNS</Label>
+            <Button onClick={handleSaveDesign} size="sm">
+              <Plus className="mr-2 h-4 w-4" /> Save Current
+            </Button>
+          </div>
+          {myDesigns.length > 0 ? (
+            <Carousel
+              opts={{
+                align: "start",
+                dragFree: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-2">
+                {myDesigns.map((template) => (
+                  <CarouselItem key={template.id} className="basis-1/2 md:basis-1/3 pl-2">
+                    <div className="relative group">
+                       <button onClick={() => handleApplyTemplate(template)} className="w-full">
+                        <Card className="overflow-hidden">
+                          <CardContent className="p-0">
+                             <Image src={template.previewImage} alt={template.name} width={200} height={250} className="object-cover aspect-[2/3] w-full" />
+                          </CardContent>
+                           <CardFooter className="p-2 justify-center">
+                            <p className="text-xs font-semibold truncate">{template.name}</p>
+                          </CardFooter>
+                        </Card>
+                      </button>
+                       <AlertDialog>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                             <AlertDialogTrigger asChild>
+                               <Button variant="destructive" size="icon" className="absolute top-1 right-1 h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Delete Design</p>
+                          </TooltipContent>
+                        </Tooltip>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will permanently delete your custom design.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDeleteDesign(template.id)}>Delete</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="-left-4" />
+              <CarouselNext className="-right-4" />
+            </Carousel>
+          ) : (
+            <div className="text-center text-muted-foreground py-8">
+              <p>You haven't saved any designs yet.</p>
+              <p className="text-xs">Click the star icon on a preview to save it.</p>
+            </div>
+          )}
         </div>
       )}
       {activeTab === 'background' && (
@@ -614,6 +704,7 @@ export default function Home() {
   const [searchCarouselApi, setSearchCarouselApi] = useState<CarouselApi | undefined>();
   const [currentSlide, setCurrentSlide] = useState(0);
   const mainTextAreaId = useId();
+  const [myDesigns, setMyDesigns] = useLocalStorage<DesignTemplate[]>('writa-designs', []);
 
   useEffect(() => {
     setIsClient(true)
@@ -867,6 +958,63 @@ export default function Home() {
       description: `"${template.name}" template has been set.`,
     });
   };
+
+  const handleSaveDesign = useCallback(() => {
+    const canvas = canvasRefs.current[currentSlide];
+    if (!canvas) {
+      toast({
+        variant: "destructive",
+        title: "Cannot save design",
+        description: "The design preview is not ready yet.",
+      });
+      return;
+    }
+
+    const previewImage = canvas.toDataURL("image/jpeg", 0.5);
+
+    let bgValue = '';
+    if (backgroundTab === 'flat') bgValue = bgColor;
+    else if (backgroundTab === 'gradient') bgValue = gradientBg;
+    else if (backgroundTab === 'image') bgValue = imageBgUrl;
+
+    const newDesign: DesignTemplate = {
+      id: `design-${Date.now()}`,
+      name: `My Design ${myDesigns.length + 1}`,
+      previewImage: previewImage,
+      background: {
+        type: backgroundTab as 'flat' | 'gradient' | 'image',
+        value: bgValue,
+      },
+      font: {
+        value: activeFont.value,
+        color: textColor,
+      },
+      textBox: {
+        color: rectBgColor,
+        opacity: rectOpacity,
+      },
+      overlay: {
+        color: overlayColor,
+        opacity: overlayOpacity,
+      },
+    };
+
+    setMyDesigns(prev => [...prev, newDesign]);
+
+    toast({
+      title: "Design Saved",
+      description: "Your current design has been saved to 'My Designs'.",
+    });
+
+  }, [currentSlide, backgroundTab, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, myDesigns.length, setMyDesigns, toast]);
+
+  const handleDeleteDesign = (id: string) => {
+    setMyDesigns(prev => prev.filter(d => d.id !== id));
+    toast({
+      title: "Design Deleted",
+      description: "The selected design has been removed from 'My Designs'.",
+    });
+  };
   
   const renderCanvas = useCallback((design: Design, index: number) => {
     let currentBg: string | undefined;
@@ -956,6 +1104,9 @@ export default function Home() {
     fileName,
     setFileName,
     handleApplyTemplate,
+    myDesigns,
+    handleSaveDesign,
+    handleDeleteDesign,
   };
 
   const settingsPanel = (
@@ -966,7 +1117,7 @@ export default function Home() {
           onValueChange={setActiveSettingsTab}
           className="w-full flex flex-col-reverse md:flex-col"
         >
-          <TabsList className="grid w-full grid-cols-4 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md">
+          <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md">
              <Tooltip>
               <TooltipTrigger asChild>
                 <TabsTrigger
@@ -985,6 +1136,26 @@ export default function Home() {
               </TooltipTrigger>
               <TooltipContent>
                 <p>Design Templates</p>
+              </TooltipContent>
+            </Tooltip>
+             <Tooltip>
+              <TooltipTrigger asChild>
+                <TabsTrigger
+                  value="my-designs"
+                  onClick={() => {
+                    if (activeSettingsTab === 'my-designs') {
+                      setIsMobilePanelOpen(!isMobilePanelOpen);
+                    } else {
+                      setActiveSettingsTab('my-designs');
+                      setIsMobilePanelOpen(true);
+                    }
+                  }}
+                >
+                  <Star />
+                </TabsTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>My Designs</p>
               </TooltipContent>
             </Tooltip>
             <Tooltip>
@@ -1059,6 +1230,9 @@ export default function Home() {
             <div className="hidden md:block">
               <TabsContent value="designs">
                 <TabContentContainer {...tabContentProps} activeTab="designs"/>
+              </TabsContent>
+              <TabsContent value="my-designs">
+                <TabContentContainer {...tabContentProps} activeTab="my-designs"/>
               </TabsContent>
               <TabsContent value="background">
                 <TabContentContainer {...tabContentProps} activeTab="background"/>
@@ -1135,12 +1309,42 @@ export default function Home() {
                       <CarouselContent>
                         {designs.map((design, index) => (
                           <CarouselItem key={index} data-index={index}>
-                            <div className="p-1">
+                            <div className="p-1 group relative">
                               <Card className="overflow-hidden border-0">
                                 <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
                                   {renderCanvas(design, index)}
                                 </CardContent>
                               </Card>
+                                <AlertDialog>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <AlertDialogTrigger asChild>
+                                        <Button
+                                          variant="ghost"
+                                          size="icon"
+                                          className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/30 text-white hover:bg-black/50 hover:text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                          <Star className="h-5 w-5" />
+                                        </Button>
+                                      </AlertDialogTrigger>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Save to My Designs</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Save to My Designs?</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        This will save the current background, font, and color settings as a new template.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction onClick={handleSaveDesign}>Save</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
                             </div>
                           </CarouselItem>
                         ))}

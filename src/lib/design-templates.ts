@@ -3,6 +3,7 @@ import { fontOptions } from './font-options';
 import { gradientTemplates } from './colors';
 
 export type DesignTemplate = {
+  id: string;
   name: string;
   previewImage: string;
   background: {
@@ -25,6 +26,7 @@ export type DesignTemplate = {
 
 export const designTemplates: DesignTemplate[] = [
   {
+    id: 'template-1',
     name: "Classic Read",
     previewImage: "https://i.ibb.co/60jqfPL0/12.jpg",
     background: {
@@ -45,6 +47,7 @@ export const designTemplates: DesignTemplate[] = [
     },
   },
   {
+    id: 'template-2',
     name: "Bold Statement",
     previewImage: "https://i.ibb.co/395BJVBs/24.jpg",
     background: {
@@ -65,6 +68,7 @@ export const designTemplates: DesignTemplate[] = [
     },
   },
     {
+    id: 'template-3',
     name: "Serene Gradient",
     previewImage: "https://i.ibb.co/k4H8kcn/template-3-preview.jpg",
     background: {
