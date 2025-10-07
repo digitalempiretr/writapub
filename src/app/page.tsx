@@ -1206,7 +1206,7 @@ export default function Home() {
     editingName,
     setEditingName,
   };
-
+  
   const handleMobileTabClick = (tab: string) => {
     if (activeSettingsTab === tab) {
       setIsMobilePanelOpen(!isMobilePanelOpen);
@@ -1216,12 +1216,16 @@ export default function Home() {
     }
   };
 
+
   const settingsPanel = (
     <CardFooter className="flex-col items-start p-0 bg-[#f4fdff] md:rounded-lg">
       <TooltipProvider>
         <Tabs
           value={activeSettingsTab}
-          onValueChange={setActiveSettingsTab}
+          onValueChange={(tab) => {
+            setActiveSettingsTab(tab);
+            setIsMobilePanelOpen(true);
+          }}
           className="w-full flex flex-col-reverse md:flex-col"
         >
           <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md">
