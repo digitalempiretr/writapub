@@ -360,7 +360,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 6.  **Flexible Line Limit (12-14 lines):** Each image (slide) should generally not exceed 12 lines. However, to avoid awkwardly splitting a sentence, if the remaining part of the sentence (e.g., 1 or 2 words) can fit, the current slide can be extended up to a maximum of 14 lines to keep the sentence intact. This is a strict rule enforced by the code.
 7.  **No Overflow:** Both the title and body text must always remain **inside** the text box area in the center of the canvas. The text must **never** overflow vertically or horizontally outside this area. Long titles must automatically wrap to new lines.
 8.  **Automatic Title Logic:** If the user has not specified a title, the first sentence of the entered text is automatically used as the title. In this case, this sentence used as the title **must be removed** from the beginning of the main text.
-9.  **Paragraph & Newline Preservation:** Paragraphs and newlines entered by the user in the text area must be preserved and reflected in the final designs.
+9.  **Paragraph & Newline Preservation:** Paragraphs, newlines, and casing (uppercase/lowercase) entered by the user in the text area must be preserved and reflected in the final designs.
 10. **Unified Layout & Carousel Behavior:** On all screen sizes, the control panel and the design preview area are displayed one below the other. The carousel navigation (slider arrows) must only affect the design previews, while the control panel below it remains static.
 11. **Initial View:** The main content input area should be vertically centered on the screen. The "Designs" section should be hidden by default and only appear after content generation.
 12. **Vertical Sizing:** The header should have a height of `10vh`, and the main content area should have a height of `90vh`.
@@ -375,7 +375,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 6.  **Esnek Satır Limiti (12-14 satır):** Her bir görsel (slayt) genellikle 12 satırı geçmemelidir. Ancak, bir cümlenin anlamsız bir yerde bölünmesini önlemek amacıyla, eğer cümlenin geri kalan kısmı (örneğin 1-2 kelime) sığıyorsa mevcut slayt cümleyi bir arada tutmak için en fazla 14 satıra kadar uzatılabilir. Bu, kod tarafından uygulanan katı bir kuraldır.
 7.  **Taşma Engeli:** Hem başlık hem de gövde metni, her zaman kanvasın ortasındaki metin kutusu alanının **içinde kalmalıdır**. Metin, bu alanın dışına dikey veya yatay olarak **asla taşmamalıdır**. Uzun başlıklar otomatik olarak alt satırlara sarılmalıdır.
 8.  **Otomatik Başlık Mantığı:** Kullanıcı bir başlık belirtmemişse, girilen metnin ilk cümlesi otomatik olarak başlık olarak kullanılır. Bu durumda, başlık olarak kullanılan bu cümle ana metnin başından **kesinlikle çıkarılmalıdır**.
-9.  **Paragraf ve Satır Başı Koruma:** Kullanıcının metin alanına girdiği paragraflar ve satır başları korunmalı ve oluşturulan tasarımlara aynen yansıtılmalıdır.
+9.  **Paragraf, Satır Başı ve Harf Büyüklüğü Koruma:** Kullanıcının metin alanına girdiği paragraflar, satır başları ve harf büyüklüğü (büyük/küçük harf) korunmalı ve oluşturulan tasarımlara aynen yansıtılmalıdır.
 10. **Birleşik Yerleşim ve Karusel Davranışı:** Tüm ekran boyutlarında, kontrol paneli ve tasarım önizleme alanı alt alta görüntülenmelidir. Karusel navigasyonu (kaydırma okları) sadece tasarım önizlemelerini etkilemeli, altındaki kontrol paneli ise sabit kalmalıdır.
 11. **Başlangıç Görünümü:** Ana içerik giriş alanı ekranın dikeyinde ortalanmalıdır. "Designs" bölümü varsayılan olarak gizli olmalı ve yalnızca içerik oluşturulduktan sonra görünmelidir.
 12. **Dikey Boyutlandırma:** Header `10vh` yüksekliğe, ana içerik alanı ise `90vh` yüksekliğe sahip olmalıdır.
@@ -424,6 +424,7 @@ Uygulamada harici API kullanan 1 adet özellik bulunmaktadır:
 -   Google Fonts'tan yüklenen tüm yazı tipleri, Türkçe karakterlerin doğru görüntülenmesini sağlamak için `latin-ext` karakter setini içermelidir.
 -   Font seçim menüsünde, her bir font seçeneğinin adı kendi yazı tipiyle görüntülenmelidir. Bu, kullanıcının fontları seçmeden önce nasıl göründüklerini önizlemesini sağlar.
 -   Yazı tipi seçim menüsündeki varsayılan font "Special Elite" olarak ayarlanmıştır.
+
 
 
 
