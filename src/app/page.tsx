@@ -814,7 +814,7 @@ export default function Home() {
   const [overlayColor, setOverlayColor] = useState(pageInitialColors.overlayColor);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   
-  const [activeSettingsTab, setActiveSettingsTab] = useState('designs');
+  const [activeSettingsTab, setActiveSettingsTab] = useState('text');
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
 
   const [fileName, setFileName] = useState("writa");
