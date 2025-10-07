@@ -1207,6 +1207,15 @@ export default function Home() {
     setEditingName,
   };
 
+  const handleMobileTabClick = (tab: string) => {
+    if (activeSettingsTab === tab) {
+      setIsMobilePanelOpen(!isMobilePanelOpen);
+    } else {
+      setActiveSettingsTab(tab);
+      setIsMobilePanelOpen(true);
+    }
+  };
+
   const settingsPanel = (
     <CardFooter className="flex-col items-start p-0 bg-[#f4fdff] md:rounded-lg">
       <TooltipProvider>
@@ -1220,14 +1229,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="designs"
-                   onClick={() => {
-                    if (activeSettingsTab === 'designs') {
-                      setIsMobilePanelOpen(!isMobilePanelOpen);
-                    } else {
-                      setActiveSettingsTab('designs');
-                      setIsMobilePanelOpen(true);
-                    }
-                  }}
+                   onClick={() => handleMobileTabClick('designs')}
                 >
                   <LayoutTemplate />
                 </TabsTrigger>
@@ -1240,14 +1242,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="my-designs"
-                  onClick={() => {
-                    if (activeSettingsTab === 'my-designs') {
-                      setIsMobilePanelOpen(!isMobilePanelOpen);
-                    } else {
-                      setActiveSettingsTab('my-designs');
-                      setIsMobilePanelOpen(true);
-                    }
-                  }}
+                  onClick={() => handleMobileTabClick('my-designs')}
                 >
                   <Star />
                 </TabsTrigger>
@@ -1260,14 +1255,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="background"
-                  onClick={() => {
-                    if (activeSettingsTab === 'background') {
-                      setIsMobilePanelOpen(!isMobilePanelOpen);
-                    } else {
-                      setActiveSettingsTab('background');
-                      setIsMobilePanelOpen(true);
-                    }
-                  }}
+                  onClick={() => handleMobileTabClick('background')}
                 >
                   <ImageIcon />
                 </TabsTrigger>
@@ -1280,14 +1268,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="text"
-                  onClick={() => {
-                    if (activeSettingsTab === 'text') {
-                      setIsMobilePanelOpen(!isMobilePanelOpen);
-                    } else {
-                      setActiveSettingsTab('text');
-                      setIsMobilePanelOpen(true);
-                    }
-                  }}
+                  onClick={() => handleMobileTabClick('text')}
                 >
                   <Type />
                 </TabsTrigger>
@@ -1300,14 +1281,7 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="download"
-                  onClick={() => {
-                    if (activeSettingsTab === 'download') {
-                      setIsMobilePanelOpen(!isMobilePanelOpen);
-                    } else {
-                      setActiveSettingsTab('download');
-                      setIsMobilePanelOpen(true);
-                    }
-                  }}
+                  onClick={() => handleMobileTabClick('download')}
                 >
                   <Download />
                 </TabsTrigger>
@@ -1471,5 +1445,3 @@ export default function Home() {
     </>
   );
 }
-
-    
