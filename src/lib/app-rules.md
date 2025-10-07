@@ -14,6 +14,20 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.14
+
+#### ENGLISH
+### 1. UI & Feature Updates
+-   **"Feel Lucky" Button Repositioned:** The "Feel Lucky" button has been moved to be directly next to the image search bar. This groups the primary search-related actions (specific search and random search) together for a more intuitive user experience.
+-   **"Feel Lucky" Button Style Update:** The button has been updated to include both the dice icon and the "Feel Lucky" text, making its purpose clearer to the user at a glance.
+
+#### TURKCE
+### 1. Arayüz ve Özellik Güncellemeleri
+-   **"Kendimi Şanslı Hissediyorum" Butonu Yeniden Konumlandırıldı:** "Kendimi Şanslı Hissediyorum" butonu, görsel arama çubuğunun hemen yanına taşındı. Bu, aramayla ilgili ana eylemleri (belirli arama ve rastgele arama) daha sezgisel bir kullanıcı deneyimi için bir araya getirir.
+-   **"Kendimi Şanslı Hissediyorum" Buton Stili Güncellemesi:** Buton, hem zar ikonunu hem de "Kendimi Şanslı Hissediyorum" metnini içerecek şekilde güncellenerek amacının bir bakışta daha net anlaşılması sağlandı.
+
+---
+
 ## Version V1.13
 
 #### ENGLISH
@@ -321,3 +335,4 @@ Uygulamada harici API kullanan 1 adet özellik bulunmaktadır:
 -   Google Fonts'tan yüklenen tüm yazı tipleri, Türkçe karakterlerin doğru görüntülenmesini sağlamak için `latin-ext` karakter setini içermelidir.
 -   Font seçim menüsünde, her bir font seçeneğinin adı kendi yazı tipiyle görüntülenmelidir. Bu, kullanıcının fontları seçmeden önce nasıl göründüklerini önizlemesini sağlar.
 -   Yazı tipi seçim menüsündeki varsayılan font "Special Elite" olarak ayarlanmıştır.
+
