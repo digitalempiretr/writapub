@@ -132,7 +132,7 @@ function TabContentContainer({
   setDesignToDelete,
   closePanel,
 }: {
-  activeTab: string;
+  activeTab: string | null;
   backgroundTab: string;
   setBackgroundTab: (value: string) => void;
   handleFeelLucky: () => void;
@@ -186,6 +186,8 @@ function TabContentContainer({
   closePanel: () => void;
 }) {
   const baseId = useId();
+  if (!activeTab) return null;
+
   return (
     <>
       <div className="relative">
@@ -211,7 +213,7 @@ function TabContentContainer({
           >
             <CarouselContent className="-ml-2">
               {designTemplates.map((template) => (
-                <CarouselItem key={template.name} className="basis-1/3 md:basis-1/4 pl-2">
+                <CarouselItem key={template.name} className="basis-1/4 pl-2">
                   <button onClick={() => handleApplyTemplate(template)} className="w-full group">
                     <Card className="overflow-hidden">
                       <CardContent className="p-0">
@@ -256,7 +258,7 @@ function TabContentContainer({
               >
                 <CarouselContent className="-ml-2">
                   {myDesigns.map((template) => (
-                    <CarouselItem key={template.id} className="basis-1/3 md:basis-1/4 pl-2">
+                    <CarouselItem key={template.id} className="basis-1/4 pl-2">
                       <div className="relative group">
                          <button onClick={() => editingDesignId !== template.id && handleApplyTemplate(template)} className="w-full" disabled={editingDesignId === template.id}>
                           <Card className="overflow-hidden">
@@ -793,7 +795,6 @@ export default function Home() {
   const [editingName, setEditingName] = useState('');
   const [designToDelete, setDesignToDelete] = useState<string | null>(null);
 
-
   useEffect(() => {
     setIsClient(true)
   }, [])
@@ -1189,7 +1190,7 @@ export default function Home() {
   }, [backgroundTab, activeFont, bgColor, textColor, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, handleTextRemaining]);
 
   const tabContentProps = {
-    activeTab: activeSettingsTab || 'designs',
+    activeTab: activeSettingsTab,
     backgroundTab,
     setBackgroundTab,
     handleFeelLucky,
@@ -1320,7 +1321,7 @@ export default function Home() {
           </TabsList>
            <div className="flex-grow w-full">
             <div className="md:hidden">
-              {isMobilePanelOpen && <TabContentContainer {...tabContentProps} activeTab={activeSettingsTab} />}
+              {isMobilePanelOpen && <TabContentContainer {...tabContentProps} />}
             </div>
             <div className="hidden md:block">
               <TabsContent value="designs">
@@ -1468,3 +1469,5 @@ export default function Home() {
     </>
   );
 }
+
+    
