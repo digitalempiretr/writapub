@@ -224,11 +224,27 @@ function TabContentContainer({
           >
             <CarouselContent className="-ml-2">
               {designTemplates.map((template) => (
-                <CarouselItem key={template.name} className="basis-1/4 pl-2">
+                <CarouselItem key={template.id} className="basis-1/4 pl-2">
                   <button onClick={() => handleApplyTemplate(template)} className="w-full group">
                     <Card className="overflow-hidden">
-                      <CardContent className="p-0">
-                         <Image src={template.previewImage} alt={template.name} width={200} height={250} className="object-cover aspect-[2/3] w-full transition-transform duration-300 group-hover:scale-105" />
+                      <CardContent className="p-0 aspect-[2/3] w-full">
+                         {template.previewImage ? (
+                            <Image src={template.previewImage} alt={template.name} width={200} height={300} className="object-cover h-full w-full transition-transform duration-300 group-hover:scale-105" />
+                         ) : (
+                            <div 
+                              className="w-full h-full flex items-center justify-center p-2 text-center transition-transform duration-300 group-hover:scale-105" 
+                              style={{ background: template.background.value }}>
+                              <span 
+                                style={{
+                                  fontFamily: fontOptions.find(f => f.value === template.font.value)?.fontFamily || 'sans-serif',
+                                  color: template.font.color
+                                }}
+                                className="text-lg font-bold"
+                              >
+                                {template.name}
+                              </span>
+                            </div>
+                         )}
                       </CardContent>
                        <CardFooter className="p-2 justify-center">
                         <p className="text-xs font-semibold truncate">{template.name}</p>
@@ -285,8 +301,24 @@ function TabContentContainer({
                       <div className="relative group">
                          <button onClick={() => editingDesignId !== template.id && handleApplyTemplate(template)} className="w-full" disabled={editingDesignId === template.id}>
                           <Card className="overflow-hidden">
-                            <CardContent className="p-0">
-                               <Image src={template.previewImage} alt={template.name} width={200} height={250} className="object-cover aspect-[2/3] w-full" />
+                            <CardContent className="p-0 aspect-[2/3] w-full">
+                               {template.previewImage ? (
+                                <Image src={template.previewImage} alt={template.name} width={200} height={300} className="object-cover h-full w-full" />
+                               ) : (
+                                <div 
+                                  className="w-full h-full flex items-center justify-center p-2 text-center" 
+                                  style={{ background: template.background.value }}>
+                                  <span 
+                                    style={{
+                                      fontFamily: fontOptions.find(f => f.value === template.font.value)?.fontFamily || 'sans-serif',
+                                      color: template.font.color
+                                    }}
+                                    className="text-lg font-bold"
+                                  >
+                                    {template.name}
+                                  </span>
+                                </div>
+                               )}
                             </CardContent>
                              <CardFooter className="p-2 justify-center flex-col items-center">
                                {editingDesignId === template.id ? (
@@ -879,7 +911,7 @@ export default function Home() {
   const [overlayColor, setOverlayColor] = useState(pageInitialColors.overlayColor);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   
-  const [activeSettingsTab, setActiveSettingsTab] = useState<string | null>(null);
+  const [activeSettingsTab, setActiveSettingsTab] = useState<string | null>("designs");
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
 
   const [fileName, setFileName] = useState("writa");
