@@ -37,7 +37,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, ImageIcon, LayoutTemplate, Loader2, Plus, Search, Star, Trash2, Type, FilePenLine, Check, X } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, ImageIcon, LayoutTemplate, Loader2, Plus, Search, Star, Trash2, Type, FilePenLine, Check, X, Bold, CaseUpper } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState, useId } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -131,6 +131,10 @@ function TabContentContainer({
   setEditingName,
   designToDelete,
   setDesignToDelete,
+  isBold,
+  setIsBold,
+  isUppercase,
+  setIsUppercase,
   closePanel,
 }: {
   activeTab: string | null;
@@ -184,6 +188,10 @@ function TabContentContainer({
   setEditingName: (name: string) => void;
   designToDelete: string | null;
   setDesignToDelete: (id: string | null) => void;
+  isBold: boolean;
+  setIsBold: (value: boolean) => void;
+  isUppercase: boolean;
+  setIsUppercase: (value: boolean) => void;
   closePanel: () => void;
 }) {
   const baseId = useId();
@@ -372,7 +380,7 @@ function TabContentContainer({
             <TabsContent value="flat" className="pt-4 space-y-4">
               <Carousel className="w-full" opts={{ dragFree: true }}>
                 <CarouselContent>
-                  <CarouselItem className="basis-1/3 md:basis-1/4">
+                  <CarouselItem className="basis-1/4">
                      <div className="relative h-32 w-full">
                       <Label htmlFor={`${baseId}-bg-color-picker`} className="h-full w-full flex items-center justify-center bg-gray-100 rounded-md border" style={{ backgroundColor: bgColor }}>
                         <Plus className="h-8 w-8 text-gray-600" />
@@ -387,7 +395,7 @@ function TabContentContainer({
                     </div>
                   </CarouselItem>
                   {defaultSolidColors.map(color => (
-                    <CarouselItem key={color} className="basis-1/3 md:basis-1/4">
+                    <CarouselItem key={color} className="basis-1/4">
                       <Card className="overflow-hidden cursor-pointer" onClick={() => handleBgColorSelect(color)}>
                         <CardContent className="h-32" style={{ backgroundColor: color }} />
                       </Card>
@@ -402,7 +410,7 @@ function TabContentContainer({
               <Carousel className="w-full" opts={{ dragFree: true }}>
                 <CarouselContent>
                   {gradientTemplates.map((gradient) => (
-                    <CarouselItem key={gradient.name} className="basis-1/3 md:basis-1/4">
+                    <CarouselItem key={gradient.name} className="basis-1/4">
                       <Card className="overflow-hidden cursor-pointer" onClick={() => handleGradientBgSelect(gradient.css)}>
                         <CardContent className="h-32" style={{ background: gradient.css }} />
                       </Card>
@@ -509,7 +517,7 @@ function TabContentContainer({
                   >
                   <CarouselContent className="-ml-2">
                     {searchedImages.map((imageUrl, index) => (
-                      <CarouselItem key={index} className="basis-1/3 md:basis-1/4 pl-2">
+                      <CarouselItem key={index} className="basis-1/4">
                         <div onClick={() => handleImageBgUrlSelect(imageUrl)} className="cursor-pointer">
                           <Image src={imageUrl} alt={`Search Result ${index}`} width={200} height={250} className="object-cover aspect-[2/3] rounded-md" />
                         </div>
@@ -634,36 +642,54 @@ function TabContentContainer({
               </div>
             </div>
 
-            <DropdownMenu>
+            <div className="flex items-center gap-2">
               <Tooltip>
-                <TooltipTrigger asChild>
-                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="icon">
-                      {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
-                      {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
-                      {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" size="icon" data-active={isBold} onClick={() => setIsBold(!isBold)} className="data-[active=true]:bg-primary/20">
+                      <Bold className="h-4 w-4" />
                     </Button>
-                  </DropdownMenuTrigger>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Text Alignment</p>
-                </TooltipContent>
+                  </TooltipTrigger>
+                  <TooltipContent><p>Bold</p></TooltipContent>
               </Tooltip>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setTextAlign('left')}>
-                  <AlignLeft className="mr-2 h-4 w-4" />
-                  <span>Align Left</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTextAlign('center')}>
-                  <AlignCenter className="mr-2 h-4 w-4" />
-                  <span>Center</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTextAlign('right')}>
-                  <AlignRight className="mr-2 h-4 w-4" />
-                  <span>Align Right</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              <Tooltip>
+                  <TooltipTrigger asChild>
+                     <Button variant="outline" size="icon" data-active={isUppercase} onClick={() => setIsUppercase(!isUppercase)} className="data-[active=true]:bg-primary/20">
+                      <CaseUpper className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent><p>Uppercase</p></TooltipContent>
+              </Tooltip>
+              <DropdownMenu>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="icon">
+                        {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
+                        {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
+                        {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
+                      </Button>
+                    </DropdownMenuTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Text Alignment</p>
+                  </TooltipContent>
+                </Tooltip>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => setTextAlign('left')}>
+                    <AlignLeft className="mr-2 h-4 w-4" />
+                    <span>Align Left</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setTextAlign('center')}>
+                    <AlignCenter className="mr-2 h-4 w-4" />
+                    <span>Center</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setTextAlign('right')}>
+                    <AlignRight className="mr-2 h-4 w-4" />
+                    <span>Align Right</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
               <Tooltip>
@@ -726,7 +752,7 @@ function TabContentContainer({
             <Carousel className="w-full" opts={{ dragFree: true }}>
               <CarouselContent>
                 {defaultSolidColors.map(color => (
-                  <CarouselItem key={color} className="basis-1/3 md:basis-1/4">
+                  <CarouselItem key={color} className="basis-1/4">
                     <Card className="overflow-hidden cursor-pointer" onClick={() => setTextColor(color)}>
                       <CardContent className="h-20" style={{ backgroundColor: color }} />
                     </Card>
@@ -822,6 +848,8 @@ export default function Home() {
 
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'special-elite') || fontOptions[0]);
   const [textAlign, setTextAlign] = useState<TextAlign>('left');
+  const [isBold, setIsBold] = useState(false);
+  const [isUppercase, setIsUppercase] = useState(false);
   const [backgroundTab, setBackgroundTab] = useState<BackgroundType>("image");
   const [bgColor, setBgColor] = useState(pageInitialColors.bgColor);
   const [textColor, setTextColor] = useState(pageInitialColors.textColor);
@@ -1186,7 +1214,7 @@ export default function Home() {
     
     return (
         <ImageCanvas
-          key={`${backgroundType}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}`}
+          key={`${backgroundType}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}`}
           font={activeFont}
           text={design.text}
           isTitle={design.isTitle}
@@ -1204,9 +1232,11 @@ export default function Home() {
           overlayColor={overlayColor}
           overlayOpacity={overlayOpacity}
           textAlign={textAlign}
+          isBold={isBold}
+          isUppercase={isUppercase}
         />
     )
-  }, [backgroundType, activeFont, bgColor, textColor, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, handleTextRemaining]);
+  }, [backgroundType, activeFont, bgColor, textColor, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, handleTextRemaining]);
 
   const tabContentProps = {
     activeTab: activeSettingsTab,
@@ -1234,6 +1264,10 @@ export default function Home() {
     handleFontChange,
     textAlign,
     setTextAlign,
+    isBold,
+    setIsBold,
+    isUppercase,
+    setIsUppercase,
     rectBgColor,
     setRectBgColor,
     handleRectBgChange,
@@ -1488,5 +1522,3 @@ export default function Home() {
     </>
   );
 }
-
-    

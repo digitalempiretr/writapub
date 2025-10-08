@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useEffect, useRef } from "react";
@@ -29,6 +30,8 @@ type ImageCanvasProps = {
   overlayColor?: string;
   overlayOpacity?: number;
   textAlign: 'left' | 'center' | 'right';
+  isBold: boolean;
+  isUppercase: boolean;
 };
 
 // This function wraps text for titles.
@@ -187,6 +190,8 @@ export function ImageCanvas({
   overlayColor,
   overlayOpacity,
   textAlign,
+  isBold,
+  isUppercase,
 }: ImageCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const indexRef = useRef<number | null>(null);
@@ -209,10 +214,13 @@ export function ImageCanvas({
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
       
-      const fontWeight = isTitle ? font.titleWeight : font.bodyWeight;
+      const baseWeight = isTitle ? font.titleWeight : font.bodyWeight;
+      const fontWeight = isBold ? Math.min(Number(baseWeight) + 300, 900) : baseWeight;
       const fontSize = isTitle ? font.titleSize : font.bodySize;
       const fontName = font.fontFamily;
       const lineHeight = isTitle ? font.titleSize * 1.2 : font.lineHeight;
+
+      const processedText = isUppercase ? text.toUpperCase() : text;
 
       // Ensure the font is loaded before using it
       await document.fonts.load(`${fontWeight} ${fontSize}px "${fontName}"`);
@@ -232,11 +240,11 @@ export function ImageCanvas({
       let linesToDraw: string[] = [];
 
       if (!isTitle) {
-        const result = measureAndSplitText(ctx, text, textMaxWidth, 12, 14);
+        const result = measureAndSplitText(ctx, processedText, textMaxWidth, 12, 14);
         linesToDraw = result.lines;
         remainingText = result.remainingText;
       } else {
-        linesToDraw = wrapText(ctx, text, textMaxWidth);
+        linesToDraw = wrapText(ctx, processedText, textMaxWidth);
       }
 
       const drawLayout = () => {
@@ -327,7 +335,7 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign]);
+  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase]);
 
   return (
     <canvas
