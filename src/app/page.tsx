@@ -346,8 +346,7 @@ function TabContentContainer({
                                     </AlertDialogTrigger>
                                   </TooltipTrigger>
                                   <TooltipContent>
-                                    <p>Delete Design</p>
-                                  </TooltipContent>
+                                    <p>Delete Design</p></TooltipContent>
                                 </Tooltip>
                             </>
                           )}
@@ -1024,20 +1023,8 @@ export default function Home() {
     }
     try {
       const result = await findImages({ query: searchQuery, page: page, per_page: 6 });
-      let updatedImages;
-      if (page > 2) {
-          updatedImages = [...searchedImages.slice(6), ...result.imageUrls];
-      } else {
-          updatedImages = [...searchedImages, ...result.imageUrls];
-      }
-      setSearchedImages(updatedImages);
+      setSearchedImages(prevImages => [...result.imageUrls, ...prevImages]);
       setSearchPage(page);
-
-      if (page > 1) {
-        setTimeout(() => {
-          searchCarouselApi?.scrollTo(updatedImages.length - 6);
-        }, 100);
-      }
 
     } catch (error) {
       console.error(error);

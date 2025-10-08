@@ -26,6 +26,48 @@ export type DesignTemplate = {
 
 export const designTemplates: DesignTemplate[] = [
   {
+    id: 'solid-arsenal',
+    name: "New Template Name",
+    previewImage: "",
+    background: {
+      type: 'flat',
+      value: '#40ffa7',
+    },
+    font: {
+      value: 'arsenal',
+      color: '#050761',
+    },
+  textBox: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+  },
+  {
+    id: 'solid-arsenal2',
+    name: "New Template Name",
+    previewImage: "",
+    background: {
+      type: 'flat',
+      value: '#050761',
+    },
+    font: {
+      value: 'arsenal',
+      color: '#40ffa7',
+    },
+  textBox: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+  },
+  {
     id: 'template-1',
     name: "Classic Read",
     previewImage: "https://i.ibb.co/60jqfPL/12.jpg",
