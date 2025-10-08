@@ -37,7 +37,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, ImageIcon, LayoutTemplate, Loader2, Plus, Search, Star, Trash2, Type, FilePenLine, Check, X, Bold, CaseUpper } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, ImageIcon, LayoutTemplate, Loader2, Plus, Search, Star, Trash2, Type, FilePenLine, Check, X, Bold, CaseUpper, Copy } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState, useId } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -135,6 +135,7 @@ function TabContentContainer({
   setIsBold,
   isUppercase,
   setIsUppercase,
+  handleLogDesign,
   closePanel,
 }: {
   activeTab: string | null;
@@ -192,6 +193,7 @@ function TabContentContainer({
   setIsBold: (value: boolean) => void;
   isUppercase: boolean;
   setIsUppercase: (value: boolean) => void;
+  handleLogDesign: () => void;
   closePanel: () => void;
 }) {
   const baseId = useId();
@@ -245,16 +247,28 @@ function TabContentContainer({
         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4 mobile-tab-content">
           <div className="flex justify-between items-center">
             <Label className="bg-zinc-200 p-2 px-6 rounded-md">MY DESIGNS</Label>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button onClick={handleSaveDesign} size="sm">
-                  <Plus className="mr-2 h-4 w-4" /> Save Current
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Save the current settings as a new design.</p>
-              </TooltipContent>
-            </Tooltip>
+            <div className="flex gap-2">
+                <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button onClick={handleLogDesign} size="sm" variant="outline">
+                    <Copy className="mr-2 h-4 w-4" /> Log
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>Log current design to console for development.</p>
+                </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button onClick={handleSaveDesign} size="sm">
+                    <Plus className="mr-2 h-4 w-4" /> Save Current
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>Save the current settings as a new design.</p>
+                </TooltipContent>
+                </Tooltip>
+            </div>
           </div>
           {myDesigns.length > 0 ? (
              <AlertDialog open={!!designToDelete} onOpenChange={(open) => !open && setDesignToDelete(null)}>
@@ -1188,6 +1202,69 @@ export default function Home() {
       duration: 2000,
     });
   };
+
+  const handleLogDesign = useCallback(() => {
+    let bgValue = '';
+    if (backgroundType === 'flat') bgValue = bgColor;
+    else if (backgroundType === 'gradient') bgValue = gradientBg;
+    else if (backgroundType === 'image') bgValue = imageBgUrl;
+  
+    const templateToLog: Omit<DesignTemplate, 'id' | 'name' | 'previewImage'> & { previewImage: string } = {
+      previewImage: "''", // Placeholder
+      background: {
+        type: backgroundType,
+        value: bgValue,
+      },
+      font: {
+        value: activeFont.value,
+        color: textColor,
+      },
+      textBox: {
+        color: rectBgColor,
+        opacity: rectOpacity,
+      },
+      overlay: {
+        color: overlayColor,
+        opacity: overlayOpacity,
+      },
+    };
+
+    const templateString = `
+{
+  id: 'template-NEW_ID',
+  name: "New Template Name",
+  previewImage: "",
+  background: {
+    type: '${templateToLog.background.type}',
+    value: ${templateToLog.background.type === 'gradient' 
+      ? `gradientTemplates.find(g => g.name === 'YOUR_GRADIENT_NAME')?.css || '${templateToLog.background.value}'`
+      : `'${templateToLog.background.value}'`
+    },
+  },
+  font: {
+    value: '${templateToLog.font.value}',
+    color: '${templateToLog.font.color}',
+  },
+textBox: {
+    color: '${templateToLog.textBox.color}',
+    opacity: ${templateToLog.textBox.opacity},
+  },
+  overlay: {
+    color: '${templateToLog.overlay.color}',
+    opacity: ${templateToLog.overlay.opacity},
+  },
+},`;
+  
+    console.log("Copy this code snippet to add to design-templates.ts:");
+    console.log(templateString);
+  
+    toast({
+      title: "Design Logged to Console",
+      description: "Open developer tools (F12) to see the design code.",
+      duration: 5000,
+    });
+  }, [backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, toast]);
+
   
   const renderCanvas = useCallback((design: Design, index: number) => {
     let currentBg: string | undefined;
@@ -1294,6 +1371,7 @@ export default function Home() {
     setEditingName,
     designToDelete,
     setDesignToDelete,
+    handleLogDesign,
     closePanel,
   };
   
