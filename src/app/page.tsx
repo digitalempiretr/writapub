@@ -380,7 +380,7 @@ function TabContentContainer({
             <TabsContent value="flat" className="pt-4 space-y-4">
               <Carousel className="w-full" opts={{ dragFree: true }}>
                 <CarouselContent>
-                  <CarouselItem className="basis-1/4">
+                  <CarouselItem className="basis-1/7">
                      <div className="relative h-32 w-full">
                       <Label htmlFor={`${baseId}-bg-color-picker`} className="h-full w-full flex items-center justify-center bg-gray-100 rounded-md border" style={{ backgroundColor: bgColor }}>
                         <Plus className="h-8 w-8 text-gray-600" />
@@ -395,7 +395,7 @@ function TabContentContainer({
                     </div>
                   </CarouselItem>
                   {defaultSolidColors.map(color => (
-                    <CarouselItem key={color} className="basis-1/4">
+                    <CarouselItem key={color} className="basis-1/7">
                       <Card className="overflow-hidden cursor-pointer" onClick={() => handleBgColorSelect(color)}>
                         <CardContent className="h-32" style={{ backgroundColor: color }} />
                       </Card>
@@ -752,7 +752,7 @@ function TabContentContainer({
             <Carousel className="w-full" opts={{ dragFree: true }}>
               <CarouselContent>
                 {defaultSolidColors.map(color => (
-                  <CarouselItem key={color} className="basis-1/4">
+                  <CarouselItem key={color} className="basis-1/7">
                     <Card className="overflow-hidden cursor-pointer" onClick={() => setTextColor(color)}>
                       <CardContent className="h-20" style={{ backgroundColor: color }} />
                     </Card>
