@@ -14,6 +14,34 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.20
+
+#### ENGLISH
+### 1. Core Logic & Bug Fixes
+-   **Background Selection Logic Overhaul:** Fixed a major UX issue where the design's background would change automatically when switching between the "Solid Color," "Gradient," and "Image" tabs. The logic was rewritten to ensure the background only updates when a user *explicitly selects* an item (a color, gradient, or image), not just by browsing tabs. This was achieved by separating the UI state (`backgroundTab`) from the design's active background type state (`backgroundType`).
+-   **"Tabs must be used within Tabs" Error Fixed:** Resolved a critical runtime error on mobile devices caused by the `TabsList` component being rendered outside of its parent `Tabs` context. The component structure was refactored to ensure the entire settings panel, including the list and content, is always wrapped by the main `Tabs` provider, stabilizing the tab functionality across all views.
+-   **Case Preservation Bug Fix:** Fixed a bug where title text was being automatically converted to uppercase. The logic in `image-canvas.tsx` was corrected to ensure user-entered casing is always preserved unless the "Uppercase" option is explicitly toggled on.
+
+### 2. New Features & UI Enhancements
+-   **Bold & Uppercase Text Controls:** Added two new icon buttons to the "Text Settings" tab:
+    -   **Bold:** Allows users to toggle a bold font weight for the text.
+    -   **Uppercase:** Allows users to convert all text to uppercase or revert to the original casing with a single click.
+-   **Greatly Expanded Font Library:** Added **41** new decorative, script, and display Google Fonts (including Poppins, Lexend Deca, Ribeye Marrow, etc.) to provide users with a much wider range of typographic styles.
+-   **Wider Color Palettes:** The carousels for predefined solid colors in both the "Background" and "Text" settings now display 7 color swatches at a time (up from 4), making it easier to browse and select colors quickly.
+
+#### TURKCE
+### 1. Çekirdek Mantık ve Hata Düzeltmeleri
+-   **Arka Plan Seçim Mantığı Yeniden Yapılandırıldı:** Tasarımın arka planının "Düz Renk," "Gradyan," ve "Görsel" sekmeleri arasında geçiş yapıldığında otomatik olarak değişmesine neden olan önemli bir kullanıcı deneyimi sorunu düzeltildi. Mantık, arka planın sadece sekmelere göz atarak değil, kullanıcı bir öğeyi (renk, gradyan veya görsel) *açıkça seçtiğinde* güncellenmesini sağlayacak şekilde yeniden yazıldı. Bu, arayüz durumunu (`backgroundTab`) tasarımın aktif arka plan türü durumundan (`backgroundType`) ayırarak başarıldı.
+-   **"Tabs must be used within Tabs" Hatası Düzeltildi:** Mobil cihazlarda `TabsList` bileşeninin `Tabs` ana bileşeni dışında render edilmesinden kaynaklanan kritik bir çalışma zamanı hatası çözüldü. Bileşen yapısı, liste ve içerik dahil tüm ayarlar panelinin her zaman ana `Tabs` sağlayıcısı tarafından sarmalanmasını sağlayacak şekilde yeniden düzenlendi ve sekme işlevselliği tüm görünümlerde stabilize edildi.
+-   **Harf Büyüklüğü Koruma Hatası Düzeltildi:** Başlık metninin otomatik olarak büyük harfe dönüştürülmesine neden olan bir hata düzeltildi. `image-canvas.tsx` dosyasındaki mantık, "Büyük Harf" seçeneği açıkça etkinleştirilmedikçe kullanıcının girdiği harf büyüklüğünün her zaman korunmasını sağlayacak şekilde düzeltildi.
+
+### 2. Yeni Özellikler ve Arayüz Geliştirmeleri
+-   **Kalın ve Büyük Harf Metin Kontrolleri:** "Metin Ayarları" sekmesine iki yeni ikon butonu eklendi:
+    -   **Kalın:** Kullanıcıların metin için kalın bir yazı tipi ağırlığı arasında geçiş yapmasını sağlar.
+    -   **Büyük Harf:** Kullanıcıların tüm metni tek bir tıklama ile büyük harfe dönüştürmesine veya orijinal harf durumuna geri dönmesine olanak tanır.
+-   **Büyük Ölçüde Genişletilmiş Font Kütüphanesi:** Kullanıcılara çok daha geniş bir tipografik stil yelpazesi sunmak için **41** yeni dekoratif, el yazısı ve ekran Google Fontu (Poppins, Lexend Deca, Ribeye Marrow vb. dahil) eklendi.
+-   **Daha Geniş Renk Paletleri:** Hem "Arka Plan" hem de "Metin" ayarlarındaki önceden tanımlanmış düz renkler için olan karuseller, artık aynı anda 4 yerine 7 renk örneği göstererek renklere hızlıca göz atmayı ve seçmeyi kolaylaştırıyor.
+
 ## Version V1.19
 
 #### ENGLISH
@@ -450,6 +478,7 @@ Uygulamada harici API kullanan 1 adet özellik bulunmaktadır:
 -   Google Fonts'tan yüklenen tüm yazı tipleri, Türkçe karakterlerin doğru görüntülenmesini sağlamak için `latin-ext` karakter setini içermelidir.
 -   Font seçim menüsünde, her bir font seçeneğinin adı kendi yazı tipiyle görüntülenmelidir. Bu, kullanıcının fontları seçmeden önce nasıl göründüklerini önizlemesini sağlar.
 -   Yazı tipi seçim menüsündeki varsayılan font "Special Elite" olarak ayarlanmıştır.
+
 
 
 
