@@ -200,7 +200,7 @@ function TabContentContainer({
   if (!activeTab) return null;
 
   const imageBasedTemplates = designTemplates.filter(t => t.background.type === 'image');
-  const styleBasedTemplates = designTemplates.filter(t => t.background.type === 'flat');
+  const styleBasedTemplates = designTemplates.filter(t => t.background.type === 'flat' || t.background.type === 'gradient');
 
   return (
     <>
@@ -467,7 +467,6 @@ function TabContentContainer({
       )}
       {activeTab === 'background' && (
         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4 mobile-tab-content">
-          <Label className="bg-zinc-200 p-2 px-6 rounded-md">BACKGROUND SETTINGS</Label>
           <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
              <div className="flex items-center gap-2">
               <TabsList className="grid flex-grow grid-cols-3">
@@ -1461,7 +1460,10 @@ textBox: {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="designs"
-                  onClick={() => setIsMobilePanelOpen(true)}
+                  onClick={() => {
+                    setActiveSettingsTab("designs");
+                    setIsMobilePanelOpen(true)
+                  }}
                 >
                   <LayoutTemplate />
                 </TabsTrigger>
@@ -1474,7 +1476,10 @@ textBox: {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="my-designs"
-                  onClick={() => setIsMobilePanelOpen(true)}
+                   onClick={() => {
+                    setActiveSettingsTab("my-designs");
+                    setIsMobilePanelOpen(true)
+                  }}
                 >
                   <Star />
                 </TabsTrigger>
@@ -1487,7 +1492,10 @@ textBox: {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="background"
-                  onClick={() => setIsMobilePanelOpen(true)}
+                   onClick={() => {
+                    setActiveSettingsTab("background");
+                    setIsMobilePanelOpen(true)
+                  }}
                 >
                   <ImageIcon />
                 </TabsTrigger>
@@ -1500,7 +1508,10 @@ textBox: {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="text"
-                  onClick={() => setIsMobilePanelOpen(true)}
+                   onClick={() => {
+                    setActiveSettingsTab("text");
+                    setIsMobilePanelOpen(true)
+                  }}
                 >
                   <Type />
                 </TabsTrigger>
@@ -1513,7 +1524,10 @@ textBox: {
               <TooltipTrigger asChild>
                 <TabsTrigger
                   value="download"
-                  onClick={() => setIsMobilePanelOpen(true)}
+                   onClick={() => {
+                    setActiveSettingsTab("download");
+                    setIsMobilePanelOpen(true)
+                  }}
                 >
                   <Download />
                 </TabsTrigger>
@@ -1528,21 +1542,7 @@ textBox: {
               {isMobilePanelOpen && <TabContentContainer {...tabContentProps} />}
             </div>
             <div className="hidden md:block">
-              <TabsContent value="designs">
-                <TabContentContainer {...tabContentProps} activeTab="designs"/>
-              </TabsContent>
-              <TabsContent value="my-designs">
-                <TabContentContainer {...tabContentProps} activeTab="my-designs"/>
-              </TabsContent>
-              <TabsContent value="background">
-                <TabContentContainer {...tabContentProps} activeTab="background"/>
-              </TabsContent>
-              <TabsContent value="text">
-                <TabContentContainer {...tabContentProps} activeTab="text"/>
-              </TabsContent>
-              <TabsContent value="download">
-                <TabContentContainer {...tabContentProps} activeTab="download"/>
-              </TabsContent>
+                <TabContentContainer {...tabContentProps} />
             </div>
           </div>
         </Tabs>
@@ -1673,5 +1673,3 @@ textBox: {
     </>
   );
 }
-
-    
