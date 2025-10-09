@@ -531,7 +531,7 @@ function TabContentContainer({
                   >
                     <CarouselContent className="-ml-2">
                       {imageTemplates.map((template) => (
-                        <CarouselItem key={template.name} className="basis-1/3 pl-2">
+                        <CarouselItem key={template.name} className="pl-2">
                           <button onClick={() => handleImageBgUrlSelect(template.imageUrl)} className="w-full">
                             <Image src={template.imageUrl} alt={template.name} width={100} height={150} className="object-cover aspect-[2/3] rounded-md w-full" />
                           </button>
@@ -1673,3 +1673,5 @@ textBox: {
     </>
   );
 }
+
+    
