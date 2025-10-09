@@ -25,6 +25,7 @@ export type DesignTemplate = {
 };
 
 export const designTemplates: DesignTemplate[] = [
+  // STYLES START
   {
     id: 'styles-Deep-Sea-Blue',
     name: "Deep Sea Blue",
@@ -887,6 +888,7 @@ export const designTemplates: DesignTemplate[] = [
       opacity: 0,
     },
 },
+// TEMPLATES START
 {
   id: 'template-art-school-of-athens',
   name: "Art School Of Athens",
