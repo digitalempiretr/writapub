@@ -14,6 +14,18 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.22
+
+#### ENGLISH
+### 1. UI & Feature Enhancements
+-   **Carousel Display Consistency:** The carousels for "Templates," "Styles," "My Designs," and "Ready-made Images" have all been standardized to display 4 items at a time on desktop screens. This provides a more consistent and predictable user experience across all template and image selection areas.
+-   **Expanded Search Keywords:** Added 6 new creative keywords ("Dreamy," "Cinematic," "Surreal," "Vintage," "Futuristic," "Bohemian") to the "Inspiring Search" section, giving users more diverse options for finding background images.
+
+#### TURKCE
+### 1. Arayüz ve Özellik Geliştirmeleri
+-   **Karusel Görüntüleme Tutarlılığı:** "Şablonlar," "Stiller," "Tasarımlarım," ve "Hazır Görseller" için olan karusellerin tamamı, masaüstü ekranlarda aynı anda 4 öğe gösterecek şekilde standartlaştırıldı. Bu, tüm şablon ve görsel seçimi alanlarında daha tutarlı ve öngörülebilir bir kullanıcı deneyimi sağlar.
+-   **Genişletilmiş Arama Anahtar Kelimeleri:** "İlham Veren Arama" bölümüne 6 yeni yaratıcı anahtar kelime ("Dreamy," "Cinematic," "Surreal," "Vintage," "Futuristic," "Bohemian") eklenerek kullanıcılara arka plan görselleri bulmaları için daha çeşitli seçenekler sunuldu.
+
 ## Version V1.21
 
 #### ENGLISH
@@ -475,27 +487,6 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 -   In the font selection menu, the name of each font option should be displayed in its own font style. This allows the user to preview how the fonts look before selecting them.
 -   The default font in the font selection dropdown is set to "Special Elite".
 
-#### TURKCE
-
-### 1. API Kullanımı ve Maliyetler
-Uygulamada harici API kullanan 1 adet özellik bulunmaktadır:
--   **Görsel Arama (`findImages`):**
-    -   **Servis:** Pexels API
-    -   **Tetiklenme:** "Görsel Ara" kutusuna bir arama terimi yazıp "Ara" butonuna basıldığında çalışır.
-    -   **Maliyetlendirme:** Bu özellik, Pexels API'sinin kullanım limitlerine tabidir. Pexels, saatte belirli bir istek sayısına kadar ücretsiz bir kullanım hakkı sunar. Bu limit aşıldığında beklemeniz veya ticari planları değerlendirmeniz gerekebilir. Detaylar için Pexels API dokümantasyonuna bakınız.
--   **Metin İşleme (`handleGenerate`):**
-    -   **Service:** Bu işlem artık istemci tarafı (client-side) JavaScript kodu ile yapılmaktadır.
-    -   **Maliyetlendirme:** Metinden tasarım oluşturma işlemiyle ilişkili **herhangi bir API maliyeti yoktur**. Bu işlem ücretsizdir.
-
-### 2. Kanvas ve Tasarım Kuralları
--   Kullanıcı, "Yazı Tipi Ayarları" bölümünden tasarım üzerindeki metnin rengini bir renk seçici aracılığıyla değiştirebilmelidir.
--   Seçtiği arka plan türünden (Düz Renk, Gradyan, Görsel) bağımsız olarak, kullanıcı kanvasın ortasındaki metin kutusunun rengini ve 0 ile 1 arasında şeffaflığını ayarlayabilmelidir. Bu ayarlar, ayrı bir "Metin Kutusu Ayarları" bölümünde yer alır.
--   Kullanıcı, metin hizalamasını (sol, orta, sağ) seçebilmelidir. Bu ayar "Yazı Tipi Ayarları" bölümünde yer alır.
-
-### 3. Font ve Karakter Desteği
--   Google Fonts'tan yüklenen tüm yazı tipleri, Türkçe karakterlerin doğru görüntülenmesini sağlamak için `latin-ext` karakter setini içermelidir.
--   Font seçim menüsünde, her bir font seçeneğinin adı kendi yazı tipiyle görüntülenmelidir. Bu, kullanıcının fontları seçmeden önce nasıl göründüklerini önizlemesini sağlar.
--   Yazı tipi seçim menüsündeki varsayılan font "Special Elite" olarak ayarlanmıştır.
 
 
 
