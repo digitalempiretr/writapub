@@ -1554,7 +1554,7 @@ textBox: {
 
   return (
     <SidebarProvider>
-      <Sidebar className="bg-sidebar">
+      <Sidebar className="bg-sidebar" collapsible="icon">
         <SidebarHeader>
           <Logo />
         </SidebarHeader>
@@ -1564,10 +1564,7 @@ textBox: {
       </Sidebar>
       <SidebarInset>
         <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center">
-          <div className="flex items-center gap-2">
-            <SidebarTrigger className="md:hidden" />
-            <Logo className="text-[2rem] hidden md:block" />
-          </div>
+          <SidebarTrigger />
         </header>
 
         <main className="container mx-auto p-4 md:p-8 pt-0">
