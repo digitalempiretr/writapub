@@ -1554,7 +1554,7 @@ textBox: {
 
   return (
     <SidebarProvider>
-      <Sidebar>
+      <Sidebar className="bg-sidebar">
         <SidebarHeader>
           <Logo />
         </SidebarHeader>
@@ -1687,5 +1687,3 @@ textBox: {
     </SidebarProvider>
   );
 }
-
-    

@@ -24,7 +24,7 @@ body {
 
 @layer base {
   :root {
-    --background: 220 22% 95%; /* From #EDE8E4 */
+    --background: transparent;
     --foreground: 221 52% 25%; /* Derived from #284177 */
     --card: 210 20% 98%;
     --card-foreground: 221 52% 25%;
@@ -49,7 +49,7 @@ body {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
+    --sidebar-background: 220 22% 95%; /* From #EDE8E4 */
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
@@ -59,7 +59,7 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .dark {
-    --background: 221 52% 15%; /* Dark version of #284177 */
+    --background: transparent;
     --foreground: 220 22% 95%; /* #EDE8E4 */
     --card: 221 52% 15%;
     --card-foreground: 220 22% 95%;
