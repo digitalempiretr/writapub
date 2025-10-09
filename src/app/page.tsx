@@ -945,9 +945,9 @@ export default function Home() {
   }, [carouselApi]);
 
 
-  const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'special-elite') || fontOptions[0]);
+  const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'duru-sans') || fontOptions[0]);
   const [textAlign, setTextAlign] = useState<TextAlign>('left');
-  const [isBold, setIsBold] = useState(false);
+  const [isBold, setIsBold] = useState(true);
   const [isUppercase, setIsUppercase] = useState(false);
   const [backgroundTab, setBackgroundTab] = useState<BackgroundType>("image");
   const [bgColor, setBgColor] = useState(pageInitialColors.bgColor);

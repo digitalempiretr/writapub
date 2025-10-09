@@ -14,6 +14,22 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.21
+
+#### ENGLISH
+### 1. UI & Feature Enhancements
+-   **Tabbed Design Templates:** The "Design Templates" panel has been reorganized with a tabbed interface to improve organization and user experience.
+    -   **"Templates" Tab:** This tab now exclusively displays design templates that feature an image background.
+    -   **"Styles" Tab:** This new tab is dedicated to displaying design templates that use a solid color background.
+-   This separation makes it easier for users to find the type of pre-made design they are looking for.
+
+#### TURKCE
+### 1. Arayüz ve Özellik Geliştirmeleri
+-   **Sekmeli Tasarım Şablonları:** "Tasarım Şablonları" paneli, organizasyonu ve kullanıcı deneyimini iyileştirmek için sekmeli bir arayüzle yeniden düzenlendi.
+    -   **"Templates" (Şablonlar) Sekmesi:** Bu sekme artık yalnızca resim arka planına sahip tasarım şablonlarını görüntülüyor.
+    -   **"Styles" (Stiller) Sekmesi:** Bu yeni sekme, düz renkli bir arka plan kullanan tasarım şablonlarını görüntülemek için ayrılmıştır.
+-   Bu ayrım, kullanıcıların aradıkları hazır tasarım türünü daha kolay bulmalarını sağlar.
+
 ## Version V1.20
 
 #### ENGLISH
@@ -28,6 +44,7 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
     -   **Uppercase:** Allows users to convert all text to uppercase or revert to the original casing with a single click.
 -   **Greatly Expanded Font Library:** Added **41** new decorative, script, and display Google Fonts (including Poppins, Lexend Deca, Ribeye Marrow, etc.) to provide users with a much wider range of typographic styles.
 -   **Wider Color Palettes:** The carousels for predefined solid colors in both the "Background" and "Text" settings now display 7 color swatches at a time (up from 4), making it easier to browse and select colors quickly.
+-   **Dynamic Template Previews:** If a template does not have a `previewImage` URL, a dynamic preview is generated on the card using the template's own background and font styles. This ensures all templates have a visual representation.
 
 #### TURKCE
 ### 1. Çekirdek Mantık ve Hata Düzeltmeleri
@@ -41,6 +58,7 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
     -   **Büyük Harf:** Kullanıcıların tüm metni tek bir tıklama ile büyük harfe dönüştürmesine veya orijinal harf durumuna geri dönmesine olanak tanır.
 -   **Büyük Ölçüde Genişletilmiş Font Kütüphanesi:** Kullanıcılara çok daha geniş bir tipografik stil yelpazesi sunmak için **41** yeni dekoratif, el yazısı ve ekran Google Fontu (Poppins, Lexend Deca, Ribeye Marrow vb. dahil) eklendi.
 -   **Daha Geniş Renk Paletleri:** Hem "Arka Plan" hem de "Metin" ayarlarındaki önceden tanımlanmış düz renkler için olan karuseller, artık aynı anda 4 yerine 7 renk örneği göstererek renklere hızlıca göz atmayı ve seçmeyi kolaylaştırıyor.
+-   **Dinamik Şablon Önizlemeleri:** Eğer bir şablonun `previewImage` URL'si yoksa, şablonun kendi arka plan ve yazı tipi stilleri kullanılarak kart üzerinde dinamik bir önizleme oluşturulur. Bu, tüm şablonların görsel bir temsile sahip olmasını sağlar.
 
 ## Version V1.19
 
@@ -478,6 +496,7 @@ Uygulamada harici API kullanan 1 adet özellik bulunmaktadır:
 -   Google Fonts'tan yüklenen tüm yazı tipleri, Türkçe karakterlerin doğru görüntülenmesini sağlamak için `latin-ext` karakter setini içermelidir.
 -   Font seçim menüsünde, her bir font seçeneğinin adı kendi yazı tipiyle görüntülenmelidir. Bu, kullanıcının fontları seçmeden önce nasıl göründüklerini önizlemesini sağlar.
 -   Yazı tipi seçim menüsündeki varsayılan font "Special Elite" olarak ayarlanmıştır.
+
 
 
 
