@@ -68,6 +68,7 @@ import { defaultText } from "@/lib/default-text";
 import { TextColorChooseIcon, BgOverlayIcon, TextBgBoxIcon, TextBoxOpacity, FeelLucky } from '@/components/ui/icons';
 import { designTemplates, DesignTemplate } from "@/lib/design-templates";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import { Sidebar, SidebarContent, SidebarHeader, SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 type Design = {
   text: string;
@@ -1552,125 +1553,138 @@ textBox: {
 
 
   return (
-    <>
-      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center">
-        <Logo className="text-[2rem]" />
-      </header>
-
-      <main className="container mx-auto p-4 md:p-8 pt-0">
-        <div className="flex flex-col items-center justify-center h-[90vh]">
-          <div className="space-y-6 max-w-[800px] mx-auto w-full">
-            <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
-            <div className="space-y-4">
-                <Label htmlFor={mainTextAreaId} className="sr-only">Main text area</Label>
-                <Textarea
-                id={mainTextAreaId}
-                name="main-text-area"
-                placeholder="Paste your text here..."
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                rows={8}
-                className="bg-[hsl(60,75%,97%)] text-[#2b323f] placeholder:text-gray-400 border-0"
-                />
-                <div className="flex items-center justify-end gap-4">
-                   <p className="text-xs text-[#fdfdf2]">{text.length} characters</p>
-                   <Button
-                      onClick={handleGenerate}
-                      disabled={isLoading}
-                      size="icon"
-                      className="rounded-full bg-primary hover:bg-[#2b323f]"
-                    >
-                      {isLoading ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <ArrowUp className="h-4 w-4" />
-                      )}
-                    </Button>
-                </div>
-            </div>
+    <SidebarProvider>
+      <Sidebar>
+        <SidebarHeader>
+          <Logo />
+        </SidebarHeader>
+        <SidebarContent>
+          {/* Sidebar content goes here */}
+        </SidebarContent>
+      </Sidebar>
+      <SidebarInset>
+        <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center">
+          <div className="flex items-center gap-2">
+            <SidebarTrigger className="md:hidden" />
+            <Logo className="text-[2rem] hidden md:block" />
           </div>
-        </div>
-        
-        {isGeneratingAnimation && (
-            <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
-              background: 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)'
-            }}>
-                <div className="w-64 h-64">
-                    <Lottie animationData={webflowAnimation} loop={true} />
-                </div>
-            </div>
-        )}
+        </header>
 
-        { isClient && designs.length > 0 && (
-          <div id="designs-container" ref={designsRef} className="w-full pt-8 flex flex-col items-center">
-              <div className="w-full mx-auto flex flex-col items-center">
-                  <div className="w-full max-w-md max-h-[70vh]">
-                    <Carousel className="w-full" setApi={setCarouselApi} opts={{ dragFree: true }}>
-                      <CarouselContent>
-                        {designs.map((design, index) => (
-                          <CarouselItem key={index} data-index={index}>
-                            <div className="p-1 group relative">
-                              <Card className="overflow-hidden border-0">
-                                <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
-                                  {renderCanvas(design, index)}
-                                </CardContent>
-                              </Card>
-                                <AlertDialog>
-                                  <TooltipProvider>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <AlertDialogTrigger asChild>
-                                          <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/30 text-white hover:bg-black/50 hover:text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"
-                                          >
-                                            <Star className="h-5 w-5" />
-                                          </Button>
-                                        </AlertDialogTrigger>
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                        <p>Save to My Designs</p>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>Save to My Designs?</AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        This will save the current background, font, and color settings as a new template.
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                      <AlertDialogAction onClick={handleSaveDesign}>Save</AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                  </TooltipProvider>
-                                </AlertDialog>
-                            </div>
-                          </CarouselItem>
-                        ))}
-                      </CarouselContent>
-                      <CarouselPrevious className="-left-4 md:-left-12" />
-                      <CarouselNext className="-right-4 md:-right-12" />
-                    </Carousel>
-                  </div>
-                  {/* Desktop Settings Panel */}
-                  <div className="w-full mt-6 hidden md:block md:max-w-4xl">
-                    {settingsPanel}
+        <main className="container mx-auto p-4 md:p-8 pt-0">
+          <div className="flex flex-col items-center justify-center h-[90vh]">
+            <div className="space-y-6 max-w-[800px] mx-auto w-full">
+              <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
+              <div className="space-y-4">
+                  <Label htmlFor={mainTextAreaId} className="sr-only">Main text area</Label>
+                  <Textarea
+                  id={mainTextAreaId}
+                  name="main-text-area"
+                  placeholder="Paste your text here..."
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  rows={8}
+                  className="bg-[hsl(60,75%,97%)] text-[#2b323f] placeholder:text-gray-400 border-0"
+                  />
+                  <div className="flex items-center justify-end gap-4">
+                     <p className="text-xs text-[#fdfdf2]">{text.length} characters</p>
+                     <Button
+                        onClick={handleGenerate}
+                        disabled={isLoading}
+                        size="icon"
+                        className="rounded-full bg-primary hover:bg-[#2b323f]"
+                      >
+                        {isLoading ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <ArrowUp className="h-4 w-4" />
+                        )}
+                      </Button>
                   </div>
               </div>
             </div>
-        )}
-      </main>
-
-       {/* Mobile-only Fixed Bottom Settings Panel */}
-       {isClient && designs.length > 0 && (
-          <div id="mobile-settings-panel" ref={mobilePanelRef} className="md:hidden">
-              {settingsPanel}
           </div>
-        )}
-    </>
+          
+          {isGeneratingAnimation && (
+              <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
+                background: 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)'
+              }}>
+                  <div className="w-64 h-64">
+                      <Lottie animationData={webflowAnimation} loop={true} />
+                  </div>
+              </div>
+          )}
+
+          { isClient && designs.length > 0 && (
+            <div id="designs-container" ref={designsRef} className="w-full pt-8 flex flex-col items-center">
+                <div className="w-full mx-auto flex flex-col items-center">
+                    <div className="w-full max-w-md max-h-[70vh]">
+                      <Carousel className="w-full" setApi={setCarouselApi} opts={{ dragFree: true }}>
+                        <CarouselContent>
+                          {designs.map((design, index) => (
+                            <CarouselItem key={index} data-index={index}>
+                              <div className="p-1 group relative">
+                                <Card className="overflow-hidden border-0">
+                                  <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
+                                    {renderCanvas(design, index)}
+                                  </CardContent>
+                                </Card>
+                                  <AlertDialog>
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <AlertDialogTrigger asChild>
+                                            <Button
+                                              variant="ghost"
+                                              size="icon"
+                                              className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/30 text-white hover:bg-black/50 hover:text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                              <Star className="h-5 w-5" />
+                                            </Button>
+                                          </AlertDialogTrigger>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>Save to My Designs</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>Save to My Designs?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          This will save the current background, font, and color settings as a new template.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={handleSaveDesign}>Save</AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                    </TooltipProvider>
+                                  </AlertDialog>
+                              </div>
+                            </CarouselItem>
+                          ))}
+                        </CarouselContent>
+                        <CarouselPrevious className="-left-4 md:-left-12" />
+                        <CarouselNext className="-right-4 md:-right-12" />
+                      </Carousel>
+                    </div>
+                    {/* Desktop Settings Panel */}
+                    <div className="w-full mt-6 hidden md:block md:max-w-4xl">
+                      {settingsPanel}
+                    </div>
+                </div>
+              </div>
+          )}
+        </main>
+
+         {/* Mobile-only Fixed Bottom Settings Panel */}
+         {isClient && designs.length > 0 && (
+            <div id="mobile-settings-panel" ref={mobilePanelRef} className="md:hidden">
+                {settingsPanel}
+            </div>
+          )}
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
 
