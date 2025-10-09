@@ -24,7 +24,7 @@ body {
 
 @layer base {
   :root {
-    --background: transparent;
+    --background: 210 20% 98%;
     --foreground: 221 52% 25%; /* Derived from #284177 */
     --card: 210 20% 98%;
     --card-foreground: 221 52% 25%;
@@ -59,7 +59,7 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .dark {
-    --background: transparent;
+    --background: 221 52% 15%;
     --foreground: 220 22% 95%; /* #EDE8E4 */
     --card: 221 52% 15%;
     --card-foreground: 220 22% 95%;
