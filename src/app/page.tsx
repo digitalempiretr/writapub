@@ -913,6 +913,21 @@ function TabContentContainer({
                 </div>
             </div>
           </div>
+          <div className="pt-4">
+            <Carousel className="w-full" opts={{ dragFree: true }}>
+              <CarouselContent>
+                {defaultSolidColors.map(color => (
+                  <CarouselItem key={color} className="basis-1/7">
+                    <Card className="overflow-hidden cursor-pointer" onClick={() => setTextColor(color)}>
+                      <CardContent className="h-20" style={{ backgroundColor: color }} />
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="-left-4" />
+              <CarouselNext className="-right-4" />
+            </Carousel>
+          </div>
         </div>
       )}
       {activeTab === 'download' && (
@@ -1746,3 +1761,5 @@ textBox: {
     </>
   );
 }
+
+    
