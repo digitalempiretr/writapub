@@ -37,6 +37,9 @@ type ImageCanvasProps = {
   shadowBlur: number;
   shadowOffsetX: number;
   shadowOffsetY: number;
+  textStroke: boolean;
+  strokeColor: string;
+  strokeWidth: number;
 };
 
 // This function wraps text for titles.
@@ -148,7 +151,10 @@ const wrapAndDrawText = (
   x: number,
   y: number,
   lineHeight: number,
-  rectHeight: number
+  rectHeight: number,
+  textStroke: boolean,
+  strokeColor: string,
+  strokeWidth: number
 ) => {
   const totalTextHeight = (lines.length * lineHeight) - (lineHeight - context.measureText('M').width); // A more accurate height
   // Adjust start Y to be centered within the rectangle
@@ -157,6 +163,11 @@ const wrapAndDrawText = (
   let currentY = startY;
 
   for(const line of lines) {
+    if (textStroke) {
+        context.strokeStyle = strokeColor;
+        context.lineWidth = strokeWidth;
+        context.strokeText(line.trim(), x, currentY);
+    }
     context.fillText(line.trim(), x, currentY);
     currentY += lineHeight;
   }
@@ -202,6 +213,9 @@ export function ImageCanvas({
   shadowBlur,
   shadowOffsetX,
   shadowOffsetY,
+  textStroke,
+  strokeColor,
+  strokeWidth,
 }: ImageCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const indexRef = useRef<number | null>(null);
@@ -293,7 +307,7 @@ export function ImageCanvas({
         }
         
         // Draw the text
-        wrapAndDrawText(ctx, linesToDraw, textX, rectY, lineHeight, rectHeight);
+        wrapAndDrawText(ctx, linesToDraw, textX, rectY, lineHeight, rectHeight, textStroke, strokeColor, strokeWidth);
 
         // Reset shadow for subsequent canvas drawings
         ctx.shadowColor = 'transparent';
@@ -359,7 +373,7 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY]);
+  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, textStroke, strokeColor, strokeWidth]);
 
   return (
     <canvas

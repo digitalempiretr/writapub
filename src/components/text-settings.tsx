@@ -14,7 +14,7 @@ import { TextColorChooseIcon, TextBgBoxIcon, TextBoxOpacity } from "@/components
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FontOption } from "@/components/image-canvas";
 import { Button } from "@/components/ui/button";
-import { Bold, CaseUpper, Sparkles, AlignLeft, AlignCenter, AlignRight } from "lucide-react";
+import { Bold, CaseUpper, Sparkles, AlignLeft, AlignCenter, AlignRight, Pencil } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
@@ -44,6 +44,12 @@ type TextSettingsProps = {
   setShadowOffsetX: (value: number) => void;
   shadowOffsetY: number;
   setShadowOffsetY: (value: number) => void;
+  textStroke: boolean;
+  setTextStroke: (value: boolean) => void;
+  strokeColor: string;
+  setStrokeColor: (value: string) => void;
+  strokeWidth: number;
+  setStrokeWidth: (value: number) => void;
   rectBgColor: string;
   handleRectBgChange: (color: string) => void;
   rectOpacity: number;
@@ -72,6 +78,12 @@ export function TextSettings({
   setShadowOffsetX,
   shadowOffsetY,
   setShadowOffsetY,
+  textStroke,
+  setTextStroke,
+  strokeColor,
+  setStrokeColor,
+  strokeWidth,
+  setStrokeWidth,
   rectBgColor,
   handleRectBgChange,
   rectOpacity,
@@ -129,6 +141,21 @@ export function TextSettings({
               </div>
             </div>
           </div>
+          <div className="pt-4">
+            <Carousel className="w-full" opts={{ dragFree: true }}>
+              <CarouselContent>
+                {defaultSolidColors.map(color => (
+                  <CarouselItem key={color} className="basis-1/7">
+                    <Card className="overflow-hidden cursor-pointer" onClick={() => setTextColor(color)}>
+                      <CardContent className="h-20" style={{ backgroundColor: color }} />
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="-left-4" />
+              <CarouselNext className="-right-4" />
+            </Carousel>
+          </div>
           <div className="space-y-2">
             <Label>Style & Alignment</Label>
             <div className="flex items-center gap-2">
@@ -183,6 +210,38 @@ export function TextSettings({
                       <div className="space-y-2">
                         <Label htmlFor={`${baseId}-shadow-offset-y`}>Y Offset</Label>
                         <Slider id={`${baseId}-shadow-offset-y`} max={20} min={-20} step={1} value={[shadowOffsetY]} onValueChange={(v) => setShadowOffsetY(v[0])} />
+                      </div>
+                    </div>
+                  )}
+                </PopoverContent>
+              </Popover>
+              <Popover>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" size="icon">
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    </PopoverTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Text Stroke</p>
+                  </TooltipContent>
+                </Tooltip>
+                <PopoverContent className="w-64 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor={`${baseId}-stroke-toggle`}>Text Stroke</Label>
+                    <Switch id={`${baseId}-stroke-toggle`} checked={textStroke} onCheckedChange={setTextStroke} />
+                  </div>
+                  {textStroke && (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Label>Color</Label>
+                        <Input type="color" value={strokeColor} onChange={(e) => setStrokeColor(e.target.value)} className="h-8 p-1"/>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`${baseId}-stroke-width`}>Width</Label>
+                        <Slider id={`${baseId}-stroke-width`} max={10} min={1} step={0.5} value={[strokeWidth]} onValueChange={(v) => setStrokeWidth(v[0])} />
                       </div>
                     </div>
                   )}
@@ -278,21 +337,7 @@ export function TextSettings({
             </div>
           </div>
         </div>
-        <div className="pt-4">
-          <Carousel className="w-full" opts={{ dragFree: true }}>
-            <CarouselContent>
-              {defaultSolidColors.map(color => (
-                <CarouselItem key={color} className="basis-1/7">
-                  <Card className="overflow-hidden cursor-pointer" onClick={() => setTextColor(color)}>
-                    <CardContent className="h-20" style={{ backgroundColor: color }} />
-                  </Card>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="-left-4" />
-            <CarouselNext className="-right-4" />
-          </Carousel>
-        </div>
+        
       </div>
     </TooltipProvider>
   );

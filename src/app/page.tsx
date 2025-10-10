@@ -18,27 +18,12 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, ImageIcon, LayoutTemplate, Loader2, Plus, Search, Star, Trash2, Type, FilePenLine, Check, X, Bold, CaseUpper, Copy, Sparkles } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowUp, Download, ImageIcon, LayoutTemplate, Loader2, Plus, Search, Star, Trash2, Type, FilePenLine, Check, X, Copy } from "lucide-react";
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState, useId } from "react";
 import { CardTitle } from "@/components/ui/card";
@@ -66,10 +51,11 @@ import { gradientTemplates, defaultSolidColors, pageInitialColors } from "@/lib/
 import { fontOptions } from "@/lib/font-options";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { defaultText } from "@/lib/default-text";
-import { TextColorChooseIcon, BgOverlayIcon, TextBgBoxIcon, TextBoxOpacity, FeelLucky } from '@/components/ui/icons';
+import { FeelLucky } from '@/components/ui/icons';
 import { designTemplates, DesignTemplate } from "@/lib/design-templates";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { TextSettings } from "@/components/text-settings";
+import { Slider } from "@/components/ui/slider";
 
 type Design = {
   text: string;
@@ -101,17 +87,6 @@ function TabContentContainer({
   setOverlayColor,
   overlayOpacity,
   setOverlayOpacity,
-  textColor,
-  setTextColor,
-  activeFont,
-  handleFontChange,
-  textAlign,
-  setTextAlign,
-  rectBgColor,
-  setRectBgColor,
-  handleRectBgChange,
-  rectOpacity,
-  setRectOpacity,
   designs,
   handleDownloadAll,
   currentSlide,
@@ -133,22 +108,9 @@ function TabContentContainer({
   setEditingName,
   designToDelete,
   setDesignToDelete,
-  isBold,
-  setIsBold,
-  isUppercase,
-  setIsUppercase,
-  textShadow,
-  setTextShadow,
-  shadowColor,
-  setShadowColor,
-  shadowBlur,
-  setShadowBlur,
-  shadowOffsetX,
-  setShadowOffsetX,
-  shadowOffsetY,
-  setShadowOffsetY,
   handleLogDesign,
   closePanel,
+  ...textSettingsProps
 }: {
   activeTab: string | null;
   backgroundTab: string;
@@ -169,17 +131,6 @@ function TabContentContainer({
   setOverlayColor: (color: string) => void;
   overlayOpacity: number;
   setOverlayOpacity: (opacity: number) => void;
-  textColor: string;
-  setTextColor: (color: string) => void;
-  activeFont: FontOption;
-  handleFontChange: (value: string) => void;
-  textAlign: TextAlign;
-  setTextAlign: (align: TextAlign) => void;
-  rectBgColor: string;
-  setRectBgColor: (color: string) => void;
-  handleRectBgChange: (color: string) => void;
-  rectOpacity: number;
-  setRectOpacity: (opacity: number) => void;
   designs: Design[];
   handleDownloadAll: () => void;
   currentSlide: number;
@@ -201,22 +152,9 @@ function TabContentContainer({
   setEditingName: (name: string) => void;
   designToDelete: string | null;
   setDesignToDelete: (id: string | null) => void;
-  isBold: boolean;
-  setIsBold: (value: boolean) => void;
-  isUppercase: boolean;
-  setIsUppercase: (value: boolean) => void;
-  textShadow: boolean;
-  setTextShadow: (value: boolean) => void;
-  shadowColor: string;
-  setShadowColor: (value: string) => void;
-  shadowBlur: number;
-  setShadowBlur: (value: number) => void;
-  shadowOffsetX: number;
-  setShadowOffsetX: (value: number) => void;
-  shadowOffsetY: number;
-  setShadowOffsetY: (value: number) => void;
   handleLogDesign: () => void;
   closePanel: () => void;
+  [key: string]: any; // To accept all text settings props
 }) {
   const baseId = useId();
   if (!activeTab) return null;
@@ -654,39 +592,18 @@ function TabContentContainer({
               <div className="space-y-4 pt-4">
                 <Label>Overlay Settings</Label>
                 <div className="flex items-center gap-2">
-                   <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="relative h-10 w-10">
-                        <Label htmlFor={`${baseId}-overlay-color-picker`} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
-                          <BgOverlayIcon color={overlayColor} />
-                        </Label>
-                        <Input
-                          id={`${baseId}-overlay-color-picker`}
-                          name="overlay-color-picker"
-                          type="color"
-                          value={overlayColor}
-                          onChange={(e) => setOverlayColor(e.target.value)}
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Select Overlay Color</p>
-                    </TooltipContent>
-                  </Tooltip>
+                  <Input
+                    type="color"
+                    value={overlayColor}
+                    onChange={(e) => setOverlayColor(e.target.value)}
+                    className="h-10 w-10 p-1"
+                  />
                   <Popover>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <PopoverTrigger asChild>
-                          <Button variant="outline" size="icon">
-                            <TextBoxOpacity />
-                          </Button>
-                        </PopoverTrigger>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Overlay Opacity</p>
-                      </TooltipContent>
-                    </Tooltip>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="flex-grow">
+                        Opacity: {Math.round(overlayOpacity * 100)}%
+                      </Button>
+                    </PopoverTrigger>
                     <PopoverContent className="w-56 space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor={`${baseId}-overlay-opacity-slider`}>Overlay Opacity</Label>
@@ -715,33 +632,7 @@ function TabContentContainer({
         </div>
       )}
       {activeTab === 'text' && (
-        <TextSettings
-          textColor={textColor}
-          setTextColor={setTextColor}
-          activeFont={activeFont}
-          handleFontChange={handleFontChange}
-          fontOptions={fontOptions}
-          isBold={isBold}
-          setIsBold={setIsBold}
-          isUppercase={isUppercase}
-          setIsUppercase={setIsUppercase}
-          textAlign={textAlign}
-          setTextAlign={setTextAlign}
-          textShadow={textShadow}
-          setTextShadow={setTextShadow}
-          shadowColor={shadowColor}
-          setShadowColor={setShadowColor}
-          shadowBlur={shadowBlur}
-          setShadowBlur={setShadowBlur}
-          shadowOffsetX={shadowOffsetX}
-          setShadowOffsetX={setShadowOffsetX}
-          shadowOffsetY={shadowOffsetY}
-          setShadowOffsetY={setShadowOffsetY}
-          rectBgColor={rectBgColor}
-          handleRectBgChange={handleRectBgChange}
-          rectOpacity={rectOpacity}
-          setRectOpacity={setRectOpacity}
-        />
+        <TextSettings {...textSettingsProps} />
       )}
       {activeTab === 'download' && (
         <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
@@ -849,6 +740,10 @@ export default function Home() {
   const [shadowBlur, setShadowBlur] = useState(5);
   const [shadowOffsetX, setShadowOffsetX] = useState(5);
   const [shadowOffsetY, setShadowOffsetY] = useState(5);
+
+  const [textStroke, setTextStroke] = useState(false);
+  const [strokeColor, setStrokeColor] = useState("#000000");
+  const [strokeWidth, setStrokeWidth] = useState(2);
   
   const [activeSettingsTab, setActiveSettingsTab] = useState<string | null>("designs");
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
@@ -1249,7 +1144,7 @@ textBox: {
     
     return (
         <ImageCanvas
-          key={`${backgroundType}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadow}-${shadowColor}-${shadowBlur}-${shadowOffsetX}-${shadowOffsetY}`}
+          key={`${backgroundType}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadow}-${shadowColor}-${shadowBlur}-${shadowOffsetX}-${shadowOffsetY}-${textStroke}-${strokeColor}-${strokeWidth}`}
           font={activeFont}
           text={design.text}
           isTitle={design.isTitle}
@@ -1274,9 +1169,12 @@ textBox: {
           shadowBlur={shadowBlur}
           shadowOffsetX={shadowOffsetX}
           shadowOffsetY={shadowOffsetY}
+          textStroke={textStroke}
+          strokeColor={strokeColor}
+          strokeWidth={strokeWidth}
         />
     )
-  }, [backgroundType, activeFont, bgColor, textColor, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, handleTextRemaining]);
+  }, [backgroundType, activeFont, bgColor, textColor, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, textStroke, strokeColor, strokeWidth, handleTextRemaining]);
 
   const tabContentProps = {
     activeTab: activeSettingsTab,
@@ -1298,31 +1196,6 @@ textBox: {
     setOverlayColor,
     overlayOpacity,
     setOverlayOpacity,
-    textColor,
-    setTextColor,
-    activeFont,
-    handleFontChange,
-    textAlign,
-    setTextAlign,
-    isBold,
-    setIsBold,
-    isUppercase,
-    setIsUppercase,
-    textShadow,
-    setTextShadow,
-    shadowColor,
-    setShadowColor,
-    shadowBlur,
-    setShadowBlur,
-    shadowOffsetX,
-    setShadowOffsetX,
-    shadowOffsetY,
-    setShadowOffsetY,
-    rectBgColor,
-    setRectBgColor,
-    handleRectBgChange,
-    rectOpacity,
-    setRectOpacity,
     designs,
     handleDownloadAll,
     currentSlide,
@@ -1346,6 +1219,12 @@ textBox: {
     setDesignToDelete,
     handleLogDesign,
     closePanel,
+    // Pass all text settings props
+    textColor, setTextColor, activeFont, handleFontChange, fontOptions,
+    isBold, setIsBold, isUppercase, setIsUppercase, textAlign, setTextAlign,
+    textShadow, setTextShadow, shadowColor, setShadowColor, shadowBlur, setShadowBlur,
+    shadowOffsetX, setShadowOffsetX, shadowOffsetY, setShadowOffsetY,
+    textStroke, setTextStroke, strokeColor, setStrokeColor, strokeWidth, setStrokeWidth,
   };
   
   const settingsPanel = (
@@ -1574,3 +1453,4 @@ textBox: {
     </>
   );
 }
+
