@@ -14,6 +14,36 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.25
+
+#### ENGLISH
+### 1. Major Code Refactoring
+-   **Component-Based Settings Panels:** The main settings panel UI has been completely refactored into smaller, more manageable, and reusable components. The monolithic `TabContentContainer` in `page.tsx` has been broken down into:
+    -   `src/components/designs-panel.tsx`: Manages the "Templates" and "Styles" tabs.
+    -   `src/components/my-designs-panel.tsx`: Manages the "My Designs" tab, including saving, applying, and deleting user-created templates.
+    -   `src/components/background-settings.tsx`: Encapsulates all controls for solid color, gradient, and image backgrounds.
+    -   `src/components/download-panel.tsx`: Contains the file name input and download buttons.
+-   This refactoring significantly cleans up `page.tsx`, making it easier to maintain and understand.
+
+### 2. UI/UX Improvements
+-   **Consolidated Text Box Controls:** The "Text Box" settings are now managed by a single popover. It includes a master on/off `Switch`. When enabled, it reveals controls for color and opacity.
+-   **Default Text Box State:** The text box background is now disabled by default when a design is first generated. When the user enables it via the new switch, its opacity defaults to 50% and its color to `#f4ede4` for a better initial user experience.
+-   **Bug Fix:** A `ReferenceError: TooltipTrigger is not defined` bug has been fixed by ensuring the `TooltipTrigger` component was correctly imported in all the new panel components where it was used.
+
+#### TURKCE
+### 1. Büyük Kod Yeniden Yapılandırması (Refactoring)
+-   **Bileşen Tabanlı Ayar Panelleri:** Ana ayarlar paneli kullanıcı arayüzü, daha küçük, yönetilebilir ve yeniden kullanılabilir bileşenlere tamamen yeniden yapılandırıldı. `page.tsx` içindeki monolitik `TabContentContainer` yapısı şu bileşenlere ayrıldı:
+    -   `src/components/designs-panel.tsx`: "Şablonlar" (Templates) ve "Stiller" (Styles) sekmelerini yönetir.
+    -   `src/components/my-designs-panel.tsx`: Kullanıcının oluşturduğu şablonları kaydetme, uygulama ve silme dahil olmak üzere "Tasarımlarım" (My Designs) sekmesini yönetir.
+    -   `src/components/background-settings.tsx`: Düz renk, gradyan ve resim arka planları için tüm kontrolleri kapsar.
+    -   `src/components/download-panel.tsx`: Dosya adı girişini ve indirme butonlarını içerir.
+-   Bu yeniden yapılandırma, `page.tsx` dosyasını önemli ölçüde temizleyerek bakımını ve anlaşılırlığını kolaylaştırır.
+
+### 2. Arayüz ve Kullanıcı Deneyimi İyileştirmeleri
+-   **Birleştirilmiş Metin Kutusu Kontrolleri:** "Metin Kutusu" ayarları artık tek bir açılır kutu (`Popover`) tarafından yönetilmektedir. Bu kutu, bir ana açma/kapama anahtarı (`Switch`) içerir. Etkinleştirildiğinde, renk ve opaklık kontrollerini ortaya çıkarır.
+-   **Varsayılan Metin Kutusu Durumu:** Metin kutusu arka planı, bir tasarım ilk oluşturulduğunda artık varsayılan olarak devre dışıdır. Kullanıcı yeni anahtarla etkinleştirdiğinde, daha iyi bir başlangıç kullanıcı deneyimi için opaklığı varsayılan olarak %50'ye ve rengi `#f4ede4` olarak ayarlanır.
+-   **Hata Düzeltmesi:** `ReferenceError: TooltipTrigger is not defined` hatası, `TooltipTrigger` bileşeninin kullanıldığı tüm yeni panel bileşenlerinde doğru şekilde import edildiğinden emin olunarak düzeltildi.
+
 ## Version V1.24
 
 #### ENGLISH
