@@ -14,6 +14,28 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.24
+
+#### ENGLISH
+### 1. New Features: Advanced Text Styling
+-   **Text Shadow Control:** Added a new popover to the "Text Settings" panel that allows users to apply a shadow to their text. Controls include an on/off switch, color picker, and sliders for blur, X offset, and Y offset.
+-   **Text Stroke (Outline) Control:** Added a new popover to add an outline to the text. Controls include an on/off switch, a color picker for the stroke, and a slider to adjust the stroke width.
+-   **Text Transparency Control:** Added a popover with a slider to the "Text Settings" panel, allowing users to control the opacity of the text color itself, independent of the text box.
+
+### 2. UI & Code Refactoring
+-   **Refactored Text Settings Panel:** The entire "Text Settings" user interface has been extracted from `page.tsx` and moved into its own dedicated component, `src/components/text-settings.tsx`. This makes the main page component cleaner and easier to manage.
+-   **Improved Control Layout:** The layout within the "Text Settings" panel has been improved. The "Style & Alignment" and "Text Box" control groups are now positioned side-by-side, separated by a vertical divider, creating a more compact and organized interface. The individual labels for these sections were removed for a cleaner look.
+
+#### TURKCE
+### 1. Yeni Özellikler: Gelişmiş Metin Stili
+-   **Metin Gölgesi Kontrolü:** "Metin Ayarları" paneline, kullanıcıların metinlerine gölge uygulamasına olanak tanıyan yeni bir açılır kutu eklendi. Kontroller arasında açma/kapama anahtarı, renk seçici ve bulanıklık, X ve Y ekseni kaydırması için kaydırıcılar bulunmaktadır.
+-   **Metin Dış Çizgisi (Stroke) Kontrolü:** Metne bir dış çizgi eklemek için yeni bir açılır kutu eklendi. Kontroller arasında açma/kapama anahtarı, dış çizgi için bir renk seçici ve çizgi kalınlığını ayarlamak için bir kaydırıcı bulunur.
+-   **Metin Şeffaflığı Kontrolü:** "Metin Ayarları" paneline, kullanıcıların metin kutusundan bağımsız olarak metin renginin opaklığını kontrol etmelerini sağlayan bir kaydırıcıya sahip bir açılır kutu eklendi.
+
+### 2. Arayüz ve Kod Yeniden Yapılandırması
+-   **Metin Ayarları Paneli Yeniden Yapılandırıldı:** "Metin Ayarları" kullanıcı arayüzünün tamamı `page.tsx` dosyasından çıkarılarak kendi özel bileşeni olan `src/components/text-settings.tsx` içine taşındı. Bu, ana sayfa bileşenini daha temiz ve yönetimi daha kolay hale getirdi.
+-   **Kontrol Düzeni İyileştirildi:** "Metin Ayarları" paneli içindeki düzen iyileştirildi. "Stil ve Hizalama" ile "Metin Kutusu" kontrol grupları artık dikey bir ayırıcı ile ayrılarak yan yana konumlandırıldı ve daha kompakt ve düzenli bir arayüz oluşturuldu. Daha temiz bir görünüm için bu bölümlerin bireysel etiketleri kaldırıldı.
+
 ## Version V1.23
 
 #### ENGLISH
@@ -413,7 +435,7 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 #### TURKCE
 ### 1. Dokümantasyon ve Süreç
--   **Sürüm Kontrolü Kuralı:** Değiştirilemez çekirdek kurallara yeni bir kural eklendi. Bu kural, her değişiklikten sonra `app-rules.md` dosyasındaki sürüm numarasının artırılmasını ve tamamlanan görevlerin `plans.md`'den kaldırılmasını zorunlu kılar.
+-   **Sürüm Kontrolü Kuralı:** Değiştirilemez çekerek kurallara yeni bir kural eklendi. Bu kural, her değişiklikten sonra `app-rules.md` dosyasındaki sürüm numarasının artırılmasını ve tamamlanan görevlerin `plans.md`'den kaldırılmasını zorunlu kılar.
 
 ---
 
