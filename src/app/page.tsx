@@ -160,6 +160,7 @@ export default function Home() {
   const [isSearching, setIsSearching] = useState(false);
   const [searchPage, setSearchPage] = useState(1);
 
+  const [isTextBoxEnabled, setIsTextBoxEnabled] = useState(true);
   const [rectBgColor, setRectBgColor] = useState(pageInitialColors.rectBgColor);
   const [rectOpacity, setRectOpacity] = useState(0);
 
@@ -370,12 +371,17 @@ export default function Home() {
     setRectOpacity(0.6);
   };
 
-  const handleRectBgChange = (color: string) => {
-    setRectBgColor(color);
-    if (rectOpacity === 0) {
-      setRectOpacity(1);
+  const handleTextBoxEnable = (enabled: boolean) => {
+    setIsTextBoxEnabled(enabled);
+    if (!enabled) {
+      setRectOpacity(0);
+    } else {
+      if (rectOpacity === 0) {
+        setRectOpacity(1); 
+      }
     }
   };
+
 
   const handleApplyTemplate = (template: DesignTemplate) => {
     setBackgroundTab(template.background.type);
@@ -590,7 +596,7 @@ textBox: {
           }}
           onTextRemaining={(remaining) => handleTextRemaining(remaining, index)}
           rectColor={rectBgColor}
-          rectOpacity={rectOpacity}
+          rectOpacity={isTextBoxEnabled ? rectOpacity : 0}
           overlayColor={overlayColor}
           overlayOpacity={overlayOpacity}
           textAlign={textAlign}
@@ -606,7 +612,7 @@ textBox: {
           strokeWidth={strokeWidth}
         />
     )
-  }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, textStroke, strokeColor, strokeWidth, handleTextRemaining]);
+  }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled]);
 
   const tabContentProps = {
     activeTab: activeSettingsTab,
@@ -639,7 +645,8 @@ textBox: {
     textShadow, setTextShadow, shadowColor, setShadowColor, shadowBlur, setShadowBlur,
     shadowOffsetX, setShadowOffsetX, shadowOffsetY, setShadowOffsetY,
     textStroke, setTextStroke, strokeColor, setStrokeColor, strokeWidth, setStrokeWidth,
-    rectBgColor, handleRectBgChange, rectOpacity, setRectOpacity,
+    isTextBoxEnabled, setIsTextBoxEnabled: handleTextBoxEnable,
+    rectBgColor, setRectBgColor, rectOpacity, setRectOpacity,
     // Design/Download props
     designs,
     handleDownloadAll,
@@ -889,9 +896,3 @@ textBox: {
     </>
   );
 }
-
-
-
-
-
-    

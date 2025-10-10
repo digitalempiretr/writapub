@@ -53,9 +53,11 @@ type TextSettingsProps = {
   strokeWidth: number;
   setStrokeWidth: (value: number) => void;
   rectBgColor: string;
-  handleRectBgChange: (color: string) => void;
+  setRectBgColor: (color: string) => void;
   rectOpacity: number;
   setRectOpacity: (value: number) => void;
+  isTextBoxEnabled: boolean;
+  setIsTextBoxEnabled: (value: boolean) => void;
 };
 
 export function TextSettings({
@@ -89,9 +91,11 @@ export function TextSettings({
   strokeWidth,
   setStrokeWidth,
   rectBgColor,
-  handleRectBgChange,
+  setRectBgColor,
   rectOpacity,
   setRectOpacity,
+  isTextBoxEnabled,
+  setIsTextBoxEnabled,
 }: TextSettingsProps) {
   const baseId = useId();
 
@@ -101,7 +105,6 @@ export function TextSettings({
         <Label className="bg-zinc-200 p-2 px-6 rounded-md">TEXT SETTINGS</Label>
         <div className="grid grid-cols-1 gap-4">
           <div className="space-y-2">
-            <Label>Text Color & Font</Label>
             <div className="flex items-center gap-2">
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -318,60 +321,59 @@ export function TextSettings({
 
             <Separator orientation="vertical" className="h-10" />
             
-            <div className="flex items-center gap-2">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="relative h-10 w-10">
-                    <Label htmlFor={`${baseId}-rect-bg-color-picker`} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
-                      <TextBgBoxIcon color={rectBgColor}/>
-                    </Label>
-                    <Input
-                      id={`${baseId}-rect-bg-color-picker`}
-                      type="color"
-                      value={rectBgColor}
-                      onChange={(e) => handleRectBgChange(e.target.value)}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Text Box Color</p>
-                </TooltipContent>
-              </Tooltip>
-              <Popover>
+             <Popover>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <PopoverTrigger asChild>
                       <Button variant="outline" size="icon">
-                        <TextBoxOpacity />
+                        <TextBgBoxIcon color={isTextBoxEnabled ? rectBgColor : '#999'} />
                       </Button>
                     </PopoverTrigger>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Text Box Opacity</p>
+                    <p>Text Box Settings</p>
                   </TooltipContent>
                 </Tooltip>
-                <PopoverContent className="w-56 space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor={`${baseId}-rect-opacity-slider`}>Transparency</Label>
-                    <div className="flex items-center gap-2">
-                      <Slider
-                        id={`${baseId}-rect-opacity-slider`}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        value={[rectOpacity]}
-                        onValueChange={(value) => setRectOpacity(value[0])}
-                        className="flex-grow"
-                      />
-                      <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
-                        {Math.round(rectOpacity * 100)}
+                <PopoverContent className="w-64 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor={`${baseId}-textbox-toggle`}>Text Box Background</Label>
+                    <Switch
+                      id={`${baseId}-textbox-toggle`}
+                      checked={isTextBoxEnabled}
+                      onCheckedChange={setIsTextBoxEnabled}
+                    />
+                  </div>
+                  {isTextBoxEnabled && (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Label>Color</Label>
+                        <Input
+                          type="color"
+                          value={rectBgColor}
+                          onChange={(e) => setRectBgColor(e.target.value)}
+                          className="h-8 p-1"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`${baseId}-rect-opacity-slider`}>Opacity</Label>
+                        <div className="flex items-center gap-2">
+                          <Slider
+                            id={`${baseId}-rect-opacity-slider`}
+                            max={1}
+                            min={0}
+                            step={0.01}
+                            value={[rectOpacity]}
+                            onValueChange={(value) => setRectOpacity(value[0])}
+                          />
+                           <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
+                            {Math.round(rectOpacity * 100)}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </PopoverContent>
               </Popover>
-            </div>
           </div>
         </div>
       </div>
