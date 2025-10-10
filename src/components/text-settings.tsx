@@ -10,11 +10,11 @@ import {
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
-import { TextColorChooseIcon, TextBgBoxIcon, TextBoxOpacity } from "@/components/ui/icons";
+import { TextColorChooseIcon, TextBgBoxIcon, TextBoxOpacity, TextStrokeIcon } from "@/components/ui/icons";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FontOption } from "@/components/image-canvas";
 import { Button } from "@/components/ui/button";
-import { Bold, CaseUpper, Sparkles, AlignLeft, AlignCenter, AlignRight, Pencil } from "lucide-react";
+import { Bold, CaseUpper, Sparkles, AlignLeft, AlignCenter, AlignRight } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
@@ -220,7 +220,7 @@ export function TextSettings({
                   <TooltipTrigger asChild>
                     <PopoverTrigger asChild>
                       <Button variant="outline" size="icon">
-                        <Pencil className="h-4 w-4" />
+                        <TextStrokeIcon />
                       </Button>
                     </PopoverTrigger>
                   </TooltipTrigger>
