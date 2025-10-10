@@ -20,6 +20,7 @@ type ImageCanvasProps = {
   font: FontOption;
   backgroundColor?: string;
   textColor: string;
+  textOpacity: number;
   width: number;
   height: number;
   onCanvasReady: (canvas: HTMLCanvasElement) => void;
@@ -196,6 +197,7 @@ export function ImageCanvas({
   font,
   backgroundColor,
   textColor,
+  textOpacity,
   width,
   height,
   onCanvasReady,
@@ -283,7 +285,7 @@ export function ImageCanvas({
         ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
 
         // Set up text properties
-        ctx.fillStyle = textColor;
+        ctx.fillStyle = hexToRgba(textColor, textOpacity);
         ctx.textAlign = textAlign;
         ctx.textBaseline = 'top'; 
         ctx.font = `${fontWeight} ${fontSize}px "${fontName}"`;
@@ -373,7 +375,7 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, textStroke, strokeColor, strokeWidth]);
+  }, [text, isTitle, font, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, textStroke, strokeColor, strokeWidth]);
 
   return (
     <canvas

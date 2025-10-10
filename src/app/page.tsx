@@ -722,6 +722,7 @@ export default function Home() {
   const [backgroundTab, setBackgroundTab] = useState<BackgroundType>("image");
   const [bgColor, setBgColor] = useState(pageInitialColors.bgColor);
   const [textColor, setTextColor] = useState(pageInitialColors.textColor);
+  const [textOpacity, setTextOpacity] = useState(1);
   const [gradientBg, setGradientBg] = useState(pageInitialColors.gradientBg);
   const [imageBgUrl, setImageBgUrl] = useState(imageTemplates[1].imageUrl);
   const [searchQuery, setSearchQuery] = useState("");
@@ -1144,11 +1145,12 @@ textBox: {
     
     return (
         <ImageCanvas
-          key={`${backgroundType}-${activeFont.value}-${bgColor}-${textColor}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadow}-${shadowColor}-${shadowBlur}-${shadowOffsetX}-${shadowOffsetY}-${textStroke}-${strokeColor}-${strokeWidth}`}
+          key={`${backgroundType}-${activeFont.value}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadow}-${shadowColor}-${shadowBlur}-${shadowOffsetX}-${shadowOffsetY}-${textStroke}-${strokeColor}-${strokeWidth}`}
           font={activeFont}
           text={design.text}
           isTitle={design.isTitle}
           textColor={textColor}
+          textOpacity={textOpacity}
           backgroundColor={currentBg}
           backgroundImageUrl={imageUrl}
           width={1080}
@@ -1174,7 +1176,7 @@ textBox: {
           strokeWidth={strokeWidth}
         />
     )
-  }, [backgroundType, activeFont, bgColor, textColor, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, textStroke, strokeColor, strokeWidth, handleTextRemaining]);
+  }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, textStroke, strokeColor, strokeWidth, handleTextRemaining]);
 
   const tabContentProps = {
     activeTab: activeSettingsTab,
@@ -1220,11 +1222,13 @@ textBox: {
     handleLogDesign,
     closePanel,
     // Pass all text settings props
-    textColor, setTextColor, activeFont, handleFontChange, fontOptions,
+    textColor, setTextColor, textOpacity, setTextOpacity,
+    activeFont, handleFontChange, fontOptions,
     isBold, setIsBold, isUppercase, setIsUppercase, textAlign, setTextAlign,
     textShadow, setTextShadow, shadowColor, setShadowColor, shadowBlur, setShadowBlur,
     shadowOffsetX, setShadowOffsetX, shadowOffsetY, setShadowOffsetY,
     textStroke, setTextStroke, strokeColor, setStrokeColor, strokeWidth, setStrokeWidth,
+    rectBgColor, handleRectBgChange, rectOpacity, setRectOpacity,
   };
   
   const settingsPanel = (
@@ -1453,4 +1457,5 @@ textBox: {
     </>
   );
 }
+
 

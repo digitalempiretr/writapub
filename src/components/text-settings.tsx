@@ -25,6 +25,8 @@ import { defaultSolidColors } from "@/lib/colors";
 type TextSettingsProps = {
   textColor: string;
   setTextColor: (color: string) => void;
+  textOpacity: number;
+  setTextOpacity: (value: number) => void;
   activeFont: FontOption;
   handleFontChange: (value: string) => void;
   fontOptions: FontOption[];
@@ -59,6 +61,8 @@ type TextSettingsProps = {
 export function TextSettings({
   textColor,
   setTextColor,
+  textOpacity,
+  setTextOpacity,
   activeFont,
   handleFontChange,
   fontOptions,
@@ -118,6 +122,39 @@ export function TextSettings({
                   <p>Select Text Color</p>
                 </TooltipContent>
               </Tooltip>
+              <Popover>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" size="icon">
+                        <TextBoxOpacity />
+                      </Button>
+                    </PopoverTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Text Opacity</p>
+                  </TooltipContent>
+                </Tooltip>
+                <PopoverContent className="w-56 space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor={`${baseId}-text-opacity-slider`}>Text Opacity</Label>
+                    <div className="flex items-center gap-2">
+                      <Slider
+                        id={`${baseId}-text-opacity-slider`}
+                        max={1}
+                        min={0}
+                        step={0.01}
+                        value={[textOpacity]}
+                        onValueChange={(value) => setTextOpacity(value[0])}
+                        className="flex-grow"
+                      />
+                      <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
+                        {Math.round(textOpacity * 100)}
+                      </div>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
               <div className="flex-grow">
                 <Select value={activeFont.value} onValueChange={handleFontChange}>
                   <Tooltip>
