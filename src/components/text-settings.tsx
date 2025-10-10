@@ -194,17 +194,7 @@ export function TextSettings({
             </Carousel>
           </div>
 
-          <div className="flex justify-start gap-4">
-            <div className="space-y-2">
-              <Label>Style & Alignment</Label>
-            </div>
-             <div className="ml-10 space-y-2">
-              <Label>Text Box</Label>
-            </div>
-          </div>
-
-          <div className="flex items-end gap-4">
-            <div>
+          <div className="flex items-end justify-start gap-4">
               <div className="flex items-center gap-2">
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -325,65 +315,62 @@ export function TextSettings({
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-            </div>
 
             <Separator orientation="vertical" className="h-10" />
             
-            <div>
-              <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="relative h-10 w-10">
+                    <Label htmlFor={`${baseId}-rect-bg-color-picker`} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
+                      <TextBgBoxIcon color={rectBgColor}/>
+                    </Label>
+                    <Input
+                      id={`${baseId}-rect-bg-color-picker`}
+                      type="color"
+                      value={rectBgColor}
+                      onChange={(e) => handleRectBgChange(e.target.value)}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Text Box Color</p>
+                </TooltipContent>
+              </Tooltip>
+              <Popover>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="relative h-10 w-10">
-                      <Label htmlFor={`${baseId}-rect-bg-color-picker`} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
-                        <TextBgBoxIcon color={rectBgColor}/>
-                      </Label>
-                      <Input
-                        id={`${baseId}-rect-bg-color-picker`}
-                        type="color"
-                        value={rectBgColor}
-                        onChange={(e) => handleRectBgChange(e.target.value)}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      />
-                    </div>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" size="icon">
+                        <TextBoxOpacity />
+                      </Button>
+                    </PopoverTrigger>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Text Box Color</p>
+                    <p>Text Box Opacity</p>
                   </TooltipContent>
                 </Tooltip>
-                <Popover>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" size="icon">
-                          <TextBoxOpacity />
-                        </Button>
-                      </PopoverTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Text Box Opacity</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  <PopoverContent className="w-56 space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor={`${baseId}-rect-opacity-slider`}>Transparency</Label>
-                      <div className="flex items-center gap-2">
-                        <Slider
-                          id={`${baseId}-rect-opacity-slider`}
-                          max={1}
-                          min={0}
-                          step={0.01}
-                          value={[rectOpacity]}
-                          onValueChange={(value) => setRectOpacity(value[0])}
-                          className="flex-grow"
-                        />
-                        <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
-                          {Math.round(rectOpacity * 100)}
-                        </div>
+                <PopoverContent className="w-56 space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor={`${baseId}-rect-opacity-slider`}>Transparency</Label>
+                    <div className="flex items-center gap-2">
+                      <Slider
+                        id={`${baseId}-rect-opacity-slider`}
+                        max={1}
+                        min={0}
+                        step={0.01}
+                        value={[rectOpacity]}
+                        onValueChange={(value) => setRectOpacity(value[0])}
+                        className="flex-grow"
+                      />
+                      <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
+                        {Math.round(rectOpacity * 100)}
                       </div>
                     </div>
-                  </PopoverContent>
-                </Popover>
-              </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
         </div>
