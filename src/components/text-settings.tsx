@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useId } from "react";
@@ -194,9 +193,18 @@ export function TextSettings({
               <CarouselNext className="-right-4" />
             </Carousel>
           </div>
+
           <div className="flex justify-between gap-4">
-            <div className="space-y-2 flex-1">
+            <div className="flex-1 space-y-2">
               <Label>Style & Alignment</Label>
+            </div>
+             <div className="flex-1 space-y-2">
+              <Label>Text Box</Label>
+            </div>
+          </div>
+
+          <div className="flex justify-between items-end gap-4">
+            <div className="flex-1">
               <div className="flex items-center gap-2">
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -319,10 +327,9 @@ export function TextSettings({
               </div>
             </div>
 
-            <Separator orientation="vertical" className="h-auto" />
+            <Separator orientation="vertical" className="h-10" />
             
-            <div className="space-y-2 flex-1">
-              <Label>Text Box</Label>
+            <div className="flex-1">
               <div className="flex items-center gap-2">
                 <Tooltip>
                   <TooltipTrigger asChild>
