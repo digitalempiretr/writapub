@@ -194,17 +194,17 @@ export function TextSettings({
             </Carousel>
           </div>
 
-          <div className="flex justify-between gap-4">
-            <div className="flex-1 space-y-2">
+          <div className="flex justify-start gap-4">
+            <div className="space-y-2">
               <Label>Style & Alignment</Label>
             </div>
-             <div className="flex-1 space-y-2">
+             <div className="ml-10 space-y-2">
               <Label>Text Box</Label>
             </div>
           </div>
 
-          <div className="flex justify-between items-end gap-4">
-            <div className="flex-1">
+          <div className="flex items-end gap-4">
+            <div>
               <div className="flex items-center gap-2">
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -329,7 +329,7 @@ export function TextSettings({
 
             <Separator orientation="vertical" className="h-10" />
             
-            <div className="flex-1">
+            <div>
               <div className="flex items-center gap-2">
                 <Tooltip>
                   <TooltipTrigger asChild>
