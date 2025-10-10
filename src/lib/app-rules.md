@@ -14,6 +14,16 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.23
+
+#### ENGLISH
+### 1. Bug Fixes
+-   **Transparent Pop-up Fix:** Resolved a UI bug where pop-up components like `AlertDialog` and `Popover` appeared transparent. This was caused by the `--background` CSS variable being incorrectly set to `transparent` in `globals.css`. The variable has been updated to an opaque color for both light and dark themes, ensuring all pop-ups now have a solid, readable background.
+
+#### TURKCE
+### 1. Hata Düzeltmeleri
+-   **Şeffaf Pop-up Düzeltmesi:** `AlertDialog` ve `Popover` gibi açılır pencere bileşenlerinin şeffaf görünmesine neden olan bir arayüz hatası düzeltildi. Sorun, `globals.css` dosyasındaki `--background` CSS değişkeninin yanlışlıkla `transparent` olarak ayarlanmasından kaynaklanıyordu. Değişken, hem açık hem de koyu temalar için opak bir renkle güncellenerek tüm açılır pencerelerin artık sağlam ve okunabilir bir arka plana sahip olması sağlandı.
+
 ## Version V1.22
 
 #### ENGLISH
@@ -486,11 +496,3 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 -   All fonts loaded from Google Fonts must include the `latin-ext` character set to ensure correct display of Turkish characters.
 -   In the font selection menu, the name of each font option should be displayed in its own font style. This allows the user to preview how the fonts look before selecting them.
 -   The default font in the font selection dropdown is set to "Special Elite".
-
-
-
-
-
-
-
-

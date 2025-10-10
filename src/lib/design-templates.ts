@@ -26,6 +26,69 @@ export type DesignTemplate = {
 
 export const designTemplates: DesignTemplate[] = [
   {
+    id: 'styles-Night-Chalk',
+    name: "Night Chalkfeldgrau ",
+    previewImage: "",
+    background: {
+      type: 'flat',
+      value: '#212121',
+    },
+    font: {
+      value: 'duru-sans',
+      color: '#F4ede4',
+    },
+    textBox: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+},
+  {
+    id: 'styles-oat-foam',
+    name: "Oat Foam",
+    previewImage: "",
+    background: {
+      type: 'flat',
+      value: '#F4ede4',
+    },
+    font: {
+      value: 'duru-sans',
+      color: '#212121',
+    },
+    textBox: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+},
+  {
+    id: 'styles-jet-cloud-white',
+    name: "Jet Cloud White",
+    previewImage: "",
+    background: {
+      type: 'flat',
+      value: '#FAFAFA',
+    },
+    font: {
+      value: 'duru-sans',
+      color: '#312F2C',
+    },
+    textBox: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+},
+  {
     id: 'styles-Deep-Sea-Blue',
     name: "Deep Sea Blue",
     previewImage: "",
@@ -67,7 +130,27 @@ export const designTemplates: DesignTemplate[] = [
       opacity: 0,
     },
 },
-
+{
+  id: 'styles-Feldgrau',
+  name: "Feldgrau ",
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#33412f',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#Fba0a3',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
   {
     id: 'styles-Oceanic-Blue',
     name: "Oceanic Blue",
@@ -890,6 +973,27 @@ export const designTemplates: DesignTemplate[] = [
 
 // Templates Start Here
 {
+  id: 'template-milky',
+  name: "Milky",
+  previewImage: "https://i.ibb.co/zhYZ5H5V/milky-1.jpg",
+  background: {
+    type: 'image',
+    value: 'https://i.ibb.co/kVJS28vc/6.jpg',
+  },
+  font: {
+    value: 'style-script',
+    color: '#3f5b4d',
+  },
+textBox: {
+    color: '#e5e5ff',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
   id: 'template-art-school-of-athens',
   name: "Art School Of Athens",
   previewImage: "https://i.ibb.co/sd7gmFQk/Art-School-Of-Athens.jpg",
@@ -913,7 +1017,7 @@ textBox: {
 {
   id: 'template-marble',
   name: "Marble",
-  previewImage: "https://i.ibb.co/DDZ3y2Lk/7.jpg",
+  previewImage: "https://i.ibb.co/Q763twkW/marble-template.jpg",
   background: {
     type: 'image',
     value: 'https://i.ibb.co/DDZ3y2Lk/7.jpg',
@@ -931,7 +1035,27 @@ textBox: {
     opacity: 0,
   },
 },
-  
+{
+  id: 'template-birdseyesea',
+  name: "Birds Eye Sea",
+  previewImage: "https://i.ibb.co/qYdKfn9F/Birds-Eye-Sea.jpg",
+  background: {
+    type: 'image',
+    value: 'https://images.pexels.com/photos/1655166/pexels-photo-1655166.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#FFFFFF',
+  },
+textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},  
   
   
 ];
