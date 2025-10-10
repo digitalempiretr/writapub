@@ -32,11 +32,9 @@ import {
 
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Loader2, Star, Type, X, ArrowUp } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Loader2, Star, Type, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, useId } from "react";
-import { CardTitle } from "@/components/ui/card";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
 import { imageTemplates } from "@/lib/image-templates";
@@ -51,6 +49,7 @@ import { DesignsPanel } from "@/components/designs-panel";
 import { MyDesignsPanel } from "@/components/my-designs-panel";
 import { DownloadPanel } from "@/components/download-panel";
 import { pageInitialColors } from "@/lib/colors";
+import { CreativeMagicPanel } from "@/components/creative-magic-panel";
 
 type Design = {
   text: string;
@@ -107,7 +106,6 @@ function TabContentContainer({
 
 export default function Home() {
   const [text, setText] = useState(defaultText);
-  const [title, setTitle] = useState("");
   const [designs, setDesigns] = useState<Design[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -115,7 +113,6 @@ export default function Home() {
   const [carouselApi, setCarouselApi] = useState<CarouselApi | undefined>();
   const [searchCarouselApi, setSearchCarouselApi] = useState<CarouselApi | undefined>();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const mainTextAreaId = useId();
   const [myDesigns, setMyDesigns] = useLocalStorage<DesignTemplate[]>('writa-designs', []);
   const [editingDesignId, setEditingDesignId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
@@ -239,7 +236,7 @@ export default function Home() {
 }, []);
 
   const handleGenerate = useCallback(async () => {
-    if (!text && !title) {
+    if (!text) {
       toast({
         title: "No Text Entered",
         description: "Please enter a title or body text.",
@@ -253,22 +250,21 @@ export default function Home() {
     setDesigns([]);
     setIsMobilePanelOpen(false);
     
-    let finalTitle = title;
+    let finalTitle = "";
     let finalBody = text;
 
-    if (!finalTitle && finalBody) {
-        const sentenceEndMarkers = /[.!?]/;
-        const firstSentenceMatch = finalBody.match(sentenceEndMarkers);
-        
-        if (firstSentenceMatch && firstSentenceMatch.index !== undefined) {
-            const firstSentenceEnd = firstSentenceMatch.index + 1;
-            finalTitle = finalBody.substring(0, firstSentenceEnd).trim();
-            finalBody = finalBody.substring(firstSentenceEnd).trim();
-        } else {
-            finalTitle = finalBody;
-            finalBody = "";
-        }
+    const sentenceEndMarkers = /[.!?]/;
+    const firstSentenceMatch = finalBody.match(sentenceEndMarkers);
+    
+    if (firstSentenceMatch && firstSentenceMatch.index !== undefined) {
+        const firstSentenceEnd = firstSentenceMatch.index + 1;
+        finalTitle = finalBody.substring(0, firstSentenceEnd).trim();
+        finalBody = finalBody.substring(firstSentenceEnd).trim();
+    } else {
+        finalTitle = finalBody;
+        finalBody = "";
     }
+    
 
     const newDesigns: Design[] = [];
     if (finalTitle) {
@@ -286,7 +282,7 @@ export default function Home() {
             designsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }, 1618);
-  }, [text, title, toast]);
+  }, [text, toast]);
   
   const handleDownload = useCallback((index: number) => {
     const canvas = canvasRefs.current[index];
@@ -783,36 +779,12 @@ textBox: {
 
       <main className="container mx-auto p-4 md:p-8 pt-0">
         <div className="flex flex-col items-center justify-center h-[90vh]">
-          <div className="space-y-6 max-w-[800px] mx-auto w-full">
-            <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
-            <div className="space-y-4">
-                <Label htmlFor={mainTextAreaId} className="sr-only">Main text area</Label>
-                <Textarea
-                id={mainTextAreaId}
-                name="main-text-area"
-                placeholder="Paste your text here..."
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                rows={8}
-                className="bg-[hsl(60,75%,97%)] text-[#2b323f] placeholder:text-gray-400 border-0"
-                />
-                <div className="flex items-center justify-end gap-4">
-                   <p className="text-xs text-[#fdfdf2]">{text.length} characters</p>
-                   <Button
-                      onClick={handleGenerate}
-                      disabled={isLoading}
-                      size="icon"
-                      className="rounded-full bg-primary hover:bg-[#2b323f]"
-                    >
-                      {isLoading ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <ArrowUp className="h-4 w-4" />
-                      )}
-                    </Button>
-                </div>
-            </div>
-          </div>
+          <CreativeMagicPanel 
+            text={text}
+            setText={setText}
+            handleGenerate={handleGenerate}
+            isLoading={isLoading}
+          />
         </div>
         
         {isGeneratingAnimation && (
