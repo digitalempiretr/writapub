@@ -970,8 +970,50 @@ export const designTemplates: DesignTemplate[] = [
       opacity: 0,
     },
 },
+{
+  id: 'template-purpGrad',
+  name: "Gradient",
+  previewImage: "",
+  background: {
+    type: 'gradient',
+    value: gradientTemplates.find(g => g.name === 'YOUR_GRADIENT_NAME')?.css || 'linear-gradient(to right, #8e2de2, #4a00e0)',
+  },
+  font: {
+    value: 'poppins',
+    color: '#E2A9F1',
+  },
+textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
 
 // Templates Start Here
+{
+  id: 'template-neon',
+  name: "Milky",
+  previewImage: "https://i.ibb.co/zhYZ5H5V/milky-1.jpg",
+  background: {
+    type: 'image',
+    value: 'https://i.ibb.co/C5CyMgvR/neon-bg.jpg',
+  },
+  font: {
+    value: 'oswald',
+    color: '#3f5b4d',
+  },
+textBox: {
+    color: '#e5e5ff',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
 {
   id: 'template-milky',
   name: "Milky",

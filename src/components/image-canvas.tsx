@@ -32,6 +32,11 @@ type ImageCanvasProps = {
   textAlign: 'left' | 'center' | 'right';
   isBold: boolean;
   isUppercase: boolean;
+  textShadow: boolean;
+  shadowColor: string;
+  shadowBlur: number;
+  shadowOffsetX: number;
+  shadowOffsetY: number;
 };
 
 // This function wraps text for titles.
@@ -192,6 +197,11 @@ export function ImageCanvas({
   textAlign,
   isBold,
   isUppercase,
+  textShadow,
+  shadowColor,
+  shadowBlur,
+  shadowOffsetX,
+  shadowOffsetY,
 }: ImageCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const indexRef = useRef<number | null>(null);
@@ -264,6 +274,14 @@ export function ImageCanvas({
         ctx.textBaseline = 'top'; 
         ctx.font = `${fontWeight} ${fontSize}px "${fontName}"`;
         
+        // Apply shadow if enabled
+        if (textShadow) {
+            ctx.shadowColor = shadowColor;
+            ctx.shadowBlur = shadowBlur;
+            ctx.shadowOffsetX = shadowOffsetX;
+            ctx.shadowOffsetY = shadowOffsetY;
+        }
+
         // Calculate text position based on alignment
         let textX;
         if (textAlign === 'left') {
@@ -276,6 +294,12 @@ export function ImageCanvas({
         
         // Draw the text
         wrapAndDrawText(ctx, linesToDraw, textX, rectY, lineHeight, rectHeight);
+
+        // Reset shadow for subsequent canvas drawings
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
         
         if (!isTitle && indexRef.current !== null) {
           onTextRemaining(remainingText, indexRef.current);
@@ -335,7 +359,7 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase]);
+  }, [text, isTitle, font, backgroundColor, textColor, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY]);
 
   return (
     <canvas
