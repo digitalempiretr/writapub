@@ -21,7 +21,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -64,8 +64,9 @@ export function MyDesignsPanel({
   return (
     <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4 mobile-tab-content">
       <div className="flex justify-between items-center">
-        <Label className="bg-zinc-200 p-2 px-6 rounded-md">MY DESIGNS</Label>
+        <Label className="bg-zinc-200 p-2 px-6 rounded-md">FAVORITES</Label>
         <div className="flex gap-2">
+          <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button onClick={handleLogDesign} size="sm" variant="outline">
@@ -83,9 +84,10 @@ export function MyDesignsPanel({
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Save the current settings as a new design.</p>
+              <p>Save the current settings as a new favorite.</p>
             </TooltipContent>
           </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
       {myDesigns.length > 0 ? (
@@ -142,6 +144,7 @@ export function MyDesignsPanel({
                       </Card>
                     </button>
                     <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <TooltipProvider>
                       {editingDesignId === template.id ? (
                         <>
                           <Tooltip>
@@ -180,10 +183,11 @@ export function MyDesignsPanel({
                               </AlertDialogTrigger>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>Delete Design</p></TooltipContent>
+                              <p>Delete Favorite</p></TooltipContent>
                           </Tooltip>
                         </>
                       )}
+                      </TooltipProvider>
                     </div>
                   </div>
                 </CarouselItem>
@@ -196,7 +200,7 @@ export function MyDesignsPanel({
             <AlertDialogHeader>
               <AlertDialogTitle>Are you sure?</AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your custom design.
+                This action cannot be undone. This will permanently delete your favorite design.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -207,7 +211,7 @@ export function MyDesignsPanel({
         </AlertDialog>
       ) : (
         <div className="text-center text-muted-foreground py-8">
-          <p>You haven't saved any designs yet.</p>
+          <p>You haven't saved any favorites yet.</p>
           <p className="text-xs">Click "Save Current" to add a design.</p>
         </div>
       )}

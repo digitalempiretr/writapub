@@ -87,7 +87,7 @@ function TabContentContainer({
       {activeTab === 'designs' && (
         <DesignsPanel {...props} />
       )}
-      {activeTab === 'my-designs' && (
+      {activeTab === 'favorites' && (
         <MyDesignsPanel {...props} />
       )}
       {activeTab === 'background' && (
@@ -418,7 +418,7 @@ export default function Home() {
     if (!canvas) {
       toast({
         variant: "destructive",
-        title: "Cannot save design",
+        title: "Cannot save favorite",
         description: "The design preview is not ready yet.",
         duration: 2000,
       });
@@ -434,7 +434,7 @@ export default function Home() {
 
     const newDesign: DesignTemplate = {
       id: `design-${Date.now()}`,
-      name: `My Design ${myDesigns.length + 1}`,
+      name: `Favorite ${myDesigns.length + 1}`,
       previewImage: previewImage,
       background: {
         type: backgroundType,
@@ -458,7 +458,7 @@ export default function Home() {
 
     toast({
       title: "Design Saved",
-      description: "Your current design has been saved to 'My Designs'.",
+      description: "Your current design has been saved to 'Favorites'.",
       duration: 2000,
     });
 
@@ -468,8 +468,8 @@ export default function Home() {
     setMyDesigns(prev => prev.filter(d => d.id !== id));
     setDesignToDelete(null);
     toast({
-      title: "Design Deleted",
-      description: "The selected design has been removed from 'My Designs'.",
+      title: "Favorite Deleted",
+      description: "The selected favorite has been removed.",
       duration: 2000,
     });
   };
@@ -488,8 +488,8 @@ export default function Home() {
     setMyDesigns(prev => prev.map(d => d.id === id ? { ...d, name: editingName } : d));
     handleCancelEdit();
     toast({
-      title: "Design Updated",
-      description: "The design name has been updated.",
+      title: "Favorite Updated",
+      description: "The favorite's name has been updated.",
       duration: 2000,
     });
   };
@@ -699,9 +699,9 @@ textBox: {
             <Tooltip>
               <TooltipTrigger asChild>
                 <TabsTrigger
-                  value="my-designs"
+                  value="favorites"
                    onClick={() => {
-                    setActiveSettingsTab("my-designs");
+                    setActiveSettingsTab("favorites");
                     setIsMobilePanelOpen(true)
                   }}
                 >
@@ -709,7 +709,7 @@ textBox: {
                 </TabsTrigger>
               </TooltipTrigger>
               <TooltipContent>
-                <p>My Designs</p>
+                <p>Favorites</p>
               </TooltipContent>
             </Tooltip>
             <Tooltip>
@@ -854,14 +854,14 @@ textBox: {
                                         </AlertDialogTrigger>
                                       </TooltipTrigger>
                                       <TooltipContent>
-                                        <p>Save to My Designs</p>
+                                        <p>Save to Favorites</p>
                                       </TooltipContent>
                                     </Tooltip>
                                   <AlertDialogContent>
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle>Save to My Designs?</AlertDialogTitle>
+                                      <AlertDialogTitle>Save to Favorites?</AlertDialogTitle>
                                       <AlertDialogDescription>
-                                        This will save the current background, font, and color settings as a new template.
+                                        This will save the current background, font, and color settings as a new favorite template.
                                       </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
