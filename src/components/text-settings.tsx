@@ -319,9 +319,7 @@ export function TextSettings({
               </div>
             </div>
 
-            <div className="flex items-center justify-center h-auto">
-                <Separator orientation="vertical" className="h-6 bg-border w-px" />
-            </div>
+            <Separator orientation="vertical" className="h-auto" />
             
             <div className="space-y-2 flex-1">
               <Label>Text Box</Label>
