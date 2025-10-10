@@ -160,7 +160,7 @@ export default function Home() {
   const [isSearching, setIsSearching] = useState(false);
   const [searchPage, setSearchPage] = useState(1);
 
-  const [isTextBoxEnabled, setIsTextBoxEnabled] = useState(true);
+  const [isTextBoxEnabled, setIsTextBoxEnabled] = useState(false);
   const [rectBgColor, setRectBgColor] = useState(pageInitialColors.rectBgColor);
   const [rectOpacity, setRectOpacity] = useState(0);
 
@@ -377,7 +377,7 @@ export default function Home() {
       setRectOpacity(0);
     } else {
       if (rectOpacity === 0) {
-        setRectOpacity(1); 
+        setRectOpacity(0.5); 
       }
     }
   };
@@ -401,6 +401,7 @@ export default function Home() {
 
     setRectBgColor(template.textBox.color);
     setRectOpacity(template.textBox.opacity);
+    setIsTextBoxEnabled(template.textBox.opacity > 0);
 
     setOverlayColor(template.overlay.color);
     setOverlayOpacity(template.overlay.opacity);
