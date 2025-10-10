@@ -1,0 +1,901 @@
+
+"use client";
+
+import { findImages } from "@/ai/flows/find-images-flow";
+import { ImageCanvas, type FontOption } from "@/components/image-canvas";
+import { Logo } from "@/components/logo";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselApi,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { Download, ImageIcon, LayoutTemplate, Loader2, Star, Type, X, ArrowUp } from "lucide-react";
+import { useCallback, useEffect, useRef, useState, useId } from "react";
+import { CardTitle } from "@/components/ui/card";
+import Lottie from 'lottie-react';
+import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
+import { imageTemplates } from "@/lib/image-templates";
+import { fontOptions } from "@/lib/font-options";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { defaultText } from "@/lib/default-text";
+import { DesignTemplate } from "@/lib/design-templates";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { TextSettings } from "@/components/text-settings";
+import { BackgroundSettings } from "@/components/background-settings";
+import { DesignsPanel } from "@/components/designs-panel";
+import { MyDesignsPanel } from "@/components/my-designs-panel";
+import { DownloadPanel } from "@/components/download-panel";
+import { pageInitialColors } from "@/lib/colors";
+
+type Design = {
+  text: string;
+  isTitle: boolean;
+};
+
+type TextAlign = 'left' | 'center' | 'right';
+type BackgroundType = 'flat' | 'gradient' | 'image';
+
+function TabContentContainer({
+  activeTab,
+  closePanel,
+  ...props
+}: {
+  activeTab: string | null;
+  closePanel: () => void;
+  [key: string]: any; 
+}) {
+  if (!activeTab) return null;
+
+  return (
+    <>
+      <div className="relative">
+         <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={closePanel} 
+            className="absolute top-2 right-2 z-10 md:hidden h-8 w-8 rounded-full bg-background hover:bg-muted"
+          >
+            <X className="h-5 w-5" />
+            <span className="sr-only">Close Panel</span>
+          </Button>
+
+      {activeTab === 'designs' && (
+        <DesignsPanel {...props} />
+      )}
+      {activeTab === 'my-designs' && (
+        <MyDesignsPanel {...props} />
+      )}
+      {activeTab === 'background' && (
+        <BackgroundSettings {...props} />
+      )}
+      {activeTab === 'text' && (
+        <TextSettings {...props} />
+      )}
+      {activeTab === 'download' && (
+        <DownloadPanel {...props} />
+      )}
+      </div>
+    </>
+  );
+}
+
+
+export default function Home() {
+  const [text, setText] = useState(defaultText);
+  const [title, setTitle] = useState("");
+  const [designs, setDesigns] = useState<Design[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+  const [isGeneratingAnimation, setIsGeneratingAnimation] = useState(false);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi | undefined>();
+  const [searchCarouselApi, setSearchCarouselApi] = useState<CarouselApi | undefined>();
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const mainTextAreaId = useId();
+  const [myDesigns, setMyDesigns] = useLocalStorage<DesignTemplate[]>('writa-designs', []);
+  const [editingDesignId, setEditingDesignId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState('');
+  const [designToDelete, setDesignToDelete] = useState<string | null>(null);
+
+  const [backgroundType, setBackgroundType] = useState<BackgroundType>('image');
+  
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+  
+  useEffect(() => {
+    if (!carouselApi) {
+      return
+    }
+
+    setCurrentSlide(carouselApi.selectedScrollSnap())
+
+    const onSelect = () => {
+      setCurrentSlide(carouselApi.selectedScrollSnap())
+    }
+
+    carouselApi.on("select", onSelect)
+    return () => {
+      carouselApi.off("select", onSelect)
+    }
+  }, [carouselApi]);
+
+
+  const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'duru-sans') || fontOptions[0]);
+  const [textAlign, setTextAlign] = useState<TextAlign>('left');
+  const [isBold, setIsBold] = useState(true);
+  const [isUppercase, setIsUppercase] = useState(false);
+  const [backgroundTab, setBackgroundTab] = useState<BackgroundType>("image");
+  const [bgColor, setBgColor] = useState(pageInitialColors.bgColor);
+  const [textColor, setTextColor] = useState(pageInitialColors.textColor);
+  const [textOpacity, setTextOpacity] = useState(1);
+  const [gradientBg, setGradientBg] = useState(pageInitialColors.gradientBg);
+  const [imageBgUrl, setImageBgUrl] = useState(imageTemplates[1].imageUrl);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchedImages, setSearchedImages] = useState<string[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchPage, setSearchPage] = useState(1);
+
+  const [isTextBoxEnabled, setIsTextBoxEnabled] = useState(false);
+  const [rectBgColor, setRectBgColor] = useState(pageInitialColors.rectBgColor);
+  const [rectOpacity, setRectOpacity] = useState(0);
+
+  const [overlayColor, setOverlayColor] = useState(pageInitialColors.overlayColor);
+  const [overlayOpacity, setOverlayOpacity] = useState(0);
+
+  const [textShadow, setTextShadow] = useState(false);
+  const [shadowColor, setShadowColor] = useState("#000000");
+  const [shadowBlur, setShadowBlur] = useState(5);
+  const [shadowOffsetX, setShadowOffsetX] = useState(5);
+  const [shadowOffsetY, setShadowOffsetY] = useState(5);
+
+  const [textStroke, setTextStroke] = useState(false);
+  const [strokeColor, setStrokeColor] = useState("#000000");
+  const [strokeWidth, setStrokeWidth] = useState(2);
+  
+  const [activeSettingsTab, setActiveSettingsTab] = useState<string | null>("designs");
+  const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
+
+  const [fileName, setFileName] = useState("writa");
+
+  const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
+  const designsRef = useRef<HTMLDivElement>(null);
+  const mobilePanelRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
+
+   const closePanel = useCallback(() => {
+    setIsMobilePanelOpen(false);
+  }, []);
+
+   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isMobilePanelOpen &&
+        mobilePanelRef.current &&
+        !mobilePanelRef.current.contains(event.target as Node)
+      ) {
+        const targetElement = event.target as Element;
+        if (
+          targetElement.closest('[role="dialog"]') ||
+          targetElement.closest('[role="alertdialog"]') ||
+          targetElement.closest('[data-radix-popper-content-wrapper]')
+        ) {
+          return;
+        }
+        closePanel();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobilePanelOpen, closePanel]);
+
+
+  const handleTextRemaining = useCallback((remaining: string, fromIndex: number) => {
+    const nextDesignIndex = fromIndex + 1;
+    setDesigns(prevDesigns => {
+        if (remaining && prevDesigns[nextDesignIndex]) {
+            const newDesigns = [...prevDesigns];
+            if (newDesigns[nextDesignIndex].text !== remaining) {
+                newDesigns[nextDesignIndex].text = remaining;
+                return newDesigns;
+            }
+        }
+        else if (remaining && !prevDesigns[nextDesignIndex]) {
+             return [...prevDesigns, { text: remaining, isTitle: false }];
+        }
+        else if (!remaining && prevDesigns.length > nextDesignIndex) {
+            return prevDesigns.slice(0, nextDesignIndex);
+        }
+        
+        return prevDesigns;
+    });
+}, []);
+
+  const handleGenerate = useCallback(async () => {
+    if (!text && !title) {
+      toast({
+        title: "No Text Entered",
+        description: "Please enter a title or body text.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsLoading(true);
+    setIsGeneratingAnimation(true);
+    setDesigns([]);
+    setIsMobilePanelOpen(false);
+    
+    let finalTitle = title;
+    let finalBody = text;
+
+    if (!finalTitle && finalBody) {
+        const sentenceEndMarkers = /[.!?]/;
+        const firstSentenceMatch = finalBody.match(sentenceEndMarkers);
+        
+        if (firstSentenceMatch && firstSentenceMatch.index !== undefined) {
+            const firstSentenceEnd = firstSentenceMatch.index + 1;
+            finalTitle = finalBody.substring(0, firstSentenceEnd).trim();
+            finalBody = finalBody.substring(firstSentenceEnd).trim();
+        } else {
+            finalTitle = finalBody;
+            finalBody = "";
+        }
+    }
+
+    const newDesigns: Design[] = [];
+    if (finalTitle) {
+      newDesigns.push({ text: finalTitle, isTitle: true });
+    }
+    if (finalBody) {
+      newDesigns.push({ text: finalBody, isTitle: false });
+    }
+    setDesigns(newDesigns);
+    
+    setTimeout(() => {
+        setIsGeneratingAnimation(false);
+        setIsLoading(false);
+        if(designsRef.current) {
+            designsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, 1618);
+  }, [text, title, toast]);
+  
+  const handleDownload = useCallback((index: number) => {
+    const canvas = canvasRefs.current[index];
+    if (canvas) {
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = `${fileName || 'writa'}-${index + 1}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }, [fileName]);
+
+  const handleDownloadAll = useCallback(() => {
+    if (designs.length === 0) return;
+    designs.forEach((_, index) => {
+      setTimeout(() => handleDownload(index), index * 300);
+    });
+  }, [designs, handleDownload]);
+
+  const handleFontChange = (value: string) => {
+    const newFont = fontOptions.find(f => f.value === value) || fontOptions[0];
+    setActiveFont(newFont);
+  }
+
+  const handleSearchImages = async (page = 1) => {
+    if (!searchQuery) return;
+    setIsSearching(true);
+    if (page === 1) {
+      setSearchedImages([]);
+    }
+    try {
+      const result = await findImages({ query: searchQuery, page: page, per_page: 6 });
+      setSearchedImages(prevImages => [...result.imageUrls, ...prevImages]);
+      setSearchPage(page);
+
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Image Search Failed",
+        description: "An error occurred while searching for images. Please ensure your API key is configured correctly.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleKeywordSearch = (keyword: string) => {
+    setSearchQuery(keyword.toLowerCase());
+  };
+
+  const handleBgColorSelect = (color: string) => {
+    setBgColor(color);
+    setBackgroundType('flat');
+  };
+
+  const handleGradientBgSelect = (css: string) => {
+    setGradientBg(css);
+    setBackgroundType('gradient');
+  };
+
+  const handleImageBgUrlSelect = (url: string) => {
+    setImageBgUrl(url);
+    setBackgroundType('image');
+  };
+
+
+  useEffect(() => {
+    if (searchQuery) {
+        handleSearchImages(1);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery]);
+
+  const handleFeelLucky = () => {
+    const randomSeed = Math.floor(Math.random() * 1000);
+    const randomImageUrl = `https://picsum.photos/seed/${randomSeed}/1080/1350`;
+    handleImageBgUrlSelect(randomImageUrl);
+    setRectBgColor("#f4fdff");
+    setRectOpacity(0.6);
+  };
+
+  const handleTextBoxEnable = (enabled: boolean) => {
+    setIsTextBoxEnabled(enabled);
+    if (!enabled) {
+      setRectOpacity(0);
+    } else {
+      if (rectOpacity === 0) {
+        setRectOpacity(0.5); 
+      }
+    }
+  };
+
+
+  const handleApplyTemplate = (template: DesignTemplate) => {
+    setBackgroundTab(template.background.type);
+    setBackgroundType(template.background.type);
+
+    if (template.background.type === 'flat') {
+      setBgColor(template.background.value);
+    } else if (template.background.type === 'gradient') {
+      setGradientBg(template.background.value);
+    } else if (template.background.type === 'image') {
+      setImageBgUrl(template.background.value);
+    }
+
+    const newFont = fontOptions.find(f => f.value === template.font.value) || fontOptions[0];
+    setActiveFont(newFont);
+    setTextColor(template.font.color);
+
+    setRectBgColor(template.textBox.color);
+    setRectOpacity(template.textBox.opacity);
+    setIsTextBoxEnabled(template.textBox.opacity > 0);
+
+    setOverlayColor(template.overlay.color);
+    setOverlayOpacity(template.overlay.opacity);
+    
+    toast({
+      title: "Template Applied",
+      description: `"${template.name}" template has been set.`,
+      duration: 2000,
+    });
+  };
+
+  const handleSaveDesign = useCallback(() => {
+    const canvas = canvasRefs.current[currentSlide];
+    if (!canvas) {
+      toast({
+        variant: "destructive",
+        title: "Cannot save design",
+        description: "The design preview is not ready yet.",
+        duration: 2000,
+      });
+      return;
+    }
+
+    const previewImage = canvas.toDataURL("image/jpeg", 0.5);
+
+    let bgValue = '';
+    if (backgroundType === 'flat') bgValue = bgColor;
+    else if (backgroundType === 'gradient') bgValue = gradientBg;
+    else if (backgroundType === 'image') bgValue = imageBgUrl;
+
+    const newDesign: DesignTemplate = {
+      id: `design-${Date.now()}`,
+      name: `My Design ${myDesigns.length + 1}`,
+      previewImage: previewImage,
+      background: {
+        type: backgroundType,
+        value: bgValue,
+      },
+      font: {
+        value: activeFont.value,
+        color: textColor,
+      },
+      textBox: {
+        color: rectBgColor,
+        opacity: rectOpacity,
+      },
+      overlay: {
+        color: overlayColor,
+        opacity: overlayOpacity,
+      },
+    };
+
+    setMyDesigns(prev => [...prev, newDesign]);
+
+    toast({
+      title: "Design Saved",
+      description: "Your current design has been saved to 'My Designs'.",
+      duration: 2000,
+    });
+
+  }, [currentSlide, backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, myDesigns.length, setMyDesigns, toast]);
+
+  const handleDeleteDesign = (id: string) => {
+    setMyDesigns(prev => prev.filter(d => d.id !== id));
+    setDesignToDelete(null);
+    toast({
+      title: "Design Deleted",
+      description: "The selected design has been removed from 'My Designs'.",
+      duration: 2000,
+    });
+  };
+
+  const handleEditClick = (id: string, name: string) => {
+    setEditingDesignId(id);
+    setEditingName(name);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingDesignId(null);
+    setEditingName('');
+  };
+
+  const handleUpdateDesign = (id: string) => {
+    setMyDesigns(prev => prev.map(d => d.id === id ? { ...d, name: editingName } : d));
+    handleCancelEdit();
+    toast({
+      title: "Design Updated",
+      description: "The design name has been updated.",
+      duration: 2000,
+    });
+  };
+
+  const handleLogDesign = useCallback(() => {
+    let bgValue = '';
+    if (backgroundType === 'flat') bgValue = bgColor;
+    else if (backgroundType === 'gradient') bgValue = gradientBg;
+    else if (backgroundType === 'image') bgValue = imageBgUrl;
+  
+    const templateToLog: Omit<DesignTemplate, 'id' | 'name' | 'previewImage'> & { previewImage: string } = {
+      previewImage: "''", // Placeholder
+      background: {
+        type: backgroundType,
+        value: bgValue,
+      },
+      font: {
+        value: activeFont.value,
+        color: textColor,
+      },
+      textBox: {
+        color: rectBgColor,
+        opacity: rectOpacity,
+      },
+      overlay: {
+        color: overlayColor,
+        opacity: overlayOpacity,
+      },
+    };
+
+    const templateString = `
+{
+  id: 'template-NEW_ID',
+  name: "New Template Name",
+  previewImage: "",
+  background: {
+    type: '${templateToLog.background.type}',
+    value: ${templateToLog.background.type === 'gradient' 
+      ? `gradientTemplates.find(g => g.name === 'YOUR_GRADIENT_NAME')?.css || '${templateToLog.background.value}'`
+      : `'${templateToLog.background.value}'`
+    },
+  },
+  font: {
+    value: '${templateToLog.font.value}',
+    color: '${templateToLog.font.color}',
+  },
+textBox: {
+    color: '${templateToLog.textBox.color}',
+    opacity: ${templateToLog.textBox.opacity},
+  },
+  overlay: {
+    color: '${templateToLog.overlay.color}',
+    opacity: ${templateToLog.overlay.opacity},
+  },
+},`;
+  
+    console.log("Copy this code snippet to add to design-templates.ts:");
+    console.log(templateString);
+  
+    toast({
+      title: "Design Logged to Console",
+      description: "Open developer tools (F12) to see the design code.",
+      duration: 5000,
+    });
+  }, [backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, toast]);
+
+  
+  const renderCanvas = useCallback((design: Design, index: number) => {
+    let currentBg: string | undefined;
+    let imageUrl: string | undefined;
+
+    switch(backgroundType) {
+        case "flat":
+            currentBg = bgColor;
+            imageUrl = undefined;
+            break;
+        case "gradient":
+            currentBg = gradientBg;
+            imageUrl = undefined;
+            break;
+        case "image":
+            currentBg = imageBgUrl;
+            imageUrl = imageBgUrl;
+            break;
+        default:
+            currentBg = bgColor;
+            imageUrl = undefined;
+            break;
+    }
+    
+    return (
+        <ImageCanvas
+          key={`${backgroundType}-${activeFont.value}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadow}-${shadowColor}-${shadowBlur}-${shadowOffsetX}-${shadowOffsetY}-${textStroke}-${strokeColor}-${strokeWidth}`}
+          font={activeFont}
+          text={design.text}
+          isTitle={design.isTitle}
+          textColor={textColor}
+          textOpacity={textOpacity}
+          backgroundColor={currentBg}
+          backgroundImageUrl={imageUrl}
+          width={1080}
+          height={1350}
+          onCanvasReady={(canvas) => {
+            canvasRefs.current[index] = canvas;
+          }}
+          onTextRemaining={(remaining) => handleTextRemaining(remaining, index)}
+          rectColor={rectBgColor}
+          rectOpacity={isTextBoxEnabled ? rectOpacity : 0}
+          overlayColor={overlayColor}
+          overlayOpacity={overlayOpacity}
+          textAlign={textAlign}
+          isBold={isBold}
+          isUppercase={isUppercase}
+          textShadow={textShadow}
+          shadowColor={shadowColor}
+          shadowBlur={shadowBlur}
+          shadowOffsetX={shadowOffsetX}
+          shadowOffsetY={shadowOffsetY}
+          textStroke={textStroke}
+          strokeColor={strokeColor}
+          strokeWidth={strokeWidth}
+        />
+    )
+  }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled]);
+
+  const tabContentProps = {
+    activeTab: activeSettingsTab,
+    // Background props
+    backgroundTab,
+    setBackgroundTab: setBackgroundTab as (value: string) => void,
+    handleFeelLucky,
+    bgColor,
+    handleBgColorSelect,
+    imageBgUrl,
+    handleImageBgUrlSelect,
+    searchQuery,
+    setSearchQuery,
+    handleSearchImages,
+    isSearching,
+    searchedImages,
+    handleKeywordSearch,
+    searchPage,
+    overlayColor,
+    setOverlayColor,
+    overlayOpacity,
+    setOverlayOpacity,
+    gradientBg,
+    handleGradientBgSelect,
+    setSearchCarouselApi,
+    // Text props
+    textColor, setTextColor, textOpacity, setTextOpacity,
+    activeFont, handleFontChange, fontOptions,
+    isBold, setIsBold, isUppercase, setIsUppercase, textAlign, setTextAlign,
+    textShadow, setTextShadow, shadowColor, setShadowColor, shadowBlur, setShadowBlur,
+    shadowOffsetX, setShadowOffsetX, shadowOffsetY, setShadowOffsetY,
+    textStroke, setTextStroke, strokeColor, setStrokeColor, strokeWidth, setStrokeWidth,
+    isTextBoxEnabled, setIsTextBoxEnabled: handleTextBoxEnable,
+    rectBgColor, setRectBgColor, rectOpacity, setRectOpacity,
+    // Design/Download props
+    designs,
+    handleDownloadAll,
+    currentSlide,
+    handleDownload,
+    fileName,
+    setFileName,
+    handleApplyTemplate,
+    myDesigns,
+    handleSaveDesign,
+    handleDeleteDesign,
+    handleUpdateDesign,
+    editingDesignId,
+    handleEditClick,
+    handleCancelEdit,
+    editingName,
+    setEditingName,
+    designToDelete,
+    setDesignToDelete,
+    handleLogDesign,
+    closePanel,
+  };
+  
+  const settingsPanel = (
+    <CardFooter className="flex-col items-start p-0 bg-transparent md:rounded-lg">
+      <TooltipProvider>
+        <Tabs
+          value={activeSettingsTab ?? ''}
+          onValueChange={setActiveSettingsTab}
+          className="w-full flex flex-col-reverse md:flex-col"
+        >
+          <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <TabsTrigger
+                  value="designs"
+                  onClick={() => {
+                    setActiveSettingsTab("designs");
+                    setIsMobilePanelOpen(true)
+                  }}
+                >
+                  <LayoutTemplate />
+                </TabsTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Design Templates</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <TabsTrigger
+                  value="my-designs"
+                   onClick={() => {
+                    setActiveSettingsTab("my-designs");
+                    setIsMobilePanelOpen(true)
+                  }}
+                >
+                  <Star />
+                </TabsTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>My Designs</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <TabsTrigger
+                  value="background"
+                   onClick={() => {
+                    setActiveSettingsTab("background");
+                    setIsMobilePanelOpen(true)
+                  }}
+                >
+                  <ImageIcon />
+                </TabsTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Background Settings</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <TabsTrigger
+                  value="text"
+                   onClick={() => {
+                    setActiveSettingsTab("text");
+                    setIsMobilePanelOpen(true)
+                  }}
+                >
+                  <Type />
+                </TabsTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Text Settings</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <TabsTrigger
+                  value="download"
+                   onClick={() => {
+                    setActiveSettingsTab("download");
+                    setIsMobilePanelOpen(true)
+                  }}
+                >
+                  <Download />
+                </TabsTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Download Options</p>
+              </TooltipContent>
+            </Tooltip>
+          </TabsList>
+          <div className="flex-grow w-full">
+            <div className="md:hidden">
+              {isMobilePanelOpen && <TabContentContainer {...tabContentProps} />}
+            </div>
+            <div className="hidden md:block">
+                <TabContentContainer {...tabContentProps} />
+            </div>
+          </div>
+        </Tabs>
+      </TooltipProvider>
+    </CardFooter>
+  );
+
+
+  return (
+    <>
+      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center">
+        <Logo className="text-[2rem]" />
+      </header>
+
+      <main className="container mx-auto p-4 md:p-8 pt-0">
+        <div className="flex flex-col items-center justify-center h-[90vh]">
+          <div className="space-y-6 max-w-[800px] mx-auto w-full">
+            <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
+            <div className="space-y-4">
+                <Label htmlFor={mainTextAreaId} className="sr-only">Main text area</Label>
+                <Textarea
+                id={mainTextAreaId}
+                name="main-text-area"
+                placeholder="Paste your text here..."
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                rows={8}
+                className="bg-[hsl(60,75%,97%)] text-[#2b323f] placeholder:text-gray-400 border-0"
+                />
+                <div className="flex items-center justify-end gap-4">
+                   <p className="text-xs text-[#fdfdf2]">{text.length} characters</p>
+                   <Button
+                      onClick={handleGenerate}
+                      disabled={isLoading}
+                      size="icon"
+                      className="rounded-full bg-primary hover:bg-[#2b323f]"
+                    >
+                      {isLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <ArrowUp className="h-4 w-4" />
+                      )}
+                    </Button>
+                </div>
+            </div>
+          </div>
+        </div>
+        
+        {isGeneratingAnimation && (
+            <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
+              background: 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)'
+            }}>
+                <div className="w-64 h-64">
+                    <Lottie animationData={webflowAnimation} loop={true} />
+                </div>
+            </div>
+        )}
+
+        { isClient && designs.length > 0 && (
+          <div id="designs-container" ref={designsRef} className="w-full pt-8 flex flex-col items-center">
+              <div className="w-full mx-auto flex flex-col items-center">
+                  <div className="w-full max-w-md max-h-[70vh]">
+                    <Carousel className="w-full" setApi={setCarouselApi} opts={{ dragFree: true }}>
+                      <CarouselContent>
+                        {designs.map((design, index) => (
+                          <CarouselItem key={index} data-index={index}>
+                            <div className="p-1 group relative">
+                              <Card className="overflow-hidden border-0">
+                                <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
+                                  {renderCanvas(design, index)}
+                                </CardContent>
+                              </Card>
+                                <AlertDialog>
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <AlertDialogTrigger asChild>
+                                          <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/30 text-white hover:bg-black/50 hover:text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                                          >
+                                            <Star className="h-5 w-5" />
+                                          </Button>
+                                        </AlertDialogTrigger>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Save to My Designs</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Save to My Designs?</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        This will save the current background, font, and color settings as a new template.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction onClick={handleSaveDesign}>Save</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                  </TooltipProvider>
+                                </AlertDialog>
+                            </div>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="-left-4 md:-left-12" />
+                      <CarouselNext className="-right-4 md:-right-12" />
+                    </Carousel>
+                  </div>
+                  {/* Desktop Settings Panel */}
+                  <div className="w-full mt-6 hidden md:block md:max-w-4xl">
+                    {settingsPanel}
+                  </div>
+              </div>
+            </div>
+        )}
+      </main>
+
+       {/* Mobile-only Fixed Bottom Settings Panel */}
+       {isClient && designs.length > 0 && (
+          <div id="mobile-settings-panel" ref={mobilePanelRef} className="md:hidden">
+              {settingsPanel}
+          </div>
+        )}
+    </>
+  );
+}
+
+    
