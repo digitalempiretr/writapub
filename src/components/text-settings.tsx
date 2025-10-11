@@ -215,7 +215,7 @@ export function TextSettings({
                   </PopoverContent>
                 </Popover>
 
-                <Separator orientation="vertical" className="h-10 flex-shrink-0 hidden md:block" />
+                <Separator orientation="vertical" className="h-10 flex-shrink-0" />
 
                 <Tooltip>
                     <TooltipTrigger asChild>
@@ -306,7 +306,7 @@ export function TextSettings({
                   </PopoverContent>
                 </Popover>
                 
-                <Separator orientation="vertical" className="h-10 flex-shrink-0 hidden md:block" />
+                <Separator orientation="vertical" className="h-10 flex-shrink-0" />
             
                 <Popover>
                     <Tooltip>
@@ -370,10 +370,10 @@ export function TextSettings({
               <CarouselContent>
                 {defaultSolidColors.map(color => (
                   <CarouselItem key={color} className="basis-1/7">
-                    <Card className="overflow-hidden cursor-pointer" onClick={() => setTextColor(color)}>
+                    <Card className="overflow-hidden cursor-pointer bg-transparent border-0 shadow-none" onClick={() => setTextColor(color)}>
                       <CardContent className="h-20 flex items-center justify-center p-0">
                          <span
-                            className="font-['Libertinus_Keyboard'] text-4xl font-bold uppercase"
+                            className="font-['Playfair_Display'] text-5xl font-bold"
                             style={{ color: color }}
                           >
                             W
