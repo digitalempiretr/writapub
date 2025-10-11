@@ -108,11 +108,11 @@ export function TextSettings({
           <div className="space-y-4">
              <div className="overflow-x-auto pb-2 -mb-2">
                 <div className="flex items-center gap-2 flex-nowrap">
-                <div className="flex-shrink-0">
+                <div className="flex-shrink-0 min-w-[150px]">
                   <Select value={activeFont.value} onValueChange={handleFontChange}>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <SelectTrigger className="w-[180px]" id={`${baseId}-font-select`} aria-label="Select Font">
+                        <SelectTrigger className="w-full h-10" id={`${baseId}-font-select`} aria-label="Select Font">
                           <SelectValue placeholder="Select Font" />
                         </SelectTrigger>
                       </TooltipTrigger>
@@ -154,7 +154,7 @@ export function TextSettings({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="icon" className="flex-shrink-0">
+                        <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
                           {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
                           {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
                           {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
@@ -185,7 +185,7 @@ export function TextSettings({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" size="icon" className="flex-shrink-0">
+                        <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
                           <TextBoxOpacity />
                         </Button>
                       </PopoverTrigger>
@@ -215,11 +215,11 @@ export function TextSettings({
                   </PopoverContent>
                 </Popover>
 
-                <Separator orientation="vertical" className="h-10 flex-shrink-0" />
+                <Separator orientation="vertical" className="h-10 flex-shrink-0 hidden md:block" />
 
                 <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="icon" data-active={isBold} onClick={() => setIsBold(!isBold)} className="data-[active=true]:bg-primary/20 flex-shrink-0">
+                      <Button variant="outline" size="icon" data-active={isBold} onClick={() => setIsBold(!isBold)} className="data-[active=true]:bg-primary/20 flex-shrink-0 h-10 w-10">
                         <Bold className="h-4 w-4" />
                       </Button>
                     </TooltipTrigger>
@@ -227,7 +227,7 @@ export function TextSettings({
                 </Tooltip>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="icon" data-active={isUppercase} onClick={() => setIsUppercase(!isUppercase)} className="data-[active=true]:bg-primary/20 flex-shrink-0">
+                      <Button variant="outline" size="icon" data-active={isUppercase} onClick={() => setIsUppercase(!isUppercase)} className="data-[active=true]:bg-primary/20 flex-shrink-0 h-10 w-10">
                         <CaseUpper className="h-4 w-4" />
                       </Button>
                     </TooltipTrigger>
@@ -237,7 +237,7 @@ export function TextSettings({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" size="icon" className="flex-shrink-0">
+                        <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
                           <Sparkles className="h-4 w-4" />
                         </Button>
                       </PopoverTrigger>
@@ -277,7 +277,7 @@ export function TextSettings({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" size="icon" className="flex-shrink-0">
+                        <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
                           <TextStrokeIcon />
                         </Button>
                       </PopoverTrigger>
@@ -306,13 +306,13 @@ export function TextSettings({
                   </PopoverContent>
                 </Popover>
                 
-                <Separator orientation="vertical" className="h-10 flex-shrink-0" />
+                <Separator orientation="vertical" className="h-10 flex-shrink-0 hidden md:block" />
             
                 <Popover>
                     <Tooltip>
                     <TooltipTrigger asChild>
                         <PopoverTrigger asChild>
-                        <Button variant="outline" size="icon" className="flex-shrink-0">
+                        <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
                             <TextBgBoxIcon color={isTextBoxEnabled ? rectBgColor : '#999'} />
                         </Button>
                         </PopoverTrigger>
@@ -371,7 +371,14 @@ export function TextSettings({
                 {defaultSolidColors.map(color => (
                   <CarouselItem key={color} className="basis-1/7">
                     <Card className="overflow-hidden cursor-pointer" onClick={() => setTextColor(color)}>
-                      <CardContent className="h-20" style={{ backgroundColor: color }} />
+                      <CardContent className="h-20 flex items-center justify-center p-0">
+                         <span
+                            className="font-['Libertinus_Keyboard'] text-4xl font-bold uppercase"
+                            style={{ color: color }}
+                          >
+                            W
+                          </span>
+                      </CardContent>
                     </Card>
                   </CarouselItem>
                 ))}
