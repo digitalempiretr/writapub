@@ -106,31 +106,33 @@ export function TextSettings({
         <Label className="bg-zinc-200 p-2 px-6 rounded-md">TEXT SETTINGS</Label>
         <div className="grid grid-cols-1 gap-4">
           <div className="space-y-4">
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2 flex-grow">
-                <Select value={activeFont.value} onValueChange={handleFontChange}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <SelectTrigger className="w-[180px]" id={`${baseId}-font-select`} aria-label="Select Font">
-                        <SelectValue placeholder="Select Font" />
-                      </SelectTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Select Font</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  <SelectContent>
-                    {fontOptions.map((font) => (
-                      <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
-                        {font.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+             <div className="overflow-x-auto pb-2 -mb-2">
+                <div className="flex items-center gap-2 flex-nowrap">
+                <div className="flex-shrink-0">
+                  <Select value={activeFont.value} onValueChange={handleFontChange}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <SelectTrigger className="w-[180px]" id={`${baseId}-font-select`} aria-label="Select Font">
+                          <SelectValue placeholder="Select Font" />
+                        </SelectTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Select Font</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    <SelectContent>
+                      {fontOptions.map((font) => (
+                        <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
+                          {font.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="relative h-10 w-10">
+                    <div className="relative h-10 w-10 flex-shrink-0">
                       <Label htmlFor={`${baseId}-text-color-picker`} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
                         <TextColorChooseIcon color={textColor} />
                       </Label>
@@ -152,7 +154,7 @@ export function TextSettings({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="icon">
+                        <Button variant="outline" size="icon" className="flex-shrink-0">
                           {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
                           {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
                           {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
@@ -183,7 +185,7 @@ export function TextSettings({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" size="icon">
+                        <Button variant="outline" size="icon" className="flex-shrink-0">
                           <TextBoxOpacity />
                         </Button>
                       </PopoverTrigger>
@@ -212,14 +214,12 @@ export function TextSettings({
                     </div>
                   </PopoverContent>
                 </Popover>
-              </div>
 
-              <Separator orientation="vertical" className="h-10" />
+                <Separator orientation="vertical" className="h-10 flex-shrink-0" />
 
-              <div className="flex items-center gap-2">
                 <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="icon" data-active={isBold} onClick={() => setIsBold(!isBold)} className="data-[active=true]:bg-primary/20">
+                      <Button variant="outline" size="icon" data-active={isBold} onClick={() => setIsBold(!isBold)} className="data-[active=true]:bg-primary/20 flex-shrink-0">
                         <Bold className="h-4 w-4" />
                       </Button>
                     </TooltipTrigger>
@@ -227,7 +227,7 @@ export function TextSettings({
                 </Tooltip>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="icon" data-active={isUppercase} onClick={() => setIsUppercase(!isUppercase)} className="data-[active=true]:bg-primary/20">
+                      <Button variant="outline" size="icon" data-active={isUppercase} onClick={() => setIsUppercase(!isUppercase)} className="data-[active=true]:bg-primary/20 flex-shrink-0">
                         <CaseUpper className="h-4 w-4" />
                       </Button>
                     </TooltipTrigger>
@@ -237,7 +237,7 @@ export function TextSettings({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" size="icon">
+                        <Button variant="outline" size="icon" className="flex-shrink-0">
                           <Sparkles className="h-4 w-4" />
                         </Button>
                       </PopoverTrigger>
@@ -277,7 +277,7 @@ export function TextSettings({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" size="icon">
+                        <Button variant="outline" size="icon" className="flex-shrink-0">
                           <TextStrokeIcon />
                         </Button>
                       </PopoverTrigger>
@@ -305,64 +305,65 @@ export function TextSettings({
                     )}
                   </PopoverContent>
                 </Popover>
-              </div>
-
-              <Separator orientation="vertical" className="h-10" />
+                
+                <Separator orientation="vertical" className="h-10 flex-shrink-0" />
             
-             <Popover>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" size="icon">
-                        <TextBgBoxIcon color={isTextBoxEnabled ? rectBgColor : '#999'} />
-                      </Button>
-                    </PopoverTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Text Box Settings</p>
-                  </TooltipContent>
-                </Tooltip>
-                <PopoverContent className="w-64 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor={`${baseId}-textbox-toggle`}>Text Box Background</Label>
-                    <Switch
-                      id={`${baseId}-textbox-toggle`}
-                      checked={isTextBoxEnabled}
-                      onCheckedChange={setIsTextBoxEnabled}
-                    />
-                  </div>
-                  {isTextBoxEnabled && (
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-2">
-                        <Label>Color</Label>
-                        <Input
-                          type="color"
-                          value={rectBgColor}
-                          onChange={(e) => setRectBgColor(e.target.value)}
-                          className="h-8 p-1"
+                <Popover>
+                    <Tooltip>
+                    <TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                        <Button variant="outline" size="icon" className="flex-shrink-0">
+                            <TextBgBoxIcon color={isTextBoxEnabled ? rectBgColor : '#999'} />
+                        </Button>
+                        </PopoverTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Text Box Settings</p>
+                    </TooltipContent>
+                    </Tooltip>
+                    <PopoverContent className="w-64 space-y-4">
+                    <div className="flex items-center justify-between">
+                        <Label htmlFor={`${baseId}-textbox-toggle`}>Text Box Background</Label>
+                        <Switch
+                        id={`${baseId}-textbox-toggle`}
+                        checked={isTextBoxEnabled}
+                        onCheckedChange={setIsTextBoxEnabled}
                         />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor={`${baseId}-rect-opacity-slider`}>Opacity</Label>
-                        <div className="flex items-center gap-2">
-                          <Slider
-                            id={`${baseId}-rect-opacity-slider`}
-                            max={1}
-                            min={0}
-                            step={0.01}
-                            value={[rectOpacity]}
-                            onValueChange={(value) => setRectOpacity(value[0])}
-                          />
-                           <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
-                            {Math.round(rectOpacity * 100)}
-                          </div>
-                        </div>
-                      </div>
                     </div>
-                  )}
-                </PopoverContent>
-              </Popover>
-          </div>
+                    {isTextBoxEnabled && (
+                        <div className="space-y-4">
+                        <div className="flex items-center gap-2">
+                            <Label>Color</Label>
+                            <Input
+                            type="color"
+                            value={rectBgColor}
+                            onChange={(e) => setRectBgColor(e.target.value)}
+                            className="h-8 p-1"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor={`${baseId}-rect-opacity-slider`}>Opacity</Label>
+                            <div className="flex items-center gap-2">
+                            <Slider
+                                id={`${baseId}-rect-opacity-slider`}
+                                max={1}
+                                min={0}
+                                step={0.01}
+                                value={[rectOpacity]}
+                                onValueChange={(value) => setRectOpacity(value[0])}
+                            />
+                            <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
+                                {Math.round(rectOpacity * 100)}
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    )}
+                    </PopoverContent>
+                </Popover>
+
+              </div>
+            </div>
 
           <div className="pt-2">
             <Carousel className="w-full" opts={{ dragFree: true }}>
