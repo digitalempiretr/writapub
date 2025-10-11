@@ -106,75 +106,132 @@ export function TextSettings({
         <Label className="bg-zinc-200 p-2 px-6 rounded-md">TEXT SETTINGS</Label>
         <div className="grid grid-cols-1 gap-4">
           <div className="space-y-4">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 flex-grow">
+                <Select value={activeFont.value} onValueChange={handleFontChange}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <SelectTrigger className="w-[180px]" id={`${baseId}-font-select`} aria-label="Select Font">
+                        <SelectValue placeholder="Select Font" />
+                      </SelectTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Select Font</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <SelectContent>
+                    {fontOptions.map((font) => (
+                      <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
+                        {font.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-            <div className="flex items-center gap-2">
-               <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="relative h-10 w-10">
-                    <Label htmlFor={`${baseId}-text-color-picker`} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
-                      <TextColorChooseIcon color={textColor} />
-                    </Label>
-                    <Input
-                      id={`${baseId}-text-color-picker`}
-                      type="color"
-                      value={textColor}
-                      onChange={(e) => setTextColor(e.target.value)}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Select Text Color</p>
-                </TooltipContent>
-              </Tooltip>
-              <Popover>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" size="icon">
-                        <TextBoxOpacity />
-                      </Button>
-                    </PopoverTrigger>
+                    <div className="relative h-10 w-10">
+                      <Label htmlFor={`${baseId}-text-color-picker`} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
+                        <TextColorChooseIcon color={textColor} />
+                      </Label>
+                      <Input
+                        id={`${baseId}-text-color-picker`}
+                        type="color"
+                        value={textColor}
+                        onChange={(e) => setTextColor(e.target.value)}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                    </div>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Text Opacity</p>
+                    <p>Select Text Color</p>
                   </TooltipContent>
                 </Tooltip>
-                <PopoverContent className="w-56 space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor={`${baseId}-text-opacity-slider`}>Text Opacity</Label>
-                    <div className="flex items-center gap-2">
-                      <Slider
-                        id={`${baseId}-text-opacity-slider`}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        value={[textOpacity]}
-                        onValueChange={(value) => setTextOpacity(value[0])}
-                        className="flex-grow"
-                      />
-                      <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
-                        {Math.round(textOpacity * 100)}
+
+                <DropdownMenu>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="icon">
+                          {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
+                          {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
+                          {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
+                        </Button>
+                      </DropdownMenuTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Text Alignment</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={() => setTextAlign('left')}>
+                      <AlignLeft className="mr-2 h-4 w-4" />
+                      <span>Align Left</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTextAlign('center')}>
+                      <AlignCenter className="mr-2 h-4 w-4" />
+                      <span>Center</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTextAlign('right')}>
+                      <AlignRight className="mr-2 h-4 w-4" />
+                      <span>Align Right</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <Popover>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" size="icon">
+                          <TextBoxOpacity />
+                        </Button>
+                      </PopoverTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Text Opacity</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <PopoverContent className="w-56 space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor={`${baseId}-text-opacity-slider`}>Text Opacity</Label>
+                      <div className="flex items-center gap-2">
+                        <Slider
+                          id={`${baseId}-text-opacity-slider`}
+                          max={1}
+                          min={0}
+                          step={0.01}
+                          value={[textOpacity]}
+                          onValueChange={(value) => setTextOpacity(value[0])}
+                          className="flex-grow"
+                        />
+                        <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
+                          {Math.round(textOpacity * 100)}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
-               <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" data-active={isBold} onClick={() => setIsBold(!isBold)} className="data-[active=true]:bg-primary/20">
-                      <Bold className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent><p>Bold</p></TooltipContent>
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <Separator orientation="vertical" className="h-10" />
+
+              <div className="flex items-center gap-2">
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" size="icon" data-active={isBold} onClick={() => setIsBold(!isBold)} className="data-[active=true]:bg-primary/20">
+                        <Bold className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent><p>Bold</p></TooltipContent>
                 </Tooltip>
                 <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" data-active={isUppercase} onClick={() => setIsUppercase(!isUppercase)} className="data-[active=true]:bg-primary/20">
-                      <CaseUpper className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent><p>Uppercase</p></TooltipContent>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" size="icon" data-active={isUppercase} onClick={() => setIsUppercase(!isUppercase)} className="data-[active=true]:bg-primary/20">
+                        <CaseUpper className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent><p>Uppercase</p></TooltipContent>
                 </Tooltip>
                 <Popover>
                   <Tooltip>
@@ -248,7 +305,11 @@ export function TextSettings({
                     )}
                   </PopoverContent>
                 </Popover>
-                <Popover>
+              </div>
+
+              <Separator orientation="vertical" className="h-10" />
+            
+             <Popover>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <PopoverTrigger asChild>
@@ -301,61 +362,9 @@ export function TextSettings({
                   )}
                 </PopoverContent>
               </Popover>
+          </div>
 
-              <div className="flex-grow">
-                <Select value={activeFont.value} onValueChange={handleFontChange}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <SelectTrigger className="w-full flex-grow" id={`${baseId}-font-select`} aria-label="Select Font">
-                        <SelectValue placeholder="Select Font" />
-                      </SelectTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Select Font</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  <SelectContent>
-                    {fontOptions.map((font) => (
-                      <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
-                        {font.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-                <DropdownMenu>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="icon">
-                          {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
-                          {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
-                          {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
-                        </Button>
-                      </DropdownMenuTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Text Alignment</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => setTextAlign('left')}>
-                      <AlignLeft className="mr-2 h-4 w-4" />
-                      <span>Align Left</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTextAlign('center')}>
-                      <AlignCenter className="mr-2 h-4 w-4" />
-                      <span>Center</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTextAlign('right')}>
-                      <AlignRight className="mr-2 h-4 w-4" />
-                      <span>Align Right</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-            </div>
-
+          <div className="pt-2">
             <Carousel className="w-full" opts={{ dragFree: true }}>
               <CarouselContent>
                 {defaultSolidColors.map(color => (
@@ -369,6 +378,7 @@ export function TextSettings({
               <CarouselPrevious className="-left-4" />
               <CarouselNext className="-right-4" />
             </Carousel>
+          </div>
           </div>
         </div>
       </div>
