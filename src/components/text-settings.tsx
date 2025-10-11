@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useId } from "react";
@@ -9,11 +10,11 @@ import {
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
-import { TextColorChooseIcon, TextBgBoxIcon, TextBoxOpacity, TextStrokeIcon } from "@/components/ui/icons";
+import { TextColorChooseIcon, TextBgBoxIcon, TextBoxOpacity, TextStrokeIcon, RefreshIcon } from "@/components/ui/icons";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FontOption } from "@/components/image-canvas";
 import { Button } from "@/components/ui/button";
-import { Bold, CaseUpper, Sparkles, AlignLeft, AlignCenter, AlignRight } from "lucide-react";
+import { Bold, CaseUpper, Sparkles, AlignLeft, AlignCenter, AlignRight, Loader2 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
@@ -26,6 +27,8 @@ import { Textarea } from "@/components/ui/textarea";
 type TextSettingsProps = {
   text: string;
   setText: (text: string) => void;
+  handleGenerate: () => void;
+  isLoading: boolean;
   textColor: string;
   setTextColor: (color: string) => void;
   textOpacity: number;
@@ -66,6 +69,8 @@ type TextSettingsProps = {
 export function TextSettings({
   text,
   setText,
+  handleGenerate,
+  isLoading,
   textColor,
   setTextColor,
   textOpacity,
@@ -107,15 +112,31 @@ export function TextSettings({
   return (
     <TooltipProvider>
       <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
-        <Textarea
-            id={`${baseId}-text-editor`}
-            name="text-editor"
-            placeholder="Paste your text here..."
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            rows={4}
-            className="bg-background text-foreground placeholder:text-muted-foreground border"
-        />
+        <div className="relative">
+          <Label htmlFor={`${baseId}-text-editor`} className="sr-only">Text Editor</Label>
+          <Textarea
+              id={`${baseId}-text-editor`}
+              name="text-editor"
+              placeholder="Paste your text here..."
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              rows={4}
+              className="bg-background text-foreground placeholder:text-muted-foreground border pr-12"
+          />
+          <Button
+            onClick={handleGenerate}
+            disabled={isLoading}
+            size="icon"
+            className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-primary hover:bg-primary/80"
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshIcon />
+            )}
+            <span className="sr-only">Regenerate</span>
+          </Button>
+        </div>
 
         <div className="grid grid-cols-1 gap-4">
           <div className="space-y-4">
