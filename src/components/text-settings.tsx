@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useId } from "react";
+import React, { useId, useState, useEffect } from "react";
 import {
   Popover,
   PopoverContent,
@@ -108,6 +108,18 @@ export function TextSettings({
   setIsTextBoxEnabled,
 }: TextSettingsProps) {
   const baseId = useId();
+  const [internalText, setInternalText] = useState(text);
+
+  useEffect(() => {
+    setInternalText(text);
+  }, [text]);
+
+  const handleRegenerateClick = () => {
+    setText(internalText);
+    setTimeout(() => {
+      handleGenerate();
+    }, 0);
+  }
 
   return (
     <TooltipProvider>
@@ -118,24 +130,27 @@ export function TextSettings({
               id={`${baseId}-text-editor`}
               name="text-editor"
               placeholder="Paste your text here..."
-              value={text}
-              onChange={(e) => setText(e.target.value)}
+              value={internalText}
+              onChange={(e) => setInternalText(e.target.value)}
+              onBlur={() => setText(internalText)}
               rows={4}
               className="bg-background text-foreground placeholder:text-muted-foreground border pr-12"
           />
-          <Button
-            onClick={handleGenerate}
-            disabled={isLoading}
-            size="icon"
-            className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-primary hover:bg-primary/80"
-          >
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <RefreshIcon />
-            )}
-            <span className="sr-only">Regenerate</span>
-          </Button>
+           <div className="absolute bottom-1 right-1">
+            <Button
+              onClick={handleRegenerateClick}
+              disabled={isLoading}
+              size="icon"
+              className="h-10 w-10 rounded-full bg-primary hover:bg-primary/80"
+            >
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <RefreshIcon />
+              )}
+              <span className="sr-only">Regenerate</span>
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-4">

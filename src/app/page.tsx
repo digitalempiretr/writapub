@@ -613,7 +613,7 @@ textBox: {
 
   const tabContentProps = {
     activeTab: activeSettingsTab,
-    text, setText,
+    text, setText, handleGenerate, isLoading,
     // Background props
     backgroundTab,
     setBackgroundTab: setBackgroundTab as (value: string) => void,
