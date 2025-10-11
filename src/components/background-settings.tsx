@@ -172,44 +172,44 @@ export function BackgroundSettings({
               </CarouselContent>
             </Carousel>
             <div className="flex items-center space-x-2">
-              <Label htmlFor={`${baseId}-search-input`} className="sr-only">Search for images</Label>
-              <Input
-                id={`${baseId}-search-input`}
-                name="search-input"
-                type="text"
-                placeholder="Search for images..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
-                className="flex-grow"
-              />
-              <TooltipProvider>
+                <Label htmlFor={`${baseId}-search-input`} className="sr-only">Search for images</Label>
+                <Input
+                  id={`${baseId}-search-input`}
+                  name="search-input"
+                  type="text"
+                  placeholder="Search for images..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
+                  className="flex-grow"
+                />
+                <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger asChild>
+                    <TooltipTrigger asChild>
                     <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10 flex-shrink-0">
-                      {isSearching && searchPage === 1 ? (
+                        {isSearching && searchPage === 1 ? (
                         <Loader2 className="h-6 w-6 animate-spin" />
-                      ) : (
+                        ) : (
                         <Search className="h-6 w-6" />
-                      )}
+                        )}
                     </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
+                    </TooltipTrigger>
+                    <TooltipContent>
                     <p>Search Images</p>
-                  </TooltipContent>
+                    </TooltipContent>
                 </Tooltip>
                 <Tooltip>
-                  <TooltipTrigger asChild>
+                    <TooltipTrigger asChild>
                     <Button onClick={handleFeelLucky} variant="outline" className="h-10">
-                      <FeelLucky />
-                      <span>Feel Lucky</span>
+                        <FeelLucky />
+                        <span>Feel Lucky</span>
                     </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
+                    </TooltipTrigger>
+                    <TooltipContent>
                     <p>Feel Lucky</p>
-                  </TooltipContent>
+                    </TooltipContent>
                 </Tooltip>
-              </TooltipProvider>
+                </TooltipProvider>
             </div>
           </div>
 
