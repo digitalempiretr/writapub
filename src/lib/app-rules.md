@@ -14,6 +14,18 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.26
+
+#### ENGLISH
+### 1. UI/UX Improvements
+-   **Responsive Text Settings Panel:** The "Text Settings" control panel is now horizontally scrollable on mobile views (screens narrower than 768px). This prevents UI elements from wrapping or shrinking, ensuring all controls are accessible and maintain their original size in a single, swipeable row.
+
+#### TURKCE
+### 1. Arayüz ve Kullanıcı Deneyimi İyileştirmeleri
+-   **Duyarlı Metin Ayarları Paneli:** "Metin Ayarları" kontrol paneli, artık mobil görünümlerde (768 pikselden dar ekranlarda) yatay olarak kaydırılabilir hale getirildi. Bu, arayüz elemanlarının alt satıra kaymasını veya küçülmesini engelleyerek tüm kontrollerin orijinal boyutlarını koruyarak tek bir kaydırılabilir satırda erişilebilir olmasını sağlar.
+
+---
+
 ## Version V1.25
 
 #### ENGLISH
@@ -363,7 +375,7 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 #### TURKCE
 ### 1. Arayüz ve Yerleşim Güncellemeleri
--   **Dikey Boyutlandırma:** Başlık (header) yüksekliği `10vh` ve ana içerik alanı `90vh` olarak sabitlenerek tam ekran dikey bir yerleşim oluşturuldu.
+-   **Dikey Boyutlandırma:** Başlık (header) yüksekliği `10vh` ve ana içerik alanı ise `90vh` olarak sabitlenerek tam ekran dikey bir yerleşim oluşturuldu.
 
 ---
 
