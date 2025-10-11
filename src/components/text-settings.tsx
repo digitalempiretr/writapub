@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useId } from "react";
@@ -104,9 +105,10 @@ export function TextSettings({
       <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
         <Label className="bg-zinc-200 p-2 px-6 rounded-md">TEXT SETTINGS</Label>
         <div className="grid grid-cols-1 gap-4">
-          <div className="space-y-2">
+          <div className="space-y-4">
+
             <div className="flex items-center gap-2">
-              <Tooltip>
+               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="relative h-10 w-10">
                     <Label htmlFor={`${baseId}-text-color-picker`} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
@@ -158,48 +160,7 @@ export function TextSettings({
                   </div>
                 </PopoverContent>
               </Popover>
-              <div className="flex-grow">
-                <Select value={activeFont.value} onValueChange={handleFontChange}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <SelectTrigger className="w-full flex-grow" id={`${baseId}-font-select`} aria-label="Select Font">
-                        <SelectValue placeholder="Select Font" />
-                      </SelectTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Select Font</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  <SelectContent>
-                    {fontOptions.map((font) => (
-                      <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
-                        {font.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-          <div className="pt-4">
-            <Carousel className="w-full" opts={{ dragFree: true }}>
-              <CarouselContent>
-                {defaultSolidColors.map(color => (
-                  <CarouselItem key={color} className="basis-1/7">
-                    <Card className="overflow-hidden cursor-pointer" onClick={() => setTextColor(color)}>
-                      <CardContent className="h-20" style={{ backgroundColor: color }} />
-                    </Card>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="-left-4" />
-              <CarouselNext className="-right-4" />
-            </Carousel>
-          </div>
-
-          <div className="flex items-end justify-start gap-4">
-              <div className="flex items-center gap-2">
-                <Tooltip>
+               <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="outline" size="icon" data-active={isBold} onClick={() => setIsBold(!isBold)} className="data-[active=true]:bg-primary/20">
                       <Bold className="h-4 w-4" />
@@ -287,41 +248,7 @@ export function TextSettings({
                     )}
                   </PopoverContent>
                 </Popover>
-                <DropdownMenu>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="icon">
-                          {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
-                          {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
-                          {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
-                        </Button>
-                      </DropdownMenuTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Text Alignment</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => setTextAlign('left')}>
-                      <AlignLeft className="mr-2 h-4 w-4" />
-                      <span>Align Left</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTextAlign('center')}>
-                      <AlignCenter className="mr-2 h-4 w-4" />
-                      <span>Center</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTextAlign('right')}>
-                      <AlignRight className="mr-2 h-4 w-4" />
-                      <span>Align Right</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-
-            <Separator orientation="vertical" className="h-10" />
-            
-             <Popover>
+                <Popover>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <PopoverTrigger asChild>
@@ -374,6 +301,74 @@ export function TextSettings({
                   )}
                 </PopoverContent>
               </Popover>
+
+              <div className="flex-grow">
+                <Select value={activeFont.value} onValueChange={handleFontChange}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <SelectTrigger className="w-full flex-grow" id={`${baseId}-font-select`} aria-label="Select Font">
+                        <SelectValue placeholder="Select Font" />
+                      </SelectTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Select Font</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <SelectContent>
+                    {fontOptions.map((font) => (
+                      <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.fontFamily }}>
+                        {font.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+                <DropdownMenu>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="icon">
+                          {textAlign === 'left' && <AlignLeft className="h-4 w-4" />}
+                          {textAlign === 'center' && <AlignCenter className="h-4 w-4" />}
+                          {textAlign === 'right' && <AlignRight className="h-4 w-4" />}
+                        </Button>
+                      </DropdownMenuTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Text Alignment</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={() => setTextAlign('left')}>
+                      <AlignLeft className="mr-2 h-4 w-4" />
+                      <span>Align Left</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTextAlign('center')}>
+                      <AlignCenter className="mr-2 h-4 w-4" />
+                      <span>Center</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTextAlign('right')}>
+                      <AlignRight className="mr-2 h-4 w-4" />
+                      <span>Align Right</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+            </div>
+
+            <Carousel className="w-full" opts={{ dragFree: true }}>
+              <CarouselContent>
+                {defaultSolidColors.map(color => (
+                  <CarouselItem key={color} className="basis-1/7">
+                    <Card className="overflow-hidden cursor-pointer" onClick={() => setTextColor(color)}>
+                      <CardContent className="h-20" style={{ backgroundColor: color }} />
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="-left-4" />
+              <CarouselNext className="-right-4" />
+            </Carousel>
           </div>
         </div>
       </div>
