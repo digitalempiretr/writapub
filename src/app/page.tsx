@@ -33,8 +33,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Loader2, Star, Type, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState, useId } from "react";
+import { Download, ImageIcon, LayoutTemplate, Star, Type, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
 import { imageTemplates } from "@/lib/image-templates";
@@ -613,6 +613,7 @@ textBox: {
 
   const tabContentProps = {
     activeTab: activeSettingsTab,
+    text, setText,
     // Background props
     backgroundTab,
     setBackgroundTab: setBackgroundTab as (value: string) => void,
@@ -778,14 +779,16 @@ textBox: {
       </header>
 
       <main className="container mx-auto p-4 md:p-8 pt-0">
-        <div className="flex flex-col items-center justify-center h-[90vh]">
-          <CreativeMagicPanel 
-            text={text}
-            setText={setText}
-            handleGenerate={handleGenerate}
-            isLoading={isLoading}
-          />
-        </div>
+        {designs.length === 0 && (
+            <div className="flex flex-col items-center justify-center h-[90vh]">
+                <CreativeMagicPanel 
+                    text={text}
+                    setText={setText}
+                    handleGenerate={handleGenerate}
+                    isLoading={isLoading}
+                />
+            </div>
+        )}
         
         {isGeneratingAnimation && (
             <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{

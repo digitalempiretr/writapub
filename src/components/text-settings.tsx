@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useId } from "react";
@@ -22,8 +21,11 @@ import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext
 import { Card, CardContent } from "@/components/ui/card";
 import { defaultSolidColors } from "@/lib/colors";
 import { Separator } from "./ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 
 type TextSettingsProps = {
+  text: string;
+  setText: (text: string) => void;
   textColor: string;
   setTextColor: (color: string) => void;
   textOpacity: number;
@@ -62,6 +64,8 @@ type TextSettingsProps = {
 };
 
 export function TextSettings({
+  text,
+  setText,
   textColor,
   setTextColor,
   textOpacity,
@@ -103,7 +107,16 @@ export function TextSettings({
   return (
     <TooltipProvider>
       <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4">
-        <Label className="bg-zinc-200 p-2 px-6 rounded-md">TEXT SETTINGS</Label>
+        <Textarea
+            id={`${baseId}-text-editor`}
+            name="text-editor"
+            placeholder="Paste your text here..."
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            rows={4}
+            className="bg-background text-foreground placeholder:text-muted-foreground border"
+        />
+
         <div className="grid grid-cols-1 gap-4">
           <div className="space-y-4">
              <div className="overflow-x-auto pb-2 -mb-2">
