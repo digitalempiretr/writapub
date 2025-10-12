@@ -135,7 +135,7 @@ export function TextSettings({
               rows={4}
               className="bg-background text-foreground placeholder:text-muted-foreground border pr-12"
           />
-           <div className="absolute bottom-1 right-9">
+           <div className="absolute bottom-2 right-5 md:bottom-1 md:right-9">
             <Button
               onClick={handleRegenerateClick}
               disabled={isLoading}
