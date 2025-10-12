@@ -14,6 +14,28 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.27
+
+#### ENGLISH
+### 1. UI/UX & Code Refactoring
+-   **Refactored Text Input:** The main "Creative Magic" text input area has been extracted from `page.tsx` into its own component, `src/components/creative-magic-panel.tsx`.
+-   **Improved Text Editing Workflow:**
+    -   The main text input panel now disappears from the center of the screen after the initial design generation.
+    -   A new, identical text area now appears at the top of the "Text Settings" panel, allowing users to edit their text and see the changes in the preview carousel simultaneously.
+    -   A circular "Regenerate" button with a refresh icon has been added next to this new text area. Clicking it updates the designs with the latest text, providing a much more fluid editing experience without having to scroll back to the top of the page.
+-   **UI Consistency for Overlay:** The "Overlay Settings" in the "Background" panel have been updated to match the "Text Box" settings. It is now controlled by a single popover containing an on/off `Switch` and its associated color and opacity controls.
+-   **New Default Overlay Settings:** The default overlay is now disabled, with a default color of `#008080` (teal) and an opacity of 25% when enabled.
+
+#### TURKCE
+### 1. Arayüz/Kullanıcı Deneyimi ve Kod Yeniden Yapılandırması
+-   **Metin Girişi Yeniden Yapılandırıldı:** Ana "Creative Magic" metin giriş alanı, `page.tsx` dosyasından çıkarılarak kendi bileşeni olan `src/components/creative-magic-panel.tsx` içine taşındı.
+-   **Geliştirilmiş Metin Düzenleme İş Akışı:**
+    -   Ana metin giriş paneli, ilk tasarım oluşturulduktan sonra ekranın ortasından kaybolur.
+    -   Artık "Metin Ayarları" panelinin en üstünde, kullanıcıların metinlerini düzenlerken tasarım önizlemesindeki değişiklikleri aynı anda görmelerini sağlayan yeni ve aynı işleve sahip bir metin alanı belirir.
+    -   Bu yeni metin alanının yanına, yenileme ikonlu dairesel bir "Yeniden Oluştur" butonu eklendi. Bu butona tıklamak, tasarımları en güncel metinle güncelleyerek sayfanın başına dönme ihtiyacını ortadan kaldırır ve çok daha akıcı bir düzenleme deneyimi sunar.
+-   **Kaplama için Arayüz Tutarlılığı:** "Arka Plan" panelindeki "Kaplama Ayarları" (Overlay Settings), "Metin Kutusu" ayarlarıyla eşleşecek şekilde güncellendi. Artık bu özellik, bir açma/kapama anahtarı (`Switch`) ile renk ve opaklık kontrollerini içeren tek bir açılır kutu tarafından yönetilmektedir.
+-   **Yeni Varsayılan Kaplama Ayarları:** Kaplama özelliği artık varsayılan olarak devre dışıdır. Etkinleştirildiğinde varsayılan rengi `#008080` (camgöbeği) ve opaklığı %25 olarak ayarlanmıştır.
+
 ## Version V1.26
 
 #### ENGLISH
