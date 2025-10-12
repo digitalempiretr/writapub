@@ -1,4 +1,5 @@
 
+
 export type TextEffect = {
   name: string;
   id: string;
@@ -9,7 +10,7 @@ export const textEffects: TextEffect[] = [
   {
     name: 'None',
     id: 'none',
-    style: { textShadow: 'none', color: '#000000' },
+    style: { textShadow: 'none' },
   },
   {
     name: 'Neon',
@@ -78,3 +79,21 @@ export const textEffects: TextEffect[] = [
     },
   }
 ];
+
+// Helper function to parse CSS text-shadow string
+export const parseShadow = (shadowString: string) => {
+    const shadows: any[] = [];
+    const shadowRegex = /(rgba?\(.+?\)|#?\w+)\s+(-?\d*\.?\d+)(px)?\s+(-?\d*\.?\d+)(px)?\s+(-?\d*\.?\d+)(px)?/g;
+    let match;
+
+    while ((match = shadowRegex.exec(shadowString)) !== null) {
+        shadows.push({
+            id: Date.now() + Math.random(),
+            color: match[1],
+            offsetX: parseFloat(match[2]),
+            offsetY: parseFloat(match[4]),
+            blur: parseFloat(match[6]) || 0,
+        });
+    }
+    return shadows;
+};

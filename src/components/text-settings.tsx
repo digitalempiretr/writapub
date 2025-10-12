@@ -14,7 +14,7 @@ import { TextColorChooseIcon, TextBgBoxIcon, TextBoxOpacity, TextStrokeIcon, Ref
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FontOption } from "@/components/image-canvas";
 import { Button } from "@/components/ui/button";
-import { Bold, CaseUpper, Sparkles, AlignLeft, AlignCenter, AlignRight, Loader2 } from "lucide-react";
+import { Bold, CaseUpper, Sparkles, AlignLeft, AlignCenter, AlignRight, Loader2, Trash2, Plus } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
@@ -24,6 +24,14 @@ import { defaultSolidColors } from "@/lib/colors";
 import { Separator } from "./ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { textEffects, TextEffect } from "@/lib/text-effects";
+
+export type Shadow = {
+  id: number;
+  color: string;
+  offsetX: number;
+  offsetY: number;
+  blur: number;
+};
 
 type TextSettingsProps = {
   text: string;
@@ -43,16 +51,10 @@ type TextSettingsProps = {
   setIsUppercase: (value: boolean) => void;
   textAlign: 'left' | 'center' | 'right';
   setTextAlign: (align: 'left' | 'center' | 'right') => void;
-  textShadow: boolean;
-  setTextShadow: (value: boolean) => void;
-  shadowColor: string;
-  setShadowColor: (value: string) => void;
-  shadowBlur: number;
-  setShadowBlur: (value: number) => void;
-  shadowOffsetX: number;
-  setShadowOffsetX: (value: number) => void;
-  shadowOffsetY: number;
-  setShadowOffsetY: (value: number) => void;
+  textShadowEnabled: boolean;
+  setTextShadowEnabled: (value: boolean) => void;
+  shadows: Shadow[];
+  setShadows: (shadows: Shadow[]) => void;
   textStroke: boolean;
   setTextStroke: (value: boolean) => void;
   strokeColor: string;
@@ -87,16 +89,10 @@ export function TextSettings({
   setIsUppercase,
   textAlign,
   setTextAlign,
-  textShadow,
-  setTextShadow,
-  shadowColor,
-  setShadowColor,
-  shadowBlur,
-  setShadowBlur,
-  shadowOffsetX,
-  setShadowOffsetX,
-  shadowOffsetY,
-  setShadowOffsetY,
+  textShadowEnabled,
+  setTextShadowEnabled,
+  shadows,
+  setShadows,
   textStroke,
   setTextStroke,
   strokeColor,
@@ -125,6 +121,18 @@ export function TextSettings({
       handleGenerate();
     }, 0);
   }
+
+  const addShadow = () => {
+    setShadows([...shadows, { id: Date.now(), color: '#000000', offsetX: 2, offsetY: 2, blur: 4 }]);
+  };
+
+  const updateShadow = (id: number, newProps: Partial<Shadow>) => {
+    setShadows(shadows.map(s => s.id === id ? { ...s, ...newProps } : s));
+  };
+
+  const removeShadow = (id: number) => {
+    setShadows(shadows.filter(s => s.id !== id));
+  };
 
   return (
     <TooltipProvider>
@@ -291,7 +299,7 @@ export function TextSettings({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
+                        <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10" data-active={textShadowEnabled} >
                           <Sparkles className="h-4 w-4" />
                         </Button>
                       </PopoverTrigger>
@@ -300,33 +308,47 @@ export function TextSettings({
                       <p>Text Shadow</p>
                     </TooltipContent>
                   </Tooltip>
-                  <PopoverContent className="w-64 space-y-4">
+                  <PopoverContent className="w-72 space-y-4" align="end">
                     <div className="flex items-center justify-between">
-                      <Label htmlFor={`${baseId}-shadow-toggle`}>Text Shadow</Label>
-                      <Switch id={`${baseId}-shadow-toggle`} checked={textShadow} onCheckedChange={setTextShadow} />
+                      <Label htmlFor={`${baseId}-shadow-toggle`}>Enable Text Shadow</Label>
+                      <Switch id={`${baseId}-shadow-toggle`} checked={textShadowEnabled} onCheckedChange={setTextShadowEnabled} />
                     </div>
-                    {textShadow && (
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-2">
-                          <Label>Color</Label>
-                          <Input type="color" value={shadowColor} onChange={(e) => setShadowColor(e.target.value)} className="h-8 p-1"/>
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor={`${baseId}-shadow-blur`}>Blur</Label>
-                          <Slider id={`${baseId}-shadow-blur`} max={40} min={0} step={1} value={[shadowBlur]} onValueChange={(v) => setShadowBlur(v[0])} />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor={`${baseId}-shadow-offset-x`}>X Offset</Label>
-                          <Slider id={`${baseId}-shadow-offset-x`} max={20} min={-20} step={1} value={[shadowOffsetX]} onValueChange={(v) => setShadowOffsetX(v[0])} />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor={`${baseId}-shadow-offset-y`}>Y Offset</Label>
-                          <Slider id={`${baseId}-shadow-offset-y`} max={20} min={-20} step={1} value={[shadowOffsetY]} onValueChange={(v) => setShadowOffsetY(v[0])} />
-                        </div>
+                    {textShadowEnabled && (
+                      <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
+                        {shadows.map((shadow, index) => (
+                          <div key={shadow.id} className="p-2 border rounded-md space-y-3">
+                            <div className="flex justify-between items-center">
+                               <Label className="text-xs font-medium">Layer {index + 1}</Label>
+                               <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeShadow(shadow.id)}>
+                                <Trash2 className="h-4 w-4" />
+                               </Button>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Label className="text-xs">Color</Label>
+                              <Input type="color" value={shadow.color} onChange={(e) => updateShadow(shadow.id, { color: e.target.value })} className="h-8 p-1"/>
+                            </div>
+                            <div className="space-y-1">
+                              <Label htmlFor={`${baseId}-shadow-blur-${index}`} className="text-xs">Blur</Label>
+                              <Slider id={`${baseId}-shadow-blur-${index}`} max={40} min={0} step={1} value={[shadow.blur]} onValueChange={(v) => updateShadow(shadow.id, { blur: v[0] })} />
+                            </div>
+                            <div className="space-y-1">
+                              <Label htmlFor={`${baseId}-shadow-offset-x-${index}`} className="text-xs">X Offset</Label>
+                              <Slider id={`${baseId}-shadow-offset-x-${index}`} max={20} min={-20} step={1} value={[shadow.offsetX]} onValueChange={(v) => updateShadow(shadow.id, { offsetX: v[0] })} />
+                            </div>
+                            <div className="space-y-1">
+                              <Label htmlFor={`${baseId}-shadow-offset-y-${index}`} className="text-xs">Y Offset</Label>
+                              <Slider id={`${baseId}-shadow-offset-y-${index}`} max={20} min={-20} step={1} value={[shadow.offsetY]} onValueChange={(v) => updateShadow(shadow.id, { offsetY: v[0] })} />
+                            </div>
+                          </div>
+                        ))}
+                         <Button variant="outline" size="sm" onClick={addShadow} className="w-full">
+                           <Plus className="mr-2 h-4 w-4" /> Add Shadow Layer
+                         </Button>
                       </div>
                     )}
                   </PopoverContent>
                 </Popover>
+
                 <Popover>
                   <Tooltip>
                     <TooltipTrigger asChild>
