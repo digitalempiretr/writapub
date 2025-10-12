@@ -33,8 +33,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Star, Type, X, ArrowUp } from "lucide-react";
-import { useCallback, useEffect, useRef, useState, useId } from "react";
+import { Download, ImageIcon, LayoutTemplate, Star, Type, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
 import { imageTemplates } from "@/lib/image-templates";
@@ -50,6 +50,8 @@ import { MyDesignsPanel } from "@/components/my-designs-panel";
 import { DownloadPanel } from "@/components/download-panel";
 import { pageInitialColors } from "@/lib/colors";
 import { CreativeMagicPanel } from "@/components/creative-magic-panel";
+import { cn } from "@/lib/utils";
+
 
 type Design = {
   text: string;
