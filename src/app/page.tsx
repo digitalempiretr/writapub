@@ -564,7 +564,7 @@ textBox: {
     
     return (
         <ImageCanvas
-          key={`${backgroundType}-${activeFont.value}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadow}-${shadowColor}-${shadowBlur}-${shadowOffsetX}-${shadowOffsetY}-${textStroke}-${strokeColor}-${strokeWidth}-${activeEffect.id}`}
+          key={`${backgroundType}-${activeFont.value}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadow}-${shadowColor}-${shadowBlur}-${shadowOffsetX}-${shadowOffsetY}-${textStroke}-${strokeColor}-${strokeWidth}-${activeEffect.id}-${canvasSize.width}x${canvasSize.height}`}
           font={activeFont}
           text={design.text}
           isTitle={design.isTitle}
@@ -1042,16 +1042,16 @@ textBox: {
               <div 
                 className={cn(
                   "fixed bottom-0 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
-                  isMobilePanelOpen ? "translate-y-0" : "translate-y-full"
+                  isMobilePanelOpen ? "translate-y-0" : "translate-y-full",
+                  "h-[75vh]"
                 )}
               >
-                 <div className="max-h-[75vh] flex flex-col">
-                  {settingsPanel}
-                 </div>
+                 {settingsPanel}
               </div>
               <div 
                 className={cn(
                   "fixed bottom-0 left-0 right-0 z-50",
+                  "transition-transform duration-300 ease-in-out",
                   isMobilePanelOpen ? "translate-y-full" : "translate-y-0"
                 )}
               >

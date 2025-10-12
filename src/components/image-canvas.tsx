@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import type { TextEffect } from "@/lib/text-effects";
 
 export type FontOption = {
   value: string;
@@ -33,7 +34,7 @@ type ImageCanvasProps = {
   textAlign: 'left' | 'center' | 'right';
   isBold: boolean;
   isUppercase: boolean;
-  textShadow: string;
+  textShadow: boolean;
   shadowColor: string;
   shadowBlur: number;
   shadowOffsetX: number;
@@ -41,7 +42,7 @@ type ImageCanvasProps = {
   textStroke: boolean;
   strokeColor: string;
   strokeWidth: number;
-  activeEffect: { id: string, style: React.CSSProperties };
+  activeEffect: TextEffect;
 };
 
 // This function wraps text for titles.
@@ -146,6 +147,21 @@ const measureAndSplitText = (
     return { textForCanvas: lines.join('\n'), remainingText: finalRemainingText, lines: lines };
 };
 
+const parseShadow = (shadowString: string) => {
+  const shadows = [];
+  // Use a regex that correctly splits box-shadow values, handling rgb/rgba colors.
+  const shadowRegex = /(rgba?\(.+?\)|#?\w+)\s+(-?\d+px)\s+(-?\d+px)\s+(-?\d+px)/g;
+  let match;
+  while ((match = shadowRegex.exec(shadowString)) !== null) {
+      shadows.push({
+          color: match[1],
+          offsetX: parseFloat(match[2]),
+          offsetY: parseFloat(match[3]),
+          blur: parseFloat(match[4]),
+      });
+  }
+  return shadows;
+};
 
 const wrapAndDrawText = (
   context: CanvasRenderingContext2D,
@@ -156,24 +172,58 @@ const wrapAndDrawText = (
   rectHeight: number,
   textStroke: boolean,
   strokeColor: string,
-  strokeWidth: number
+  strokeWidth: number,
+  textShadow: boolean,
+  shadows: any[],
+  activeEffect: TextEffect,
+  finalTextColor: string
 ) => {
   const totalTextHeight = (lines.length * lineHeight) - (lineHeight - context.measureText('M').width); // A more accurate height
-  // Adjust start Y to be centered within the rectangle
   const startY = y + (rectHeight - totalTextHeight) / 2;
 
-  let currentY = startY;
-
-  for(const line of lines) {
-    if (textStroke) {
-        context.strokeStyle = strokeColor;
-        context.lineWidth = strokeWidth;
-        context.strokeText(line.trim(), x, currentY);
+  const drawTextLines = (colorOverride?: string) => {
+    let currentY = startY;
+    for(const line of lines) {
+      if (textStroke && !colorOverride) { // Don't apply stroke to shadow layers
+          context.strokeStyle = strokeColor;
+          context.lineWidth = strokeWidth;
+          context.strokeText(line.trim(), x, currentY);
+      }
+      context.fillStyle = colorOverride || finalTextColor;
+      context.fillText(line.trim(), x, currentY);
+      currentY += lineHeight;
     }
-    context.fillText(line.trim(), x, currentY);
-    currentY += lineHeight;
   }
+
+  // Apply complex effects or simple shadow
+  if (activeEffect.id !== 'none' && activeEffect.style.textShadow) {
+      const shadowLayers = parseShadow(activeEffect.style.textShadow);
+      shadowLayers.forEach(shadow => {
+          context.shadowColor = shadow.color;
+          context.shadowBlur = shadow.blur;
+          context.shadowOffsetX = shadow.offsetX;
+          context.shadowOffsetY = shadow.offsetY;
+          drawTextLines(shadow.color); // Draw text for each shadow layer
+      });
+  } else if (textShadow && shadows.length > 0) {
+      shadows.forEach(shadow => {
+        context.shadowColor = shadow.color;
+        context.shadowBlur = shadow.blur;
+        context.shadowOffsetX = shadow.offsetX;
+        context.shadowOffsetY = shadow.offsetY;
+        drawTextLines(shadow.color);
+      })
+  }
+
+  // Reset shadows and draw the main text on top
+  context.shadowColor = 'transparent';
+  context.shadowBlur = 0;
+  context.shadowOffsetX = 0;
+  context.shadowOffsetY = 0;
+
+  drawTextLines();
 };
+
 
 function hexToRgba(hex: string, alpha: number) {
     let r = 0, g = 0, b = 0;
@@ -255,11 +305,11 @@ export function ImageCanvas({
       
       ctx.clearRect(0, 0, width, height);
       
-      const rectWidth = 830;
-      const rectHeight = 1100;
+      const rectWidth = 830 * (width / 1080);
+      const rectHeight = 1100 * (height / 1350);
       const rectX = (width - rectWidth) / 2;
       const rectY = (height - rectHeight) / 2;
-      const textPadding = 50;
+      const textPadding = 50 * (width / 1080);
       const textMaxWidth = rectWidth - (textPadding * 2);
 
       ctx.font = `${fontWeight} ${fontSize}px "${fontName}"`;
@@ -287,28 +337,19 @@ export function ImageCanvas({
         ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
 
         // Set up text properties
-        ctx.fillStyle = hexToRgba(textColor, textOpacity);
+        const finalTextColor = activeEffect.style.color || textColor;
+        ctx.fillStyle = hexToRgba(finalTextColor, textOpacity);
         ctx.textAlign = textAlign;
         ctx.textBaseline = 'top'; 
         ctx.font = `${fontWeight} ${fontSize}px "${fontName}"`;
         
-        // Apply effects
-        if (activeEffect.id !== 'none') {
-            ctx.shadowColor = ''; // Reset for text-shadow string
-            ctx.shadowBlur = 0;
-            ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 0;
-            ctx.shadows = (activeEffect.style.textShadow || '').split(/,(?![^(]*\))/); // Split by comma not in parentheses
-            if (activeEffect.style.color) {
-                ctx.fillStyle = activeEffect.style.color as string;
-            }
-        } else if (textShadow) { // Apply manual shadow if no effect is selected
-            ctx.shadowColor = shadowColor;
-            ctx.shadowBlur = shadowBlur;
-            ctx.shadowOffsetX = shadowOffsetX;
-            ctx.shadowOffsetY = shadowOffsetY;
+        let shadows: any[] = [];
+        if (activeEffect.id !== 'none' && activeEffect.style.textShadow) {
+           shadows = parseShadow(activeEffect.style.textShadow);
+        } else if (textShadow) {
+           shadows.push({ color: shadowColor, blur: shadowBlur, offsetX: shadowOffsetX, offsetY: shadowOffsetY });
         }
-
+        
         // Calculate text position based on alignment
         let textX;
         if (textAlign === 'left') {
@@ -320,14 +361,11 @@ export function ImageCanvas({
         }
         
         // Draw the text
-        wrapAndDrawText(ctx, linesToDraw, textX, rectY, lineHeight, rectHeight, textStroke, strokeColor, strokeWidth);
-
-        // Reset shadow for subsequent canvas drawings
-        ctx.shadowColor = 'transparent';
-        ctx.shadowBlur = 0;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 0;
-        (ctx as any).shadows = [];
+        wrapAndDrawText(
+            ctx, linesToDraw, textX, rectY, lineHeight, rectHeight, 
+            textStroke, strokeColor, strokeWidth, 
+            textShadow || (activeEffect.id !== 'none'), shadows, activeEffect, hexToRgba(finalTextColor, textOpacity)
+        );
 
         if (!isTitle && indexRef.current !== null) {
           onTextRemaining(remainingText, indexRef.current);
@@ -367,7 +405,7 @@ export function ImageCanvas({
           drawLayout();
         }
       } else if (backgroundColor && backgroundColor.startsWith("linear-gradient")) {
-        const colors = backgroundColor.match(/#([0-9a-fA-F]{3,6})/g);
+        const colors = backgroundColor.match(/#([0-9a-fA-F]{3,6}|[0-9a-fA-F]{8})/g);
         if (colors && colors.length >= 2) {
           const gradient = ctx.createLinearGradient(0, 0, 0, height);
           gradient.addColorStop(0, colors[0]);
