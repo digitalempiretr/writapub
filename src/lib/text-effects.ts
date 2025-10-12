@@ -1,5 +1,4 @@
 
-
 export type TextEffect = {
   name: string;
   id: string;
@@ -11,23 +10,6 @@ export const textEffects: TextEffect[] = [
     name: 'None',
     id: 'none',
     style: { textShadow: 'none' },
-  },
-  {
-    name: 'Neon',
-    id: 'neon',
-    style: {
-      color: '#fff',
-      textShadow: `
-        0 0 7px #fff,
-        0 0 10px #fff,
-        0 0 21px #fff,
-        0 0 42px #0fa,
-        0 0 82px #0fa,
-        0 0 92px #0fa,
-        0 0 102px #0fa,
-        0 0 151px #0fa
-      `,
-    },
   },
   {
     name: 'Shadow',
@@ -47,6 +29,23 @@ export const textEffects: TextEffect[] = [
          1px -1px 0 #000,
         -1px  1px 0 #000,
          1px  1px 0 #000
+      `,
+    },
+  },
+  {
+    name: 'Neon',
+    id: 'neon',
+    style: {
+      color: '#fff',
+      textShadow: `
+        0 0 7px #fff,
+        0 0 10px #fff,
+        0 0 21px #fff,
+        0 0 42px #0fa,
+        0 0 82px #0fa,
+        0 0 92px #0fa,
+        0 0 102px #0fa,
+        0 0 151px #0fa
       `,
     },
   },
@@ -83,16 +82,17 @@ export const textEffects: TextEffect[] = [
 // Helper function to parse CSS text-shadow string
 export const parseShadow = (shadowString: string) => {
     const shadows: any[] = [];
-    const shadowRegex = /(rgba?\(.+?\)|#?\w+)\s+(-?\d*\.?\d+)(px)?\s+(-?\d*\.?\d+)(px)?\s+(-?\d*\.?\d+)(px)?/g;
+    // This regex is simplified and might not cover all edge cases, but works for the effects here.
+    const shadowRegex = /(-?\d*\.?\d+)(px)?\s+(-?\d*\.?\d+)(px)?\s+(-?\d*\.?\d+)(px)?\s+(rgba?\(.+?\)|#?\w+)/g;
     let match;
 
     while ((match = shadowRegex.exec(shadowString)) !== null) {
         shadows.push({
             id: Date.now() + Math.random(),
-            color: match[1],
-            offsetX: parseFloat(match[2]),
-            offsetY: parseFloat(match[4]),
-            blur: parseFloat(match[6]) || 0,
+            offsetX: parseFloat(match[1]),
+            offsetY: parseFloat(match[3]),
+            blur: parseFloat(match[5]) || 0,
+            color: match[7],
         });
     }
     return shadows;
