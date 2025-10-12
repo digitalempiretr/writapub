@@ -35,5 +35,3 @@ export const imageTemplates = [
   { name: "bgImage-24", imageUrl: "https://i.ibb.co/395BJVb/24.jpg" },
   { name: "paperclip-rose", imageUrl: "https://i.ibb.co/W4nLHRZ/27.jpg" }
 ];
-
-    
