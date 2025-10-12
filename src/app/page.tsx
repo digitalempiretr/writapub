@@ -61,6 +61,54 @@ type Design = {
 type TextAlign = 'left' | 'center' | 'right';
 type BackgroundType = 'flat' | 'gradient' | 'image';
 
+function TabContentContainer({
+  activeTab,
+  closePanel,
+  ...props
+}: {
+  activeTab: string | null;
+  closePanel: () => void;
+  [key: string]: any; 
+}) {
+  if (!activeTab) return null;
+
+  return (
+    <div className="flex flex-col">
+       <div className="w-full flex-shrink-0 md:hidden">
+          <div className="flex justify-end p-1">
+              <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={closePanel} 
+                  className="h-8 w-8 rounded-full bg-background hover:bg-muted"
+              >
+                  <X className="h-5 w-5" />
+                  <span className="sr-only">Close Panel</span>
+              </Button>
+          </div>
+      </div>
+      <div className="flex-grow overflow-y-auto">
+          {activeTab === 'designs' && (
+              <DesignsPanel {...props} />
+          )}
+          {activeTab === 'favorites' && (
+              <MyDesignsPanel {...props} />
+          )}
+          {activeTab === 'background' && (
+              <BackgroundSettings {...props} />
+          )}
+          {activeTab === 'text' && (
+              <TextSettings {...props} />
+          )}
+          {activeTab === 'download' && (
+              <DownloadPanel {...props} />
+          )}
+      </div>
+    </div>
+  );
+}
+
+
 export default function Home() {
   const [text, setText] = useState(defaultText);
   const [designs, setDesigns] = useState<Design[]>([]);
@@ -694,7 +742,7 @@ textBox: {
               </TooltipContent>
             </Tooltip>
           </TabsList>
-          <div className="flex-grow w-full overflow-hidden">
+           <div className="flex-grow w-full overflow-hidden md:relative">
             {/* Desktop View */}
             <div className="hidden md:block h-full">
               <TabsContent value="designs" className="h-full mt-0">
@@ -798,117 +846,90 @@ textBox: {
             {/* Mobile View: Render active tab inside the slidable panel */}
              <div className="md:hidden">
               {isMobilePanelOpen && (
-                <div className="flex flex-col h-full">
-                  <div className="w-full flex-shrink-0">
-                    <div className="flex justify-end p-1">
-                        <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            onClick={closePanel} 
-                            className="h-8 w-8 rounded-full bg-background hover:bg-muted"
-                        >
-                            <X className="h-5 w-5" />
-                            <span className="sr-only">Close Panel</span>
-                        </Button>
-                    </div>
-                  </div>
-                  <div className="flex-grow overflow-y-auto">
-                    {activeSettingsTab === 'designs' && <DesignsPanel handleApplyTemplate={handleApplyTemplate} />}
-                    {activeSettingsTab === 'favorites' && (
-                      <MyDesignsPanel 
-                        myDesigns={myDesigns}
-                        handleSaveDesign={handleSaveDesign}
-                        handleDeleteDesign={handleDeleteDesign}
-                        handleUpdateDesign={handleUpdateDesign}
-                        editingDesignId={editingDesignId}
-                        handleEditClick={handleEditClick}
-                        handleCancelEdit={handleCancelEdit}
-                        editingName={editingName}
-                        setEditingName={setEditingName}
-                        designToDelete={designToDelete}
-                        setDesignToDelete={setDesignToDelete}
-                        handleLogDesign={handleLogDesign}
-                        handleApplyTemplate={handleApplyTemplate}
-                      />
-                    )}
-                    {activeSettingsTab === 'background' && (
-                      <BackgroundSettings 
-                        backgroundTab={backgroundTab}
-                        setBackgroundTab={setBackgroundTab as (value: string) => void}
-                        handleFeelLucky={handleFeelLucky}
-                        bgColor={bgColor}
-                        handleBgColorSelect={handleBgColorSelect}
-                        imageBgUrl={imageBgUrl}
-                        handleImageBgUrlSelect={handleImageBgUrlSelect}
-                        searchQuery={searchQuery}
-                        setSearchQuery={setSearchQuery}
-                        handleSearchImages={handleSearchImages}
-                        isSearching={isSearching}
-                        searchedImages={searchedImages}
-                        handleKeywordSearch={handleKeywordSearch}
-                        searchPage={searchPage}
-                        isOverlayEnabled={isOverlayEnabled}
-                        setIsOverlayEnabled={handleOverlayEnable}
-                        overlayColor={overlayColor}
-                        setOverlayColor={setOverlayColor}
-                        overlayOpacity={overlayOpacity}
-                        setOverlayOpacity={setOverlayOpacity}
-                        gradientBg={gradientBg}
-                        handleGradientBgSelect={handleGradientBgSelect}
-                        setSearchCarouselApi={setSearchCarouselApi}
-                      />
-                    )}
-                    {activeSettingsTab === 'text' && (
-                      <TextSettings 
-                        text={text}
-                        setText={setText}
-                        handleGenerate={handleGenerate}
-                        isLoading={isLoading}
-                        textColor={textColor}
-                        setTextColor={handleTextColorChange}
-                        textOpacity={textOpacity}
-                        setTextOpacity={setTextOpacity}
-                        activeFont={activeFont}
-                        handleFontChange={handleFontChange}
-                        fontOptions={fontOptions}
-                        isBold={isBold}
-                        setIsBold={setIsBold}
-                        isUppercase={isUppercase}
-                        setIsUppercase={setIsUppercase}
-                        textAlign={textAlign}
-                        setTextAlign={setTextAlign}
-                        textShadowEnabled={textShadowEnabled}
-                        setTextShadowEnabled={setTextShadowEnabled}
-                        shadows={shadows}
-                        setShadows={setShadows}
-                        textStroke={textStroke}
-                        setTextStroke={setTextStroke}
-                        strokeColor={strokeColor}
-                        setStrokeColor={setStrokeColor}
-                        strokeWidth={strokeWidth}
-                        setStrokeWidth={setStrokeWidth}
-                        isTextBoxEnabled={isTextBoxEnabled}
-                        setIsTextBoxEnabled={handleTextBoxEnable}
-                        rectBgColor={rectBgColor}
-                        setRectBgColor={setRectBgColor}
-                        rectOpacity={rectOpacity}
-                        setRectOpacity={setRectOpacity}
-                        activeEffect={activeEffect}
-                        setActiveEffect={handleEffectChange}
-                      />
-                    )}
-                    {activeSettingsTab === 'download' && (
-                       <DownloadPanel 
-                        fileName={fileName}
-                        setFileName={setFileName}
-                        handleDownloadAll={handleDownloadAll}
-                        designs={designs}
-                        currentSlide={currentSlide}
-                        handleDownload={handleDownload}
-                       />
-                    )}
-                  </div>
-                </div>
+                <TabContentContainer
+                  activeTab={activeSettingsTab}
+                  closePanel={closePanel}
+                  // Background props
+                  backgroundTab={backgroundTab}
+                  setBackgroundTab={setBackgroundTab as (value: string) => void}
+                  handleFeelLucky={handleFeelLucky}
+                  bgColor={bgColor}
+                  handleBgColorSelect={handleBgColorSelect}
+                  imageBgUrl={imageBgUrl}
+                  handleImageBgUrlSelect={handleImageBgUrlSelect}
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
+                  handleSearchImages={handleSearchImages}
+                  isSearching={isSearching}
+                  searchedImages={searchedImages}
+                  handleKeywordSearch={handleKeywordSearch}
+                  searchPage={searchPage}
+                  isOverlayEnabled={isOverlayEnabled}
+                  setIsOverlayEnabled={handleOverlayEnable}
+                  overlayColor={overlayColor}
+                  setOverlayColor={setOverlayColor}
+                  overlayOpacity={overlayOpacity}
+                  setOverlayOpacity={setOverlayOpacity}
+                  gradientBg={gradientBg}
+                  handleGradientBgSelect={handleGradientBgSelect}
+                  setSearchCarouselApi={setSearchCarouselApi}
+                  // Text props
+                  text={text}
+                  setText={setText}
+                  handleGenerate={handleGenerate}
+                  isLoading={isLoading}
+                  textColor={textColor}
+                  setTextColor={handleTextColorChange}
+                  textOpacity={textOpacity}
+                  setTextOpacity={setTextOpacity}
+                  activeFont={activeFont}
+                  handleFontChange={handleFontChange}
+                  fontOptions={fontOptions}
+                  isBold={isBold}
+                  setIsBold={setIsBold}
+                  isUppercase={isUppercase}
+                  setIsUppercase={setIsUppercase}
+                  textAlign={textAlign}
+                  setTextAlign={setTextAlign}
+                  textShadowEnabled={textShadowEnabled}
+                  setTextShadowEnabled={setTextShadowEnabled}
+                  shadows={shadows}
+                  setShadows={setShadows}
+                  textStroke={textStroke}
+                  setTextStroke={setTextStroke}
+                  strokeColor={strokeColor}
+                  setStrokeColor={setStrokeColor}
+                  strokeWidth={strokeWidth}
+                  setStrokeWidth={setStrokeWidth}
+                  isTextBoxEnabled={isTextBoxEnabled}
+                  setIsTextBoxEnabled={handleTextBoxEnable}
+                  rectBgColor={rectBgColor}
+                  setRectBgColor={setRectBgColor}
+                  rectOpacity={rectOpacity}
+                  setRectOpacity={setRectOpacity}
+                  activeEffect={activeEffect}
+                  setActiveEffect={handleEffectChange}
+                  // Design/Download props
+                  handleApplyTemplate={handleApplyTemplate}
+                  myDesigns={myDesigns}
+                  handleSaveDesign={handleSaveDesign}
+                  handleDeleteDesign={handleDeleteDesign}
+                  handleUpdateDesign={handleUpdateDesign}
+                  editingDesignId={editingDesignId}
+                  handleEditClick={handleEditClick}
+                  handleCancelEdit={handleCancelEdit}
+                  editingName={editingName}
+                  setEditingName={setEditingName}
+                  designToDelete={designToDelete}
+                  setDesignToDelete={setDesignToDelete}
+                  handleLogDesign={handleLogDesign}
+                  fileName={fileName}
+                  setFileName={setFileName}
+                  handleDownloadAll={handleDownloadAll}
+                  designs={designs}
+                  currentSlide={currentSlide}
+                  handleDownload={handleDownload}
+                />
               )}
             </div>
           </div>
@@ -1013,18 +1034,22 @@ textBox: {
        {isClient && designs.length > 0 && (
           <div id="mobile-settings-panel" ref={mobilePanelRef} className="md:hidden">
               {isMobilePanelOpen && <div className="fixed inset-0 bg-black/30 z-40" onClick={closePanel} />}
+              
+              {/* This is the sliding panel */}
               <div 
                 className={cn(
                   "fixed bottom-0 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
                   isMobilePanelOpen ? "translate-y-0" : "translate-y-full",
-                  "h-[75vh]"
+                  "max-h-[75vh]"
                 )}
               >
                  {settingsPanel}
               </div>
+
+              {/* This is the static tab list at the bottom */}
               <div 
                 className={cn(
-                  "fixed bottom-0 left-0 right-0 z-50",
+                  "fixed bottom-0 left-0 right-0 z-40", // z-40 to be behind the panel
                   "transition-transform duration-300 ease-in-out",
                   isMobilePanelOpen ? "translate-y-full" : "translate-y-0"
                 )}
