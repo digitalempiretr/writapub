@@ -71,35 +71,38 @@ function TabContentContainer({
   if (!activeTab) return null;
 
   return (
-    <>
-      <div className="relative">
-         <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={closePanel} 
-            className="absolute top-2 right-2 z-10 md:hidden h-8 w-8 rounded-full bg-background hover:bg-muted"
-          >
-            <X className="h-5 w-5" />
-            <span className="sr-only">Close Panel</span>
-          </Button>
-
-      {activeTab === 'designs' && (
-        <DesignsPanel {...props} />
-      )}
-      {activeTab === 'favorites' && (
-        <MyDesignsPanel {...props} />
-      )}
-      {activeTab === 'background' && (
-        <BackgroundSettings {...props} />
-      )}
-      {activeTab === 'text' && (
-        <TextSettings {...props} />
-      )}
-      {activeTab === 'download' && (
-        <DownloadPanel {...props} />
-      )}
+    <div className="flex flex-col h-full">
+      <div className="w-full flex-shrink-0">
+          <div className="flex justify-end p-1 md:hidden">
+              <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={closePanel} 
+                  className="h-8 w-8 rounded-full bg-background hover:bg-muted"
+              >
+                  <X className="h-5 w-5" />
+                  <span className="sr-only">Close Panel</span>
+              </Button>
+          </div>
       </div>
-    </>
+      <div className="flex-grow overflow-y-auto">
+          {activeTab === 'designs' && (
+              <DesignsPanel {...props} />
+          )}
+          {activeTab === 'favorites' && (
+              <MyDesignsPanel {...props} />
+          )}
+          {activeTab === 'background' && (
+              <BackgroundSettings {...props} />
+          )}
+          {activeTab === 'text' && (
+              <TextSettings {...props} />
+          )}
+          {activeTab === 'download' && (
+              <DownloadPanel {...props} />
+          )}
+      </div>
+    </div>
   );
 }
 
@@ -626,6 +629,7 @@ textBox: {
 
   const tabContentProps = {
     activeTab: activeSettingsTab,
+    // Text props for TextSettings and CreativeMagicPanel
     text, setText, handleGenerate, isLoading,
     // Background props
     backgroundTab,
@@ -651,7 +655,7 @@ textBox: {
     gradientBg,
     handleGradientBgSelect,
     setSearchCarouselApi,
-    // Text props
+    // Text settings props
     textColor, setTextColor, textOpacity, setTextOpacity,
     activeFont, handleFontChange, fontOptions,
     isBold, setIsBold, isUppercase, setIsUppercase, textAlign, setTextAlign,
@@ -881,7 +885,25 @@ textBox: {
        {/* Mobile-only Fixed Bottom Settings Panel */}
        {isClient && designs.length > 0 && (
           <div id="mobile-settings-panel" ref={mobilePanelRef} className="md:hidden">
-              {settingsPanel}
+              {isMobilePanelOpen && <div className="fixed inset-0 bg-black/30 z-40" onClick={closePanel} />}
+              <div 
+                className={cn(
+                  "fixed bottom-0 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
+                  isMobilePanelOpen ? "translate-y-0" : "translate-y-full"
+                )}
+              >
+                 <div className="max-h-[75vh] flex flex-col">
+                  {settingsPanel}
+                 </div>
+              </div>
+              <div 
+                className={cn(
+                  "fixed bottom-0 left-0 right-0 z-50",
+                  isMobilePanelOpen ? "translate-y-full" : "translate-y-0"
+                )}
+              >
+                {settingsPanel}
+              </div>
           </div>
         )}
     </>
