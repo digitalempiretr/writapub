@@ -98,3 +98,5 @@ export const pageInitialColors = {
     rectBgColor: "#f4ede4",
     overlayColor: "#008080",
 }
+
+    

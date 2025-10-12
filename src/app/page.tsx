@@ -32,7 +32,7 @@ import {
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Star, Type, X, Crop } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Star, Type, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -50,7 +50,6 @@ import { DownloadPanel } from "@/components/download-panel";
 import { pageInitialColors } from "@/lib/colors";
 import { CreativeMagicPanel } from "@/components/creative-magic-panel";
 import { cn } from "@/lib/utils";
-import { FormatPanel } from "@/components/format-panel";
 
 
 type Design = {
@@ -60,18 +59,6 @@ type Design = {
 
 type TextAlign = 'left' | 'center' | 'right';
 type BackgroundType = 'flat' | 'gradient' | 'image';
-type CanvasSize = {
-    name: 'Post' | 'Story' | 'Square';
-    width: number;
-    height: number;
-};
-
-const canvasSizes: CanvasSize[] = [
-    { name: 'Post', width: 1080, height: 1350 },
-    { name: 'Story', width: 1080, height: 1920 },
-    { name: 'Square', width: 1080, height: 1080 },
-];
-
 
 function TabContentContainer({
   activeTab,
@@ -112,9 +99,6 @@ function TabContentContainer({
           {activeTab === 'text' && (
               <TextSettings {...props} />
           )}
-          {activeTab === 'format' && (
-              <FormatPanel {...props} />
-          )}
           {activeTab === 'download' && (
               <DownloadPanel {...props} />
           )}
@@ -137,7 +121,6 @@ export default function Home() {
   const [editingDesignId, setEditingDesignId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
   const [designToDelete, setDesignToDelete] = useState<string | null>(null);
-  const [canvasSize, setCanvasSize] = useState<CanvasSize>(canvasSizes[0]);
 
   const [backgroundType, setBackgroundType] = useState<BackgroundType>('image');
   
@@ -383,7 +366,7 @@ export default function Home() {
 
   const handleFeelLucky = () => {
     const randomSeed = Math.floor(Math.random() * 1000);
-    const randomImageUrl = `https://picsum.photos/seed/${randomSeed}/${canvasSize.width}/${canvasSize.height}`;
+    const randomImageUrl = `https://picsum.photos/seed/${randomSeed}/1080/1350`;
     handleImageBgUrlSelect(randomImageUrl);
     setRectBgColor("#f4fdff");
     setRectOpacity(0.6);
@@ -612,7 +595,7 @@ textBox: {
     
     return (
         <ImageCanvas
-          key={`${canvasSize.name}-${backgroundType}-${activeFont.value}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadow}-${shadowColor}-${shadowBlur}-${shadowOffsetX}-${shadowOffsetY}-${textStroke}-${strokeColor}-${strokeWidth}`}
+          key={`${backgroundType}-${activeFont.value}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadow}-${shadowColor}-${shadowBlur}-${shadowOffsetX}-${shadowOffsetY}-${textStroke}-${strokeColor}-${strokeWidth}`}
           font={activeFont}
           text={design.text}
           isTitle={design.isTitle}
@@ -620,8 +603,8 @@ textBox: {
           textOpacity={textOpacity}
           backgroundColor={currentBg}
           backgroundImageUrl={imageUrl}
-          width={canvasSize.width}
-          height={canvasSize.height}
+          width={1080}
+          height={1350}
           onCanvasReady={(canvas) => {
             canvasRefs.current[index] = canvas;
           }}
@@ -643,7 +626,7 @@ textBox: {
           strokeWidth={strokeWidth}
         />
     )
-  }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled, canvasSize]);
+  }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled]);
 
   const tabContentProps = {
     activeTab: activeSettingsTab,
@@ -682,8 +665,6 @@ textBox: {
     textStroke, setTextStroke, strokeColor, setStrokeColor, strokeWidth, setStrokeWidth,
     isTextBoxEnabled, setIsTextBoxEnabled: handleTextBoxEnable,
     rectBgColor, setRectBgColor, rectOpacity, setRectOpacity,
-    // Format props
-    canvasSize, setCanvasSize, canvasSizes,
     // Design/Download props
     designs,
     handleDownloadAll,
@@ -715,7 +696,7 @@ textBox: {
           onValueChange={setActiveSettingsTab}
           className="w-full flex flex-col-reverse md:flex-col"
         >
-          <TabsList className="grid w-full grid-cols-6 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md">
+          <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md">
             <Tooltip>
               <TooltipTrigger asChild>
                 <TabsTrigger
@@ -778,22 +759,6 @@ textBox: {
               </TooltipTrigger>
               <TooltipContent>
                 <p>Text Settings</p>
-              </TooltipContent>
-            </Tooltip>
-             <Tooltip>
-              <TooltipTrigger asChild>
-                <TabsTrigger
-                  value="format"
-                  onClick={() => {
-                    setActiveSettingsTab("format");
-                    setIsMobilePanelOpen(true);
-                  }}
-                >
-                  <Crop />
-                </TabsTrigger>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Format/Resize</p>
               </TooltipContent>
             </Tooltip>
             <Tooltip>
@@ -865,7 +830,7 @@ textBox: {
                           <CarouselItem key={index} data-index={index}>
                             <div className="p-1 group relative">
                               <Card className="overflow-hidden border-0">
-                                <CardContent className="p-0 relative bg-card" style={{ aspectRatio: `${canvasSize.width}/${canvasSize.height}` }}>
+                                <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
                                   {renderCanvas(design, index)}
                                 </CardContent>
                               </Card>
@@ -945,3 +910,5 @@ textBox: {
     </>
   );
 }
+
+    

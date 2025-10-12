@@ -18,7 +18,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { defaultSolidColors, gradientTemplates } from "@/lib/colors";
 import { imageTemplates } from "@/lib/image-templates";
 import Image from "next/image";
-import { BgOverlayIcon, FeelLucky, TextBoxOpacity } from "./ui/icons";
+import { BgOverlayIcon, FeelLucky } from "./ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Switch } from "./ui/switch";
 
@@ -304,3 +304,5 @@ export function BackgroundSettings({
     </div>
   );
 }
+
+    

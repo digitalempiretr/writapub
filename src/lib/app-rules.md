@@ -486,7 +486,7 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 #### TURKCE
 ### 1. Dokümantasyon ve Süreç
 -   **Yapay Zeka Geliştirme Süreci Güncellemesi:** Yapay zeka için temel kurallar güncellendi. Yapay zeka artık:
-    1.  Herhangi bir değişikliğe başlamadan önce projenin mevcut durumunu ve kurallarını anlamak için daima `app-rules.md` dosyasını incelemelidir.
+    1.  Herhangi bir değişikliğe başlamadan önce projenin mevcut durumunu ve kurallarını anlamak için daima `app-rules.md` dosyasını gözden geçirmelidir.
     2.  Görevler için `plans.md` dosyasını kontrol etmelidir. Eğer dosya boşsa, yapay zekanın sohbette proaktif olarak yeni özellikler veya iyileştirmeler önermesi talimatı verilmiştir.
 
 ---
@@ -582,3 +582,5 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 -   All fonts loaded from Google Fonts must include the `latin-ext` character set to ensure correct display of Turkish characters.
 -   In the font selection menu, the name of each font option should be displayed in its own font style. This allows the user to preview how the fonts look before selecting them.
 -   The default font in the font selection dropdown is set to "Special Elite".
+
+    
