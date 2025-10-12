@@ -418,6 +418,34 @@ export function TextSettings({
 
               </div>
             </div>
+            
+          <div className="pt-2">
+            <Carousel className="w-full" opts={{ dragFree: true }}>
+              <CarouselContent>
+                {defaultSolidColors.map(color => (
+                  <CarouselItem key={color} className="basis-1/7">
+                    <Card 
+                      className="overflow-hidden cursor-pointer bg-transparent border-0 shadow-none" 
+                      onClick={() => setTextColor(color)}
+                    >
+                      <CardContent 
+                        className="h-20 flex items-center justify-center p-0"
+                      >
+                         <span
+                            className="font-['Playfair_Display'] text-5xl font-bold"
+                            style={{ color: color }}
+                          >
+                            W
+                          </span>
+                      </CardContent>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="-left-4" />
+              <CarouselNext className="-right-4" />
+            </Carousel>
+          </div>
 
           <div className="pt-2">
             <Label>Text Effects</Label>
