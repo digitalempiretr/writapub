@@ -168,6 +168,7 @@ export function TextSettings({
 
         <div className="grid grid-cols-1 gap-4">
           <div className="space-y-4">
+             <Label className="bg-zinc-200 p-2 px-6 rounded-md">TEXT SETTINGS</Label>
              <div className="overflow-x-auto pb-2 -mb-2">
                 <div className="flex items-center gap-2 flex-nowrap">
                 <div className="flex-grow">
@@ -442,6 +443,7 @@ export function TextSettings({
             </div>
             
           <div className="pt-2">
+            <Label className="text-sm font-medium">Color Palette</Label>
             <Carousel className="w-full" opts={{ dragFree: true }}>
               <CarouselContent>
                 {defaultSolidColors.map(color => (
@@ -473,24 +475,31 @@ export function TextSettings({
             <Label>Text Effects</Label>
             <Carousel className="w-full" opts={{ dragFree: true, align: "start" }}>
               <CarouselContent>
-                {textEffects.map(effect => (
-                  <CarouselItem key={effect.id} className="basis-1/4 md:basis-1/5 lg:basis-1/7">
-                    <Card 
-                        className="overflow-hidden cursor-pointer"
-                        onClick={() => setActiveEffect(effect)}
-                    >
-                      <CardContent 
-                        className="h-20 flex items-center justify-center p-0 text-3xl font-bold"
-                        style={{
-                            backgroundColor: effect.id === 'none' ? '#e2e8f0' : '#333',
-                            ...effect.style
-                        }}
+                {textEffects.map(effect => {
+                  const effectStyle: React.CSSProperties = {
+                    backgroundColor: effect.id === 'none' ? '#e2e8f0' : '#333',
+                    color: effect.style.color || textColor,
+                  };
+                  if (effect.style.textShadow) {
+                      effectStyle.textShadow = effect.style.textShadow.replace(/{{color}}/g, effect.style.color || textColor);
+                  }
+                  
+                  return (
+                    <CarouselItem key={effect.id} className="basis-1/4 md:basis-1/5 lg:basis-1/7">
+                      <Card 
+                          className="overflow-hidden cursor-pointer"
+                          onClick={() => setActiveEffect(effect)}
                       >
-                       {effect.name}
-                      </CardContent>
-                    </Card>
-                  </CarouselItem>
-                ))}
+                        <CardContent 
+                          className="h-20 flex items-center justify-center p-0 text-3xl font-bold"
+                          style={effectStyle}
+                        >
+                        {effect.name}
+                        </CardContent>
+                      </Card>
+                    </CarouselItem>
+                  )
+                })}
               </CarouselContent>
               <CarouselPrevious className="-left-4" />
               <CarouselNext className="-right-4" />
