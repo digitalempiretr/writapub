@@ -30,7 +30,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Download, ImageIcon, LayoutTemplate, Star, Type, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -59,54 +59,6 @@ type Design = {
 
 type TextAlign = 'left' | 'center' | 'right';
 type BackgroundType = 'flat' | 'gradient' | 'image';
-
-function TabContentContainer({
-  activeTab,
-  closePanel,
-  ...props
-}: {
-  activeTab: string | null;
-  closePanel: () => void;
-  [key: string]: any; 
-}) {
-  if (!activeTab) return null;
-
-  return (
-    <div className="flex flex-col h-full">
-      <div className="w-full flex-shrink-0">
-          <div className="flex justify-end p-1 md:hidden">
-              <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={closePanel} 
-                  className="h-8 w-8 rounded-full bg-background hover:bg-muted"
-              >
-                  <X className="h-5 w-5" />
-                  <span className="sr-only">Close Panel</span>
-              </Button>
-          </div>
-      </div>
-      <div className="flex-grow overflow-y-auto">
-          {activeTab === 'designs' && (
-              <DesignsPanel {...props} />
-          )}
-          {activeTab === 'favorites' && (
-              <MyDesignsPanel {...props} />
-          )}
-          {activeTab === 'background' && (
-              <BackgroundSettings {...props} />
-          )}
-          {activeTab === 'text' && (
-              <TextSettings {...props} />
-          )}
-          {activeTab === 'download' && (
-              <DownloadPanel {...props} />
-          )}
-      </div>
-    </div>
-  );
-}
-
 
 export default function Home() {
   const [text, setText] = useState(defaultText);
@@ -628,75 +580,15 @@ textBox: {
     )
   }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled]);
 
-  const tabContentProps = {
-    activeTab: activeSettingsTab,
-    // Text props for TextSettings and CreativeMagicPanel
-    text, setText, handleGenerate, isLoading,
-    // Background props
-    backgroundTab,
-    setBackgroundTab: setBackgroundTab as (value: string) => void,
-    handleFeelLucky,
-    bgColor,
-    handleBgColorSelect,
-    imageBgUrl,
-    handleImageBgUrlSelect,
-    searchQuery,
-    setSearchQuery,
-    handleSearchImages,
-    isSearching,
-    searchedImages,
-    handleKeywordSearch,
-    searchPage,
-    isOverlayEnabled,
-    setIsOverlayEnabled: handleOverlayEnable,
-    overlayColor,
-    setOverlayColor,
-    overlayOpacity,
-    setOverlayOpacity,
-    gradientBg,
-    handleGradientBgSelect,
-    setSearchCarouselApi,
-    // Text settings props
-    textColor, setTextColor, textOpacity, setTextOpacity,
-    activeFont, handleFontChange, fontOptions,
-    isBold, setIsBold, isUppercase, setIsUppercase, textAlign, setTextAlign,
-    textShadow, setTextShadow, shadowColor, setShadowColor, shadowBlur, setShadowBlur,
-    shadowOffsetX, setShadowOffsetX, shadowOffsetY, setShadowOffsetY,
-    textStroke, setTextStroke, strokeColor, setStrokeColor, strokeWidth, setStrokeWidth,
-    isTextBoxEnabled, setIsTextBoxEnabled: handleTextBoxEnable,
-    rectBgColor, setRectBgColor, rectOpacity, setRectOpacity,
-    // Design/Download props
-    designs,
-    handleDownloadAll,
-    currentSlide,
-    handleDownload,
-    fileName,
-    setFileName,
-    handleApplyTemplate,
-    myDesigns,
-    handleSaveDesign,
-    handleDeleteDesign,
-    handleUpdateDesign,
-    editingDesignId,
-    handleEditClick,
-    handleCancelEdit,
-    editingName,
-    setEditingName,
-    designToDelete,
-    setDesignToDelete,
-    handleLogDesign,
-    closePanel,
-  };
-  
   const settingsPanel = (
     <CardFooter className="flex-col items-start p-0 bg-transparent md:rounded-lg">
       <TooltipProvider>
         <Tabs
           value={activeSettingsTab ?? ''}
           onValueChange={setActiveSettingsTab}
-          className="w-full flex flex-col-reverse md:flex-col"
+          className="w-full flex flex-col-reverse md:flex-col h-full"
         >
-          <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md">
+          <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md flex-shrink-0">
             <Tooltip>
               <TooltipTrigger asChild>
                 <TabsTrigger
@@ -778,12 +670,230 @@ textBox: {
               </TooltipContent>
             </Tooltip>
           </TabsList>
-          <div className="flex-grow w-full">
-            <div className="md:hidden">
-              {isMobilePanelOpen && <TabContentContainer {...tabContentProps} />}
+          <div className="flex-grow w-full overflow-hidden">
+            {/* Desktop View */}
+            <div className="hidden md:block h-full">
+              <TabsContent value="designs" className="h-full mt-0">
+                <DesignsPanel handleApplyTemplate={handleApplyTemplate} />
+              </TabsContent>
+              <TabsContent value="favorites" className="h-full mt-0">
+                 <MyDesignsPanel 
+                    myDesigns={myDesigns}
+                    handleSaveDesign={handleSaveDesign}
+                    handleDeleteDesign={handleDeleteDesign}
+                    handleUpdateDesign={handleUpdateDesign}
+                    editingDesignId={editingDesignId}
+                    handleEditClick={handleEditClick}
+                    handleCancelEdit={handleCancelEdit}
+                    editingName={editingName}
+                    setEditingName={setEditingName}
+                    designToDelete={designToDelete}
+                    setDesignToDelete={setDesignToDelete}
+                    handleLogDesign={handleLogDesign}
+                    handleApplyTemplate={handleApplyTemplate}
+                 />
+              </TabsContent>
+              <TabsContent value="background" className="h-full mt-0">
+                 <BackgroundSettings 
+                    backgroundTab={backgroundTab}
+                    setBackgroundTab={setBackgroundTab as (value: string) => void}
+                    handleFeelLucky={handleFeelLucky}
+                    bgColor={bgColor}
+                    handleBgColorSelect={handleBgColorSelect}
+                    imageBgUrl={imageBgUrl}
+                    handleImageBgUrlSelect={handleImageBgUrlSelect}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    handleSearchImages={handleSearchImages}
+                    isSearching={isSearching}
+                    searchedImages={searchedImages}
+                    handleKeywordSearch={handleKeywordSearch}
+                    searchPage={searchPage}
+                    isOverlayEnabled={isOverlayEnabled}
+                    setIsOverlayEnabled={handleOverlayEnable}
+                    overlayColor={overlayColor}
+                    setOverlayColor={setOverlayColor}
+                    overlayOpacity={overlayOpacity}
+                    setOverlayOpacity={setOverlayOpacity}
+                    gradientBg={gradientBg}
+                    handleGradientBgSelect={handleGradientBgSelect}
+                    setSearchCarouselApi={setSearchCarouselApi}
+                 />
+              </TabsContent>
+              <TabsContent value="text" className="h-full mt-0">
+                <TextSettings 
+                  text={text}
+                  setText={setText}
+                  handleGenerate={handleGenerate}
+                  isLoading={isLoading}
+                  textColor={textColor}
+                  setTextColor={setTextColor}
+                  textOpacity={textOpacity}
+                  setTextOpacity={setTextOpacity}
+                  activeFont={activeFont}
+                  handleFontChange={handleFontChange}
+                  fontOptions={fontOptions}
+                  isBold={isBold}
+                  setIsBold={setIsBold}
+                  isUppercase={isUppercase}
+                  setIsUppercase={setIsUppercase}
+                  textAlign={textAlign}
+                  setTextAlign={setTextAlign}
+                  textShadow={textShadow}
+                  setTextShadow={setTextShadow}
+                  shadowColor={shadowColor}
+                  setShadowColor={setShadowColor}
+                  shadowBlur={shadowBlur}
+                  setShadowBlur={setShadowBlur}
+                  shadowOffsetX={shadowOffsetX}
+                  setShadowOffsetX={setShadowOffsetX}
+                  shadowOffsetY={shadowOffsetY}
+                  setShadowOffsetY={setShadowOffsetY}
+                  textStroke={textStroke}
+                  setTextStroke={setTextStroke}
+                  strokeColor={strokeColor}
+                  setStrokeColor={setStrokeColor}
+                  strokeWidth={strokeWidth}
+                  setStrokeWidth={setStrokeWidth}
+                  isTextBoxEnabled={isTextBoxEnabled}
+                  setIsTextBoxEnabled={handleTextBoxEnable}
+                  rectBgColor={rectBgColor}
+                  setRectBgColor={setRectBgColor}
+                  rectOpacity={rectOpacity}
+                  setRectOpacity={setRectOpacity}
+                />
+              </TabsContent>
+              <TabsContent value="download" className="h-full mt-0">
+                <DownloadPanel 
+                  fileName={fileName}
+                  setFileName={setFileName}
+                  handleDownloadAll={handleDownloadAll}
+                  designs={designs}
+                  currentSlide={currentSlide}
+                  handleDownload={handleDownload}
+                />
+              </TabsContent>
             </div>
-            <div className="hidden md:block">
-                <TabContentContainer {...tabContentProps} />
+
+            {/* Mobile View: Render active tab inside the slidable panel */}
+             <div className="md:hidden">
+              {isMobilePanelOpen && (
+                <div className="flex flex-col h-full">
+                  <div className="w-full flex-shrink-0">
+                    <div className="flex justify-end p-1">
+                        <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            onClick={closePanel} 
+                            className="h-8 w-8 rounded-full bg-background hover:bg-muted"
+                        >
+                            <X className="h-5 w-5" />
+                            <span className="sr-only">Close Panel</span>
+                        </Button>
+                    </div>
+                  </div>
+                  <div className="flex-grow overflow-y-auto">
+                    {activeSettingsTab === 'designs' && <DesignsPanel handleApplyTemplate={handleApplyTemplate} />}
+                    {activeSettingsTab === 'favorites' && (
+                      <MyDesignsPanel 
+                        myDesigns={myDesigns}
+                        handleSaveDesign={handleSaveDesign}
+                        handleDeleteDesign={handleDeleteDesign}
+                        handleUpdateDesign={handleUpdateDesign}
+                        editingDesignId={editingDesignId}
+                        handleEditClick={handleEditClick}
+                        handleCancelEdit={handleCancelEdit}
+                        editingName={editingName}
+                        setEditingName={setEditingName}
+                        designToDelete={designToDelete}
+                        setDesignToDelete={setDesignToDelete}
+                        handleLogDesign={handleLogDesign}
+                        handleApplyTemplate={handleApplyTemplate}
+                      />
+                    )}
+                    {activeSettingsTab === 'background' && (
+                      <BackgroundSettings 
+                        backgroundTab={backgroundTab}
+                        setBackgroundTab={setBackgroundTab as (value: string) => void}
+                        handleFeelLucky={handleFeelLucky}
+                        bgColor={bgColor}
+                        handleBgColorSelect={handleBgColorSelect}
+                        imageBgUrl={imageBgUrl}
+                        handleImageBgUrlSelect={handleImageBgUrlSelect}
+                        searchQuery={searchQuery}
+                        setSearchQuery={setSearchQuery}
+                        handleSearchImages={handleSearchImages}
+                        isSearching={isSearching}
+                        searchedImages={searchedImages}
+                        handleKeywordSearch={handleKeywordSearch}
+                        searchPage={searchPage}
+                        isOverlayEnabled={isOverlayEnabled}
+                        setIsOverlayEnabled={handleOverlayEnable}
+                        overlayColor={overlayColor}
+                        setOverlayColor={setOverlayColor}
+                        overlayOpacity={overlayOpacity}
+                        setOverlayOpacity={setOverlayOpacity}
+                        gradientBg={gradientBg}
+                        handleGradientBgSelect={handleGradientBgSelect}
+                        setSearchCarouselApi={setSearchCarouselApi}
+                      />
+                    )}
+                    {activeSettingsTab === 'text' && (
+                      <TextSettings 
+                        text={text}
+                        setText={setText}
+                        handleGenerate={handleGenerate}
+                        isLoading={isLoading}
+                        textColor={textColor}
+                        setTextColor={setTextColor}
+                        textOpacity={textOpacity}
+                        setTextOpacity={setTextOpacity}
+                        activeFont={activeFont}
+                        handleFontChange={handleFontChange}
+                        fontOptions={fontOptions}
+                        isBold={isBold}
+                        setIsBold={setIsBold}
+                        isUppercase={isUppercase}
+                        setIsUppercase={setIsUppercase}
+                        textAlign={textAlign}
+                        setTextAlign={setTextAlign}
+                        textShadow={textShadow}
+                        setTextShadow={setTextShadow}
+                        shadowColor={shadowColor}
+                        setShadowColor={setShadowColor}
+                        shadowBlur={shadowBlur}
+                        setShadowBlur={setShadowBlur}
+                        shadowOffsetX={shadowOffsetX}
+                        setShadowOffsetX={setShadowOffsetX}
+                        shadowOffsetY={shadowOffsetY}
+                        setShadowOffsetY={setShadowOffsetY}
+                        textStroke={textStroke}
+                        setTextStroke={setTextStroke}
+                        strokeColor={strokeColor}
+                        setStrokeColor={setStrokeColor}
+                        strokeWidth={strokeWidth}
+                        setStrokeWidth={setStrokeWidth}
+                        isTextBoxEnabled={isTextBoxEnabled}
+                        setIsTextBoxEnabled={handleTextBoxEnable}
+                        rectBgColor={rectBgColor}
+                        setRectBgColor={setRectBgColor}
+                        rectOpacity={rectOpacity}
+                        setRectOpacity={setRectOpacity}
+                      />
+                    )}
+                    {activeSettingsTab === 'download' && (
+                       <DownloadPanel 
+                        fileName={fileName}
+                        setFileName={setFileName}
+                        handleDownloadAll={handleDownloadAll}
+                        designs={designs}
+                        currentSlide={currentSlide}
+                        handleDownload={handleDownload}
+                       />
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </Tabs>
@@ -910,5 +1020,3 @@ textBox: {
     </>
   );
 }
-
-    
