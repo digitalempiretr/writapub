@@ -171,7 +171,7 @@ export function BackgroundSettings({
                 ))}
               </CarouselContent>
             </Carousel>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center">
                 <Label htmlFor={`${baseId}-search-input`} className="sr-only">Search for images</Label>
                 <Input
                   id={`${baseId}-search-input`}
@@ -186,7 +186,7 @@ export function BackgroundSettings({
                 <TooltipProvider>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                    <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10 flex-shrink-0">
+                    <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10 flex-shrink-0 ml-2">
                         {isSearching && searchPage === 1 ? (
                         <Loader2 className="h-6 w-6 animate-spin" />
                         ) : (
@@ -200,7 +200,7 @@ export function BackgroundSettings({
                 </Tooltip>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                    <Button onClick={handleFeelLucky} variant="outline" className="h-10">
+                    <Button onClick={handleFeelLucky} variant="outline" className="h-10 ml-2">
                         <FeelLucky />
                         <span>Feel Lucky</span>
                     </Button>
