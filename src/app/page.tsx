@@ -605,7 +605,7 @@ textBox: {
   }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled, activeEffect]);
   
   const settingsPanel = (
-    <CardFooter className="flex-col items-start p-0 bg-transparent md:rounded-lg">
+    <CardFooter className="flex-col items-start p-0 bg-transparent md:rounded-lg h-full">
       <TooltipProvider>
         <Tabs
           value={activeSettingsTab ?? ''}
