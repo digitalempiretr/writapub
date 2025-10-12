@@ -96,5 +96,5 @@ export const pageInitialColors = {
     textColor: "#0F2027",
     gradientBg: gradientTemplates[0].css,
     rectBgColor: "#f4ede4",
-    overlayColor: "#7585A3",
+    overlayColor: "#008080",
 }

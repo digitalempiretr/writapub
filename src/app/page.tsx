@@ -163,7 +163,7 @@ export default function Home() {
 
   const [isOverlayEnabled, setIsOverlayEnabled] = useState(false);
   const [overlayColor, setOverlayColor] = useState(pageInitialColors.overlayColor);
-  const [overlayOpacity, setOverlayOpacity] = useState(0);
+  const [overlayOpacity, setOverlayOpacity] = useState(0.25);
 
   const [textShadow, setTextShadow] = useState(false);
   const [shadowColor, setShadowColor] = useState("#000000");
@@ -385,7 +385,7 @@ export default function Home() {
       setOverlayOpacity(0);
     } else {
       if (overlayOpacity === 0) {
-        setOverlayOpacity(0.3);
+        setOverlayOpacity(0.25);
       }
     }
   };
