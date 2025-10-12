@@ -209,7 +209,7 @@ export function BackgroundSettings({
             </Carousel>
           </div>
           <div className="space-y-2">
-            <Label>Inspiring Search</Label>
+            <Label>Find New Background</Label>
             <Carousel
               opts={{
                 align: "start",
