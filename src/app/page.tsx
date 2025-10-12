@@ -32,7 +32,7 @@ import {
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Star, Type, X } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Star, Type, X, Crop } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -50,6 +50,8 @@ import { DownloadPanel } from "@/components/download-panel";
 import { pageInitialColors } from "@/lib/colors";
 import { CreativeMagicPanel } from "@/components/creative-magic-panel";
 import { cn } from "@/lib/utils";
+import { FormatPanel } from "@/components/format-panel";
+import { textEffects, TextEffect } from "@/lib/text-effects";
 
 
 type Design = {
@@ -59,6 +61,19 @@ type Design = {
 
 type TextAlign = 'left' | 'center' | 'right';
 type BackgroundType = 'flat' | 'gradient' | 'image';
+
+type CanvasSize = {
+    name: 'Post' | 'Story' | 'Square';
+    width: number;
+    height: number;
+};
+
+const canvasSizes: CanvasSize[] = [
+    { name: 'Post', width: 1080, height: 1350 },
+    { name: 'Story', width: 1080, height: 1920 },
+    { name: 'Square', width: 1080, height: 1080 },
+];
+
 
 export default function Home() {
   const [text, setText] = useState(defaultText);
@@ -112,6 +127,8 @@ export default function Home() {
   const [searchedImages, setSearchedImages] = useState<string[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchPage, setSearchPage] = useState(1);
+  const [canvasSize, setCanvasSize] = useState<CanvasSize>(canvasSizes[0]);
+  const [activeEffect, setActiveEffect] = useState<TextEffect>(textEffects[0]);
 
   const [isTextBoxEnabled, setIsTextBoxEnabled] = useState(false);
   const [rectBgColor, setRectBgColor] = useState(pageInitialColors.rectBgColor);
@@ -547,7 +564,7 @@ textBox: {
     
     return (
         <ImageCanvas
-          key={`${backgroundType}-${activeFont.value}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadow}-${shadowColor}-${shadowBlur}-${shadowOffsetX}-${shadowOffsetY}-${textStroke}-${strokeColor}-${strokeWidth}`}
+          key={`${backgroundType}-${activeFont.value}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadow}-${shadowColor}-${shadowBlur}-${shadowOffsetX}-${shadowOffsetY}-${textStroke}-${strokeColor}-${strokeWidth}-${activeEffect.id}`}
           font={activeFont}
           text={design.text}
           isTitle={design.isTitle}
@@ -555,8 +572,8 @@ textBox: {
           textOpacity={textOpacity}
           backgroundColor={currentBg}
           backgroundImageUrl={imageUrl}
-          width={1080}
-          height={1350}
+          width={canvasSize.width}
+          height={canvasSize.height}
           onCanvasReady={(canvas) => {
             canvasRefs.current[index] = canvas;
           }}
@@ -576,9 +593,10 @@ textBox: {
           textStroke={textStroke}
           strokeColor={strokeColor}
           strokeWidth={strokeWidth}
+          activeEffect={activeEffect}
         />
     )
-  }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled]);
+  }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled, canvasSize, activeEffect]);
 
   const settingsPanel = (
     <CardFooter className="flex-col items-start p-0 bg-transparent md:rounded-lg">
@@ -588,7 +606,7 @@ textBox: {
           onValueChange={setActiveSettingsTab}
           className="w-full flex flex-col-reverse md:flex-col h-full"
         >
-          <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md flex-shrink-0">
+          <TabsList className="grid w-full grid-cols-6 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md flex-shrink-0">
             <Tooltip>
               <TooltipTrigger asChild>
                 <TabsTrigger
@@ -620,6 +638,22 @@ textBox: {
               <TooltipContent>
                 <p>Favorites</p>
               </TooltipContent>
+            </Tooltip>
+             <Tooltip>
+                <TooltipTrigger asChild>
+                    <TabsTrigger 
+                        value="format"
+                        onClick={() => {
+                            setActiveSettingsTab("format");
+                            setIsMobilePanelOpen(true)
+                        }}
+                    >
+                        <Crop />
+                    </TabsTrigger>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>Format</p>
+                </TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -693,6 +727,9 @@ textBox: {
                     handleApplyTemplate={handleApplyTemplate}
                  />
               </TabsContent>
+               <TabsContent value="format" className="h-full mt-0">
+                <FormatPanel canvasSize={canvasSize} setCanvasSize={setCanvasSize} canvasSizes={canvasSizes} />
+              </TabsContent>
               <TabsContent value="background" className="h-full mt-0">
                  <BackgroundSettings 
                     backgroundTab={backgroundTab}
@@ -761,6 +798,8 @@ textBox: {
                   setRectBgColor={setRectBgColor}
                   rectOpacity={rectOpacity}
                   setRectOpacity={setRectOpacity}
+                  activeEffect={activeEffect}
+                  setActiveEffect={setActiveEffect}
                 />
               </TabsContent>
               <TabsContent value="download" className="h-full mt-0">
@@ -811,6 +850,7 @@ textBox: {
                         handleApplyTemplate={handleApplyTemplate}
                       />
                     )}
+                    {activeSettingsTab === 'format' && <FormatPanel canvasSize={canvasSize} setCanvasSize={setCanvasSize} canvasSizes={canvasSizes} />}
                     {activeSettingsTab === 'background' && (
                       <BackgroundSettings 
                         backgroundTab={backgroundTab}
@@ -879,6 +919,8 @@ textBox: {
                         setRectBgColor={setRectBgColor}
                         rectOpacity={rectOpacity}
                         setRectOpacity={setRectOpacity}
+                        activeEffect={activeEffect}
+                        setActiveEffect={setActiveEffect}
                       />
                     )}
                     {activeSettingsTab === 'download' && (
@@ -933,14 +975,14 @@ textBox: {
         { isClient && designs.length > 0 && (
           <div id="designs-container" ref={designsRef} className="w-full pt-8 flex flex-col items-center">
               <div className="w-full mx-auto flex flex-col items-center">
-                  <div className="w-full max-w-md max-h-[70vh]">
+                  <div className="w-full max-w-md" style={{ maxHeight: `calc(${canvasSize.height / canvasSize.width * 100}vw)`}}>
                     <Carousel className="w-full" setApi={setCarouselApi} opts={{ dragFree: true }}>
                       <CarouselContent>
                         {designs.map((design, index) => (
                           <CarouselItem key={index} data-index={index}>
                             <div className="p-1 group relative">
-                              <Card className="overflow-hidden border-0">
-                                <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
+                              <Card className="overflow-hidden border-0" style={{aspectRatio: `${canvasSize.width}/${canvasSize.height}`}}>
+                                <CardContent className="p-0 h-full w-full relative bg-card">
                                   {renderCanvas(design, index)}
                                 </CardContent>
                               </Card>

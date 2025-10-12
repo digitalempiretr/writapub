@@ -33,7 +33,7 @@ type ImageCanvasProps = {
   textAlign: 'left' | 'center' | 'right';
   isBold: boolean;
   isUppercase: boolean;
-  textShadow: boolean;
+  textShadow: string;
   shadowColor: string;
   shadowBlur: number;
   shadowOffsetX: number;
@@ -41,6 +41,7 @@ type ImageCanvasProps = {
   textStroke: boolean;
   strokeColor: string;
   strokeWidth: number;
+  activeEffect: { id: string, style: React.CSSProperties };
 };
 
 // This function wraps text for titles.
@@ -218,6 +219,7 @@ export function ImageCanvas({
   textStroke,
   strokeColor,
   strokeWidth,
+  activeEffect,
 }: ImageCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const indexRef = useRef<number | null>(null);
@@ -290,8 +292,17 @@ export function ImageCanvas({
         ctx.textBaseline = 'top'; 
         ctx.font = `${fontWeight} ${fontSize}px "${fontName}"`;
         
-        // Apply shadow if enabled
-        if (textShadow) {
+        // Apply effects
+        if (activeEffect.id !== 'none') {
+            ctx.shadowColor = ''; // Reset for text-shadow string
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+            ctx.shadows = (activeEffect.style.textShadow || '').split(/,(?![^(]*\))/); // Split by comma not in parentheses
+            if (activeEffect.style.color) {
+                ctx.fillStyle = activeEffect.style.color as string;
+            }
+        } else if (textShadow) { // Apply manual shadow if no effect is selected
             ctx.shadowColor = shadowColor;
             ctx.shadowBlur = shadowBlur;
             ctx.shadowOffsetX = shadowOffsetX;
@@ -316,7 +327,8 @@ export function ImageCanvas({
         ctx.shadowBlur = 0;
         ctx.shadowOffsetX = 0;
         ctx.shadowOffsetY = 0;
-        
+        (ctx as any).shadows = [];
+
         if (!isTitle && indexRef.current !== null) {
           onTextRemaining(remainingText, indexRef.current);
         }
@@ -375,7 +387,7 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, isTitle, font, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, textStroke, strokeColor, strokeWidth]);
+  }, [text, isTitle, font, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, textStroke, strokeColor, strokeWidth, activeEffect]);
 
   return (
     <canvas

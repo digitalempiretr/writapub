@@ -23,6 +23,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { defaultSolidColors } from "@/lib/colors";
 import { Separator } from "./ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { textEffects, TextEffect } from "@/lib/text-effects";
 
 type TextSettingsProps = {
   text: string;
@@ -64,6 +65,8 @@ type TextSettingsProps = {
   setRectOpacity: (value: number) => void;
   isTextBoxEnabled: boolean;
   setIsTextBoxEnabled: (value: boolean) => void;
+  activeEffect: TextEffect;
+  setActiveEffect: (effect: TextEffect) => void;
 };
 
 export function TextSettings({
@@ -106,6 +109,8 @@ export function TextSettings({
   setRectOpacity,
   isTextBoxEnabled,
   setIsTextBoxEnabled,
+  activeEffect,
+  setActiveEffect,
 }: TextSettingsProps) {
   const baseId = useId();
   const [internalText, setInternalText] = useState(text);
@@ -136,7 +141,7 @@ export function TextSettings({
               rows={4}
               className="bg-background text-foreground placeholder:text-muted-foreground border pr-12"
           />
-           <div className="absolute bottom-2 right-9 md:bottom-1 md:right-9">
+           <div className="absolute md:bottom-2 md:right-5 bottom-1 right-9">
             <Button
               onClick={handleRegenerateClick}
               disabled={isLoading}
@@ -415,18 +420,23 @@ export function TextSettings({
             </div>
 
           <div className="pt-2">
-            <Carousel className="w-full" opts={{ dragFree: true }}>
+            <Label>Text Effects</Label>
+            <Carousel className="w-full" opts={{ dragFree: true, align: "start" }}>
               <CarouselContent>
-                {defaultSolidColors.map(color => (
-                  <CarouselItem key={color} className="basis-1/7">
-                    <Card className="overflow-hidden cursor-pointer bg-transparent border-0 shadow-none" onClick={() => setTextColor(color)}>
-                      <CardContent className="h-20 flex items-center justify-center p-0">
-                         <span
-                            className="font-['Playfair_Display'] text-5xl font-bold"
-                            style={{ color: color }}
-                          >
-                            W
-                          </span>
+                {textEffects.map(effect => (
+                  <CarouselItem key={effect.id} className="basis-1/4 md:basis-1/5 lg:basis-1/7">
+                    <Card 
+                        className="overflow-hidden cursor-pointer"
+                        onClick={() => setActiveEffect(effect)}
+                    >
+                      <CardContent 
+                        className="h-20 flex items-center justify-center p-0 text-3xl font-bold"
+                        style={{
+                            backgroundColor: effect.id === 'none' ? '#e2e8f0' : '#333',
+                            ...effect.style
+                        }}
+                      >
+                       {effect.name}
                       </CardContent>
                     </Card>
                   </CarouselItem>
@@ -442,5 +452,3 @@ export function TextSettings({
     </TooltipProvider>
   );
 }
-
-    
