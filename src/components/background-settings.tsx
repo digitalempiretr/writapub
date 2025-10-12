@@ -20,6 +20,7 @@ import { imageTemplates } from "@/lib/image-templates";
 import Image from "next/image";
 import { BgOverlayIcon, FeelLucky, TextBoxOpacity } from "./ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Switch } from "./ui/switch";
 
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "Art", "Minimal", "Abstract", "Dreamy", "Cinematic", "Surreal", "Vintage", "Futuristic", "Bohemian"];
 
@@ -38,6 +39,8 @@ type BackgroundSettingsProps = {
   searchedImages: string[];
   handleKeywordSearch: (keyword: string) => void;
   searchPage: number;
+  isOverlayEnabled: boolean;
+  setIsOverlayEnabled: (enabled: boolean) => void;
   overlayColor: string;
   setOverlayColor: (color: string) => void;
   overlayOpacity: number;
@@ -63,6 +66,8 @@ export function BackgroundSettings({
   searchedImages,
   handleKeywordSearch,
   searchPage,
+  isOverlayEnabled,
+  setIsOverlayEnabled,
   overlayColor,
   setOverlayColor,
   overlayOpacity,
@@ -82,6 +87,61 @@ export function BackgroundSettings({
             <TabsTrigger value="gradient">Gradient</TabsTrigger>
             <TabsTrigger value="image">Image</TabsTrigger>
           </TabsList>
+           <Popover>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="icon">
+                       <BgOverlayIcon color={isOverlayEnabled ? overlayColor : '#999'} />
+                    </Button>
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Overlay Settings</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <PopoverContent className="w-64 space-y-4">
+              <div className="flex items-center justify-between">
+                <Label htmlFor={`${baseId}-overlay-toggle`}>Image Overlay</Label>
+                <Switch
+                  id={`${baseId}-overlay-toggle`}
+                  checked={isOverlayEnabled}
+                  onCheckedChange={setIsOverlayEnabled}
+                />
+              </div>
+              {isOverlayEnabled && (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Label>Color</Label>
+                    <Input
+                      type="color"
+                      value={overlayColor}
+                      onChange={(e) => setOverlayColor(e.target.value)}
+                      className="h-8 p-1"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`${baseId}-overlay-opacity-slider`}>Opacity</Label>
+                    <div className="flex items-center gap-2">
+                      <Slider
+                        id={`${baseId}-overlay-opacity-slider`}
+                        max={1}
+                        min={0}
+                        step={0.01}
+                        value={[overlayOpacity]}
+                        onValueChange={(value) => setOverlayOpacity(value[0])}
+                      />
+                      <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
+                        {Math.round(overlayOpacity * 100)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </PopoverContent>
+          </Popover>
         </div>
         <TabsContent value="flat" className="pt-4 space-y-4">
           <Carousel className="w-full" opts={{ dragFree: true }}>
@@ -239,67 +299,6 @@ export function BackgroundSettings({
             </>
           )}
 
-          <div className="space-y-4 pt-4">
-            <Label>Overlay Settings</Label>
-            <div className="flex items-center gap-2">
-              <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="relative h-10 w-10">
-                    <Label htmlFor={`${baseId}-overlay-color-picker`} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
-                      <BgOverlayIcon color={overlayColor} />
-                    </Label>
-                    <Input
-                      id={`${baseId}-overlay-color-picker`}
-                      name="overlay-color-picker"
-                      type="color"
-                      value={overlayColor}
-                      onChange={(e) => setOverlayColor(e.target.value)}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Select Overlay Color</p>
-                </TooltipContent>
-              </Tooltip>
-              <Popover>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" size="icon">
-                        <TextBoxOpacity />
-                      </Button>
-                    </PopoverTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Overlay Opacity</p>
-                  </TooltipContent>
-                </Tooltip>
-                <PopoverContent className="w-56 space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor={`${baseId}-overlay-opacity-slider`}>Overlay Opacity</Label>
-                    <div className="flex items-center gap-2">
-                      <Slider
-                        id={`${baseId}-overlay-opacity-slider`}
-                        name="overlay-opacity-slider"
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        value={[overlayOpacity]}
-                        onValueChange={(value) => setOverlayOpacity(value[0])}
-                        className="flex-grow"
-                      />
-                      <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
-                        {Math.round(overlayOpacity * 100)}
-                      </div>
-                    </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
-              </TooltipProvider>
-            </div>
-          </div>
         </TabsContent>
       </Tabs>
     </div>

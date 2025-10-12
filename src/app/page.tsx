@@ -33,8 +33,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Star, Type, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Download, ImageIcon, LayoutTemplate, Star, Type, X, ArrowUp } from "lucide-react";
+import { useCallback, useEffect, useRef, useState, useId } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
 import { imageTemplates } from "@/lib/image-templates";
@@ -161,6 +161,7 @@ export default function Home() {
   const [rectBgColor, setRectBgColor] = useState(pageInitialColors.rectBgColor);
   const [rectOpacity, setRectOpacity] = useState(0);
 
+  const [isOverlayEnabled, setIsOverlayEnabled] = useState(false);
   const [overlayColor, setOverlayColor] = useState(pageInitialColors.overlayColor);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
 
@@ -378,6 +379,17 @@ export default function Home() {
     }
   };
 
+  const handleOverlayEnable = (enabled: boolean) => {
+    setIsOverlayEnabled(enabled);
+    if (!enabled) {
+      setOverlayOpacity(0);
+    } else {
+      if (overlayOpacity === 0) {
+        setOverlayOpacity(0.3);
+      }
+    }
+  };
+
 
   const handleApplyTemplate = (template: DesignTemplate) => {
     setBackgroundTab(template.background.type);
@@ -401,6 +413,7 @@ export default function Home() {
 
     setOverlayColor(template.overlay.color);
     setOverlayOpacity(template.overlay.opacity);
+    setIsOverlayEnabled(template.overlay.opacity > 0);
     
     toast({
       title: "Template Applied",
@@ -595,7 +608,7 @@ textBox: {
           rectColor={rectBgColor}
           rectOpacity={isTextBoxEnabled ? rectOpacity : 0}
           overlayColor={overlayColor}
-          overlayOpacity={overlayOpacity}
+          overlayOpacity={isOverlayEnabled ? overlayOpacity : 0}
           textAlign={textAlign}
           isBold={isBold}
           isUppercase={isUppercase}
@@ -609,7 +622,7 @@ textBox: {
           strokeWidth={strokeWidth}
         />
     )
-  }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled]);
+  }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadow, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled]);
 
   const tabContentProps = {
     activeTab: activeSettingsTab,
@@ -629,6 +642,8 @@ textBox: {
     searchedImages,
     handleKeywordSearch,
     searchPage,
+    isOverlayEnabled,
+    setIsOverlayEnabled: handleOverlayEnable,
     overlayColor,
     setOverlayColor,
     overlayOpacity,

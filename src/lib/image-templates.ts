@@ -1,5 +1,11 @@
 
 export const imageTemplates = [
+  { name: "bg-clouds", imageUrl: "https://i.ibb.co/KjNBYSMK/bg-clouds.jpg" },
+  { name: "bg-pink-Dock", imageUrl: "https://i.ibb.co/gFTNhzNw/bg-pink-Dock.jpg" },
+  { name: "lightWave", imageUrl: "https://i.ibb.co/G44Pqbxw/bg2.jpg" },
+  { name: "bg-night-Station", imageUrl: "https://i.ibb.co/fYCwYK0L/bg-night-Station.jpg" },
+  { name: "bg-casette", imageUrl: "https://i.ibb.co/7JRjdmHF/bg-Casette.jpg" },
+  { name: "bg-grass", imageUrl: "https://i.ibb.co/6c3XD0xk/bg-grass.jpg" },
   { name: "bgImage-28", imageUrl: "https://i.ibb.co/1jZdJPV/28.jpg" },
   { name: "square", imageUrl: "https://i.ibb.co/5hRnrGqX/25.jpg" },
   { name: "twoLines", imageUrl: "https://i.ibb.co/cSNxXVn5/1.jpg" },
