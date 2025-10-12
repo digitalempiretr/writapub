@@ -2,7 +2,10 @@
 export type TextEffect = {
   name: string;
   id: string;
-  style: React.CSSProperties;
+  style: {
+    color?: string;
+    textShadow?: string;
+  };
 };
 
 export const textEffects: TextEffect[] = [
@@ -15,7 +18,7 @@ export const textEffects: TextEffect[] = [
     name: 'Shadow',
     id: 'shadow',
     style: {
-      color: '#000',
+      color: '#000000',
       textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
     },
   },
@@ -23,7 +26,7 @@ export const textEffects: TextEffect[] = [
     name: 'Outline',
     id: 'outline',
     style: {
-      color: '#fff',
+      color: '#ffffff',
       textShadow: `
         -1px -1px 0 #000,  
          1px -1px 0 #000,
@@ -36,11 +39,11 @@ export const textEffects: TextEffect[] = [
     name: 'Neon',
     id: 'neon',
     style: {
-      color: '#fff',
+      color: '#ffffff',
       textShadow: `
-        0 0 7px #fff,
-        0 0 10px #fff,
-        0 0 21px #fff,
+        0 0 7px {{color}},
+        0 0 10px {{color}},
+        0 0 21px {{color}},
         0 0 42px #0fa,
         0 0 82px #0fa,
         0 0 92px #0fa,
@@ -55,9 +58,9 @@ export const textEffects: TextEffect[] = [
      style: {
       color: '#fefcc9',
       textShadow: `
-        0 0 5px #fefcc9, 
-        0 0 10px #fefcc9, 
-        0 0 15px #fefcc9, 
+        0 0 5px {{color}}, 
+        0 0 10px {{color}}, 
+        0 0 15px {{color}}, 
         0 0 20px #feec85, 
         0 0 30px #ffae34, 
         0 0 40px #ec760c, 

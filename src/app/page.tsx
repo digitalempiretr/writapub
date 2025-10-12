@@ -30,7 +30,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Download, ImageIcon, LayoutTemplate, Star, Type, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -522,30 +522,32 @@ textBox: {
     });
   }, [backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, toast]);
 
-    const handleEffectChange = (effect: TextEffect) => {
-        setActiveEffect(effect);
+  const handleEffectChange = (effect: TextEffect) => {
+    setActiveEffect(effect);
+    if (effect.id === 'none') {
         setTextShadowEnabled(false);
-        if (effect.id === 'none') {
-            setShadows([{ id: Date.now(), color: '#000000', offsetX: 5, offsetY: 5, blur: 5 }]);
-        } else {
-            if (effect.style.color) {
-                setTextColor(effect.style.color);
-            }
-            if (effect.style.textShadow) {
-                setTextShadowEnabled(true);
-                const parsedShadows = parseShadow(effect.style.textShadow);
-                setShadows(parsedShadows);
-            }
+        setShadows([{ id: Date.now(), color: '#000000', offsetX: 5, offsetY: 5, blur: 5 }]);
+    } else {
+        if (effect.style.color) {
+            setTextColor(effect.style.color);
         }
-    };
+        if (effect.style.textShadow) {
+            setTextShadowEnabled(true);
+            const parsedShadows = parseShadow(effect.style.textShadow.replace(/{{color}}/g, effect.style.color || textColor));
+            setShadows(parsedShadows);
+        } else {
+            setTextShadowEnabled(false);
+        }
+    }
+  };
 
-    const handleTextColorChange = (newColor: string) => {
-      setTextColor(newColor);
-      if (activeEffect.id !== 'none') {
-        setActiveEffect(textEffects[0]);
-        setTextShadowEnabled(false);
-      }
-    };
+  const handleTextColorChange = (newColor: string) => {
+    setTextColor(newColor);
+    if (activeEffect.id !== 'none' && activeEffect.style.textShadow) {
+      const newShadows = parseShadow(activeEffect.style.textShadow.replace(/{{color}}/g, newColor));
+      setShadows(newShadows);
+    }
+  };
   
   const renderCanvas = useCallback((design: Design, index: number) => {
     let currentBg: string | undefined;
