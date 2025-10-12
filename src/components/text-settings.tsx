@@ -170,7 +170,7 @@ export function TextSettings({
           <div className="space-y-4">
              <div className="overflow-x-auto pb-2 -mb-2">
                 <div className="flex items-center gap-2 flex-nowrap">
-                <div className="flex-shrink-0 min-w-[150px]">
+                <div className="flex-grow">
                   <Select value={activeFont.value} onValueChange={handleFontChange}>
                     <Tooltip>
                       <TooltipTrigger asChild>
