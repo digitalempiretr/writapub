@@ -179,7 +179,7 @@ export function TextSettings({
              <Label className="bg-zinc-200 p-2 px-6 rounded-md">TEXT SETTINGS</Label>
              <div className="overflow-x-auto pb-2 -mb-2">
                 <div className="flex items-center gap-2 flex-nowrap">
-                <div className="flex-grow">
+                <div className="flex-shrink-0 min-w-[150px]">
                   <Select value={activeFont.value} onValueChange={handleFontChange}>
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -200,7 +200,7 @@ export function TextSettings({
                     </SelectContent>
                   </Select>
                 </div>
-                 <Popover>
+                <Popover>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
@@ -233,7 +233,6 @@ export function TextSettings({
                     <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[lineHeight]} onValueChange={(v) => setLineHeight(v[0])} />
                   </PopoverContent>
                 </Popover>
-
 
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -560,3 +559,4 @@ export function TextSettings({
     </TooltipProvider>
   );
 }
+
