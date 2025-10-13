@@ -147,7 +147,7 @@ export default function Home() {
   }, [carouselApi]);
 
   const defaultFont = fontOptions.find(f => f.value === 'duru-sans') || fontOptions[0];
-  const [activeFont, setActiveFont] = useState<Omit<FontOption, 'size' | 'lineHeight'>>(defaultFont);
+  const [activeFont, setActiveFont] = useState<Omit<FontOption, "isTitle" | "width">>(defaultFont);
   const [fontSize, setFontSize] = useState(defaultFont.size);
   const [lineHeight, setLineHeight] = useState(defaultFont.lineHeight);
 
@@ -661,7 +661,7 @@ export default function Home() {
     
     return (
         <ImageCanvas
-          key={`${backgroundType}-${activeFont.fontFamily}-${fontSize}-${lineHeight}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadowEnabled}-${JSON.stringify(shadows)}-${textStroke}-${strokeColor}-${strokeWidth}-${activeEffect.id}-${canvasSize.width}-${canvasSize.height}`}
+          key={`${backgroundType}-${activeFont.value}-${fontSize}-${lineHeight}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadowEnabled}-${JSON.stringify(shadows)}-${textStroke}-${strokeColor}-${strokeWidth}-${activeEffect.id}-${canvasSize.width}-${canvasSize.height}`}
           text={design.text}
           isTitle={design.isTitle}
           fontFamily={activeFont.fontFamily}
@@ -816,14 +816,15 @@ export default function Home() {
        {isClient && designs.length > 0 && (
           <div id="mobile-settings-panel" ref={mobilePanelRef} className="md:hidden">
               {isMobilePanelOpen && <div className="fixed inset-0 bg-black/30 z-40" onClick={closePanel} />}
+              
               <div 
                 className={cn(
                   "fixed bottom-0 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
                   isMobilePanelOpen ? "translate-y-0" : "translate-y-full",
+                  "max-h-[75vh]"
                 )}
               >
-                 <div className="max-h-[75vh] flex flex-col">
-                  <TabContentContainer
+                 <TabContentContainer
                     activeTab={activeSettingsTab}
                     closePanel={closePanel}
                     // Background props
@@ -914,24 +915,28 @@ export default function Home() {
                     setCanvasSize={setCanvasSize}
                     canvasSizes={canvasSizes}
                   />
-                 </div>
               </div>
+
+              {/* This is the static tab list at the bottom */}
               <div 
                 className={cn(
                   "fixed bottom-0 left-0 right-0 z-40 bg-card border-t",
+                  "transition-transform duration-300 ease-in-out",
                   isMobilePanelOpen ? "translate-y-full" : "translate-y-0"
                 )}
               >
-                <Tabs value={activeSettingsTab ?? ''} onValueChange={setActiveSettingsTab}>
-                    <TabsList className="grid w-full grid-cols-6 h-14 p-1">
-                        <Tooltip><TooltipTrigger asChild><TabsTrigger value="designs" onClick={() => setIsMobilePanelOpen(true)}><LayoutTemplate /></TabsTrigger></TooltipTrigger><TooltipContent><p>Designs</p></TooltipContent></Tooltip>
-                        <Tooltip><TooltipTrigger asChild><TabsTrigger value="favorites" onClick={() => setIsMobilePanelOpen(true)}><Star /></TabsTrigger></TooltipTrigger><TooltipContent><p>Favorites</p></TooltipContent></Tooltip>
-                        <Tooltip><TooltipTrigger asChild><TabsTrigger value="format" onClick={() => setIsMobilePanelOpen(true)}><Frame /></TabsTrigger></TooltipTrigger><TooltipContent><p>Format</p></TooltipContent></Tooltip>
-                        <Tooltip><TooltipTrigger asChild><TabsTrigger value="background" onClick={() => setIsMobilePanelOpen(true)}><ImageIcon /></TabsTrigger></TooltipTrigger><TooltipContent><p>Background</p></TooltipContent></Tooltip>
-                        <Tooltip><TooltipTrigger asChild><TabsTrigger value="text" onClick={() => setIsMobilePanelOpen(true)}><Type /></TabsTrigger></TooltipTrigger><TooltipContent><p>Text</p></TooltipContent></Tooltip>
-                        <Tooltip><TooltipTrigger asChild><TabsTrigger value="download" onClick={() => setIsMobilePanelOpen(true)}><Download /></TabsTrigger></TooltipTrigger><TooltipContent><p>Download</p></TooltipContent></Tooltip>
-                    </TabsList>
-                </Tabs>
+                <TooltipProvider>
+                  <Tabs value={activeSettingsTab ?? ''} onValueChange={setActiveSettingsTab}>
+                      <TabsList className="grid w-full grid-cols-6 h-14 p-1">
+                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="designs" onClick={() => setIsMobilePanelOpen(true)}><LayoutTemplate /></TabsTrigger></TooltipTrigger><TooltipContent><p>Designs</p></TooltipContent></Tooltip>
+                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="favorites" onClick={() => setIsMobilePanelOpen(true)}><Star /></TabsTrigger></TooltipTrigger><TooltipContent><p>Favorites</p></TooltipContent></Tooltip>
+                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="format" onClick={() => setIsMobilePanelOpen(true)}><Frame /></TabsTrigger></TooltipTrigger><TooltipContent><p>Format</p></TooltipContent></Tooltip>
+                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="background" onClick={() => setIsMobilePanelOpen(true)}><ImageIcon /></TabsTrigger></TooltipTrigger><TooltipContent><p>Background</p></TooltipContent></Tooltip>
+                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="text" onClick={() => setIsMobilePanelOpen(true)}><Type /></TabsTrigger></TooltipTrigger><TooltipContent><p>Text</p></TooltipContent></Tooltip>
+                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="download" onClick={() => setIsMobilePanelOpen(true)}><Download /></TabsTrigger></TooltipTrigger><TooltipContent><p>Download</p></TooltipContent></Tooltip>
+                      </TabsList>
+                  </Tabs>
+                </TooltipProvider>
               </div>
           </div>
         )}
