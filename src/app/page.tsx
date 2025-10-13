@@ -398,6 +398,7 @@ export default function Home() {
   const handleEffectChange = (effect: TextEffect) => {
     setActiveEffect(effect);
   
+    // If the effect has a specific font, apply it.
     if (effect.style.fontFamily) {
       const newFont = fontOptions.find(f => f.fontFamily === effect.style.fontFamily);
       if (newFont) {
@@ -423,7 +424,6 @@ export default function Home() {
       }
     }
   };
-  
 
   const handleApplyTemplate = (template: DesignTemplate) => {
     setBackgroundTab(template.background.type);
@@ -883,7 +883,11 @@ textBox: {
                 <TabContentContainer
                   activeTab={activeSettingsTab}
                   closePanel={closePanel}
-                  // Background props
+                  // Pass all props here
+                  text={text}
+                  setText={setText}
+                  handleGenerate={handleGenerate}
+                  isLoading={isLoading}
                   backgroundTab={backgroundTab}
                   setBackgroundTab={setBackgroundTab as (value: string) => void}
                   handleFeelLucky={handleFeelLucky}
@@ -907,11 +911,6 @@ textBox: {
                   gradientBg={gradientBg}
                   handleGradientBgSelect={handleGradientBgSelect}
                   setSearchCarouselApi={setSearchCarouselApi}
-                  // Text props
-                  text={text}
-                  setText={setText}
-                  handleGenerate={handleGenerate}
-                  isLoading={isLoading}
                   textColor={textColor}
                   setTextColor={handleTextColorChange}
                   textOpacity={textOpacity}
@@ -1139,6 +1138,7 @@ textBox: {
                     setRectOpacity={setRectOpacity}
                     activeEffect={activeEffect}
                     setActiveEffect={handleEffectChange}
+                    // Design/Download props
                     handleApplyTemplate={handleApplyTemplate}
                     myDesigns={myDesigns}
                     handleSaveDesign={handleSaveDesign}
@@ -1165,7 +1165,8 @@ textBox: {
             {/* This is the static tab list at the bottom */}
             <div 
               className={cn(
-                "fixed bottom-0 left-0 right-0 z-50"
+                "fixed bottom-0 left-0 right-0 z-50",
+                isMobilePanelOpen ? "translate-y-full" : "translate-y-0"
               )}
             >
               {settingsPanel}
