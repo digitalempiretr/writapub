@@ -200,7 +200,7 @@ export function TextSettings({
                     </SelectContent>
                   </Select>
                 </div>
-                <Popover>
+                 <Popover>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
@@ -211,14 +211,20 @@ export function TextSettings({
                     </TooltipTrigger>
                     <TooltipContent><p>Font Size & Line Height</p></TooltipContent>
                   </Tooltip>
-                  <PopoverContent className="w-56 space-y-4">
+                  <PopoverContent className="w-64 space-y-4">
                     <div className="space-y-2">
                         <Label htmlFor={`${baseId}-font-size-slider`}>Font Size</Label>
-                        <Slider id={`${baseId}-font-size-slider`} max={200} min={20} step={2} value={[fontSize]} onValueChange={(v) => setFontSize(v[0])} />
+                         <div className="flex items-center gap-2">
+                            <Slider id={`${baseId}-font-size-slider`} max={200} min={20} step={1} value={[fontSize]} onValueChange={(v) => setFontSize(v[0])} />
+                            <Input type="number" value={fontSize} onChange={(e) => setFontSize(Number(e.target.value))} className="w-20 h-8" />
+                         </div>
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor={`${baseId}-line-height-slider`}>Line Height</Label>
-                        <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[lineHeight]} onValueChange={(v) => setLineHeight(v[0])} />
+                        <div className="flex items-center gap-2">
+                            <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[lineHeight]} onValueChange={(v) => setLineHeight(v[0])} />
+                             <Input type="number" value={lineHeight} onChange={(e) => setLineHeight(Number(e.target.value))} step="0.1" className="w-20 h-8" />
+                        </div>
                     </div>
                   </PopoverContent>
                 </Popover>
@@ -528,7 +534,7 @@ export function TextSettings({
                           onClick={() => setActiveEffect(effect)}
                       >
                         <CardContent 
-                          className="h-20 flex items-center justify-center p-0 text-5xl"
+                          className="h-20 flex items-center justify-center p-0 text-3xl"
                           style={effectStyle}
                         >
                           W
