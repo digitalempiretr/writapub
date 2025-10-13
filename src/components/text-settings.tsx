@@ -209,28 +209,17 @@ export function TextSettings({
                         </Button>
                       </PopoverTrigger>
                     </TooltipTrigger>
-                    <TooltipContent><p>Font Size</p></TooltipContent>
+                    <TooltipContent><p>Font Size & Line Height</p></TooltipContent>
                   </Tooltip>
                   <PopoverContent className="w-56 space-y-4">
-                    <Label htmlFor={`${baseId}-font-size-slider`}>Font Size</Label>
-                    <Slider id={`${baseId}-font-size-slider`} max={200} min={20} step={2} value={[fontSize]} onValueChange={(v) => setFontSize(v[0])} />
-                  </PopoverContent>
-                </Popover>
-
-                <Popover>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" size="icon" className="h-10 w-10 flex-shrink-0">
-                          <Baseline className="h-5 w-5" />
-                        </Button>
-                      </PopoverTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Line Height</p></TooltipContent>
-                  </Tooltip>
-                  <PopoverContent className="w-56 space-y-4">
-                    <Label htmlFor={`${baseId}-line-height-slider`}>Line Height</Label>
-                    <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[lineHeight]} onValueChange={(v) => setLineHeight(v[0])} />
+                    <div className="space-y-2">
+                        <Label htmlFor={`${baseId}-font-size-slider`}>Font Size</Label>
+                        <Slider id={`${baseId}-font-size-slider`} max={200} min={20} step={2} value={[fontSize]} onValueChange={(v) => setFontSize(v[0])} />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor={`${baseId}-line-height-slider`}>Line Height</Label>
+                        <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[lineHeight]} onValueChange={(v) => setLineHeight(v[0])} />
+                    </div>
                   </PopoverContent>
                 </Popover>
 
@@ -559,3 +548,5 @@ export function TextSettings({
     </TooltipProvider>
   );
 }
+
+    
