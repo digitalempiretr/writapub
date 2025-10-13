@@ -6,6 +6,7 @@ export type TextEffect = {
     color?: string;
     textShadow?: string;
     glowColor?: string; // Add this for effects like Neon
+    fontSmoothing?: React.CSSProperties;
   };
   previewBg?: string;
 };
@@ -59,7 +60,11 @@ export const textEffects: TextEffect[] = [
         0 18px 18px rgba(0,0,0,.25),
         0 24px 24px rgba(0,0,0,.2),
         0 36px 36px rgba(0,0,0,.15)
-    `,
+      `,
+      fontSmoothing: {
+        WebkitFontSmoothing: 'antialiased',
+        MozOsxFontSmoothing: 'grayscale',
+      },
     },
     previewBg: '#fc3153',
   },

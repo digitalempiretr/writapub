@@ -431,6 +431,17 @@ export default function Home() {
 
     const newFont = fontOptions.find(f => f.value === template.font.value) || fontOptions[0];
     setActiveFont(newFont);
+    
+    // Defer effect change to after color change
+    setTimeout(() => {
+      if (template.effect?.id) {
+        const effect = textEffects.find(e => e.id === template.effect!.id) || textEffects[0];
+        handleEffectChange(effect);
+      } else {
+        handleEffectChange(textEffects[0]); // Reset to 'none' if no effect
+      }
+    }, 0);
+    
     setTextColor(template.font.color);
 
     setRectBgColor(template.textBox.color);
@@ -440,13 +451,6 @@ export default function Home() {
     setOverlayColor(template.overlay.color);
     setOverlayOpacity(template.overlay.opacity);
     setIsOverlayEnabled(template.overlay.opacity > 0);
-
-    if (template.effect?.id) {
-        const effect = textEffects.find(e => e.id === template.effect!.id) || textEffects[0];
-        handleEffectChange(effect);
-    } else {
-        handleEffectChange(textEffects[0]);
-    }
     
     toast({
       title: "Template Applied",
@@ -612,7 +616,7 @@ textBox: {
     if (activeEffect && activeEffect.id !== 'none' && activeEffect.style.textShadow) {
       const finalShadowString = activeEffect.style.textShadow
         .replace(/{{color}}/g, newColor)
-        .replace(/{{glow}}/g, activeEffect.style.glowColor ? newColor : activeEffect.style.color || newColor);
+        .replace(/{{glow}}/g, newColor);
       const newShadows = parseShadow(finalShadowString);
       setShadows(newShadows);
     }
@@ -669,6 +673,7 @@ textBox: {
           textStroke={textStroke}
           strokeColor={strokeColor}
           strokeWidth={strokeWidth}
+          fontSmoothing={activeEffect.style.fontSmoothing}
         />
     )
   }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled, activeEffect]);
@@ -1062,21 +1067,104 @@ textBox: {
                 "fixed bottom-0 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
                  isMobilePanelOpen ? "translate-y-0" : "translate-y-full"
               )}
+              style={{ bottom: isMobilePanelOpen ? '48px' : '0' }}
             >
                 <div className={cn(
                     "flex flex-col",
                     isMobilePanelOpen ? "max-h-[75vh]" : "max-h-0"
                   )}
                 >
-                  {settingsPanel}
+                  <TabContentContainer
+                    activeTab={activeSettingsTab}
+                    closePanel={closePanel}
+                    // Background props
+                    backgroundTab={backgroundTab}
+                    setBackgroundTab={setBackgroundTab as (value: string) => void}
+                    handleFeelLucky={handleFeelLucky}
+                    bgColor={bgColor}
+                    handleBgColorSelect={handleBgColorSelect}
+                    imageBgUrl={imageBgUrl}
+                    handleImageBgUrlSelect={handleImageBgUrlSelect}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    handleSearchImages={handleSearchImages}
+                    isSearching={isSearching}
+                    searchedImages={searchedImages}
+                    handleKeywordSearch={handleKeywordSearch}
+                    searchPage={searchPage}
+                    isOverlayEnabled={isOverlayEnabled}
+                    setIsOverlayEnabled={handleOverlayEnable}
+                    overlayColor={overlayColor}
+                    setOverlayColor={setOverlayColor}
+                    overlayOpacity={overlayOpacity}
+                    setOverlayOpacity={setOverlayOpacity}
+                    gradientBg={gradientBg}
+                    handleGradientBgSelect={handleGradientBgSelect}
+                    setSearchCarouselApi={setSearchCarouselApi}
+                    // Text props
+                    text={text}
+                    setText={setText}
+                    handleGenerate={handleGenerate}
+                    isLoading={isLoading}
+                    textColor={textColor}
+                    setTextColor={handleTextColorChange}
+                    textOpacity={textOpacity}
+                    setTextOpacity={setTextOpacity}
+                    activeFont={activeFont}
+                    handleFontChange={handleFontChange}
+                    fontOptions={fontOptions}
+                    isBold={isBold}
+                    setIsBold={setIsBold}
+                    isUppercase={isUppercase}
+                    setIsUppercase={setIsUppercase}
+                    textAlign={textAlign}
+                    setTextAlign={setTextAlign}
+                    textShadowEnabled={textShadowEnabled}
+                    setTextShadowEnabled={setTextShadowEnabled}
+                    shadows={shadows}
+                    setShadows={setShadows}
+                    textStroke={textStroke}
+                    setTextStroke={setTextStroke}
+                    strokeColor={strokeColor}
+                    setStrokeColor={setStrokeColor}
+                    strokeWidth={strokeWidth}
+                    setStrokeWidth={setStrokeWidth}
+                    isTextBoxEnabled={isTextBoxEnabled}
+                    setIsTextBoxEnabled={handleTextBoxEnable}
+                    rectBgColor={rectBgColor}
+                    setRectBgColor={setRectBgColor}
+                    rectOpacity={rectOpacity}
+                    setRectOpacity={setRectOpacity}
+                    activeEffect={activeEffect}
+                    setActiveEffect={handleEffectChange}
+                    // Design/Download props
+                    handleApplyTemplate={handleApplyTemplate}
+                    myDesigns={myDesigns}
+                    handleSaveDesign={handleSaveDesign}
+                    handleDeleteDesign={handleDeleteDesign}
+                    handleUpdateDesign={handleUpdateDesign}
+                    editingDesignId={editingDesignId}
+                    handleEditClick={handleEditClick}
+                    handleCancelEdit={handleCancelEdit}
+                    editingName={editingName}
+                    setEditingName={setEditingName}
+                    designToDelete={designToDelete}
+                    setDesignToDelete={setDesignToDelete}
+                    handleLogDesign={handleLogDesign}
+                    fileName={fileName}
+                    setFileName={setFileName}
+                    handleDownloadAll={handleDownloadAll}
+                    designs={designs}
+                    currentSlide={currentSlide}
+                    handleDownload={handleDownload}
+                  />
                 </div>
             </div>
 
             {/* This is the static tab list at the bottom */}
             <div 
               className={cn(
-                "fixed bottom-0 left-0 right-0 z-40",
-                isMobilePanelOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+                "fixed bottom-0 left-0 right-0 z-40 bg-card border-t"
               )}
             >
               {settingsPanel}

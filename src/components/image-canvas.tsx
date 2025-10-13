@@ -39,6 +39,7 @@ type ImageCanvasProps = {
   textStroke: boolean;
   strokeColor: string;
   strokeWidth: number;
+  fontSmoothing?: React.CSSProperties;
 };
 
 // This function wraps text for titles.
@@ -236,6 +237,7 @@ export function ImageCanvas({
   textStroke,
   strokeColor,
   strokeWidth,
+  fontSmoothing
 }: ImageCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const indexRef = useRef<number | null>(null);
@@ -382,7 +384,7 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, isTitle, font, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth]);
+  }, [text, isTitle, font, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing]);
 
   return (
     <canvas
@@ -390,6 +392,7 @@ export function ImageCanvas({
       width={width}
       height={height}
       className="w-full h-full"
+      style={fontSmoothing}
     />
   );
 }
