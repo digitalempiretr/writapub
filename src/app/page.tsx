@@ -590,14 +590,14 @@ textBox: {
             setTextShadowEnabled(false);
         }
     }
-};
+  };
 
   const handleTextColorChange = (newColor: string) => {
     setTextColor(newColor);
     if (activeEffect && activeEffect.id !== 'none' && activeEffect.style.textShadow) {
       const finalShadowString = activeEffect.style.textShadow
         .replace(/{{color}}/g, newColor)
-        .replace(/{{glow}}/g, activeEffect.style.glowColor || newColor);
+        .replace(/{{glow}}/g, activeEffect.style.glowColor ? newColor : activeEffect.style.color || newColor);
       const newShadows = parseShadow(finalShadowString);
       setShadows(newShadows);
     }
@@ -1045,10 +1045,14 @@ textBox: {
             <div 
               className={cn(
                 "fixed bottom-0 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
-                isMobilePanelOpen ? "translate-y-0" : "translate-y-full"
+                 isMobilePanelOpen ? "translate-y-0" : "translate-y-full"
               )}
             >
-                <div className="max-h-[75vh] flex flex-col">
+                <div className={cn(
+                    "flex flex-col",
+                    isMobilePanelOpen ? "max-h-[75vh]" : "max-h-0"
+                  )}
+                >
                   {settingsPanel}
                 </div>
             </div>

@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useId, useState, useEffect } from "react";
@@ -477,12 +478,14 @@ export function TextSettings({
                 {textEffects.map(effect => {
                   const effectStyle: React.CSSProperties = {
                     backgroundColor: effect.previewBg || (effect.id === 'none' ? '#e2e8f0' : '#333'),
-                    color: effect.style.color || textColor,
                   };
+                  const finalColor = effect.style.color || textColor;
+                  effectStyle.color = finalColor;
+
                   if (effect.style.textShadow) {
                       const finalShadowString = effect.style.textShadow
-                        .replace(/{{color}}/g, effect.style.color || textColor)
-                        .replace(/{{glow}}/g, effect.style.glowColor || effect.style.color || textColor);
+                        .replace(/{{color}}/g, finalColor)
+                        .replace(/{{glow}}/g, effect.style.glowColor || finalColor);
                       effectStyle.textShadow = finalShadowString;
                   }
                   
@@ -513,3 +516,5 @@ export function TextSettings({
     </TooltipProvider>
   );
 }
+
+    
