@@ -12,9 +12,9 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Input } from "@/components/ui/input";
 import { TextColorChooseIcon, TextBgBoxIcon, TextBoxOpacity, TextStrokeIcon, RefreshIcon } from "@/components/ui/icons";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FontOption } from "@/components/image-canvas";
+import type { FontOption } from "@/lib/font-options";
 import { Button } from "@/components/ui/button";
-import { Bold, CaseUpper, Sparkles, AlignLeft, AlignCenter, AlignRight, Loader2, Trash2, Plus } from "lucide-react";
+import { Bold, CaseUpper, Sparkles, AlignLeft, AlignCenter, AlignRight, Loader2, Trash2, Plus, Baseline, Text } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
@@ -42,9 +42,13 @@ type TextSettingsProps = {
   setTextColor: (color: string) => void;
   textOpacity: number;
   setTextOpacity: (value: number) => void;
-  activeFont: FontOption;
+  activeFont: Omit<FontOption, "isTitle" | "width">;
   handleFontChange: (value: string) => void;
-  fontOptions: FontOption[];
+  fontOptions: Omit<FontOption, "isTitle" | "width">[];
+  fontSize: number;
+  setFontSize: (value: number) => void;
+  lineHeight: number;
+  setLineHeight: (value: number) => void;
   isBold: boolean;
   setIsBold: (value: boolean) => void;
   isUppercase: boolean;
@@ -83,6 +87,10 @@ export function TextSettings({
   activeFont,
   handleFontChange,
   fontOptions,
+  fontSize,
+  setFontSize,
+  lineHeight,
+  setLineHeight,
   isBold,
   setIsBold,
   isUppercase,
@@ -192,6 +200,40 @@ export function TextSettings({
                     </SelectContent>
                   </Select>
                 </div>
+                 <Popover>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" size="icon" className="h-10 w-10 flex-shrink-0">
+                          <Text className="h-5 w-5" />
+                        </Button>
+                      </PopoverTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent><p>Font Size</p></TooltipContent>
+                  </Tooltip>
+                  <PopoverContent className="w-56 space-y-4">
+                    <Label htmlFor={`${baseId}-font-size-slider`}>Font Size</Label>
+                    <Slider id={`${baseId}-font-size-slider`} max={200} min={20} step={2} value={[fontSize]} onValueChange={(v) => setFontSize(v[0])} />
+                  </PopoverContent>
+                </Popover>
+
+                <Popover>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" size="icon" className="h-10 w-10 flex-shrink-0">
+                          <Baseline className="h-5 w-5" />
+                        </Button>
+                      </PopoverTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent><p>Line Height</p></TooltipContent>
+                  </Tooltip>
+                  <PopoverContent className="w-56 space-y-4">
+                    <Label htmlFor={`${baseId}-line-height-slider`}>Line Height</Label>
+                    <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[lineHeight]} onValueChange={(v) => setLineHeight(v[0])} />
+                  </PopoverContent>
+                </Popover>
+
 
                 <Tooltip>
                   <TooltipTrigger asChild>

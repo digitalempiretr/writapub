@@ -8,17 +8,18 @@ export type FontOption = {
   value: string;
   label: string;
   fontFamily: string;
-  bodyWeight: string | number;
-  titleWeight: string | number;
-  titleSize: number;
-  bodySize: number;
+  weight: string | number;
+  size: number;
   lineHeight: number;
 };
 
 type ImageCanvasProps = {
   text: string;
   isTitle: boolean;
-  font: FontOption;
+  fontFamily: string;
+  fontWeight: string | number;
+  fontSize: number;
+  lineHeight: number;
   backgroundColor?: string;
   textColor: string;
   textOpacity: number;
@@ -218,7 +219,10 @@ function hexToRgba(hex: string, alpha: number) {
 export function ImageCanvas({
   text,
   isTitle,
-  font,
+  fontFamily,
+  fontWeight,
+  fontSize: propFontSize,
+  lineHeight: propLineHeight,
   backgroundColor,
   textColor,
   textOpacity,
@@ -240,13 +244,12 @@ export function ImageCanvas({
   strokeColor,
   strokeWidth,
   fontSmoothing,
-  shadowBaseFontSize
+  shadowBaseFontSize,
 }: ImageCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const indexRef = useRef<number | null>(null);
 
   useEffect(() => {
-    // Find index once and store it
     if (canvasRef.current && indexRef.current === null) {
       const parentElement = canvasRef.current.closest('[data-index]');
       if (parentElement) {
@@ -263,19 +266,17 @@ export function ImageCanvas({
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
       
-      const baseWeight = isTitle ? font.titleWeight : font.bodyWeight;
-      const fontWeight = isBold ? Math.min(Number(baseWeight) + 300, 900) : baseWeight;
-      const baseFontSize = isTitle ? font.titleSize : font.bodySize;
-      const fontSize = baseFontSize * (width/1080);
-      const fontName = font.fontFamily;
-      const lineHeight = isTitle ? fontSize * 1.2 : font.lineHeight * (height/1350);
+      const finalFontWeight = isBold ? Math.min(Number(fontWeight) + 300, 900) : fontWeight;
+      
+      const scalingFactor = width / 1080;
+      const finalFontSize = (isTitle ? propFontSize * 1.2 : propFontSize) * scalingFactor;
+      const finalLineHeight = finalFontSize * propLineHeight;
 
-      const scaleFactor = shadowBaseFontSize ? fontSize / shadowBaseFontSize : 1;
+      const scaleFactor = shadowBaseFontSize ? finalFontSize / (shadowBaseFontSize * scalingFactor) : 1;
 
       const processedText = isUppercase ? text.toUpperCase() : text;
 
-      // Ensure the font is loaded before using it
-      await document.fonts.load(`${fontWeight} ${fontSize}px "${fontName}"`);
+      await document.fonts.load(`${finalFontWeight} ${finalFontSize}px "${fontFamily}"`);
       
       ctx.clearRect(0, 0, width, height);
       
@@ -286,7 +287,7 @@ export function ImageCanvas({
       const textPadding = 50 * (width / 1080);
       const textMaxWidth = rectWidth - (textPadding * 2);
 
-      ctx.font = `${fontWeight} ${fontSize}px "${fontName}"`;
+      ctx.font = `${finalFontWeight} ${finalFontSize}px "${fontFamily}"`;
 
       let remainingText = '';
       let linesToDraw: string[] = [];
@@ -300,23 +301,19 @@ export function ImageCanvas({
       }
 
       const drawLayout = () => {
-        // Draw overlay if an image is used
         if (backgroundImageUrl && overlayColor && (overlayOpacity || overlayOpacity === 0)) {
           ctx.fillStyle = hexToRgba(overlayColor, overlayOpacity);
           ctx.fillRect(0, 0, width, height);
         }
 
-        // Draw the text box rectangle
         ctx.fillStyle = hexToRgba(rectColor, rectOpacity);
         ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
 
-        // Set up text properties
         const finalTextColor = hexToRgba(textColor, textOpacity);
         ctx.textAlign = textAlign;
         ctx.textBaseline = 'top'; 
-        ctx.font = `${fontWeight} ${fontSize}px "${fontName}"`;
+        ctx.font = `${finalFontWeight} ${finalFontSize}px "${fontFamily}"`;
         
-        // Calculate text position based on alignment
         let textX;
         if (textAlign === 'left') {
             textX = rectX + textPadding;
@@ -326,8 +323,7 @@ export function ImageCanvas({
             textX = rectX + rectWidth / 2;
         }
         
-        // Draw the text
-        wrapAndDrawText(ctx, linesToDraw, textX, rectY, lineHeight, rectHeight, 
+        wrapAndDrawText(ctx, linesToDraw, textX, rectY, finalLineHeight, rectHeight, 
             textStroke, strokeColor, strokeWidth,
             textShadowEnabled, shadows, finalTextColor, scaleFactor
         );
@@ -338,7 +334,6 @@ export function ImageCanvas({
         
         onCanvasReady(canvas);
       };
-
 
       if (backgroundImageUrl) {
         const img = new Image();
@@ -390,7 +385,7 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, isTitle, font, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing, shadowBaseFontSize]);
+  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing, shadowBaseFontSize]);
 
   return (
     <canvas
