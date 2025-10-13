@@ -10,11 +10,11 @@ import {
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
-import { TextColorChooseIcon, TextBgBoxIcon, TextBoxOpacity, TextStrokeIcon, RefreshIcon, FontSizeIcon } from "@/components/ui/icons";
+import { TextColorChooseIcon, TextBgBoxIcon, TextBoxOpacity, TextStrokeIcon, RefreshIcon, FontSizeIcon, TextShadowIcon } from "@/components/ui/icons";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { FontOption } from "@/lib/font-options";
+import { FontOption } from "@/lib/font-options";
 import { Button } from "@/components/ui/button";
-import { Bold, CaseUpper, Sparkles, AlignLeft, AlignCenter, AlignRight, Loader2, Trash2, Plus, Baseline } from "lucide-react";
+import { Bold, CaseUpper, AlignLeft, AlignCenter, AlignRight, Loader2, Trash2, Plus, Baseline } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
@@ -337,7 +337,7 @@ export function TextSettings({
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
                         <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10" data-active={textShadowEnabled} >
-                          <Sparkles className="h-4 w-4" />
+                           <TextShadowIcon />
                         </Button>
                       </PopoverTrigger>
                     </TooltipTrigger>
@@ -554,5 +554,3 @@ export function TextSettings({
     </TooltipProvider>
   );
 }
-
-    
