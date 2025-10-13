@@ -40,6 +40,7 @@ type ImageCanvasProps = {
   strokeColor: string;
   strokeWidth: number;
   fontSmoothing?: React.CSSProperties;
+  shadowBaseFontSize?: number;
 };
 
 // This function wraps text for titles.
@@ -157,7 +158,8 @@ const wrapAndDrawText = (
   strokeWidth: number,
   textShadowEnabled: boolean,
   shadows: Shadow[],
-  finalTextColor: string
+  finalTextColor: string,
+  scaleFactor: number
 ) => {
   const totalTextHeight = (lines.length * lineHeight) - (lineHeight - context.measureText('M').width); // A more accurate height
   const startY = y + (rectHeight - totalTextHeight) / 2;
@@ -167,7 +169,7 @@ const wrapAndDrawText = (
     for (const line of lines) {
       if (textStroke && !colorOverride) {
         context.strokeStyle = strokeColor;
-        context.lineWidth = strokeWidth;
+        context.lineWidth = strokeWidth * scaleFactor;
         context.strokeText(line.trim(), x, currentY);
       }
       context.fillStyle = colorOverride || finalTextColor;
@@ -179,9 +181,9 @@ const wrapAndDrawText = (
   if (textShadowEnabled && shadows.length > 0) {
     shadows.forEach(shadow => {
       context.shadowColor = shadow.color;
-      context.shadowBlur = shadow.blur;
-      context.shadowOffsetX = shadow.offsetX;
-      context.shadowOffsetY = shadow.offsetY;
+      context.shadowBlur = shadow.blur * scaleFactor;
+      context.shadowOffsetX = shadow.offsetX * scaleFactor;
+      context.shadowOffsetY = shadow.offsetY * scaleFactor;
       drawTextLines(shadow.color);
     });
   }
@@ -237,7 +239,8 @@ export function ImageCanvas({
   textStroke,
   strokeColor,
   strokeWidth,
-  fontSmoothing
+  fontSmoothing,
+  shadowBaseFontSize
 }: ImageCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const indexRef = useRef<number | null>(null);
@@ -262,9 +265,12 @@ export function ImageCanvas({
       
       const baseWeight = isTitle ? font.titleWeight : font.bodyWeight;
       const fontWeight = isBold ? Math.min(Number(baseWeight) + 300, 900) : baseWeight;
-      const fontSize = isTitle ? font.titleSize * (width/1080) : font.bodySize * (width/1080);
+      const baseFontSize = isTitle ? font.titleSize : font.bodySize;
+      const fontSize = baseFontSize * (width/1080);
       const fontName = font.fontFamily;
       const lineHeight = isTitle ? fontSize * 1.2 : font.lineHeight * (height/1350);
+
+      const scaleFactor = shadowBaseFontSize ? fontSize / shadowBaseFontSize : 1;
 
       const processedText = isUppercase ? text.toUpperCase() : text;
 
@@ -323,7 +329,7 @@ export function ImageCanvas({
         // Draw the text
         wrapAndDrawText(ctx, linesToDraw, textX, rectY, lineHeight, rectHeight, 
             textStroke, strokeColor, strokeWidth,
-            textShadowEnabled, shadows, finalTextColor
+            textShadowEnabled, shadows, finalTextColor, scaleFactor
         );
         
         if (!isTitle && indexRef.current !== null) {
@@ -364,7 +370,7 @@ export function ImageCanvas({
           drawLayout();
         }
       } else if (backgroundColor && backgroundColor.startsWith("linear-gradient")) {
-        const colors = backgroundColor.match(/#([0-9a-fA-F]{3,6}|[0-9a-fA-F]{8})/g);
+        const colors = backgroundColor.match(/#([0-9a-fA-F]{3,8})/g);
         if (colors && colors.length >= 2) {
           const gradient = ctx.createLinearGradient(0, 0, 0, height);
           gradient.addColorStop(0, colors[0]);
@@ -384,7 +390,7 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, isTitle, font, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing]);
+  }, [text, isTitle, font, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing, shadowBaseFontSize]);
 
   return (
     <canvas
