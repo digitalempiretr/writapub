@@ -37,28 +37,28 @@ export const textEffects: TextEffect[] = [
     style: {
       color: '#fff',
       textShadow: `
-      0px -6px 0 #212121,  
-      0px -6px 0 #212121,
-      0px  6px 0 #212121,
-      0px  6px 0 #212121,
-     -6px  0px 0 #212121,  
-      6px  0px 0 #212121,
-     -6px  0px 0 #212121,
-      6px  0px 0 #212121,
-     -6px -6px 0 #212121,  
-      6px -6px 0 #212121,
-     -6px  6px 0 #212121,
-      6px  6px 0 #212121,
-     -6px  18px 0 #212121,
-      0px  18px 0 #212121,
-      6px  18px 0 #212121,
-      0 19px 1px rgba(0,0,0,.1),
-      0 0 6px rgba(0,0,0,.1),
-      0 6px 3px rgba(0,0,0,.3),
-      0 12px 6px rgba(0,0,0,.2),
-      0 18px 18px rgba(0,0,0,.25),
-      0 24px 24px rgba(0,0,0,.2),
-      0 36px 36px rgba(0,0,0,.15)
+        0px -6px 0 #212121,  
+        0px -6px 0 #212121,
+        0px  6px 0 #212121,
+        0px  6px 0 #212121,
+       -6px  0px 0 #212121,  
+        6px  0px 0 #212121,
+       -6px  0px 0 #212121,
+        6px  0px 0 #212121,
+       -6px -6px 0 #212121,  
+        6px -6px 0 #212121,
+       -6px  6px 0 #212121,
+        6px  6px 0 #212121,
+       -6px  18px 0 #212121,
+        0px  18px 0 #212121,
+        6px  18px 0 #212121,
+        0 19px 1px rgba(0,0,0,.1),
+        0 0 6px rgba(0,0,0,.1),
+        0 6px 3px rgba(0,0,0,.3),
+        0 12px 6px rgba(0,0,0,.2),
+        0 18px 18px rgba(0,0,0,.25),
+        0 24px 24px rgba(0,0,0,.2),
+        0 36px 36px rgba(0,0,0,.15)
     `,
     },
     previewBg: '#fc3153',
@@ -178,8 +178,8 @@ export const parseShadow = (shadowString: string) => {
         return [];
     }
     
-    // This regex is more robust: it handles unitless numbers, px units, and rgba colors.
-    const shadowRegex = /(-?\d*\.?\d+)(px)?\s+(-?\d*\.?\d+)(px)?(?:\s+(-?\d*\.?\d+)(px)?)?\s+(rgba?\(.+?\)|#?\w+)/g;
+    // This regex is more robust: it handles unitless numbers, px units, and rgba values with decimals.
+    const shadowRegex = /(-?\d*\.?\d+)(px)?\s+(-?\d*\.?\d+)(px)?(?:\s+(-?\d*\.?\d+)(px)?)?\s+(rgba?\([\d\s,.]+\)|#?\w+)/g;
     let match;
 
     while ((match = shadowRegex.exec(shadowString)) !== null) {
