@@ -3,6 +3,7 @@
 
 import React, { useEffect, useRef } from "react";
 import type { Shadow } from "@/components/text-settings";
+import type { FontOption } from "@/lib/font-options";
 
 export type ImageCanvasProps = {
   text: string;
@@ -285,7 +286,20 @@ export function ImageCanvas({
       let linesToDraw: string[] = [];
 
       if (!isTitle) {
-        const result = measureAndSplitText(ctx, processedText, textMaxWidth, 12, 14);
+        // Dynamically calculate max lines based on line height
+        // A standard line height of 1.4 might correspond to ~14 lines.
+        // A max line height of 2.5 might correspond to ~8 lines.
+        // We can create a simple linear interpolation.
+        const maxLineHeight = 2.5;
+        const minLineHeight = 1.2;
+        const maxLinesForMinHeight = 14;
+        const maxLinesForMaxHeight = 8;
+        
+        const slope = (maxLinesForMaxHeight - maxLinesForMinHeight) / (maxLineHeight - minLineHeight);
+        let dynamicMaxLines = Math.floor(maxLinesForMinHeight + slope * (propLineHeight - minLineHeight));
+        dynamicMaxLines = Math.max(maxLinesForMaxHeight, Math.min(maxLinesForMinHeight, dynamicMaxLines)); // Clamp between 8 and 14
+
+        const result = measureAndSplitText(ctx, processedText, textMaxWidth, dynamicMaxLines, dynamicMaxLines + 2);
         linesToDraw = result.lines;
         remainingText = result.remainingText;
       } else {
