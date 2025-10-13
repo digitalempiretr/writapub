@@ -32,7 +32,7 @@ import {
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Star, Type, X } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Star, Type, X, Frame } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -51,6 +51,7 @@ import { pageInitialColors } from "@/lib/colors";
 import { CreativeMagicPanel } from "@/components/creative-magic-panel";
 import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
+import { FormatPanel } from "@/components/format-panel";
 
 
 type Design = {
@@ -60,6 +61,14 @@ type Design = {
 
 type TextAlign = 'left' | 'center' | 'right';
 type BackgroundType = 'flat' | 'gradient' | 'image';
+type CanvasSize = { name: 'Post' | 'Story' | 'Square'; width: number; height: number };
+
+const canvasSizes: CanvasSize[] = [
+    { name: 'Post', width: 1080, height: 1350 },
+    { name: 'Story', width: 1080, height: 1920 },
+    { name: 'Square', width: 1080, height: 1080 },
+];
+
 
 function TabContentContainer({
   activeTab,
@@ -93,6 +102,9 @@ function TabContentContainer({
           )}
           {activeTab === 'favorites' && (
               <MyDesignsPanel {...props} />
+          )}
+           {activeTab === 'format' && (
+              <FormatPanel {...props} />
           )}
           {activeTab === 'background' && (
               <BackgroundSettings {...props} />
@@ -161,6 +173,7 @@ export default function Home() {
   const [searchedImages, setSearchedImages] = useState<string[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchPage, setSearchPage] = useState(1);
+  const [canvasSize, setCanvasSize] = useState<CanvasSize>(canvasSizes[0]);
   
   const [isTextBoxEnabled, setIsTextBoxEnabled] = useState(false);
   const [rectBgColor, setRectBgColor] = useState(pageInitialColors.rectBgColor);
@@ -659,7 +672,7 @@ textBox: {
     
     return (
         <ImageCanvas
-          key={`${backgroundType}-${activeFont.value}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadowEnabled}-${JSON.stringify(shadows)}-${textStroke}-${strokeColor}-${strokeWidth}-${activeEffect.id}`}
+          key={`${backgroundType}-${activeFont.value}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadowEnabled}-${JSON.stringify(shadows)}-${textStroke}-${strokeColor}-${strokeWidth}-${activeEffect.id}-${canvasSize.width}-${canvasSize.height}`}
           font={activeFont}
           text={design.text}
           isTitle={design.isTitle}
@@ -667,8 +680,8 @@ textBox: {
           textOpacity={textOpacity}
           backgroundColor={currentBg}
           backgroundImageUrl={imageUrl}
-          width={1080}
-          height={1350}
+          width={canvasSize.width}
+          height={canvasSize.height}
           onCanvasReady={(canvas) => {
             canvasRefs.current[index] = canvas;
           }}
@@ -688,7 +701,7 @@ textBox: {
           fontSmoothing={activeEffect.style.fontSmoothing}
         />
     )
-  }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled, activeEffect]);
+  }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize]);
   
   const settingsPanel = (
     <CardFooter className="flex-col items-start p-0 bg-transparent md:rounded-lg h-full">
@@ -698,7 +711,7 @@ textBox: {
           onValueChange={setActiveSettingsTab}
           className="w-full flex flex-col-reverse md:flex-col h-full"
         >
-          <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md flex-shrink-0">
+          <TabsList className="grid w-full grid-cols-6 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md flex-shrink-0">
             <Tooltip>
               <TooltipTrigger asChild>
                 <TabsTrigger
@@ -729,6 +742,22 @@ textBox: {
               </TooltipTrigger>
               <TooltipContent>
                 <p>Favorites</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <TabsTrigger
+                  value="format"
+                   onClick={() => {
+                    setActiveSettingsTab("format");
+                    setIsMobilePanelOpen(true)
+                  }}
+                >
+                  <Frame />
+                </TabsTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Format</p>
               </TooltipContent>
             </Tooltip>
             <Tooltip>
@@ -802,6 +831,13 @@ textBox: {
                     handleLogDesign={handleLogDesign}
                     handleApplyTemplate={handleApplyTemplate}
                  />
+              </TabsContent>
+               <TabsContent value="format" className="h-full mt-0">
+                <FormatPanel
+                  canvasSize={canvasSize}
+                  setCanvasSize={setCanvasSize}
+                  canvasSizes={canvasSizes}
+                />
               </TabsContent>
               <TabsContent value="background" className="h-full mt-0">
                  <BackgroundSettings 
@@ -966,6 +1002,9 @@ textBox: {
                   designs={designs}
                   currentSlide={currentSlide}
                   handleDownload={handleDownload}
+                  canvasSize={canvasSize}
+                  setCanvasSize={setCanvasSize}
+                  canvasSizes={canvasSizes}
                 />
               )}
             </div>
@@ -1014,7 +1053,7 @@ textBox: {
                           <CarouselItem key={index} data-index={index}>
                             <div className="p-1 group relative">
                               <Card className="overflow-hidden border-0">
-                                <CardContent className="p-0 aspect-[1080/1350] relative bg-card">
+                                <CardContent className="p-0 relative bg-card" style={{ aspectRatio: `${canvasSize.width}/${canvasSize.height}`}}>
                                   {renderCanvas(design, index)}
                                 </CardContent>
                               </Card>
@@ -1076,14 +1115,14 @@ textBox: {
             <div 
               className={cn(
                 "fixed left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
-                isMobilePanelOpen ? "bottom-12" : "-bottom-full" 
+                isMobilePanelOpen ? "bottom-12" : "-bottom-full" // Comes up above the tab bar
               )}
             >
-                <div className="max-h-[75vh]">
-                  <TabContentContainer
+                <div className="h-auto max-h-[75vh]">
+                  {/* The content container which will now handle its own scrolling */}
+                   <TabContentContainer
                     activeTab={activeSettingsTab}
                     closePanel={closePanel}
-                    // Pass all props here
                     text={text}
                     setText={setText}
                     handleGenerate={handleGenerate}
@@ -1142,7 +1181,6 @@ textBox: {
                     setRectOpacity={setRectOpacity}
                     activeEffect={activeEffect}
                     setActiveEffect={handleEffectChange}
-                    // Design/Download props
                     handleApplyTemplate={handleApplyTemplate}
                     myDesigns={myDesigns}
                     handleSaveDesign={handleSaveDesign}
@@ -1162,6 +1200,9 @@ textBox: {
                     designs={designs}
                     currentSlide={currentSlide}
                     handleDownload={handleDownload}
+                    canvasSize={canvasSize}
+                    setCanvasSize={setCanvasSize}
+                    canvasSizes={canvasSizes}
                   />
                 </div>
             </div>
@@ -1169,7 +1210,7 @@ textBox: {
             {/* This is the static tab list at the bottom */}
             <div 
               className={cn(
-                "fixed bottom-0 left-0 right-0 z-40"
+                "fixed bottom-0 left-0 right-0 z-40 bg-card"
               )}
             >
               {settingsPanel}
