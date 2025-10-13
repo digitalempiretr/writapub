@@ -6,7 +6,7 @@ export type TextEffect = {
   style: {
     color?: string;
     textShadow?: string;
-    glowColor?: string;
+    glowColor?: string; // Add this for effects like Neon
     fontFamily?: string;
     fontWeight?: string | number;
     fontSmoothing?: CSSProperties;
@@ -31,11 +31,11 @@ export const textEffects: TextEffect[] = [
       fontWeight: 400,
       shadowBaseFontSize: 144, // The px values below are tuned for a 144pt font
       textShadow: `
-        0px -6px 0 #212121,
+        0px -6px 0 #212121,  
         0px 6px 0 #212121,
-        -6px 0px 0 #212121,
+        -6px 0px 0 #212121,  
         6px 0px 0 #212121,
-        -6px -6px 0 #212121,
+        -6px -6px 0 #212121,  
         6px -6px 0 #212121,
         -6px 6px 0 #212121,
         6px 6px 0 #212121,
@@ -77,7 +77,7 @@ export const textEffects: TextEffect[] = [
     },
     previewBg: '#121221',
   },
-  {
+   {
     name: 'Retro',
     id: 'retro',
     style: {
@@ -88,15 +88,55 @@ export const textEffects: TextEffect[] = [
       `,
     },
     previewBg: '#f0f0f0',
-  }
+  },
+  {
+    name: 'Shadow',
+    id: 'shadow',
+    style: {
+      color: '#000000',
+      textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+    },
+  },
+  {
+    name: 'Outline',
+    id: 'outline',
+    style: {
+      color: '#ffffff',
+      textShadow: `
+        -1px -1px 0 #000,  
+         1px -1px 0 #000,
+        -1px  1px 0 #000,
+         1px  1px 0 #000
+      `,
+    },
+  },
+  {
+    name: 'Fire',
+    id: 'fire',
+     style: {
+      color: '#fefcc9',
+      glowColor: '#ec760c', // Define a glow for fire
+      textShadow: `
+        0 0 5px {{color}}, 
+        0 0 10px {{color}}, 
+        0 0 15px {{color}}, 
+        0 0 20px #feec85, 
+        0 0 30px #ffae34, 
+        0 0 40px {{glow}}, 
+        0 0 55px {{glow}}, 
+        0 0 75px #973716
+      `,
+    },
+  },
 ];
 
+// Helper function to parse CSS text-shadow string
 export const parseShadow = (shadowString: string) => {
     const shadows: any[] = [];
     if (!shadowString || shadowString === 'none') {
         return [];
     }
-    const shadowRegex = /(-?\d*\.?\d+)(px)?\s+(-?\d*\.?\d+)(px)?(?:\s+(-?\d*\.?\d+)(px)?)?\s+(rgba?\([\d\s,.]+\)|#?\w+)/g;
+    const shadowRegex = /(-?\d*\.?\d+)(px)?\s+(-?\d*\.?\d+)(px)?(?:\s+(-?\d*\.?\d+)(px)?)?\s+(rgba?\(.+?\)|#?\w+)/g;
     let match;
 
     while ((match = shadowRegex.exec(shadowString)) !== null) {
