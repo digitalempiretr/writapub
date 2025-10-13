@@ -25,7 +25,7 @@ export const textEffects: TextEffect[] = [
       textShadow: `
          -10px 10px 0px {{color}},
          -20px 20px 0px {{glow}},
-         -30px 30px 0px #00bdbd;
+         -30px 30px 0px #00bdbd
       `,
       glowColor: '#01cccc'
     },
@@ -58,7 +58,7 @@ export const textEffects: TextEffect[] = [
       0 12px 6px rgba(0,0,0,.2),
       0 18px 18px rgba(0,0,0,.25),
       0 24px 24px rgba(0,0,0,.2),
-      0 36px 36px rgba(0,0,0,.15);
+      0 36px 36px rgba(0,0,0,.15)
     `,
     },
     previewBg: '#fc3153',

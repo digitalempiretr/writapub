@@ -29,6 +29,54 @@ export type DesignTemplate = {
 
 export const designTemplates: DesignTemplate[] = [
   {
+    id: 'template-neon',
+    name: "blueneon",
+    previewImage: "",
+    background: {
+      type: 'flat',
+      value: '#FF5757',
+    },
+    font: {
+      value: 'luckiest-guy',
+      color: '#ffffff',
+    },
+  textBox: {
+      color: '#f4ede4',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#008080',
+      opacity: 0.25,
+    },
+    effect: {
+      id: 'neon',
+    }
+  },
+  {
+    id: 'red3dCartoon',
+    name: "Red3dCartoon",
+    previewImage: "",
+    background: {
+      type: 'flat',
+      value: '#FF5757',
+    },
+    font: {
+      value: 'luckiest-guy',
+      color: '#fff',
+    },
+  textBox: {
+      color: '#f4ede4',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#008080',
+      opacity: 0.25,
+    },
+    effect: {
+      id: '3dcartoon',
+    }
+  },
+  {
     id: 'styles-Night-Chalk',
     name: "Night Chalkfeldgrau ",
     previewImage: "",

@@ -29,6 +29,7 @@ import { Plus, Copy, FilePenLine, Check, X, Trash2 } from "lucide-react";
 import { DesignTemplate } from "@/lib/design-templates";
 import Image from 'next/image';
 import { fontOptions } from "@/lib/font-options";
+import { textEffects } from "@/lib/text-effects";
 
 type MyDesignsPanelProps = {
   myDesigns: DesignTemplate[];
@@ -61,6 +62,44 @@ export function MyDesignsPanel({
   handleLogDesign,
   handleApplyTemplate,
 }: MyDesignsPanelProps) {
+
+  const renderPreview = (template: DesignTemplate) => {
+    if (template.previewImage) {
+      return <Image src={template.previewImage} alt={template.name} width={200} height={300} className="object-cover h-full w-full" />;
+    }
+    
+    const font = fontOptions.find(f => f.value === template.font.value);
+    const effect = template.effect ? textEffects.find(e => e.id === template.effect!.id) : null;
+    
+    const textStyle: React.CSSProperties = {
+      fontFamily: font?.fontFamily || 'sans-serif',
+      color: template.font.color,
+      fontWeight: 'bold',
+    };
+
+    if (effect && effect.style.textShadow) {
+      const finalColor = effect.style.color || template.font.color;
+      textStyle.color = finalColor;
+      const finalShadowString = effect.style.textShadow
+        .replace(/{{color}}/g, finalColor)
+        .replace(/{{glow}}/g, effect.style.glowColor || finalColor);
+      textStyle.textShadow = finalShadowString;
+    }
+
+    return (
+      <div 
+        className="w-full h-full flex items-center justify-center p-2 text-center" 
+        style={{ background: template.background.value }}>
+        <span 
+          style={textStyle}
+          className="text-lg"
+        >
+          {template.name}
+        </span>
+      </div>
+    );
+  };
+
   return (
     <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4 mobile-tab-content">
       <div className="flex justify-between items-center">
@@ -106,24 +145,7 @@ export function MyDesignsPanel({
                     <button onClick={() => editingDesignId !== template.id && handleApplyTemplate(template)} className="w-full" disabled={editingDesignId === template.id}>
                       <Card className="overflow-hidden">
                         <CardContent className="p-0 aspect-[2/3] w-full">
-                          {template.previewImage ? (
-                            <Image src={template.previewImage} alt={template.name} width={200} height={300} className="object-cover h-full w-full" />
-                          ) : (
-                            <div
-                              className="w-full h-full flex items-center justify-center p-2 text-center"
-                              style={{ background: template.background.value }}
-                            >
-                              <span
-                                style={{
-                                  fontFamily: fontOptions.find(f => f.value === template.font.value)?.fontFamily || 'sans-serif',
-                                  color: template.font.color
-                                }}
-                                className="text-lg font-bold"
-                              >
-                                {template.name}
-                              </span>
-                            </div>
-                          )}
+                           {renderPreview(template)}
                         </CardContent>
                         <CardFooter className="p-2 justify-center flex-col items-center">
                           {editingDesignId === template.id ? (
