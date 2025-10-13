@@ -1,3 +1,4 @@
+
 export type TextEffect = {
   name: string;
   id: string;
@@ -176,8 +177,9 @@ export const parseShadow = (shadowString: string) => {
     if (!shadowString || shadowString === 'none') {
         return [];
     }
-    // This regex is simplified and might not cover all edge cases, but works for the effects here.
-    const shadowRegex = /(-?\d*\.?\d+)(px)?\s+(-?\d*\.?\d+)(px)?\s+(-?\d*\.?\d+)(px)?\s+(rgba?\(.+?\)|#?\w+)/g;
+    
+    // This regex is more robust: it handles unitless numbers, px units, and rgba colors.
+    const shadowRegex = /(-?\d*\.?\d+)(px)?\s+(-?\d*\.?\d+)(px)?(?:\s+(-?\d*\.?\d+)(px)?)?\s+(rgba?\(.+?\)|#?\w+)/g;
     let match;
 
     while ((match = shadowRegex.exec(shadowString)) !== null) {
@@ -191,5 +193,3 @@ export const parseShadow = (shadowString: string) => {
     }
     return shadows;
 };
-
-    
