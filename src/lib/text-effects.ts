@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 
 export type TextEffect = {
   name: string;
@@ -6,7 +7,9 @@ export type TextEffect = {
     color?: string;
     textShadow?: string;
     glowColor?: string; // Add this for effects like Neon
-    fontSmoothing?: React.CSSProperties;
+    fontFamily?: string;
+    fontWeight?: string | number;
+    fontSmoothing?: CSSProperties;
   };
   previewBg?: string;
 };
@@ -22,7 +25,7 @@ export const textEffects: TextEffect[] = [
     name: 'WhiteGlow',
     id: 'whiteGlow',
     style: {
-      color: '#fff',
+      color: '#ffffff',
       textShadow: `
          -10px 10px 0px {{color}},
          -20px 20px 0px {{glow}},
@@ -37,30 +40,32 @@ export const textEffects: TextEffect[] = [
     id: '3dcartoon',
     style: {
       color: '#fff',
+      fontFamily: "'Luckiest Guy', cursive",
+      fontWeight: 400,
       textShadow: `
-        0px -6px 0 #212121,  
-        0px -6px 0 #212121,
-        0px  6px 0 #212121,
-        0px  6px 0 #212121,
-       -6px  0px 0 #212121,  
-        6px  0px 0 #212121,
-       -6px  0px 0 #212121,
-        6px  0px 0 #212121,
-       -6px -6px 0 #212121,  
-        6px -6px 0 #212121,
-       -6px  6px 0 #212121,
-        6px  6px 0 #212121,
-       -6px  18px 0 #212121,
-        0px  18px 0 #212121,
-        6px  18px 0 #212121,
-        0 19px 1px rgba(0,0,0,.1),
-        0 0 6px rgba(0,0,0,.1),
-        0 6px 3px rgba(0,0,0,.3),
-        0 12px 6px rgba(0,0,0,.2),
-        0 18px 18px rgba(0,0,0,.25),
-        0 24px 24px rgba(0,0,0,.2),
-        0 36px 36px rgba(0,0,0,.15)
-      `,
+      0px -6px 0 #212121,  
+      0px -6px 0 #212121,
+      0px  6px 0 #212121,
+      0px  6px 0 #212121,
+     -6px  0px 0 #212121,  
+      6px  0px 0 #212121,
+     -6px  0px 0 #212121,
+      6px  0px 0 #212121,
+     -6px -6px 0 #212121,  
+      6px -6px 0 #212121,
+     -6px  6px 0 #212121,
+      6px  6px 0 #212121,
+     -6px  18px 0 #212121,
+      0px  18px 0 #212121,
+      6px  18px 0 #212121,
+      0 19px 1px rgba(0,0,0,.1),
+      0 0 6px rgba(0,0,0,.1),
+      0 6px 3px rgba(0,0,0,.3),
+      0 12px 6px rgba(0,0,0,.2),
+      0 18px 18px rgba(0,0,0,.25),
+      0 24px 24px rgba(0,0,0,.2),
+      0 36px 36px rgba(0,0,0,.15)
+    `,
       fontSmoothing: {
         WebkitFontSmoothing: 'antialiased',
         MozOsxFontSmoothing: 'grayscale',
@@ -70,9 +75,9 @@ export const textEffects: TextEffect[] = [
   },
   {
     name: 'SuperHero',
-    id: 'SuperHero',
+    id: 'superHero',
     style: {
-      color: '#fff',
+      color: '#ffffff',
       textShadow: `
         0 0 5px {{color}},
         0 0 10px {{glow}},
@@ -100,7 +105,7 @@ export const textEffects: TextEffect[] = [
     name: 'LayeredShadow',
     id: 'layeredShadow',
     style: {
-      color: '#fff',
+      color: '#ffffff',
       textShadow: `
         3px 3px 0 #ff3f3f,
         6px 6px 0 #4caf50,
@@ -129,6 +134,7 @@ export const textEffects: TextEffect[] = [
     id: 'neon',
     style: {
       color: '#ffffff',
+      fontFamily: "'Neonderthaw', cursive",
       glowColor: '#228DFF',
       textShadow: `     
         0 0 10px {{color}},

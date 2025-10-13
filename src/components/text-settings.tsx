@@ -478,6 +478,8 @@ export function TextSettings({
                 {textEffects.map(effect => {
                   const effectStyle: React.CSSProperties = {
                     backgroundColor: effect.previewBg || (effect.id === 'none' ? '#e2e8f0' : '#333'),
+                    fontFamily: effect.style.fontFamily || "'Playfair Display', serif",
+                    fontWeight: effect.style.fontWeight || 'bold',
                   };
                   const finalColor = effect.style.color || textColor;
                   effectStyle.color = finalColor;
@@ -496,7 +498,7 @@ export function TextSettings({
                           onClick={() => setActiveEffect(effect)}
                       >
                         <CardContent 
-                          className="h-20 flex items-center justify-center p-0 text-5xl font-['Playfair_Display'] font-bold"
+                          className="h-20 flex items-center justify-center p-0 text-5xl"
                           style={effectStyle}
                         >
                           W
@@ -516,5 +518,3 @@ export function TextSettings({
     </TooltipProvider>
   );
 }
-
-    
