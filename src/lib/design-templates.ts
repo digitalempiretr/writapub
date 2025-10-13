@@ -22,6 +22,9 @@ export type DesignTemplate = {
     color: string;
     opacity: number;
   };
+  effect?: {
+    id: string;
+  };
 };
 
 export const designTemplates: DesignTemplate[] = [
@@ -976,13 +979,13 @@ export const designTemplates: DesignTemplate[] = [
   previewImage: "",
   background: {
     type: 'gradient',
-    value: gradientTemplates.find(g => g.name === 'YOUR_GRADIENT_NAME')?.css || 'linear-gradient(to right, #8e2de2, #4a00e0)',
+    value: gradientTemplates.find(g => g.name === 'Purple')?.css || 'linear-gradient(to right, #8e2de2, #4a00e0)',
   },
   font: {
     value: 'poppins',
     color: '#E2A9F1',
   },
-textBox: {
+  textBox: {
     color: '#7585A3',
     opacity: 0,
   },
@@ -995,17 +998,17 @@ textBox: {
 // Templates Start Here
 {
   id: 'template-neon',
-  name: "Milky",
-  previewImage: "https://i.ibb.co/zhYZ5H5V/milky-1.jpg",
+  name: "Neon",
+  previewImage: "",
   background: {
     type: 'image',
     value: 'https://i.ibb.co/C5CyMgvR/neon-bg.jpg',
   },
   font: {
-    value: 'oswald',
-    color: '#3f5b4d',
+    value: 'luckiest-guy',
+    color: '#ffffff',
   },
-textBox: {
+  textBox: {
     color: '#e5e5ff',
     opacity: 0,
   },
@@ -1013,6 +1016,9 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  effect: {
+    id: 'neon',
+  }
 },
 {
   id: 'template-milky',

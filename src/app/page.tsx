@@ -395,6 +395,27 @@ export default function Home() {
     }
   };
 
+  const handleEffectChange = (effect: TextEffect) => {
+    setActiveEffect(effect);
+    if (effect.id === 'none') {
+        setTextShadowEnabled(false);
+    } else {
+        const effectColor = effect.style.color || textColor;
+        setTextColor(effectColor);
+
+        if (effect.style.textShadow) {
+            setTextShadowEnabled(true);
+            const finalShadowString = effect.style.textShadow
+              .replace(/{{color}}/g, effectColor)
+              .replace(/{{glow}}/g, effect.style.glowColor || effectColor);
+
+            const parsedShadows = parseShadow(finalShadowString);
+            setShadows(parsedShadows);
+        } else {
+            setTextShadowEnabled(false);
+        }
+    }
+  };
 
   const handleApplyTemplate = (template: DesignTemplate) => {
     setBackgroundTab(template.background.type);
@@ -419,6 +440,13 @@ export default function Home() {
     setOverlayColor(template.overlay.color);
     setOverlayOpacity(template.overlay.opacity);
     setIsOverlayEnabled(template.overlay.opacity > 0);
+
+    if (template.effect?.id) {
+        const effect = textEffects.find(e => e.id === template.effect!.id) || textEffects[0];
+        handleEffectChange(effect);
+    } else {
+        handleEffectChange(textEffects[0]);
+    }
     
     toast({
       title: "Template Applied",
@@ -466,6 +494,9 @@ export default function Home() {
         color: overlayColor,
         opacity: overlayOpacity,
       },
+      effect: {
+        id: activeEffect.id,
+      }
     };
 
     setMyDesigns(prev => [...prev, newDesign]);
@@ -476,7 +507,7 @@ export default function Home() {
       duration: 2000,
     });
 
-  }, [currentSlide, backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, myDesigns.length, setMyDesigns, toast]);
+  }, [currentSlide, backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, myDesigns.length, setMyDesigns, toast, activeEffect]);
 
   const handleDeleteDesign = (id: string) => {
     setMyDesigns(prev => prev.filter(d => d.id !== id));
@@ -532,6 +563,9 @@ export default function Home() {
         color: overlayColor,
         opacity: overlayOpacity,
       },
+      effect: {
+        id: activeEffect.id
+      }
     };
 
     const templateString = `
@@ -558,6 +592,9 @@ textBox: {
     color: '${templateToLog.overlay.color}',
     opacity: ${templateToLog.overlay.opacity},
   },
+  effect: {
+    id: '${templateToLog.effect?.id}',
+  }
 },`;
   
     console.log("Copy this code snippet to add to design-templates.ts:");
@@ -568,29 +605,7 @@ textBox: {
       description: "Open developer tools (F12) to see the design code.",
       duration: 5000,
     });
-  }, [backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, toast]);
-
-  const handleEffectChange = (effect: TextEffect) => {
-    setActiveEffect(effect);
-    if (effect.id === 'none') {
-        setTextShadowEnabled(false);
-    } else {
-        const effectColor = effect.style.color || textColor;
-        setTextColor(effectColor);
-
-        if (effect.style.textShadow) {
-            setTextShadowEnabled(true);
-            const finalShadowString = effect.style.textShadow
-              .replace(/{{color}}/g, effectColor)
-              .replace(/{{glow}}/g, effect.style.glowColor || effectColor);
-
-            const parsedShadows = parseShadow(finalShadowString);
-            setShadows(parsedShadows);
-        } else {
-            setTextShadowEnabled(false);
-        }
-    }
-  };
+  }, [backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, toast, activeEffect]);
 
   const handleTextColorChange = (newColor: string) => {
     setTextColor(newColor);
@@ -1071,5 +1086,3 @@ textBox: {
     </>
   );
 }
-
-    
