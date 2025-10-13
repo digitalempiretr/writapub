@@ -424,6 +424,18 @@ export default function Home() {
       }
     }
   };
+  
+  const handleTextColorChange = (newColor: string) => {
+    setTextColor(newColor);
+    if (activeEffect && activeEffect.id !== 'none' && activeEffect.style.textShadow) {
+      const finalShadowString = activeEffect.style.textShadow
+        .replace(/{{color}}/g, newColor)
+        .replace(/{{glow}}/g, newColor);
+      const newShadows = parseShadow(finalShadowString);
+      setShadows(newShadows);
+    }
+  };
+
 
   const handleApplyTemplate = (template: DesignTemplate) => {
     setBackgroundTab(template.background.type);
@@ -436,21 +448,23 @@ export default function Home() {
     } else if (template.background.type === 'image') {
       setImageBgUrl(template.background.value);
     }
-
-    const newFont = fontOptions.find(f => f.value === template.font.value) || fontOptions[0];
-    setActiveFont(newFont);
     
-    // Defer effect change to after color change
+    // Set the color first, as the effect might depend on it.
+    setTextColor(template.font.color);
+    
+    // Use a timeout to ensure state updates before effect is applied
     setTimeout(() => {
       if (template.effect?.id) {
         const effect = textEffects.find(e => e.id === template.effect!.id) || textEffects[0];
         handleEffectChange(effect);
       } else {
         handleEffectChange(textEffects[0]); // Reset to 'none' if no effect
+        // If no effect, set font directly from template
+        const newFont = fontOptions.find(f => f.value === template.font.value) || fontOptions[0];
+        setActiveFont(newFont);
       }
     }, 0);
     
-    setTextColor(template.font.color);
 
     setRectBgColor(template.textBox.color);
     setRectOpacity(template.textBox.opacity);
@@ -619,16 +633,6 @@ textBox: {
     });
   }, [backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, toast, activeEffect]);
 
-  const handleTextColorChange = (newColor: string) => {
-    setTextColor(newColor);
-    if (activeEffect && activeEffect.id !== 'none' && activeEffect.style.textShadow) {
-      const finalShadowString = activeEffect.style.textShadow
-        .replace(/{{color}}/g, newColor)
-        .replace(/{{glow}}/g, newColor);
-      const newShadows = parseShadow(finalShadowString);
-      setShadows(newShadows);
-    }
-  };
   
   const renderCanvas = useCallback((design: Design, index: number) => {
     let currentBg: string | undefined;
@@ -1165,8 +1169,7 @@ textBox: {
             {/* This is the static tab list at the bottom */}
             <div 
               className={cn(
-                "fixed bottom-0 left-0 right-0 z-50",
-                isMobilePanelOpen ? "translate-y-full" : "translate-y-0"
+                "fixed bottom-0 left-0 right-0 z-40"
               )}
             >
               {settingsPanel}
@@ -1176,3 +1179,4 @@ textBox: {
     </>
   );
 }
+
