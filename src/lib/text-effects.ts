@@ -40,7 +40,7 @@ export const textEffects: TextEffect[] = [
     id: '3dcartoon',
     style: {
       color: '#fff',
-      fontFamily: "'Luckiest Guy', cursive",
+      fontFamily: "'Luckiest Guy'",
       fontWeight: 400,
       textShadow: `
       0px -6px 0 #212121,  

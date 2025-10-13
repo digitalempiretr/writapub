@@ -411,7 +411,6 @@ export default function Home() {
   const handleEffectChange = (effect: TextEffect) => {
     setActiveEffect(effect);
   
-    // If the effect has a specific font, apply it.
     if (effect.style.fontFamily) {
       const newFont = fontOptions.find(f => f.fontFamily === effect.style.fontFamily);
       if (newFont) {
@@ -462,22 +461,17 @@ export default function Home() {
       setImageBgUrl(template.background.value);
     }
     
-    // Set the color first, as the effect might depend on it.
     setTextColor(template.font.color);
     
-    // Use a timeout to ensure state updates before effect is applied
-    setTimeout(() => {
-      if (template.effect?.id) {
-        const effect = textEffects.find(e => e.id === template.effect!.id) || textEffects[0];
-        handleEffectChange(effect);
-      } else {
-        handleEffectChange(textEffects[0]); // Reset to 'none' if no effect
-        // If no effect, set font directly from template
-        const newFont = fontOptions.find(f => f.value === template.font.value) || fontOptions[0];
-        setActiveFont(newFont);
-      }
-    }, 0);
-    
+    // Apply effect or font
+    if (template.effect?.id) {
+      const effect = textEffects.find(e => e.id === template.effect!.id) || textEffects[0];
+      handleEffectChange(effect);
+    } else {
+      handleEffectChange(textEffects[0]); // Reset to 'none'
+      const newFont = fontOptions.find(f => f.value === template.font.value) || fontOptions[0];
+      setActiveFont(newFont);
+    }
 
     setRectBgColor(template.textBox.color);
     setRectOpacity(template.textBox.opacity);
@@ -1123,6 +1117,7 @@ textBox: {
                    <TabContentContainer
                     activeTab={activeSettingsTab}
                     closePanel={closePanel}
+                    // Pass all props here
                     text={text}
                     setText={setText}
                     handleGenerate={handleGenerate}
@@ -1181,6 +1176,7 @@ textBox: {
                     setRectOpacity={setRectOpacity}
                     activeEffect={activeEffect}
                     setActiveEffect={handleEffectChange}
+                    // Design/Download props
                     handleApplyTemplate={handleApplyTemplate}
                     myDesigns={myDesigns}
                     handleSaveDesign={handleSaveDesign}
@@ -1210,7 +1206,8 @@ textBox: {
             {/* This is the static tab list at the bottom */}
             <div 
               className={cn(
-                "fixed bottom-0 left-0 right-0 z-40 bg-card"
+                "fixed bottom-0 left-0 right-0 z-40 bg-card",
+                isMobilePanelOpen ? "hidden" : "block"
               )}
             >
               {settingsPanel}
@@ -1220,4 +1217,3 @@ textBox: {
     </>
   );
 }
-
