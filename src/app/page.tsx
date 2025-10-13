@@ -573,33 +573,31 @@ textBox: {
   const handleEffectChange = (effect: TextEffect) => {
     setActiveEffect(effect);
     if (effect.id === 'none') {
-      setTextShadowEnabled(false);
-      setShadows([{ id: Date.now(), color: '#000000', offsetX: 5, offsetY: 5, blur: 5 }]);
-      // Optionally reset text color to default or keep current
-    } else {
-      if (effect.style.color) {
-        setTextColor(effect.style.color);
-      }
-      if (effect.style.textShadow) {
-        setTextShadowEnabled(true);
-        const finalShadowString = effect.style.textShadow
-          .replace(/{{color}}/g, effect.style.color || textColor)
-          .replace(/{{glow}}/g, effect.style.glowColor || effect.style.color || textColor);
-        const parsedShadows = parseShadow(finalShadowString);
-        setShadows(parsedShadows);
-      } else {
         setTextShadowEnabled(false);
-      }
+    } else {
+        const effectColor = effect.style.color || textColor;
+        setTextColor(effectColor);
+
+        if (effect.style.textShadow) {
+            setTextShadowEnabled(true);
+            const finalShadowString = effect.style.textShadow
+              .replace(/{{color}}/g, effectColor)
+              .replace(/{{glow}}/g, effect.style.glowColor || effectColor);
+
+            const parsedShadows = parseShadow(finalShadowString);
+            setShadows(parsedShadows);
+        } else {
+            setTextShadowEnabled(false);
+        }
     }
-  };
+};
 
   const handleTextColorChange = (newColor: string) => {
     setTextColor(newColor);
-    // If an effect is active, update its dynamic colors too
     if (activeEffect && activeEffect.id !== 'none' && activeEffect.style.textShadow) {
       const finalShadowString = activeEffect.style.textShadow
         .replace(/{{color}}/g, newColor)
-        .replace(/{{glow}}/g, newColor);
+        .replace(/{{glow}}/g, activeEffect.style.glowColor || newColor);
       const newShadows = parseShadow(finalShadowString);
       setShadows(newShadows);
     }
@@ -1047,11 +1045,12 @@ textBox: {
             <div 
               className={cn(
                 "fixed bottom-0 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
-                isMobilePanelOpen ? "translate-y-0" : "translate-y-full",
-                "max-h-[75vh] flex flex-col" // Use flex-col to allow content to grow
+                isMobilePanelOpen ? "translate-y-0" : "translate-y-full"
               )}
             >
-              {settingsPanel}
+                <div className="max-h-[75vh] flex flex-col">
+                  {settingsPanel}
+                </div>
             </div>
 
             {/* This is the static tab list at the bottom */}
@@ -1068,3 +1067,5 @@ textBox: {
     </>
   );
 }
+
+    

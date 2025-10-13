@@ -4,7 +4,7 @@ export type TextEffect = {
   style: {
     color?: string;
     textShadow?: string;
-    glowColor?: string;
+    glowColor?: string; // Add this for effects like Neon
   };
   previewBg?: string;
 };
@@ -22,10 +22,37 @@ export const textEffects: TextEffect[] = [
     style: {
       color: '#fff',
       textShadow: `
-        0 0 5px #fff,
-        0 0 10px #ddd,
+         -10px 10px 0px {{color}},
+         -20px 20px 0px {{glow}},
+         -30px 30px 0px #00bdbd;
+      `,
+      glowColor: '#01cccc'
+    },
+    previewBg: '#6CFAFC',
+  },
+  {
+    name: 'InsetText',
+    id: 'Inset Text',
+    style: {
+      color: 'transparent',
+      textShadow: `
+        0px 3px 3px rgba(255,255,255,0.5) 
+
+      `,
+    },
+    previewBg: '#666666',
+  },
+  {
+    name: 'SuperHero',
+    id: 'SuperHero',
+    style: {
+      color: '#fff',
+      textShadow: `
+        0 0 5px {{color}},
+        0 0 10px {{glow}},
         0 0 15px #bbb
       `,
+      glowColor: '#ddd'
     },
     previewBg: '#333',
   },
@@ -35,10 +62,11 @@ export const textEffects: TextEffect[] = [
     style: {
       color: '#00e5ff',
       textShadow: `
-        0 0 5px #00e5ff,
-        1px 1px 10px #00b8d4,
-        -1px -1px 10px #00b8d4
+        0 0 5px {{color}},
+        1px 1px 10px {{glow}},
+        -1px -1px 10px {{glow}}
       `,
+      glowColor: '#00b8d4'
     },
     previewBg: '#001a1f',
   },
@@ -60,11 +88,12 @@ export const textEffects: TextEffect[] = [
     id: 'staticNeon',
     style: {
       color: '#39ff14',
+      glowColor: '#00ff00',
       textShadow: `
-        0 0 5px #39ff14,
-        0 0 10px #39ff14,
-        0 0 20px #39ff14,
-        0 0 40px #00ff00
+        0 0 5px {{color}},
+        0 0 10px {{color}},
+        0 0 20px {{color}},
+        0 0 40px {{glow}}
       `,
     },
     previewBg: '#1a1a1a',
@@ -142,3 +171,5 @@ export const parseShadow = (shadowString: string) => {
     }
     return shadows;
 };
+
+    
