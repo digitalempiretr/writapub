@@ -397,25 +397,33 @@ export default function Home() {
 
   const handleEffectChange = (effect: TextEffect) => {
     setActiveEffect(effect);
+  
+    if (effect.style.fontFamily) {
+      const newFont = fontOptions.find(f => f.fontFamily === effect.style.fontFamily);
+      if (newFont) {
+        setActiveFont(newFont);
+      }
+    }
+  
     if (effect.id === 'none') {
-        setTextShadowEnabled(false);
+      setTextShadowEnabled(false);
     } else {
-        const effectColor = effect.style.color || textColor;
-        setTextColor(effectColor);
-
-        if (effect.style.textShadow) {
-            setTextShadowEnabled(true);
-            const finalShadowString = effect.style.textShadow
-              .replace(/{{color}}/g, effectColor)
-              .replace(/{{glow}}/g, effect.style.glowColor || effectColor);
-
-            const parsedShadows = parseShadow(finalShadowString);
-            setShadows(parsedShadows);
-        } else {
-            setTextShadowEnabled(false);
-        }
+      const effectColor = effect.style.color || textColor;
+      setTextColor(effectColor);
+  
+      if (effect.style.textShadow) {
+        setTextShadowEnabled(true);
+        const finalShadowString = effect.style.textShadow
+          .replace(/{{color}}/g, effectColor)
+          .replace(/{{glow}}/g, effect.style.glowColor || effectColor);
+        const parsedShadows = parseShadow(finalShadowString);
+        setShadows(parsedShadows);
+      } else {
+        setTextShadowEnabled(false);
+      }
     }
   };
+  
 
   const handleApplyTemplate = (template: DesignTemplate) => {
     setBackgroundTab(template.background.type);
@@ -1064,20 +1072,19 @@ textBox: {
             {/* This is the sliding panel */}
             <div 
               className={cn(
-                "fixed bottom-0 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
-                 isMobilePanelOpen ? "translate-y-0" : "translate-y-full"
+                "fixed left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
+                isMobilePanelOpen ? "bottom-12" : "-bottom-full" 
               )}
-              style={{ bottom: isMobilePanelOpen ? '48px' : '0' }}
             >
-                <div className={cn(
-                    "flex flex-col",
-                    isMobilePanelOpen ? "max-h-[75vh]" : "max-h-0"
-                  )}
-                >
+                <div className="max-h-[75vh]">
                   <TabContentContainer
                     activeTab={activeSettingsTab}
                     closePanel={closePanel}
-                    // Background props
+                    // Pass all props here
+                    text={text}
+                    setText={setText}
+                    handleGenerate={handleGenerate}
+                    isLoading={isLoading}
                     backgroundTab={backgroundTab}
                     setBackgroundTab={setBackgroundTab as (value: string) => void}
                     handleFeelLucky={handleFeelLucky}
@@ -1101,11 +1108,6 @@ textBox: {
                     gradientBg={gradientBg}
                     handleGradientBgSelect={handleGradientBgSelect}
                     setSearchCarouselApi={setSearchCarouselApi}
-                    // Text props
-                    text={text}
-                    setText={setText}
-                    handleGenerate={handleGenerate}
-                    isLoading={isLoading}
                     textColor={textColor}
                     setTextColor={handleTextColorChange}
                     textOpacity={textOpacity}
@@ -1137,7 +1139,6 @@ textBox: {
                     setRectOpacity={setRectOpacity}
                     activeEffect={activeEffect}
                     setActiveEffect={handleEffectChange}
-                    // Design/Download props
                     handleApplyTemplate={handleApplyTemplate}
                     myDesigns={myDesigns}
                     handleSaveDesign={handleSaveDesign}
@@ -1164,7 +1165,7 @@ textBox: {
             {/* This is the static tab list at the bottom */}
             <div 
               className={cn(
-                "fixed bottom-0 left-0 right-0 z-40 bg-card border-t"
+                "fixed bottom-0 left-0 right-0 z-50"
               )}
             >
               {settingsPanel}
