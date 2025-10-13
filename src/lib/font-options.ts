@@ -1,3 +1,4 @@
+
 import { FontOption } from "@/components/image-canvas";
 
 export const fontOptions: FontOption[] = [
@@ -26,6 +27,7 @@ export const fontOptions: FontOption[] = [
     { value: 'lexend-deca', label: 'Lexend Deca', fontFamily: 'Lexend Deca', bodyWeight: '400', titleWeight: '700', titleSize: 80, bodySize: 48, lineHeight: 64 },
     { value: 'licorice', label: 'Licorice', fontFamily: 'Licorice', bodyWeight: '400', titleWeight: '400', titleSize: 110, bodySize: 62, lineHeight: 80 },
     { value: 'lobster', label: 'Lobster', fontFamily: 'Lobster', bodyWeight: '400', titleWeight: '400', titleSize: 92, bodySize: 54, lineHeight: 72 },
+    { value: 'luckiest-guy', label: 'Luckiest Guy', fontFamily: 'Luckiest Guy', bodyWeight: '400', titleWeight: '400', titleSize: 90, bodySize: 52, lineHeight: 70 },
     { value: 'mea-culpa', label: 'Mea Culpa', fontFamily: 'Mea Culpa', bodyWeight: '400', titleWeight: '400', titleSize: 105, bodySize: 58, lineHeight: 76 },
     { value: 'montez', label: 'Montez', fontFamily: 'Montez', bodyWeight: '400', titleWeight: '400', titleSize: 100, bodySize: 58, lineHeight: 76 },
     { value: 'neonderthaw', label: 'Neonderthaw', fontFamily: 'Neonderthaw', bodyWeight: '400', titleWeight: '400', titleSize: 95, bodySize: 54, lineHeight: 72 },
