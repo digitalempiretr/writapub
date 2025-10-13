@@ -70,6 +70,44 @@ const canvasSizes: CanvasSize[] = [
     { name: 'Square', width: 1080, height: 1080 },
 ];
 
+function TabContentContainer({
+  activeTab,
+  closePanel,
+  ...props
+}: {
+  activeTab: string | null;
+  closePanel: () => void;
+  [key: string]: any; 
+}) {
+  if (!activeTab) return null;
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="w-full flex-shrink-0 md:hidden">
+          <div className="flex justify-end p-1">
+              <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={closePanel} 
+                  className="h-8 w-8 rounded-full bg-background hover:bg-muted"
+              >
+                  <X className="h-5 w-5" />
+                  <span className="sr-only">Close Panel</span>
+              </Button>
+          </div>
+      </div>
+      <div className="flex-grow overflow-y-auto">
+          {activeTab === 'designs' && <DesignsPanel {...props} />}
+          {activeTab === 'favorites' && <MyDesignsPanel {...props} />}
+          {activeTab === 'format' && <FormatPanel {...props} />}
+          {activeTab === 'background' && <BackgroundSettings {...props} />}
+          {activeTab === 'text' && <TextSettings {...props} />}
+          {activeTab === 'download' && <DownloadPanel {...props} />}
+      </div>
+    </div>
+  );
+}
+
 
 export default function Home() {
   const [text, setText] = useState(defaultText);
@@ -109,7 +147,7 @@ export default function Home() {
   }, [carouselApi]);
 
   const defaultFont = fontOptions.find(f => f.value === 'duru-sans') || fontOptions[0];
-  const [activeFont, setActiveFont] = useState<FontOption>(defaultFont);
+  const [activeFont, setActiveFont] = useState<Omit<FontOption, 'size' | 'lineHeight'>>(defaultFont);
   const [fontSize, setFontSize] = useState(defaultFont.size);
   const [lineHeight, setLineHeight] = useState(defaultFont.lineHeight);
 
@@ -365,33 +403,32 @@ export default function Home() {
 
   const handleEffectChange = (effect: TextEffect) => {
     setActiveEffect(effect);
-  
-    // Auto-apply font if defined in effect
+    
     if (effect.style.fontFamily) {
-      const newFont = fontOptions.find(f => f.fontFamily === effect.style.fontFamily);
-      if (newFont) {
-        setActiveFont(newFont);
-        setFontSize(newFont.size);
-        setLineHeight(newFont.lineHeight);
-      }
+        const newFont = fontOptions.find(f => f.fontFamily === effect.style.fontFamily);
+        if (newFont) {
+          setActiveFont(newFont);
+          setFontSize(newFont.size);
+          setLineHeight(newFont.lineHeight);
+        }
     }
   
     if (effect.id === 'none') {
-      setTextShadowEnabled(false);
-    } else {
-      const effectColor = effect.style.color || textColor;
-      setTextColor(effectColor);
-  
-      if (effect.style.textShadow) {
-        setTextShadowEnabled(true);
-        const finalShadowString = effect.style.textShadow
-          .replace(/{{color}}/g, effectColor)
-          .replace(/{{glow}}/g, effect.style.glowColor || effectColor);
-        const parsedShadows = parseShadow(finalShadowString);
-        setShadows(parsedShadows);
-      } else {
         setTextShadowEnabled(false);
-      }
+    } else {
+        const effectColor = effect.style.color || textColor;
+        setTextColor(effectColor);
+  
+        if (effect.style.textShadow) {
+            setTextShadowEnabled(true);
+            const finalShadowString = effect.style.textShadow
+              .replace(/{{color}}/g, effectColor)
+              .replace(/{{glow}}/g, effect.style.glowColor || effectColor);
+            const parsedShadows = parseShadow(finalShadowString);
+            setShadows(parsedShadows);
+        } else {
+            setTextShadowEnabled(false);
+        }
     }
   };
   
@@ -419,12 +456,11 @@ export default function Home() {
       setImageBgUrl(template.background.value);
     }
     
-    // Apply effect or just font and color
     if (template.effect?.id) {
       const effect = textEffects.find(e => e.id === template.effect!.id) || textEffects[0];
       handleEffectChange(effect);
     } else {
-      handleEffectChange(textEffects[0]); // Reset to 'none'
+      handleEffectChange(textEffects[0]); 
       setTextColor(template.font.color);
       const newFont = fontOptions.find(f => f.value === template.font.value) || fontOptions[0];
       setActiveFont(newFont);
@@ -625,7 +661,7 @@ export default function Home() {
     
     return (
         <ImageCanvas
-          key={`${backgroundType}-${activeFont.value}-${fontSize}-${lineHeight}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadowEnabled}-${JSON.stringify(shadows)}-${textStroke}-${strokeColor}-${strokeWidth}-${activeEffect.id}-${canvasSize.width}-${canvasSize.height}`}
+          key={`${backgroundType}-${activeFont.fontFamily}-${fontSize}-${lineHeight}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadowEnabled}-${JSON.stringify(shadows)}-${textStroke}-${strokeColor}-${strokeWidth}-${activeEffect.id}-${canvasSize.width}-${canvasSize.height}`}
           text={design.text}
           isTitle={design.isTitle}
           fontFamily={activeFont.fontFamily}
@@ -659,7 +695,7 @@ export default function Home() {
         />
     )
   }, [backgroundType, activeFont, fontSize, lineHeight, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize]);
-  
+
   return (
     <>
       <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center">
@@ -744,12 +780,161 @@ export default function Home() {
                   </div>
                   {/* Desktop Settings Panel */}
                   <div className="w-full mt-6 hidden md:block md:max-w-4xl">
-                     {/* Settings Panel Content */}
+                    <CardFooter className="flex-col items-start p-0 bg-transparent md:rounded-lg h-full">
+                        <TooltipProvider>
+                            <Tabs
+                            value={activeSettingsTab ?? ''}
+                            onValueChange={setActiveSettingsTab}
+                            className="w-full flex flex-col-reverse md:flex-col h-full"
+                            >
+                            <TabsList className="grid w-full grid-cols-6 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md flex-shrink-0">
+                                <Tooltip><TooltipTrigger asChild><TabsTrigger value="designs"><LayoutTemplate /></TabsTrigger></TooltipTrigger><TooltipContent><p>Design Templates</p></TooltipContent></Tooltip>
+                                <Tooltip><TooltipTrigger asChild><TabsTrigger value="favorites"><Star /></TabsTrigger></TooltipTrigger><TooltipContent><p>Favorites</p></TooltipContent></Tooltip>
+                                <Tooltip><TooltipTrigger asChild><TabsTrigger value="format"><Frame /></TabsTrigger></TooltipTrigger><TooltipContent><p>Format</p></TooltipContent></Tooltip>
+                                <Tooltip><TooltipTrigger asChild><TabsTrigger value="background"><ImageIcon /></TabsTrigger></TooltipTrigger><TooltipContent><p>Background</p></TooltipContent></Tooltip>
+                                <Tooltip><TooltipTrigger asChild><TabsTrigger value="text"><Type /></TabsTrigger></TooltipTrigger><TooltipContent><p>Text</p></TooltipContent></Tooltip>
+                                <Tooltip><TooltipTrigger asChild><TabsTrigger value="download"><Download /></TabsTrigger></TooltipTrigger><TooltipContent><p>Download</p></TooltipContent></Tooltip>
+                            </TabsList>
+                            <div className="flex-grow w-full overflow-hidden relative">
+                                <TabsContent value="designs" className="h-full mt-0"><DesignsPanel handleApplyTemplate={handleApplyTemplate} /></TabsContent>
+                                <TabsContent value="favorites" className="h-full mt-0"><MyDesignsPanel myDesigns={myDesigns} handleSaveDesign={handleSaveDesign} handleDeleteDesign={handleDeleteDesign} handleUpdateDesign={handleUpdateDesign} editingDesignId={editingDesignId} handleEditClick={handleEditClick} handleCancelEdit={handleCancelEdit} editingName={editingName} setEditingName={setEditingName} designToDelete={designToDelete} setDesignToDelete={setDesignToDelete} handleLogDesign={handleLogDesign} handleApplyTemplate={handleApplyTemplate} /></TabsContent>
+                                <TabsContent value="format" className="h-full mt-0"><FormatPanel canvasSize={canvasSize} setCanvasSize={setCanvasSize} canvasSizes={canvasSizes} /></TabsContent>
+                                <TabsContent value="background" className="h-full mt-0"><BackgroundSettings backgroundTab={backgroundTab} setBackgroundTab={setBackgroundTab as (value: string) => void} handleFeelLucky={handleFeelLucky} bgColor={bgColor} handleBgColorSelect={handleBgColorSelect} imageBgUrl={imageBgUrl} handleImageBgUrlSelect={handleImageBgUrlSelect} searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchImages={handleSearchImages} isSearching={isSearching} searchedImages={searchedImages} handleKeywordSearch={handleKeywordSearch} searchPage={searchPage} isOverlayEnabled={isOverlayEnabled} setIsOverlayEnabled={handleOverlayEnable} overlayColor={overlayColor} setOverlayColor={setOverlayColor} overlayOpacity={overlayOpacity} setOverlayOpacity={setOverlayOpacity} gradientBg={gradientBg} handleGradientBgSelect={handleGradientBgSelect} setSearchCarouselApi={setSearchCarouselApi} /></TabsContent>
+                                <TabsContent value="text" className="h-full mt-0"><TextSettings text={text} setText={setText} handleGenerate={handleGenerate} isLoading={isLoading} textColor={textColor} setTextColor={handleTextColorChange} textOpacity={textOpacity} setTextOpacity={setTextOpacity} activeFont={activeFont} handleFontChange={handleFontChange} fontOptions={fontOptions} fontSize={fontSize} setFontSize={setFontSize} lineHeight={lineHeight} setLineHeight={setLineHeight} isBold={isBold} setIsBold={setIsBold} isUppercase={isUppercase} setIsUppercase={setIsUppercase} textAlign={textAlign} setTextAlign={setTextAlign} textShadowEnabled={textShadowEnabled} setTextShadowEnabled={setTextShadowEnabled} shadows={shadows} setShadows={setShadows} textStroke={textStroke} setTextStroke={setTextStroke} strokeColor={strokeColor} setStrokeColor={setStrokeColor} strokeWidth={strokeWidth} setStrokeWidth={setStrokeWidth} isTextBoxEnabled={isTextBoxEnabled} setIsTextBoxEnabled={handleTextBoxEnable} rectBgColor={rectBgColor} setRectBgColor={setRectBgColor} rectOpacity={rectOpacity} setRectOpacity={setRectOpacity} activeEffect={activeEffect} setActiveEffect={handleEffectChange} /></TabsContent>
+                                <TabsContent value="download" className="h-full mt-0"><DownloadPanel fileName={fileName} setFileName={setFileName} handleDownloadAll={handleDownloadAll} designs={designs} currentSlide={currentSlide} handleDownload={handleDownload} /></TabsContent>
+                            </div>
+                            </Tabs>
+                        </TooltipProvider>
+                    </CardFooter>
                   </div>
               </div>
             </div>
         )}
       </main>
+
+       {/* Mobile-only Fixed Bottom Settings Panel */}
+       {isClient && designs.length > 0 && (
+          <div id="mobile-settings-panel" ref={mobilePanelRef} className="md:hidden">
+              {isMobilePanelOpen && <div className="fixed inset-0 bg-black/30 z-40" onClick={closePanel} />}
+              <div 
+                className={cn(
+                  "fixed bottom-0 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
+                  isMobilePanelOpen ? "translate-y-0" : "translate-y-full",
+                )}
+              >
+                 <div className="max-h-[75vh] flex flex-col">
+                  <TabContentContainer
+                    activeTab={activeSettingsTab}
+                    closePanel={closePanel}
+                    // Background props
+                    backgroundTab={backgroundTab}
+                    setBackgroundTab={setBackgroundTab as (value: string) => void}
+                    handleFeelLucky={handleFeelLucky}
+                    bgColor={bgColor}
+                    handleBgColorSelect={handleBgColorSelect}
+                    imageBgUrl={imageBgUrl}
+                    handleImageBgUrlSelect={handleImageBgUrlSelect}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    handleSearchImages={handleSearchImages}
+                    isSearching={isSearching}
+                    searchedImages={searchedImages}
+                    handleKeywordSearch={handleKeywordSearch}
+                    searchPage={searchPage}
+                    isOverlayEnabled={isOverlayEnabled}
+                    setIsOverlayEnabled={handleOverlayEnable}
+                    overlayColor={overlayColor}
+                    setOverlayColor={setOverlayColor}
+                    overlayOpacity={overlayOpacity}
+                    setOverlayOpacity={setOverlayOpacity}
+                    gradientBg={gradientBg}
+                    handleGradientBgSelect={handleGradientBgSelect}
+                    setSearchCarouselApi={setSearchCarouselApi}
+                    // Text props
+                    text={text}
+                    setText={setText}
+                    handleGenerate={handleGenerate}
+                    isLoading={isLoading}
+                    textColor={textColor}
+                    setTextColor={handleTextColorChange}
+                    textOpacity={textOpacity}
+                    setTextOpacity={setTextOpacity}
+                    activeFont={activeFont}
+                    handleFontChange={handleFontChange}
+                    fontOptions={fontOptions}
+                    fontSize={fontSize}
+                    setFontSize={setFontSize}
+                    lineHeight={lineHeight}
+                    setLineHeight={setLineHeight}
+                    isBold={isBold}
+                    setIsBold={setIsBold}
+                    isUppercase={isUppercase}
+                    setIsUppercase={setIsUppercase}
+                    textAlign={textAlign}
+                    setTextAlign={setTextAlign}
+                    textShadowEnabled={textShadowEnabled}
+                    setTextShadowEnabled={setTextShadowEnabled}
+                    shadows={shadows}
+                    setShadows={setShadows}
+                    textStroke={textStroke}
+                    setTextStroke={setTextStroke}
+                    strokeColor={strokeColor}
+                    setStrokeColor={setStrokeColor}
+                    strokeWidth={strokeWidth}
+                    setStrokeWidth={setStrokeWidth}
+                    isTextBoxEnabled={isTextBoxEnabled}
+                    setIsTextBoxEnabled={handleTextBoxEnable}
+                    rectBgColor={rectBgColor}
+                    setRectBgColor={setRectBgColor}
+                    rectOpacity={rectOpacity}
+                    setRectOpacity={setRectOpacity}
+                    activeEffect={activeEffect}
+                    setActiveEffect={handleEffectChange}
+                    // Design/Download/Format props
+                    handleApplyTemplate={handleApplyTemplate}
+                    myDesigns={myDesigns}
+                    handleSaveDesign={handleSaveDesign}
+                    handleDeleteDesign={handleDeleteDesign}
+                    handleUpdateDesign={handleUpdateDesign}
+                    editingDesignId={editingDesignId}
+                    handleEditClick={handleEditClick}
+                    handleCancelEdit={handleCancelEdit}
+                    editingName={editingName}
+                    setEditingName={setEditingName}
+                    designToDelete={designToDelete}
+                    setDesignToDelete={setDesignToDelete}
+                    handleLogDesign={handleLogDesign}
+                    fileName={fileName}
+                    setFileName={setFileName}
+                    handleDownloadAll={handleDownloadAll}
+                    designs={designs}
+                    currentSlide={currentSlide}
+                    handleDownload={handleDownload}
+                    canvasSize={canvasSize}
+                    setCanvasSize={setCanvasSize}
+                    canvasSizes={canvasSizes}
+                  />
+                 </div>
+              </div>
+              <div 
+                className={cn(
+                  "fixed bottom-0 left-0 right-0 z-40 bg-card border-t",
+                  isMobilePanelOpen ? "translate-y-full" : "translate-y-0"
+                )}
+              >
+                <Tabs value={activeSettingsTab ?? ''} onValueChange={setActiveSettingsTab}>
+                    <TabsList className="grid w-full grid-cols-6 h-14 p-1">
+                        <Tooltip><TooltipTrigger asChild><TabsTrigger value="designs" onClick={() => setIsMobilePanelOpen(true)}><LayoutTemplate /></TabsTrigger></TooltipTrigger><TooltipContent><p>Designs</p></TooltipContent></Tooltip>
+                        <Tooltip><TooltipTrigger asChild><TabsTrigger value="favorites" onClick={() => setIsMobilePanelOpen(true)}><Star /></TabsTrigger></TooltipTrigger><TooltipContent><p>Favorites</p></TooltipContent></Tooltip>
+                        <Tooltip><TooltipTrigger asChild><TabsTrigger value="format" onClick={() => setIsMobilePanelOpen(true)}><Frame /></TabsTrigger></TooltipTrigger><TooltipContent><p>Format</p></TooltipContent></Tooltip>
+                        <Tooltip><TooltipTrigger asChild><TabsTrigger value="background" onClick={() => setIsMobilePanelOpen(true)}><ImageIcon /></TabsTrigger></TooltipTrigger><TooltipContent><p>Background</p></TooltipContent></Tooltip>
+                        <Tooltip><TooltipTrigger asChild><TabsTrigger value="text" onClick={() => setIsMobilePanelOpen(true)}><Type /></TabsTrigger></TooltipTrigger><TooltipContent><p>Text</p></TooltipContent></Tooltip>
+                        <Tooltip><TooltipTrigger asChild><TabsTrigger value="download" onClick={() => setIsMobilePanelOpen(true)}><Download /></TabsTrigger></TooltipTrigger><TooltipContent><p>Download</p></TooltipContent></Tooltip>
+                    </TabsList>
+                </Tabs>
+              </div>
+          </div>
+        )}
     </>
   );
 }
