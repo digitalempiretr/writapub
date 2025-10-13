@@ -2,7 +2,8 @@
 "use client";
 
 import { findImages } from "@/ai/flows/find-images-flow";
-import { ImageCanvas, type FontOption } from "@/components/image-canvas";
+import { ImageCanvas } from "@/components/image-canvas";
+import type { FontOption } from "@/lib/font-options";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import {
@@ -107,8 +108,11 @@ export default function Home() {
     }
   }, [carouselApi]);
 
+  const defaultFont = fontOptions.find(f => f.value === 'duru-sans') || fontOptions[0];
+  const [activeFont, setActiveFont] = useState<FontOption>(defaultFont);
+  const [fontSize, setFontSize] = useState(defaultFont.size);
+  const [lineHeight, setLineHeight] = useState(defaultFont.lineHeight);
 
-  const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'duru-sans') || fontOptions[0]);
   const [textAlign, setTextAlign] = useState<TextAlign>('left');
   const [isBold, setIsBold] = useState(true);
   const [isUppercase, setIsUppercase] = useState(false);
@@ -275,6 +279,8 @@ export default function Home() {
   const handleFontChange = (value: string) => {
     const newFont = fontOptions.find(f => f.value === value) || fontOptions[0];
     setActiveFont(newFont);
+    setFontSize(newFont.size);
+    setLineHeight(newFont.lineHeight);
   }
 
   const handleSearchImages = async (page = 1) => {
@@ -365,6 +371,8 @@ export default function Home() {
       const newFont = fontOptions.find(f => f.fontFamily === effect.style.fontFamily);
       if (newFont) {
         setActiveFont(newFont);
+        setFontSize(newFont.size);
+        setLineHeight(newFont.lineHeight);
       }
     }
   
@@ -420,6 +428,8 @@ export default function Home() {
       setTextColor(template.font.color);
       const newFont = fontOptions.find(f => f.value === template.font.value) || fontOptions[0];
       setActiveFont(newFont);
+      setFontSize(newFont.size);
+      setLineHeight(newFont.lineHeight);
     }
 
     setRectBgColor(template.textBox.color);
@@ -566,7 +576,7 @@ export default function Home() {
     value: '${templateToLog.font.value}',
     color: '${templateToLog.font.color}',
   },
-textBox: {
+  textBox: {
     color: '${templateToLog.textBox.color}',
     opacity: ${templateToLog.textBox.opacity},
   },
@@ -615,12 +625,13 @@ textBox: {
     
     return (
         <ImageCanvas
-          key={`${backgroundType}-${activeFont.value}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadowEnabled}-${JSON.stringify(shadows)}-${textStroke}-${strokeColor}-${strokeWidth}-${activeEffect.id}-${canvasSize.width}-${canvasSize.height}`}
-          font={activeFont}
+          key={`${backgroundType}-${activeFont.value}-${fontSize}-${lineHeight}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadowEnabled}-${JSON.stringify(shadows)}-${textStroke}-${strokeColor}-${strokeWidth}-${activeEffect.id}-${canvasSize.width}-${canvasSize.height}`}
           text={design.text}
           isTitle={design.isTitle}
-          textColor={textColor}
-          textOpacity={textOpacity}
+          fontFamily={activeFont.fontFamily}
+          fontWeight={activeFont.weight}
+          fontSize={fontSize}
+          lineHeight={lineHeight}
           backgroundColor={currentBg}
           backgroundImageUrl={imageUrl}
           width={canvasSize.width}
@@ -633,6 +644,8 @@ textBox: {
           rectOpacity={isTextBoxEnabled ? rectOpacity : 0}
           overlayColor={overlayColor}
           overlayOpacity={isOverlayEnabled ? overlayOpacity : 0}
+          textColor={textColor}
+          textOpacity={textOpacity}
           textAlign={textAlign}
           isBold={isBold}
           isUppercase={isUppercase}
@@ -642,118 +655,11 @@ textBox: {
           strokeColor={strokeColor}
           strokeWidth={strokeWidth}
           fontSmoothing={activeEffect.style.fontSmoothing}
+          shadowBaseFontSize={activeEffect.style.shadowBaseFontSize}
         />
     )
-  }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize]);
-
-  const mobilePanelContent = (
-    <div className="flex-grow overflow-y-auto">
-        {activeSettingsTab === 'designs' && (
-            <DesignsPanel handleApplyTemplate={handleApplyTemplate} />
-        )}
-        {activeSettingsTab === 'favorites' && (
-            <MyDesignsPanel 
-              myDesigns={myDesigns}
-              handleSaveDesign={handleSaveDesign}
-              handleDeleteDesign={handleDeleteDesign}
-              handleUpdateDesign={handleUpdateDesign}
-              editingDesignId={editingDesignId}
-              handleEditClick={handleEditClick}
-              handleCancelEdit={handleCancelEdit}
-              editingName={editingName}
-              setEditingName={setEditingName}
-              designToDelete={designToDelete}
-              setDesignToDelete={setDesignToDelete}
-              handleLogDesign={handleLogDesign}
-              handleApplyTemplate={handleApplyTemplate}
-            />
-        )}
-        {activeSettingsTab === 'format' && (
-            <FormatPanel
-              canvasSize={canvasSize}
-              setCanvasSize={setCanvasSize}
-              canvasSizes={canvasSizes}
-            />
-        )}
-        {activeSettingsTab === 'background' && (
-             <BackgroundSettings 
-                backgroundTab={backgroundTab}
-                setBackgroundTab={setBackgroundTab as (value: string) => void}
-                handleFeelLucky={handleFeelLucky}
-                bgColor={bgColor}
-                handleBgColorSelect={handleBgColorSelect}
-                imageBgUrl={imageBgUrl}
-                handleImageBgUrlSelect={handleImageBgUrlSelect}
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                handleSearchImages={handleSearchImages}
-                isSearching={isSearching}
-                searchedImages={searchedImages}
-                handleKeywordSearch={handleKeywordSearch}
-                searchPage={searchPage}
-                isOverlayEnabled={isOverlayEnabled}
-                setIsOverlayEnabled={handleOverlayEnable}
-                overlayColor={overlayColor}
-                setOverlayColor={setOverlayColor}
-                overlayOpacity={overlayOpacity}
-                setOverlayOpacity={setOverlayOpacity}
-                gradientBg={gradientBg}
-                handleGradientBgSelect={handleGradientBgSelect}
-                setSearchCarouselApi={setSearchCarouselApi}
-             />
-        )}
-        {activeSettingsTab === 'text' && (
-             <TextSettings 
-                text={text}
-                setText={setText}
-                handleGenerate={handleGenerate}
-                isLoading={isLoading}
-                textColor={textColor}
-                setTextColor={handleTextColorChange}
-                textOpacity={textOpacity}
-                setTextOpacity={setTextOpacity}
-                activeFont={activeFont}
-                handleFontChange={handleFontChange}
-                fontOptions={fontOptions}
-                isBold={isBold}
-                setIsBold={setIsBold}
-                isUppercase={isUppercase}
-                setIsUppercase={setIsUppercase}
-                textAlign={textAlign}
-                setTextAlign={setTextAlign}
-                textShadowEnabled={textShadowEnabled}
-                setTextShadowEnabled={setTextShadowEnabled}
-                shadows={shadows}
-                setShadows={setShadows}
-                textStroke={textStroke}
-                setTextStroke={setTextStroke}
-                strokeColor={strokeColor}
-                setStrokeColor={setStrokeColor}
-                strokeWidth={strokeWidth}
-                setStrokeWidth={setStrokeWidth}
-                isTextBoxEnabled={isTextBoxEnabled}
-                setIsTextBoxEnabled={handleTextBoxEnable}
-                rectBgColor={rectBgColor}
-                setRectBgColor={setRectBgColor}
-                rectOpacity={rectOpacity}
-                setRectOpacity={setRectOpacity}
-                activeEffect={activeEffect}
-                setActiveEffect={handleEffectChange}
-              />
-        )}
-        {activeSettingsTab === 'download' && (
-            <DownloadPanel 
-              fileName={fileName}
-              setFileName={setFileName}
-              handleDownloadAll={handleDownloadAll}
-              designs={designs}
-              currentSlide={currentSlide}
-              handleDownload={handleDownload}
-            />
-        )}
-    </div>
-  );
-
+  }, [backgroundType, activeFont, fontSize, lineHeight, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize]);
+  
   return (
     <>
       <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center">
@@ -785,7 +691,7 @@ textBox: {
         { isClient && designs.length > 0 && (
           <div id="designs-container" ref={designsRef} className="w-full pt-8 flex flex-col items-center">
               <div className="w-full mx-auto flex flex-col items-center">
-                  <div className="w-full max-w-md max-h-[70vh]">
+                  <div className="w-full max-w-md">
                     <Carousel className="w-full" setApi={setCarouselApi} opts={{ dragFree: true }}>
                       <CarouselContent>
                         {designs.map((design, index) => (
@@ -838,107 +744,12 @@ textBox: {
                   </div>
                   {/* Desktop Settings Panel */}
                   <div className="w-full mt-6 hidden md:block md:max-w-4xl">
-                     <CardFooter className="flex-col items-start p-0 bg-transparent md:rounded-lg h-full">
-                      <TooltipProvider>
-                        <Tabs
-                          value={activeSettingsTab}
-                          onValueChange={setActiveSettingsTab}
-                          className="w-full flex flex-col-reverse md:flex-col h-full"
-                        >
-                          <TabsList className="grid w-full grid-cols-6 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md flex-shrink-0">
-                             <Tooltip>
-                              <TooltipTrigger asChild>
-                                <TabsTrigger value="designs"><LayoutTemplate /></TabsTrigger>
-                              </TooltipTrigger>
-                              <TooltipContent><p>Design Templates</p></TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <TabsTrigger value="favorites"><Star /></TabsTrigger>
-                              </TooltipTrigger>
-                              <TooltipContent><p>Favorites</p></TooltipContent>
-                            </Tooltip>
-                             <Tooltip>
-                              <TooltipTrigger asChild>
-                                <TabsTrigger value="format"><Frame /></TabsTrigger>
-                              </TooltipTrigger>
-                              <TooltipContent><p>Format</p></TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <TabsTrigger value="background"><ImageIcon /></TabsTrigger>
-                              </TooltipTrigger>
-                              <TooltipContent><p>Background</p></TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <TabsTrigger value="text"><Type /></TabsTrigger>
-                              </TooltipTrigger>
-                              <TooltipContent><p>Text</p></TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <TabsTrigger value="download"><Download /></TabsTrigger>
-                              </TooltipTrigger>
-                              <TooltipContent><p>Download</p></TooltipContent>
-                            </Tooltip>
-                          </TabsList>
-                          <div className="flex-grow w-full overflow-hidden md:relative">
-                              <TabsContent value="designs" className="h-full mt-0">{mobilePanelContent}</TabsContent>
-                              <TabsContent value="favorites" className="h-full mt-0">{mobilePanelContent}</TabsContent>
-                              <TabsContent value="format" className="h-full mt-0">{mobilePanelContent}</TabsContent>
-                              <TabsContent value="background" className="h-full mt-0">{mobilePanelContent}</TabsContent>
-                              <TabsContent value="text" className="h-full mt-0">{mobilePanelContent}</TabsContent>
-                              <TabsContent value="download" className="h-full mt-0">{mobilePanelContent}</TabsContent>
-                          </div>
-                        </Tabs>
-                      </TooltipProvider>
-                    </CardFooter>
+                     {/* Settings Panel Content */}
                   </div>
               </div>
             </div>
         )}
       </main>
-
-       {/* Mobile-only Fixed Bottom Settings Panel */}
-       {isClient && designs.length > 0 && (
-          <div id="mobile-settings-panel" ref={mobilePanelRef} className="md:hidden">
-            {isMobilePanelOpen && <div className="fixed inset-0 bg-black/30 z-40" onClick={closePanel} />}
-            
-            <div 
-              className={cn(
-                "fixed left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
-                isMobilePanelOpen ? "bottom-12" : "-bottom-full" 
-              )}
-            >
-                <div className="h-auto max-h-[75vh]">
-                   <div className="flex-grow overflow-y-auto">
-                      {mobilePanelContent}
-                   </div>
-                </div>
-            </div>
-
-            <div 
-              className={cn(
-                "fixed bottom-0 left-0 right-0 z-40",
-                 "transition-transform duration-300 ease-in-out",
-                 isMobilePanelOpen ? "translate-y-full" : "translate-y-0"
-              )}
-            >
-                <Tabs value={activeSettingsTab} onValueChange={setActiveSettingsTab} className="w-full">
-                  <TabsList className="grid w-full grid-cols-6 bg-card text-card-foreground p-2 h-12 rounded-t-lg">
-                    <TabsTrigger value="designs" onClick={() => setIsMobilePanelOpen(true)}><LayoutTemplate /></TabsTrigger>
-                    <TabsTrigger value="favorites" onClick={() => setIsMobilePanelOpen(true)}><Star /></TabsTrigger>
-                    <TabsTrigger value="format" onClick={() => setIsMobilePanelOpen(true)}><Frame /></TabsTrigger>
-                    <TabsTrigger value="background" onClick={() => setIsMobilePanelOpen(true)}><ImageIcon /></TabsTrigger>
-                    <TabsTrigger value="text" onClick={() => setIsMobilePanelOpen(true)}><Type /></TabsTrigger>
-                    <TabsTrigger value="download" onClick={() => setIsMobilePanelOpen(true)}><Download /></TabsTrigger>
-                  </TabsList>
-                </Tabs>
-            </div>
-          </div>
-        )}
     </>
   );
 }
-

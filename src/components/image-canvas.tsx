@@ -4,22 +4,13 @@
 import React, { useEffect, useRef } from "react";
 import type { Shadow } from "@/components/text-settings";
 
-export type FontOption = {
-  value: string;
-  label: string;
-  fontFamily: string;
-  weight: string | number;
-  size: number;
-  lineHeight: number;
-};
-
-type ImageCanvasProps = {
+export type ImageCanvasProps = {
   text: string;
   isTitle: boolean;
   fontFamily: string;
   fontWeight: string | number;
   fontSize: number;
-  lineHeight: number;
+  lineHeight: number; // This is now a multiplier
   backgroundColor?: string;
   textColor: string;
   textOpacity: number;
@@ -269,7 +260,8 @@ export function ImageCanvas({
       const finalFontWeight = isBold ? Math.min(Number(fontWeight) + 300, 900) : fontWeight;
       
       const scalingFactor = width / 1080;
-      const finalFontSize = (isTitle ? propFontSize * 1.2 : propFontSize) * scalingFactor;
+      const baseFontSize = isTitle ? propFontSize * 1.2 : propFontSize;
+      const finalFontSize = baseFontSize * scalingFactor;
       const finalLineHeight = finalFontSize * propLineHeight;
 
       const scaleFactor = shadowBaseFontSize ? finalFontSize / (shadowBaseFontSize * scalingFactor) : 1;
