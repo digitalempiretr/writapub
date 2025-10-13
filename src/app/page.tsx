@@ -73,8 +73,8 @@ function TabContentContainer({
   if (!activeTab) return null;
 
   return (
-    <div className="flex flex-col">
-       <div className="w-full flex-shrink-0 md:hidden">
+    <div className="flex flex-col h-full">
+      <div className="w-full flex-shrink-0 md:hidden">
           <div className="flex justify-end p-1">
               <Button 
                   variant="ghost" 
@@ -573,26 +573,34 @@ textBox: {
   const handleEffectChange = (effect: TextEffect) => {
     setActiveEffect(effect);
     if (effect.id === 'none') {
-        setTextShadowEnabled(false);
-        setShadows([{ id: Date.now(), color: '#000000', offsetX: 5, offsetY: 5, blur: 5 }]);
+      setTextShadowEnabled(false);
+      setShadows([{ id: Date.now(), color: '#000000', offsetX: 5, offsetY: 5, blur: 5 }]);
+      // Optionally reset text color to default or keep current
     } else {
-        if (effect.style.color) {
-            setTextColor(effect.style.color);
-        }
-        if (effect.style.textShadow) {
-            setTextShadowEnabled(true);
-            const parsedShadows = parseShadow(effect.style.textShadow.replace(/{{color}}/g, effect.style.color || textColor));
-            setShadows(parsedShadows);
-        } else {
-            setTextShadowEnabled(false);
-        }
+      if (effect.style.color) {
+        setTextColor(effect.style.color);
+      }
+      if (effect.style.textShadow) {
+        setTextShadowEnabled(true);
+        const finalShadowString = effect.style.textShadow
+          .replace(/{{color}}/g, effect.style.color || textColor)
+          .replace(/{{glow}}/g, effect.style.glowColor || effect.style.color || textColor);
+        const parsedShadows = parseShadow(finalShadowString);
+        setShadows(parsedShadows);
+      } else {
+        setTextShadowEnabled(false);
+      }
     }
   };
 
   const handleTextColorChange = (newColor: string) => {
     setTextColor(newColor);
-    if (activeEffect.id !== 'none' && activeEffect.style.textShadow) {
-      const newShadows = parseShadow(activeEffect.style.textShadow.replace(/{{color}}/g, newColor));
+    // If an effect is active, update its dynamic colors too
+    if (activeEffect && activeEffect.id !== 'none' && activeEffect.style.textShadow) {
+      const finalShadowString = activeEffect.style.textShadow
+        .replace(/{{color}}/g, newColor)
+        .replace(/{{glow}}/g, newColor);
+      const newShadows = parseShadow(finalShadowString);
       setShadows(newShadows);
     }
   };
@@ -1033,29 +1041,28 @@ textBox: {
        {/* Mobile-only Fixed Bottom Settings Panel */}
        {isClient && designs.length > 0 && (
           <div id="mobile-settings-panel" ref={mobilePanelRef} className="md:hidden">
-              {isMobilePanelOpen && <div className="fixed inset-0 bg-black/30 z-40" onClick={closePanel} />}
-              
-              {/* This is the sliding panel */}
-              <div 
-                className={cn(
-                  "fixed bottom-0 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
-                  isMobilePanelOpen ? "translate-y-0" : "translate-y-full",
-                  "max-h-[75vh]"
-                )}
-              >
-                 {settingsPanel}
-              </div>
+            {isMobilePanelOpen && <div className="fixed inset-0 bg-black/30 z-40" onClick={closePanel} />}
+            
+            {/* This is the sliding panel */}
+            <div 
+              className={cn(
+                "fixed bottom-0 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
+                isMobilePanelOpen ? "translate-y-0" : "translate-y-full",
+                "max-h-[75vh] flex flex-col" // Use flex-col to allow content to grow
+              )}
+            >
+              {settingsPanel}
+            </div>
 
-              {/* This is the static tab list at the bottom */}
-              <div 
-                className={cn(
-                  "fixed bottom-0 left-0 right-0 z-40", // z-40 to be behind the panel
-                  "transition-transform duration-300 ease-in-out",
-                  isMobilePanelOpen ? "translate-y-full" : "translate-y-0"
-                )}
-              >
-                {settingsPanel}
-              </div>
+            {/* This is the static tab list at the bottom */}
+            <div 
+              className={cn(
+                "fixed bottom-0 left-0 right-0 z-40",
+                isMobilePanelOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+              )}
+            >
+              {settingsPanel}
+            </div>
           </div>
         )}
     </>

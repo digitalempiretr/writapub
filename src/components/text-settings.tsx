@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useId, useState, useEffect } from "react";
@@ -477,11 +476,14 @@ export function TextSettings({
               <CarouselContent>
                 {textEffects.map(effect => {
                   const effectStyle: React.CSSProperties = {
-                    backgroundColor: effect.id === 'none' ? '#e2e8f0' : '#333',
+                    backgroundColor: effect.previewBg || (effect.id === 'none' ? '#e2e8f0' : '#333'),
                     color: effect.style.color || textColor,
                   };
                   if (effect.style.textShadow) {
-                      effectStyle.textShadow = effect.style.textShadow.replace(/{{color}}/g, effect.style.color || textColor);
+                      const finalShadowString = effect.style.textShadow
+                        .replace(/{{color}}/g, effect.style.color || textColor)
+                        .replace(/{{glow}}/g, effect.style.glowColor || effect.style.color || textColor);
+                      effectStyle.textShadow = finalShadowString;
                   }
                   
                   return (
@@ -491,10 +493,10 @@ export function TextSettings({
                           onClick={() => setActiveEffect(effect)}
                       >
                         <CardContent 
-                          className="h-20 flex items-center justify-center p-0 text-3xl font-bold"
+                          className="h-20 flex items-center justify-center p-0 text-5xl font-['Playfair_Display'] font-bold"
                           style={effectStyle}
                         >
-                        {effect.name}
+                          W
                         </CardContent>
                       </Card>
                     </CarouselItem>
