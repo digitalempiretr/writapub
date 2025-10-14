@@ -73,7 +73,7 @@ export const textEffects: TextEffect[] = [
         6px 6px 0px #c11a2b,
         7px 7px 0px #c11a2b,
         8px 8px 0px #c11a2b,
-        9px 9px 0px #c11a2b; 
+        9px 9px 0px #c11a2b 
       `,
     },
     previewBg: '#121221',

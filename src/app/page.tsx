@@ -662,12 +662,14 @@ export default function Home() {
     return (
         <ImageCanvas
           key={`${backgroundType}-${activeFont.value}-${fontSize}-${lineHeight}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadowEnabled}-${JSON.stringify(shadows)}-${textStroke}-${strokeColor}-${strokeWidth}-${activeEffect.id}-${canvasSize.width}-${canvasSize.height}`}
-          text={design.text}
-          isTitle={design.isTitle}
           fontFamily={activeFont.fontFamily}
           fontWeight={activeFont.weight}
           fontSize={fontSize}
           lineHeight={lineHeight}
+          text={design.text}
+          isTitle={design.isTitle}
+          textColor={textColor}
+          textOpacity={textOpacity}
           backgroundColor={currentBg}
           backgroundImageUrl={imageUrl}
           width={canvasSize.width}
@@ -680,8 +682,6 @@ export default function Home() {
           rectOpacity={isTextBoxEnabled ? rectOpacity : 0}
           overlayColor={overlayColor}
           overlayOpacity={isOverlayEnabled ? overlayOpacity : 0}
-          textColor={textColor}
-          textOpacity={textOpacity}
           textAlign={textAlign}
           isBold={isBold}
           isUppercase={isUppercase}
@@ -820,10 +820,10 @@ export default function Home() {
               {/* This is the sliding panel */}
               <div 
                 className={cn(
-                  "fixed bottom-0 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
-                  isMobilePanelOpen ? "translate-y-0" : "translate-y-full",
-                  "max-h-[75vh]"
+                  "fixed bottom-14 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
+                  isMobilePanelOpen ? "translate-y-0" : "translate-y-full"
                 )}
+                style={{ height: 'auto', maxHeight: '75vh' }}
               >
                  <TabContentContainer
                     activeTab={activeSettingsTab}
@@ -921,20 +921,25 @@ export default function Home() {
               {/* This is the static tab list at the bottom */}
               <div 
                 className={cn(
-                  "fixed bottom-0 left-0 right-0 z-40 bg-card border-t",
-                  "transition-transform duration-300 ease-in-out",
-                  isMobilePanelOpen ? "translate-y-full" : "translate-y-0"
+                  "fixed bottom-0 left-0 right-0 z-40 bg-card border-t"
                 )}
               >
                 <TooltipProvider>
-                  <Tabs value={activeSettingsTab ?? ''} onValueChange={setActiveSettingsTab}>
+                  <Tabs value={activeSettingsTab ?? ''} onValueChange={(value) => {
+                      if (activeSettingsTab === value && isMobilePanelOpen) {
+                          setIsMobilePanelOpen(false);
+                      } else {
+                          setActiveSettingsTab(value);
+                          setIsMobilePanelOpen(true);
+                      }
+                  }}>
                       <TabsList className="grid w-full grid-cols-6 h-14 p-1">
-                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="designs" onClick={() => setIsMobilePanelOpen(true)}><LayoutTemplate /></TabsTrigger></TooltipTrigger><TooltipContent><p>Designs</p></TooltipContent></Tooltip>
-                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="favorites" onClick={() => setIsMobilePanelOpen(true)}><Star /></TabsTrigger></TooltipTrigger><TooltipContent><p>Favorites</p></TooltipContent></Tooltip>
-                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="format" onClick={() => setIsMobilePanelOpen(true)}><Frame /></TabsTrigger></TooltipTrigger><TooltipContent><p>Format</p></TooltipContent></Tooltip>
-                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="background" onClick={() => setIsMobilePanelOpen(true)}><ImageIcon /></TabsTrigger></TooltipTrigger><TooltipContent><p>Background</p></TooltipContent></Tooltip>
-                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="text" onClick={() => setIsMobilePanelOpen(true)}><Type /></TabsTrigger></TooltipTrigger><TooltipContent><p>Text</p></TooltipContent></Tooltip>
-                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="download" onClick={() => setIsMobilePanelOpen(true)}><Download /></TabsTrigger></TooltipTrigger><TooltipContent><p>Download</p></TooltipContent></Tooltip>
+                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="designs"><LayoutTemplate /></TabsTrigger></TooltipTrigger><TooltipContent><p>Designs</p></TooltipContent></Tooltip>
+                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="favorites"><Star /></TabsTrigger></TooltipTrigger><TooltipContent><p>Favorites</p></TooltipContent></Tooltip>
+                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="format"><Frame /></TabsTrigger></TooltipTrigger><TooltipContent><p>Format</p></TooltipContent></Tooltip>
+                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="background"><ImageIcon /></TabsTrigger></TooltipTrigger><TooltipContent><p>Background</p></TooltipContent></Tooltip>
+                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="text"><Type /></TabsTrigger></TooltipTrigger><TooltipContent><p>Text</p></TooltipContent></Tooltip>
+                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="download"><Download /></TabsTrigger></TooltipTrigger><TooltipContent><p>Download</p></TooltipContent></Tooltip>
                       </TabsList>
                   </Tabs>
                 </TooltipProvider>

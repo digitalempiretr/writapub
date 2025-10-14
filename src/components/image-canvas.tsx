@@ -287,9 +287,6 @@ export function ImageCanvas({
 
       if (!isTitle) {
         // Dynamically calculate max lines based on line height
-        // A standard line height of 1.4 might correspond to ~14 lines.
-        // A max line height of 2.5 might correspond to ~8 lines.
-        // We can create a simple linear interpolation.
         const maxLineHeight = 2.5;
         const minLineHeight = 1.2;
         const maxLinesForMinHeight = 14;
