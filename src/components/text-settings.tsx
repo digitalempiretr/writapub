@@ -111,15 +111,14 @@ export function TextSettings({
   const baseId = useId();
   const [internalText, setInternalText] = useState(text);
 
-  // States for live input in the popover
   const [internalFontSize, setInternalFontSize] = useState(activeFont.size);
   const [internalLineHeight, setInternalLineHeight] = useState(activeFont.lineHeight);
-
-  // Sync internal states when the main activeFont prop changes
+  
   useEffect(() => {
     setInternalFontSize(activeFont.size);
     setInternalLineHeight(activeFont.lineHeight);
   }, [activeFont]);
+
 
   useEffect(() => {
     setInternalText(text);
@@ -127,7 +126,6 @@ export function TextSettings({
 
   const handleRegenerateClick = () => {
     setText(internalText);
-    // Use a timeout to ensure the state update has propagated before generating
     setTimeout(() => {
       handleGenerate();
     }, 0);
@@ -569,3 +567,5 @@ export function TextSettings({
     </TooltipProvider>
   );
 }
+
+    

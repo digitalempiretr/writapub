@@ -355,6 +355,7 @@ export default function Home() {
 const handleEffectChange = (effect: TextEffect) => {
     setActiveEffect(effect);
 
+    // If the effect has a specific font, apply it.
     if (effect.style.fontFamily) {
         const newFont = fontOptions.find(f => f.fontFamily === effect.style.fontFamily);
         if (newFont) {
@@ -364,7 +365,8 @@ const handleEffectChange = (effect: TextEffect) => {
 
     if (effect.id === 'none') {
         setTextShadowEnabled(false);
-        setTextColor(pageInitialColors.textColor);
+        // Optionally reset text color to default or keep as is.
+        // setTextColor(pageInitialColors.textColor); 
     } else {
         const effectColor = effect.style.color || textColor;
         setTextColor(effectColor);
@@ -406,14 +408,16 @@ const handleEffectChange = (effect: TextEffect) => {
       setImageBgUrl(template.background.value);
     }
     
+    // Apply effect first, as it might override font and color
     if (template.effect?.id) {
       const effect = textEffects.find(e => e.id === template.effect!.id) || textEffects[0];
       handleEffectChange(effect);
     } else {
-      handleEffectChange(textEffects[0]); 
-      setTextColor(template.font.color);
+      // If no effect, apply font and color from template directly
+      handleEffectChange(textEffects[0]); // Reset to 'none'
       const newFont = fontOptions.find(f => f.value === template.font.value) || fontOptions[0];
       setActiveFont(newFont);
+      setTextColor(template.font.color);
     }
 
     setRectBgColor(template.textBox.color);
@@ -771,27 +775,41 @@ const handleEffectChange = (effect: TextEffect) => {
                 )}
               >
                   <Tabs value={activeSettingsTab ?? ''} className="w-full flex flex-col h-full">
-                    <TabsContent value="designs" className="flex-grow overflow-y-auto mt-0"><DesignsPanel handleApplyTemplate={handleApplyTemplate} /></TabsContent>
-                    <TabsContent value="favorites" className="flex-grow overflow-y-auto mt-0"><MyDesignsPanel myDesigns={myDesigns} handleSaveDesign={handleSaveDesign} handleDeleteDesign={handleDeleteDesign} handleUpdateDesign={handleUpdateDesign} editingDesignId={editingDesignId} handleEditClick={handleEditClick} handleCancelEdit={handleCancelEdit} editingName={editingName} setEditingName={setEditingName} designToDelete={designToDelete} setDesignToDelete={setDesignToDelete} handleLogDesign={handleLogDesign} handleApplyTemplate={handleApplyTemplate} /></TabsContent>
-                    <TabsContent value="format" className="flex-grow overflow-y-auto mt-0"><FormatPanel canvasSize={canvasSize} setCanvasSize={setCanvasSize} canvasSizes={canvasSizes} /></TabsContent>
-                    <TabsContent value="background" className="flex-grow overflow-y-auto mt-0"><BackgroundSettings backgroundTab={backgroundTab} setBackgroundTab={setBackgroundTab as (value: string) => void} handleFeelLucky={handleFeelLucky} bgColor={bgColor} handleBgColorSelect={handleBgColorSelect} imageBgUrl={imageBgUrl} handleImageBgUrlSelect={handleImageBgUrlSelect} searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchImages={handleSearchImages} isSearching={isSearching} searchedImages={searchedImages} handleKeywordSearch={handleKeywordSearch} searchPage={searchPage} isOverlayEnabled={isOverlayEnabled} setIsOverlayEnabled={handleOverlayEnable} overlayColor={overlayColor} setOverlayColor={setOverlayColor} overlayOpacity={overlayOpacity} setOverlayOpacity={setOverlayOpacity} gradientBg={gradientBg} handleGradientBgSelect={handleGradientBgSelect} setSearchCarouselApi={setSearchCarouselApi} /></TabsContent>
-                    <TabsContent value="text" className="flex-grow overflow-y-auto mt-0"><TextSettings text={text} setText={setText} handleGenerate={handleGenerate} isLoading={isLoading} textColor={textColor} setTextColor={handleTextColorChange} textOpacity={textOpacity} setTextOpacity={setTextOpacity} activeFont={activeFont} setActiveFont={setActiveFont} fontOptions={fontOptions} isBold={isBold} setIsBold={setIsBold} isUppercase={isUppercase} setIsUppercase={setIsUppercase} textAlign={textAlign} setTextAlign={setTextAlign} textShadowEnabled={textShadowEnabled} setTextShadowEnabled={setTextShadowEnabled} shadows={shadows} setShadows={setShadows} textStroke={textStroke} setTextStroke={setTextStroke} strokeColor={strokeColor} setStrokeColor={setStrokeColor} strokeWidth={strokeWidth} setStrokeWidth={setStrokeWidth} isTextBoxEnabled={isTextBoxEnabled} setIsTextBoxEnabled={handleTextBoxEnable} rectBgColor={rectBgColor} setRectBgColor={setRectBgColor} rectOpacity={rectOpacity} setRectOpacity={setRectOpacity} activeEffect={activeEffect} setActiveEffect={handleEffectChange} /></TabsContent>
-                    <TabsContent value="download" className="flex-grow overflow-y-auto mt-0"><DownloadPanel fileName={fileName} setFileName={setFileName} handleDownloadAll={handleDownloadAll} designs={designs} currentSlide={currentSlide} handleDownload={handleDownload} /></TabsContent>
+                    <div className="w-full flex-shrink-0">
+                      <div className="flex justify-end p-1">
+                          <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              onClick={closePanel} 
+                              className="h-8 w-8 rounded-full bg-background hover:bg-muted"
+                          >
+                              <X className="h-5 w-5" />
+                              <span className="sr-only">Close Panel</span>
+                          </Button>
+                      </div>
+                    </div>
+                    <div className="flex-grow overflow-y-auto">
+                      <TabsContent value="designs" className="mt-0"><DesignsPanel handleApplyTemplate={handleApplyTemplate} /></TabsContent>
+                      <TabsContent value="favorites" className="mt-0"><MyDesignsPanel myDesigns={myDesigns} handleSaveDesign={handleSaveDesign} handleDeleteDesign={handleDeleteDesign} handleUpdateDesign={handleUpdateDesign} editingDesignId={editingDesignId} handleEditClick={handleEditClick} handleCancelEdit={handleCancelEdit} editingName={editingName} setEditingName={setEditingName} designToDelete={designToDelete} setDesignToDelete={setDesignToDelete} handleLogDesign={handleLogDesign} handleApplyTemplate={handleApplyTemplate} /></TabsContent>
+                      <TabsContent value="format" className="mt-0"><FormatPanel canvasSize={canvasSize} setCanvasSize={setCanvasSize} canvasSizes={canvasSizes} /></TabsContent>
+                      <TabsContent value="background" className="mt-0"><BackgroundSettings backgroundTab={backgroundTab} setBackgroundTab={setBackgroundTab as (value: string) => void} handleFeelLucky={handleFeelLucky} bgColor={bgColor} handleBgColorSelect={handleBgColorSelect} imageBgUrl={imageBgUrl} handleImageBgUrlSelect={handleImageBgUrlSelect} searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchImages={handleSearchImages} isSearching={isSearching} searchedImages={searchedImages} handleKeywordSearch={handleKeywordSearch} searchPage={searchPage} isOverlayEnabled={isOverlayEnabled} setIsOverlayEnabled={handleOverlayEnable} overlayColor={overlayColor} setOverlayColor={setOverlayColor} overlayOpacity={overlayOpacity} setOverlayOpacity={setOverlayOpacity} gradientBg={gradientBg} handleGradientBgSelect={handleGradientBgSelect} setSearchCarouselApi={setSearchCarouselApi} /></TabsContent>
+                      <TabsContent value="text" className="mt-0"><TextSettings text={text} setText={setText} handleGenerate={handleGenerate} isLoading={isLoading} textColor={textColor} setTextColor={handleTextColorChange} textOpacity={textOpacity} setTextOpacity={setTextOpacity} activeFont={activeFont} setActiveFont={setActiveFont} fontOptions={fontOptions} isBold={isBold} setIsBold={setIsBold} isUppercase={isUppercase} setIsUppercase={setIsUppercase} textAlign={textAlign} setTextAlign={setTextAlign} textShadowEnabled={textShadowEnabled} setTextShadowEnabled={setTextShadowEnabled} shadows={shadows} setShadows={setShadows} textStroke={textStroke} setTextStroke={setTextStroke} strokeColor={strokeColor} setStrokeColor={setStrokeColor} strokeWidth={strokeWidth} setStrokeWidth={setStrokeWidth} isTextBoxEnabled={isTextBoxEnabled} setIsTextBoxEnabled={handleTextBoxEnable} rectBgColor={rectBgColor} setRectBgColor={setRectBgColor} rectOpacity={rectOpacity} setRectOpacity={setRectOpacity} activeEffect={activeEffect} setActiveEffect={handleEffectChange} /></TabsContent>
+                      <TabsContent value="download" className="mt-0"><DownloadPanel fileName={fileName} setFileName={setFileName} handleDownloadAll={handleDownloadAll} designs={designs} currentSlide={currentSlide} handleDownload={handleDownload} /></TabsContent>
+                    </div>
                   </Tabs>
               </div>
 
               <div 
                 className={cn(
-                  "fixed bottom-0 left-0 right-0 z-50 bg-card border-t"
+                  "fixed bottom-0 left-0 right-0 z-50 bg-card border-t",
+                  isMobilePanelOpen && "translate-y-full"
                 )}
               >
                 <TooltipProvider>
                   <Tabs value={activeSettingsTab ?? ''} onValueChange={(value) => {
-                      if (activeSettingsTab === value && isMobilePanelOpen) {
-                          setIsMobilePanelOpen(false);
-                      } else {
-                          setActiveSettingsTab(value);
-                          setIsMobilePanelOpen(true);
+                      setActiveSettingsTab(value);
+                      if (!isMobilePanelOpen) {
+                        setIsMobilePanelOpen(true);
                       }
                   }}>
                       <TabsList className="grid w-full grid-cols-6 h-14 p-1">
@@ -810,3 +828,5 @@ const handleEffectChange = (effect: TextEffect) => {
     </>
   );
 }
+
+    
