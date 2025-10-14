@@ -3,7 +3,15 @@
 
 import React, { useEffect, useRef } from "react";
 import type { Shadow } from "@/components/text-settings";
-import type { FontOption } from "@/lib/font-options";
+
+export type FontOption = {
+  value: string;
+  label: string;
+  fontFamily: string;
+  weight: string | number;
+  size: number; // Base size for body text, title will be a multiple of this
+  lineHeight: number; // This should be a multiplier, e.g., 1.4
+};
 
 export type ImageCanvasProps = {
   text: string;
@@ -171,7 +179,6 @@ const wrapAndDrawText = (
   };
 
   if (textShadowEnabled && shadows.length > 0) {
-    // Reverse the array to draw Layer 1 on top
     shadows.slice().reverse().forEach(shadow => {
       context.shadowColor = shadow.color;
       
@@ -405,5 +412,3 @@ export function ImageCanvas({
     />
   );
 }
-
-    

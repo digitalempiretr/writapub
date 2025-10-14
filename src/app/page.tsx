@@ -134,7 +134,7 @@ export default function Home() {
 
   const [textShadowEnabled, setTextShadowEnabled] = useState(false);
   const [shadows, setShadows] = useState<Shadow[]>([
-    { id: Date.now(), color: '#000000', offsetX: 5, offsetY: 5, blur: 5 }
+    { id: Date.now(), color: '#000000', offsetX: 5, offsetY: 5, blur: 5, offsetXUnit: 'px', offsetYUnit: 'px', blurUnit: 'px' }
   ]);
   const [activeEffect, setActiveEffect] = useState<TextEffect>(textEffects[0]);
 
@@ -355,25 +355,33 @@ export default function Home() {
 const handleEffectChange = (effect: TextEffect) => {
     setActiveEffect(effect);
 
+    // Update font if the effect has a specific font
     if (effect.fontValue) {
         const newFont = fontOptions.find(f => f.value === effect.fontValue);
         if (newFont) {
-            setActiveFont(newFont);
+            // If the effect also specifies a font size, use it. Otherwise, keep the current size.
+            const newSize = effect.style.fontSize || newFont.size;
+            setActiveFont({ ...newFont, size: newSize });
         }
+    } else if (effect.style.fontSize) {
+         // If the effect only has a font size, apply it to the current font
+        setActiveFont(prevFont => ({...prevFont, size: effect.style.fontSize!}));
     }
+
 
     if (effect.id === 'none') {
         setTextShadowEnabled(false);
-        setTextColor(pageInitialColors.textColor);
+        setTextColor(pageInitialColors.textColor); // Reset to default color
     } else {
-        const effectColor = effect.style.color || textColor;
-        setTextColor(effectColor);
-
+        if (effect.style.color) {
+            setTextColor(effect.style.color);
+        }
         if (effect.style.textShadow) {
             setTextShadowEnabled(true);
             const finalShadowString = effect.style.textShadow
-              .replace(/{{color}}/g, effectColor)
-              .replace(/{{glow}}/g, effect.style.glowColor || effectColor);
+              .replace(/{{color}}/g, effect.style.color || textColor)
+              .replace(/{{glow}}/g, effect.style.glowColor || effect.style.color || textColor);
+
             const parsedShadows = parseShadow(finalShadowString);
             setShadows(parsedShadows);
         } else {
@@ -615,7 +623,7 @@ const handleEffectChange = (effect: TextEffect) => {
           fontFamily={activeFont.fontFamily}
           fontWeight={activeFont.weight}
           isTitle={design.isTitle}
-          fontSize={design.isTitle ? activeFont.size * 1.5 : activeFont.size}
+          fontSize={activeFont.size}
           lineHeight={activeFont.lineHeight}
           text={design.text}
           textColor={textColor}
@@ -641,7 +649,6 @@ const handleEffectChange = (effect: TextEffect) => {
           strokeColor={strokeColor}
           strokeWidth={strokeWidth}
           fontSmoothing={activeEffect.style.fontSmoothing}
-          shadowBaseFontSize={activeEffect.style.shadowBaseFontSize}
         />
     )
   }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize]);
@@ -826,5 +833,3 @@ const handleEffectChange = (effect: TextEffect) => {
     </>
   );
 }
-
-    

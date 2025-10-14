@@ -10,7 +10,7 @@ export type TextEffect = {
     fontFamily?: string;
     fontWeight?: string | number;
     fontSmoothing?: CSSProperties;
-    shadowBaseFontSize?: number; // Base font size the shadow px values are designed for
+    fontSize?: number; // Base size for this effect
   };
   fontValue?: string; // Add this to link to a FontOption
   previewBg?: string;
@@ -31,35 +31,17 @@ export const textEffects: TextEffect[] = [
       color: '#ffffff',
       fontFamily: "'Luckiest Guy'",
       fontWeight: 400,
-      shadowBaseFontSize: 48, // The px values below are tuned for a 144pt font
+      fontSize: 90,
       textShadow: `
-          0em -0.031em 0 #212121,
-          0em -0.031em 0 #212121,
-          0em  0.031em 0 #212121,
-          0em  0.031em 0 #212121,
-        -0.031em 0em 0 #212121,
-          0.031em 0em 0 #212121,
-        -0.031em 0em 0 #212121,
-          0.031em 0em 0 #212121,
-        -0.031em -0.031em 0 #212121,
-          0.031em -0.031em 0 #212121,
-        -0.031em 0.031em 0 #212121,
-          0.031em 0.031em 0 #212121,
-        -0.031em 0.094em 0 #212121,
-          0em    0.094em 0 #212121,
-          0.031em 0.094em 0 #212121,
-          0 0.099em 0.005em rgba(0,0,0,.1),
-          0 0 0.031em rgba(0,0,0,.1),
-          0 0.031em 0.016em rgba(0,0,0,.3),
-          0 0.063em 0.031em rgba(0,0,0,.2),
-          0 0.094em 0.094em rgba(0,0,0,.25),
-          0 0.125em 0.125em rgba(0,0,0,.2),
-          0 0.188em 0.188em rgba(0,0,0,.15)
+          0em -0.031em 0 #212121, 0em -0.031em 0 #212121, 0em  0.031em 0 #212121, 0em  0.031em 0 #212121,
+        -0.031em 0em 0 #212121, 0.031em 0em 0 #212121, -0.031em 0em 0 #212121, 0.031em 0em 0 #212121,
+        -0.031em -0.031em 0 #212121, 0.031em -0.031em 0 #212121, -0.031em 0.031em 0 #212121, 0.031em 0.031em 0 #212121,
+        -0.031em 0.094em 0 #212121, 0em    0.094em 0 #212121, 0.031em 0.094em 0 #212121,
+        0 0.099em 0.005em rgba(0,0,0,.1), 0 0 0.031em rgba(0,0,0,.1), 0 0.031em 0.016em rgba(0,0,0,.3),
+        0 0.063em 0.031em rgba(0,0,0,.2), 0 0.094em 0.094em rgba(0,0,0,.25), 0 0.125em 0.125em rgba(0,0,0,.2),
+        0 0.188em 0.188em rgba(0,0,0,.15)
       `,
-      fontSmoothing: {
-        WebkitFontSmoothing: 'antialiased',
-        MozOsxFontSmoothing: 'grayscale',
-      },
+      fontSmoothing: { WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale' },
     },
     previewBg: '#fc3153',
   },
@@ -72,16 +54,11 @@ export const textEffects: TextEffect[] = [
       fontFamily: "'Niconne', cursive",
       glowColor: '#228DFF',
       fontWeight: 700,
+      fontSize: 60,
       textShadow: `     
-          0.021em 0.021em 0em #eb452b,
-          0.042em 0.042em 0em #efa032,
-          0.063em 0.063em 0em #46b59b,
-          0.083em 0.083em 0em #017e7f,
-          0.104em 0.104em 0em #052939,
-          0.125em 0.125em 0em #c11a2b,
-          0.146em 0.146em 0em #c11a2b,
-          0.167em 0.167em 0em #c11a2b,
-          0.188em 0.188em 0em #c11a2b 
+          0.021em 0.021em 0em #eb452b, 0.042em 0.042em 0em #efa032, 0.063em 0.063em 0em #46b59b,
+          0.083em 0.083em 0em #017e7f, 0.104em 0.104em 0em #052939, 0.125em 0.125em 0em #c11a2b,
+          0.146em 0.146em 0em #c11a2b, 0.167em 0.167em 0em #c11a2b, 0.188em 0.188em 0em #c11a2b 
       `,
     },
     previewBg: '#121221',
@@ -94,15 +71,10 @@ export const textEffects: TextEffect[] = [
       color: '#ffffff',
       fontFamily: "'Tilt Neon', cursive",
       glowColor: '#228DFF',
+      fontSize: 80,
       textShadow: `     
-        0 0 10px {{color}},
-        0 0 20px  {{color}},
-        0 0 30px  {{color}},
-        0 0 40px  {{glow}},
-        0 0 70px  {{glow}},
-        0 0 80px  {{glow}},
-        0 0 100px {{glow}},
-        0 0 150px {{glow}}   
+        0 0 10px {{color}}, 0 0 20px  {{color}}, 0 0 30px  {{color}}, 0 0 40px  {{glow}},
+        0 0 70px  {{glow}}, 0 0 80px  {{glow}}, 0 0 100px {{glow}}, 0 0 150px {{glow}}   
       `,
     },
     previewBg: '#121221',
@@ -112,20 +84,14 @@ export const textEffects: TextEffect[] = [
     id: 'retro',
     style: {
       color: '#e24a91',
-      textShadow: `
-        -2px 2px 0px #4d82c2,
-        -4px 4px 0px #315e9a
-      `,
+      textShadow: ` -2px 2px 0px #4d82c2, -4px 4px 0px #315e9a `,
     },
     previewBg: '#f0f0f0',
   },
   {
     name: 'Shadow',
     id: 'shadow',
-    style: {
-      color: '#000000',
-      textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
-    },
+    style: { color: '#000000', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' },
   },
   {
     name: 'Outline',
@@ -133,10 +99,8 @@ export const textEffects: TextEffect[] = [
     style: {
       color: '#ffffff',
       textShadow: `
-        -1px -1px 0 #000,  
-         1px -1px 0 #000,
-        -1px  1px 0 #000,
-         1px  1px 0 #000
+        -1px -1px 0 #000,  1px -1px 0 #000,
+        -1px  1px 0 #000, 1px  1px 0 #000
       `,
     },
   },
@@ -145,28 +109,21 @@ export const textEffects: TextEffect[] = [
     id: 'fire',
      style: {
       color: '#fefcc9',
-      glowColor: '#ec760c', // Define a glow for fire
+      glowColor: '#ec760c',
       textShadow: `
-        0 0 5px {{color}}, 
-        0 0 10px {{color}}, 
-        0 0 15px {{color}}, 
-        0 0 20px #feec85, 
-        0 0 30px #ffae34, 
-        0 0 40px {{glow}}, 
-        0 0 55px {{glow}}, 
-        0 0 75px #973716
+        0 0 5px {{color}}, 0 0 10px {{color}}, 0 0 15px {{color}}, 0 0 20px #feec85, 
+        0 0 30px #ffae34, 0 0 40px {{glow}}, 0 0 55px {{glow}}, 0 0 75px #973716
       `,
     },
   },
 ];
 
-// Helper function to parse CSS text-shadow string
 export const parseShadow = (shadowString: string) => {
     const shadows: any[] = [];
     if (!shadowString || shadowString === 'none') {
         return [];
     }
-    const shadowRegex = /(-?\d*\.?\d+)(em|px)?\s+(-?\d*\.?\d+)(em|px)?(?:\s+(-?\d*\.?\d+)(em|px)?)?\s+(rgba?\(.+?\)|#?\w+)/g;
+    const shadowRegex = /(-?\d*\.?\d+)(em|px|rem)?\s+(-?\d*\.?\d+)(em|px|rem)?(?:\s+(-?\d*\.?\d+)(em|px|rem)?)?\s+(rgba?\(.+?\)|#?\w+)/g;
     let match;
 
     while ((match = shadowRegex.exec(shadowString)) !== null) {
