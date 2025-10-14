@@ -311,11 +311,6 @@ export default function Home() {
     });
   }, [designs, handleDownload]);
 
-  const handleFontChange = (value: string) => {
-    const newFont = fontOptions.find(f => f.value === value) || fontOptions[0];
-    setActiveFont(newFont);
-  }
-
   const handleSearchImages = async (page = 1) => {
     if (!searchQuery) return;
     setIsSearching(true);
@@ -656,8 +651,8 @@ export default function Home() {
           fontFamily={activeFont.fontFamily}
           fontWeight={activeFont.weight}
           isTitle={design.isTitle}
-          baseFontSize={activeFont.size}
-          lineHeightMultiplier={activeFont.lineHeight}
+          fontSize={activeFont.size}
+          lineHeight={activeFont.lineHeight}
           text={design.text}
           textColor={textColor}
           textOpacity={textOpacity}
