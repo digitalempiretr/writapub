@@ -42,13 +42,9 @@ type TextSettingsProps = {
   setTextColor: (color: string) => void;
   textOpacity: number;
   setTextOpacity: (value: number) => void;
-  activeFont: Omit<FontOption, "isTitle" | "width">;
-  handleFontChange: (value: string) => void;
-  fontOptions: Omit<FontOption, "isTitle" | "width">[];
-  fontSize: number;
-  setFontSize: (value: number) => void;
-  lineHeight: number;
-  setLineHeight: (value: number) => void;
+  activeFont: FontOption;
+  setActiveFont: (font: FontOption) => void;
+  fontOptions: FontOption[];
   isBold: boolean;
   setIsBold: (value: boolean) => void;
   isUppercase: boolean;
@@ -85,12 +81,8 @@ export function TextSettings({
   textOpacity,
   setTextOpacity,
   activeFont,
-  handleFontChange,
+  setActiveFont,
   fontOptions,
-  fontSize,
-  setFontSize,
-  lineHeight,
-  setLineHeight,
   isBold,
   setIsBold,
   isUppercase,
@@ -118,10 +110,18 @@ export function TextSettings({
 }: TextSettingsProps) {
   const baseId = useId();
   const [internalText, setInternalText] = useState(text);
+  const [internalFontSize, setInternalFontSize] = useState(activeFont.size);
+  const [internalLineHeight, setInternalLineHeight] = useState(activeFont.lineHeight);
 
   useEffect(() => {
     setInternalText(text);
   }, [text]);
+
+  useEffect(() => {
+    setInternalFontSize(activeFont.size);
+    setInternalLineHeight(activeFont.lineHeight);
+  }, [activeFont]);
+
 
   const handleRegenerateClick = () => {
     setText(internalText);
@@ -141,6 +141,13 @@ export function TextSettings({
   const removeShadow = (id: number) => {
     setShadows(shadows.filter(s => s.id !== id));
   };
+  
+  const handleFontValueChange = <K extends keyof FontOption>(key: K, value: FontOption[K]) => {
+    setActiveFont({
+      ...activeFont,
+      [key]: value
+    });
+  }
 
   return (
     <TooltipProvider>
@@ -180,7 +187,7 @@ export function TextSettings({
              <div className="overflow-x-auto pb-2 -mb-2">
                 <div className="flex items-center gap-2 flex-nowrap">
                 <div className="flex-shrink-0 min-w-[150px]">
-                  <Select value={activeFont.value} onValueChange={handleFontChange}>
+                  <Select value={activeFont.value} onValueChange={(value) => setActiveFont(fontOptions.find(f => f.value === value) || activeFont)}>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <SelectTrigger className="w-full h-10" id={`${baseId}-font-select`} aria-label="Select Font">
@@ -215,15 +222,15 @@ export function TextSettings({
                     <div className="space-y-2">
                         <Label htmlFor={`${baseId}-font-size-slider`}>Font Size</Label>
                          <div className="flex items-center gap-2">
-                            <Slider id={`${baseId}-font-size-slider`} max={200} min={20} step={1} value={[fontSize]} onValueChange={(v) => setFontSize(v[0])} />
-                            <Input type="number" value={fontSize} onChange={(e) => setFontSize(Number(e.target.value))} className="w-20 h-8" />
+                            <Slider id={`${baseId}-font-size-slider`} max={200} min={20} step={1} value={[internalFontSize]} onValueChange={(v) => setInternalFontSize(v[0])} onValueCommit={(v) => handleFontValueChange('size', v[0])}/>
+                            <Input type="number" value={internalFontSize} onChange={(e) => setInternalFontSize(Number(e.target.value))} onBlur={() => handleFontValueChange('size', internalFontSize)} className="w-20 h-8" />
                          </div>
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor={`${baseId}-line-height-slider`}>Line Height</Label>
                         <div className="flex items-center gap-2">
-                            <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[lineHeight]} onValueChange={(v) => setLineHeight(v[0])} />
-                             <Input type="number" value={lineHeight} onChange={(e) => setLineHeight(Number(e.target.value))} step="0.1" className="w-20 h-8" />
+                            <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[internalLineHeight]} onValueChange={(v) => setInternalLineHeight(v[0])} onValueCommit={(v) => handleFontValueChange('lineHeight', v[0])}/>
+                             <Input type="number" value={internalLineHeight} onChange={(e) => setInternalLineHeight(Number(e.target.value))} onBlur={() => handleFontValueChange('lineHeight', internalLineHeight)} step="0.1" className="w-20 h-8" />
                         </div>
                     </div>
                   </PopoverContent>

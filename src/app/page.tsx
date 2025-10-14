@@ -146,10 +146,7 @@ export default function Home() {
     }
   }, [carouselApi]);
 
-  const defaultFont = fontOptions.find(f => f.value === 'duru-sans') || fontOptions[0];
-  const [activeFont, setActiveFont] = useState<Omit<FontOption, "isTitle" | "width">>(defaultFont);
-  const [fontSize, setFontSize] = useState(defaultFont.size);
-  const [lineHeight, setLineHeight] = useState(defaultFont.lineHeight);
+  const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'duru-sans') || fontOptions[0]);
 
   const [textAlign, setTextAlign] = useState<TextAlign>('left');
   const [isBold, setIsBold] = useState(true);
@@ -317,8 +314,6 @@ export default function Home() {
   const handleFontChange = (value: string) => {
     const newFont = fontOptions.find(f => f.value === value) || fontOptions[0];
     setActiveFont(newFont);
-    setFontSize(newFont.size);
-    setLineHeight(newFont.lineHeight);
   }
 
   const handleSearchImages = async (page = 1) => {
@@ -401,15 +396,13 @@ export default function Home() {
     }
   };
 
-  const handleEffectChange = (effect: TextEffect) => {
+ const handleEffectChange = (effect: TextEffect) => {
     setActiveEffect(effect);
     
     if (effect.style.fontFamily) {
         const newFont = fontOptions.find(f => f.fontFamily === effect.style.fontFamily);
         if (newFont) {
-          setActiveFont(newFont);
-          setFontSize(newFont.size);
-          setLineHeight(newFont.lineHeight);
+            setActiveFont(newFont);
         }
     }
   
@@ -464,8 +457,6 @@ export default function Home() {
       setTextColor(template.font.color);
       const newFont = fontOptions.find(f => f.value === template.font.value) || fontOptions[0];
       setActiveFont(newFont);
-      setFontSize(newFont.size);
-      setLineHeight(newFont.lineHeight);
     }
 
     setRectBgColor(template.textBox.color);
@@ -661,13 +652,13 @@ export default function Home() {
     
     return (
         <ImageCanvas
-          key={`${backgroundType}-${activeFont.value}-${fontSize}-${lineHeight}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadowEnabled}-${JSON.stringify(shadows)}-${textStroke}-${strokeColor}-${strokeWidth}-${activeEffect.id}-${canvasSize.width}-${canvasSize.height}`}
+          key={`${backgroundType}-${activeFont.value}-${activeFont.size}-${activeFont.lineHeight}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadowEnabled}-${JSON.stringify(shadows)}-${textStroke}-${strokeColor}-${strokeWidth}-${activeEffect.id}-${canvasSize.width}-${canvasSize.height}`}
           fontFamily={activeFont.fontFamily}
           fontWeight={activeFont.weight}
-          fontSize={fontSize}
-          lineHeight={lineHeight}
-          text={design.text}
           isTitle={design.isTitle}
+          baseFontSize={activeFont.size}
+          lineHeightMultiplier={activeFont.lineHeight}
+          text={design.text}
           textColor={textColor}
           textOpacity={textOpacity}
           backgroundColor={currentBg}
@@ -694,7 +685,7 @@ export default function Home() {
           shadowBaseFontSize={activeEffect.style.shadowBaseFontSize}
         />
     )
-  }, [backgroundType, activeFont, fontSize, lineHeight, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize]);
+  }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize]);
 
   return (
     <>
@@ -800,7 +791,7 @@ export default function Home() {
                                 <TabsContent value="favorites" className="h-full mt-0"><MyDesignsPanel myDesigns={myDesigns} handleSaveDesign={handleSaveDesign} handleDeleteDesign={handleDeleteDesign} handleUpdateDesign={handleUpdateDesign} editingDesignId={editingDesignId} handleEditClick={handleEditClick} handleCancelEdit={handleCancelEdit} editingName={editingName} setEditingName={setEditingName} designToDelete={designToDelete} setDesignToDelete={setDesignToDelete} handleLogDesign={handleLogDesign} handleApplyTemplate={handleApplyTemplate} /></TabsContent>
                                 <TabsContent value="format" className="h-full mt-0"><FormatPanel canvasSize={canvasSize} setCanvasSize={setCanvasSize} canvasSizes={canvasSizes} /></TabsContent>
                                 <TabsContent value="background" className="h-full mt-0"><BackgroundSettings backgroundTab={backgroundTab} setBackgroundTab={setBackgroundTab as (value: string) => void} handleFeelLucky={handleFeelLucky} bgColor={bgColor} handleBgColorSelect={handleBgColorSelect} imageBgUrl={imageBgUrl} handleImageBgUrlSelect={handleImageBgUrlSelect} searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchImages={handleSearchImages} isSearching={isSearching} searchedImages={searchedImages} handleKeywordSearch={handleKeywordSearch} searchPage={searchPage} isOverlayEnabled={isOverlayEnabled} setIsOverlayEnabled={handleOverlayEnable} overlayColor={overlayColor} setOverlayColor={setOverlayColor} overlayOpacity={overlayOpacity} setOverlayOpacity={setOverlayOpacity} gradientBg={gradientBg} handleGradientBgSelect={handleGradientBgSelect} setSearchCarouselApi={setSearchCarouselApi} /></TabsContent>
-                                <TabsContent value="text" className="h-full mt-0"><TextSettings text={text} setText={setText} handleGenerate={handleGenerate} isLoading={isLoading} textColor={textColor} setTextColor={handleTextColorChange} textOpacity={textOpacity} setTextOpacity={setTextOpacity} activeFont={activeFont} handleFontChange={handleFontChange} fontOptions={fontOptions} fontSize={fontSize} setFontSize={setFontSize} lineHeight={lineHeight} setLineHeight={setLineHeight} isBold={isBold} setIsBold={setIsBold} isUppercase={isUppercase} setIsUppercase={setIsUppercase} textAlign={textAlign} setTextAlign={setTextAlign} textShadowEnabled={textShadowEnabled} setTextShadowEnabled={setTextShadowEnabled} shadows={shadows} setShadows={setShadows} textStroke={textStroke} setTextStroke={setTextStroke} strokeColor={strokeColor} setStrokeColor={setStrokeColor} strokeWidth={strokeWidth} setStrokeWidth={setStrokeWidth} isTextBoxEnabled={isTextBoxEnabled} setIsTextBoxEnabled={handleTextBoxEnable} rectBgColor={rectBgColor} setRectBgColor={setRectBgColor} rectOpacity={rectOpacity} setRectOpacity={setRectOpacity} activeEffect={activeEffect} setActiveEffect={handleEffectChange} /></TabsContent>
+                                <TabsContent value="text" className="h-full mt-0"><TextSettings text={text} setText={setText} handleGenerate={handleGenerate} isLoading={isLoading} textColor={textColor} setTextColor={handleTextColorChange} textOpacity={textOpacity} setTextOpacity={setTextOpacity} activeFont={activeFont} setActiveFont={setActiveFont} fontOptions={fontOptions} isBold={isBold} setIsBold={setIsBold} isUppercase={isUppercase} setIsUppercase={setIsUppercase} textAlign={textAlign} setTextAlign={setTextAlign} textShadowEnabled={textShadowEnabled} setTextShadowEnabled={setTextShadowEnabled} shadows={shadows} setShadows={setShadows} textStroke={textStroke} setTextStroke={setTextStroke} strokeColor={strokeColor} setStrokeColor={setStrokeColor} strokeWidth={strokeWidth} setStrokeWidth={setStrokeWidth} isTextBoxEnabled={isTextBoxEnabled} setIsTextBoxEnabled={handleTextBoxEnable} rectBgColor={rectBgColor} setRectBgColor={setRectBgColor} rectOpacity={rectOpacity} setRectOpacity={setRectOpacity} activeEffect={activeEffect} setActiveEffect={handleEffectChange} /></TabsContent>
                                 <TabsContent value="download" className="h-full mt-0"><DownloadPanel fileName={fileName} setFileName={setFileName} handleDownloadAll={handleDownloadAll} designs={designs} currentSlide={currentSlide} handleDownload={handleDownload} /></TabsContent>
                             </div>
                             </Tabs>
@@ -821,9 +812,9 @@ export default function Home() {
               <div 
                 className={cn(
                   "fixed bottom-14 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
-                  isMobilePanelOpen ? "translate-y-0" : "translate-y-full"
+                  isMobilePanelOpen ? "translate-y-0" : "translate-y-full",
+                  "h-auto max-h-[75vh]"
                 )}
-                style={{ height: 'auto', maxHeight: '75vh' }}
               >
                  <TabContentContainer
                     activeTab={activeSettingsTab}
@@ -862,12 +853,8 @@ export default function Home() {
                     textOpacity={textOpacity}
                     setTextOpacity={setTextOpacity}
                     activeFont={activeFont}
-                    handleFontChange={handleFontChange}
+                    setActiveFont={setActiveFont}
                     fontOptions={fontOptions}
-                    fontSize={fontSize}
-                    setFontSize={setFontSize}
-                    lineHeight={lineHeight}
-                    setLineHeight={setLineHeight}
                     isBold={isBold}
                     setIsBold={setIsBold}
                     isUppercase={isUppercase}
