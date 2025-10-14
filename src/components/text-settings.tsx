@@ -365,7 +365,7 @@ export function TextSettings({
                       <p>Text Shadow</p>
                     </TooltipContent>
                   </Tooltip>
-                  <PopoverContent className="w-72 space-y-4" align="end">
+                  <PopoverContent className="w-96 space-y-4" align="end">
                     <div className="flex items-center justify-between">
                       <Label htmlFor={`${baseId}-shadow-toggle`}>Enable Text Shadow</Label>
                       <Switch id={`${baseId}-shadow-toggle`} checked={textShadowEnabled} onCheckedChange={setTextShadowEnabled} />
