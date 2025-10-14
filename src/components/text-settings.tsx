@@ -110,21 +110,24 @@ export function TextSettings({
 }: TextSettingsProps) {
   const baseId = useId();
   const [internalText, setInternalText] = useState(text);
+
+  // States for live input in the popover
   const [internalFontSize, setInternalFontSize] = useState(activeFont.size);
   const [internalLineHeight, setInternalLineHeight] = useState(activeFont.lineHeight);
 
-  useEffect(() => {
-    setInternalText(text);
-  }, [text]);
-
+  // Sync internal states when the main activeFont prop changes
   useEffect(() => {
     setInternalFontSize(activeFont.size);
     setInternalLineHeight(activeFont.lineHeight);
   }, [activeFont]);
 
+  useEffect(() => {
+    setInternalText(text);
+  }, [text]);
 
   const handleRegenerateClick = () => {
     setText(internalText);
+    // Use a timeout to ensure the state update has propagated before generating
     setTimeout(() => {
       handleGenerate();
     }, 0);
@@ -140,6 +143,11 @@ export function TextSettings({
 
   const removeShadow = (id: number) => {
     setShadows(shadows.filter(s => s.id !== id));
+  };
+
+  const handleFontChange = (value: string) => {
+    const newFont = fontOptions.find(f => f.value === value) || activeFont;
+    setActiveFont(newFont);
   };
   
   const handleFontValueChange = <K extends keyof FontOption>(key: K, value: FontOption[K]) => {
@@ -187,7 +195,7 @@ export function TextSettings({
              <div className="overflow-x-auto pb-2 -mb-2">
                 <div className="flex items-center gap-2 flex-nowrap">
                 <div className="flex-shrink-0 min-w-[150px]">
-                  <Select value={activeFont.value} onValueChange={(value) => setActiveFont(fontOptions.find(f => f.value === value) || activeFont)}>
+                  <Select value={activeFont.value} onValueChange={handleFontChange}>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <SelectTrigger className="w-full h-10" id={`${baseId}-font-select`} aria-label="Select Font">
