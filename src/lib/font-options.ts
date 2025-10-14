@@ -38,6 +38,7 @@ export const fontOptions: FontOption[] = [
     { value: 'mea-culpa', label: 'Mea Culpa', fontFamily: 'Mea Culpa', weight: '400', size: 58, lineHeight: 1.3 },
     { value: 'montez', label: 'Montez', fontFamily: 'Montez', weight: '400', size: 58, lineHeight: 1.3 },
     { value: 'neonderthaw', label: 'Neonderthaw', fontFamily: 'Neonderthaw', weight: '400', size: 95, lineHeight: 1.4 },
+    { value: 'niconne', label: 'Niconne', fontFamily: 'Niconne', weight: '400', size: 60, lineHeight: 1.5 },
     { value: 'norican', label: 'Norican', fontFamily: 'Norican', weight: '400', size: 55, lineHeight: 1.4 },
     { value: 'noto-sans-display', label: 'Noto Sans Display', fontFamily: 'Noto Sans Display', weight: '700', size: 48, lineHeight: 1.4 },
     { value: 'nunito', label: 'Nunito', fontFamily: 'Nunito', weight: '700', size: 50, lineHeight: 1.4 },
