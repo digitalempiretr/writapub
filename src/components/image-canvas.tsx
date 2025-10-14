@@ -171,7 +171,8 @@ const wrapAndDrawText = (
   };
 
   if (textShadowEnabled && shadows.length > 0) {
-    shadows.forEach(shadow => {
+    // Reverse the array to draw Layer 1 on top
+    shadows.slice().reverse().forEach(shadow => {
       context.shadowColor = shadow.color;
       
       const getPixelValue = (value: number, unit: 'px' | 'em' | 'rem' = 'px') => {
@@ -404,3 +405,5 @@ export function ImageCanvas({
     />
   );
 }
+
+    
