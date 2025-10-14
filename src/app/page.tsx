@@ -788,7 +788,7 @@ export default function Home() {
                             className="w-full flex flex-col-reverse md:flex-col h-full"
                             >
                             <TabsList className="grid w-full grid-cols-6 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md flex-shrink-0">
-                                <Tooltip><TooltipTrigger asChild><TabsTrigger value="designs"><LayoutTemplate /></TabsTrigger></TooltipTrigger><TooltipContent><p>Design Templates</p></TooltipContent></Tooltip>
+                                <Tooltip><TooltipTrigger asChild><TabsTrigger value="designs"><LayoutTemplate /></TabsTrigger></TooltipTrigger><TooltipContent><p>Designs</p></TooltipContent></Tooltip>
                                 <Tooltip><TooltipTrigger asChild><TabsTrigger value="favorites"><Star /></TabsTrigger></TooltipTrigger><TooltipContent><p>Favorites</p></TooltipContent></Tooltip>
                                 <Tooltip><TooltipTrigger asChild><TabsTrigger value="format"><Frame /></TabsTrigger></TooltipTrigger><TooltipContent><p>Format</p></TooltipContent></Tooltip>
                                 <Tooltip><TooltipTrigger asChild><TabsTrigger value="background"><ImageIcon /></TabsTrigger></TooltipTrigger><TooltipContent><p>Background</p></TooltipContent></Tooltip>

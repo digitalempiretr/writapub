@@ -29,8 +29,32 @@ export type DesignTemplate = {
 
 export const designTemplates: DesignTemplate[] = [
   {
-    id: 'template-neon',
-    name: "blueneon",
+    id: 'template-neon-blue',
+    name: "Blue Neon",
+    previewImage: "",
+    background: {
+      type: 'flat',
+      value: '#121221',
+    },
+    font: {
+      value: 'luckiest-guy', // Fallback font
+      color: '#ffffff',
+    },
+  textBox: {
+      color: '#f4ede4',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#008080',
+      opacity: 0,
+    },
+    effect: {
+      id: 'neon',
+    }
+  },
+  {
+    id: 'red-3d-cartoon',
+    name: "Red 3D Cartoon",
     previewImage: "",
     background: {
       type: 'flat',
@@ -46,23 +70,23 @@ export const designTemplates: DesignTemplate[] = [
     },
     overlay: {
       color: '#008080',
-      opacity: 0.25,
+      opacity: 0,
     },
     effect: {
-      id: 'neon',
+      id: '3dcartoon',
     }
   },
-  {
-    id: 'red3dCartoon',
-    name: "Red3dCartoon",
+   {
+    id: 'template-roses',
+    name: "Roses",
     previewImage: "",
     background: {
       type: 'flat',
-      value: '#FF5757',
+      value: '#121221',
     },
     font: {
-      value: 'luckiest-guy',
-      color: '#fff',
+      value: 'niconne', 
+      color: '#fcedd8',
     },
   textBox: {
       color: '#f4ede4',
@@ -70,10 +94,10 @@ export const designTemplates: DesignTemplate[] = [
     },
     overlay: {
       color: '#008080',
-      opacity: 0.25,
+      opacity: 0,
     },
     effect: {
-      id: '3dcartoon',
+      id: 'roses',
     }
   },
   {
@@ -1044,30 +1068,6 @@ export const designTemplates: DesignTemplate[] = [
 },
 
 // Templates Start Here
-{
-  id: 'template-neon',
-  name: "Neon",
-  previewImage: "",
-  background: {
-    type: 'image',
-    value: 'https://i.ibb.co/C5CyMgvR/neon-bg.jpg',
-  },
-  font: {
-    value: 'luckiest-guy',
-    color: '#ffffff',
-  },
-  textBox: {
-    color: '#e5e5ff',
-    opacity: 0,
-  },
-  overlay: {
-    color: '#7585A3',
-    opacity: 0,
-  },
-  effect: {
-    id: 'neon',
-  }
-},
 {
   id: 'template-milky',
   name: "Milky",

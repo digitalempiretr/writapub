@@ -41,6 +41,9 @@ export function DesignsPanel({ handleApplyTemplate }: DesignsPanelProps) {
     if (effect && effect.style.textShadow) {
       const finalColor = effect.style.color || template.font.color;
       textStyle.color = finalColor;
+      if (effect.style.fontFamily) {
+        textStyle.fontFamily = effect.style.fontFamily;
+      }
       const finalShadowString = effect.style.textShadow
         .replace(/{{color}}/g, finalColor)
         .replace(/{{glow}}/g, effect.style.glowColor || finalColor);
