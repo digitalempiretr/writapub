@@ -1,4 +1,3 @@
-
 import type { CSSProperties } from 'react';
 
 export type TextEffect = {
@@ -21,7 +20,7 @@ export const textEffects: TextEffect[] = [
   {
     name: 'None',
     id: 'none',
-    style: { color: '#000',textShadow: 'none'},
+    style: { color: '#000000',textShadow: 'none'},
     previewBg: '#e2e8f0',
   },
   {
@@ -68,16 +67,17 @@ export const textEffects: TextEffect[] = [
       color: '#fcedd8',
       fontFamily: "'Niconne', cursive",
       glowColor: '#228DFF',
+      shadowBaseFontSize: 48,
       textShadow: `     
-        1px 1px 0px #eb452b,
-        2px 2px 0px #efa032,
-        3px 3px 0px #46b59b,
-        4px 4px 0px #017e7f,
-        5px 5px 0px #052939,
-        6px 6px 0px #c11a2b,
-        7px 7px 0px #c11a2b,
-        8px 8px 0px #c11a2b,
-        9px 9px 0px #c11a2b 
+          0.021em 0.021em 0em #eb452b,
+          0.042em 0.042em 0em #efa032,
+          0.063em 0.063em 0em #46b59b,
+          0.083em 0.083em 0em #017e7f,
+          0.104em 0.104em 0em #052939,
+          0.125em 0.125em 0em #c11a2b,
+          0.146em 0.146em 0em #c11a2b,
+          0.167em 0.167em 0em #c11a2b,
+          0.188em 0.188em 0em #c11a2b 
       `,
     },
     previewBg: '#121221',
@@ -85,10 +85,10 @@ export const textEffects: TextEffect[] = [
   {
     name: 'Neon',
     id: 'neon',
-    fontValue: 'neonderthaw',
+    fontValue: 'tilt-neon',
     style: {
       color: '#ffffff',
-      fontFamily: "'Neonderthaw', cursive",
+      fontFamily: "'Tilt Neon', cursive",
       glowColor: '#228DFF',
       textShadow: `     
         0 0 10px {{color}},
@@ -162,19 +162,20 @@ export const parseShadow = (shadowString: string) => {
     if (!shadowString || shadowString === 'none') {
         return [];
     }
-    const shadowRegex = /(-?\d*\.?\d+)(px)?\s+(-?\d*\.?\d+)(px)?(?:\s+(-?\d*\.?\d+)(px)?)?\s+(rgba?\(.+?\)|#?\w+)/g;
+    const shadowRegex = /(-?\d*\.?\d+)(em|px)?\s+(-?\d*\.?\d+)(em|px)?(?:\s+(-?\d*\.?\d+)(em|px)?)?\s+(rgba?\(.+?\)|#?\w+)/g;
     let match;
 
     while ((match = shadowRegex.exec(shadowString)) !== null) {
         shadows.push({
             id: Date.now() + Math.random(),
             offsetX: parseFloat(match[1]),
+            offsetXUnit: match[2] || 'px',
             offsetY: parseFloat(match[3]),
+            offsetYUnit: match[4] || 'px',
             blur: parseFloat(match[5]) || 0,
+            blurUnit: match[6] || 'px',
             color: match[7],
         });
     }
     return shadows;
 };
-
-    

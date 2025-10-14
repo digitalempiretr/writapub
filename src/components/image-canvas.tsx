@@ -152,7 +152,8 @@ const wrapAndDrawText = (
   textShadowEnabled: boolean,
   shadows: Shadow[],
   finalTextColor: string,
-  scaleFactor: number
+  scaleFactor: number,
+  finalFontSize: number
 ) => {
   const totalTextHeight = (lines.length * lineHeight) - (lineHeight - context.measureText('M').width); // A more accurate height
   const startY = y + (rectHeight - totalTextHeight) / 2;
@@ -174,9 +175,13 @@ const wrapAndDrawText = (
   if (textShadowEnabled && shadows.length > 0) {
     shadows.forEach(shadow => {
       context.shadowColor = shadow.color;
-      context.shadowBlur = shadow.blur * scaleFactor;
-      context.shadowOffsetX = shadow.offsetX * scaleFactor;
-      context.shadowOffsetY = shadow.offsetY * scaleFactor;
+      const blur = shadow.blurUnit === 'em' ? shadow.blur * finalFontSize : shadow.blur * scaleFactor;
+      const offsetX = shadow.offsetXUnit === 'em' ? shadow.offsetX * finalFontSize : shadow.offsetX * scaleFactor;
+      const offsetY = shadow.offsetYUnit === 'em' ? shadow.offsetY * finalFontSize : shadow.offsetY * scaleFactor;
+
+      context.shadowBlur = blur;
+      context.shadowOffsetX = offsetX;
+      context.shadowOffsetY = offsetY;
       drawTextLines(shadow.color);
     });
   }
@@ -261,7 +266,7 @@ export function ImageCanvas({
       const finalFontWeight = isBold ? Math.min(Number(fontWeight) + 300, 900) : fontWeight;
       
       const scalingFactor = width / 1080;
-      const baseFontSize = isTitle ? propFontSize * 1.2 : propFontSize;
+      const baseFontSize = isTitle ? propFontSize * 1.5 : propFontSize;
       const finalFontSize = baseFontSize * scalingFactor;
       const finalLineHeight = finalFontSize * propLineHeight;
 
@@ -328,7 +333,7 @@ export function ImageCanvas({
         
         wrapAndDrawText(ctx, linesToDraw, textX, rectY, finalLineHeight, rectHeight, 
             textStroke, strokeColor, strokeWidth,
-            textShadowEnabled, shadows, finalTextColor, scaleFactor
+            textShadowEnabled, shadows, finalTextColor, scaleFactor, finalFontSize
         );
         
         if (!isTitle && indexRef.current !== null) {
