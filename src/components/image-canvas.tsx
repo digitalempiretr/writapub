@@ -33,7 +33,6 @@ export type ImageCanvasProps = {
   strokeColor: string;
   strokeWidth: number;
   fontSmoothing?: React.CSSProperties;
-  shadowBaseFontSize?: number;
 };
 
 // This function wraps text for titles.
@@ -152,7 +151,6 @@ const wrapAndDrawText = (
   textShadowEnabled: boolean,
   shadows: Shadow[],
   finalTextColor: string,
-  scaleFactor: number,
   finalFontSize: number
 ) => {
   const totalTextHeight = (lines.length * lineHeight) - (lineHeight - context.measureText('M').width); // A more accurate height
@@ -163,7 +161,7 @@ const wrapAndDrawText = (
     for (const line of lines) {
       if (textStroke && !colorOverride) {
         context.strokeStyle = strokeColor;
-        context.lineWidth = strokeWidth * scaleFactor;
+        context.lineWidth = strokeWidth;
         context.strokeText(line.trim(), x, currentY);
       }
       context.fillStyle = colorOverride || finalTextColor;
@@ -175,13 +173,18 @@ const wrapAndDrawText = (
   if (textShadowEnabled && shadows.length > 0) {
     shadows.forEach(shadow => {
       context.shadowColor = shadow.color;
-      const blur = shadow.blurUnit === 'em' ? shadow.blur * finalFontSize : shadow.blur * scaleFactor;
-      const offsetX = shadow.offsetXUnit === 'em' ? shadow.offsetX * finalFontSize : shadow.offsetX * scaleFactor;
-      const offsetY = shadow.offsetYUnit === 'em' ? shadow.offsetY * finalFontSize : shadow.offsetY * scaleFactor;
+      
+      const getPixelValue = (value: number, unit: 'px' | 'em' | 'rem' = 'px') => {
+        if (unit === 'em' || unit === 'rem') {
+          return value * finalFontSize;
+        }
+        return value;
+      };
 
-      context.shadowBlur = blur;
-      context.shadowOffsetX = offsetX;
-      context.shadowOffsetY = offsetY;
+      context.shadowBlur = getPixelValue(shadow.blur, shadow.blurUnit);
+      context.shadowOffsetX = getPixelValue(shadow.offsetX, shadow.offsetXUnit);
+      context.shadowOffsetY = getPixelValue(shadow.offsetY, shadow.offsetYUnit);
+
       drawTextLines(shadow.color);
     });
   }
@@ -241,7 +244,6 @@ export function ImageCanvas({
   strokeColor,
   strokeWidth,
   fontSmoothing,
-  shadowBaseFontSize,
 }: ImageCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const indexRef = useRef<number | null>(null);
@@ -270,8 +272,6 @@ export function ImageCanvas({
       const finalFontSize = baseFontSize * scalingFactor;
       const finalLineHeight = finalFontSize * propLineHeight;
 
-      const scaleFactor = shadowBaseFontSize ? finalFontSize / (shadowBaseFontSize * scalingFactor) : 1;
-
       const processedText = isUppercase ? text.toUpperCase() : text;
 
       await document.fonts.load(`${finalFontWeight} ${finalFontSize}px "${fontFamily}"`);
@@ -291,7 +291,6 @@ export function ImageCanvas({
       let linesToDraw: string[] = [];
 
       if (!isTitle) {
-        // Dynamically calculate max lines based on line height
         const maxLineHeight = 2.5;
         const minLineHeight = 1.2;
         const maxLinesForMinHeight = 14;
@@ -299,7 +298,7 @@ export function ImageCanvas({
         
         const slope = (maxLinesForMaxHeight - maxLinesForMinHeight) / (maxLineHeight - minLineHeight);
         let dynamicMaxLines = Math.floor(maxLinesForMinHeight + slope * (propLineHeight - minLineHeight));
-        dynamicMaxLines = Math.max(maxLinesForMaxHeight, Math.min(maxLinesForMinHeight, dynamicMaxLines)); // Clamp between 8 and 14
+        dynamicMaxLines = Math.max(maxLinesForMaxHeight, Math.min(maxLinesForMinHeight, dynamicMaxLines)); 
 
         const result = measureAndSplitText(ctx, processedText, textMaxWidth, dynamicMaxLines, dynamicMaxLines + 2);
         linesToDraw = result.lines;
@@ -333,7 +332,7 @@ export function ImageCanvas({
         
         wrapAndDrawText(ctx, linesToDraw, textX, rectY, finalLineHeight, rectHeight, 
             textStroke, strokeColor, strokeWidth,
-            textShadowEnabled, shadows, finalTextColor, scaleFactor, finalFontSize
+            textShadowEnabled, shadows, finalTextColor, finalFontSize
         );
         
         if (!isTitle && indexRef.current !== null) {
@@ -393,7 +392,7 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing, shadowBaseFontSize]);
+  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing]);
 
   return (
     <canvas

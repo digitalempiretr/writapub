@@ -67,7 +67,7 @@ export const textEffects: TextEffect[] = [
       color: '#fcedd8',
       fontFamily: "'Niconne', cursive",
       glowColor: '#228DFF',
-      shadowBaseFontSize: 48,
+      fontWeight: 700,
       textShadow: `     
           0.021em 0.021em 0em #eb452b,
           0.042em 0.042em 0em #efa032,
