@@ -236,14 +236,14 @@ export function TextSettings({
                         <Label htmlFor={`${baseId}-font-size-slider`}>Font Size</Label>
                          <div className="flex items-center gap-2">
                             <Slider id={`${baseId}-font-size-slider`} max={200} min={20} step={1} value={[internalFontSize]} onValueChange={(v) => setInternalFontSize(v[0])} onValueCommit={(v) => handleFontValueChange('size', v[0])}/>
-                            <Input type="number" value={internalFontSize} onChange={(e) => setInternalFontSize(Number(e.target.value))} onBlur={() => handleFontValueChange('size', internalFontSize)} className="w-20 h-8" />
+                            <Input type="number" value={internalFontSize} onChange={(e) => setInternalFontSize(Number(e.target.value))} onBlur={() => handleFontValueChange('size', internalFontSize)} className="w-20 h-8 text-xs" />
                          </div>
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor={`${baseId}-line-height-slider`}>Line Height</Label>
                         <div className="flex items-center gap-2">
                             <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[internalLineHeight]} onValueChange={(v) => setInternalLineHeight(v[0])} onValueCommit={(v) => handleFontValueChange('lineHeight', v[0])}/>
-                             <Input type="number" value={internalLineHeight} onChange={(e) => setInternalLineHeight(Number(e.target.value))} onBlur={() => handleFontValueChange('lineHeight', internalLineHeight)} step="0.1" className="w-20 h-8" />
+                             <Input type="number" value={internalLineHeight} onChange={(e) => setInternalLineHeight(Number(e.target.value))} onBlur={() => handleFontValueChange('lineHeight', internalLineHeight)} step="0.1" className="w-20 h-8 text-xs" />
                         </div>
                     </div>
                   </PopoverContent>
@@ -388,7 +388,7 @@ export function TextSettings({
                               <Label htmlFor={`${baseId}-shadow-blur-${index}`} className="text-xs">Blur</Label>
                               <div className="flex items-center gap-2">
                                 <Slider id={`${baseId}-shadow-blur-${index}`} max={40} min={0} step={1} value={[shadow.blur]} onValueChange={(v) => updateShadow(shadow.id, { blur: v[0] })} />
-                                <Input type="number" value={shadow.blur} onChange={e => updateShadow(shadow.id, {blur: Number(e.target.value)})} className="h-7 w-20" />
+                                <Input type="number" value={shadow.blur} onChange={e => updateShadow(shadow.id, {blur: Number(e.target.value)})} className="h-7 w-20 text-xs" />
                                 <Select value={shadow.blurUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { blurUnit: v })}>
                                   <SelectTrigger className="w-20 h-7 text-xs"><SelectValue /></SelectTrigger>
                                   <SelectContent>
@@ -401,7 +401,7 @@ export function TextSettings({
                               <Label htmlFor={`${baseId}-shadow-offset-x-${index}`} className="text-xs">X Offset</Label>
                                <div className="flex items-center gap-2">
                                 <Slider id={`${baseId}-shadow-offset-x-${index}`} max={20} min={-20} step={1} value={[shadow.offsetX]} onValueChange={(v) => updateShadow(shadow.id, { offsetX: v[0] })} />
-                                <Input type="number" value={shadow.offsetX} onChange={e => updateShadow(shadow.id, {offsetX: Number(e.target.value)})} className="h-7 w-20" />
+                                <Input type="number" value={shadow.offsetX} onChange={e => updateShadow(shadow.id, {offsetX: Number(e.target.value)})} className="h-7 w-20 text-xs" />
                                  <Select value={shadow.offsetXUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { offsetXUnit: v })}>
                                     <SelectTrigger className="w-20 h-7 text-xs"><SelectValue /></SelectTrigger>
                                     <SelectContent>
@@ -414,7 +414,7 @@ export function TextSettings({
                               <Label htmlFor={`${baseId}-shadow-offset-y-${index}`} className="text-xs">Y Offset</Label>
                               <div className="flex items-center gap-2">
                                 <Slider id={`${baseId}-shadow-offset-y-${index}`} max={20} min={-20} step={1} value={[shadow.offsetY]} onValueChange={(v) => updateShadow(shadow.id, { offsetY: v[0] })} />
-                                <Input type="number" value={shadow.offsetY} onChange={e => updateShadow(shadow.id, {offsetY: Number(e.target.value)})} className="h-7 w-20" />
+                                <Input type="number" value={shadow.offsetY} onChange={e => updateShadow(shadow.id, {offsetY: Number(e.target.value)})} className="h-7 w-20 text-xs" />
                                 <Select value={shadow.offsetYUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { offsetYUnit: v })}>
                                   <SelectTrigger className="w-20 h-7 text-xs"><SelectValue /></SelectTrigger>
                                   <SelectContent>
@@ -601,3 +601,4 @@ export function TextSettings({
     </TooltipProvider>
   );
 }
+
