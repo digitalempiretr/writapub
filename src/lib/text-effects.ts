@@ -31,7 +31,7 @@ export const textEffects: TextEffect[] = [
       color: '#ffffff',
       fontFamily: "'Luckiest Guy'",
       fontWeight: 400,
-      fontSize: 90,
+      fontSize: 48,
       textShadow: `
           0em -0.031em 0 #212121, 0em -0.031em 0 #212121, 0em  0.031em 0 #212121, 0em  0.031em 0 #212121,
         -0.031em 0em 0 #212121, 0.031em 0em 0 #212121, -0.031em 0em 0 #212121, 0.031em 0em 0 #212121,
@@ -54,7 +54,7 @@ export const textEffects: TextEffect[] = [
       fontFamily: "'Niconne', cursive",
       glowColor: '#228DFF',
       fontWeight: 700,
-      fontSize: 60,
+      fontSize: 48,
       textShadow: `     
           0.021em 0.021em 0em #eb452b, 0.042em 0.042em 0em #efa032, 0.063em 0.063em 0em #46b59b,
           0.083em 0.083em 0em #017e7f, 0.104em 0.104em 0em #052939, 0.125em 0.125em 0em #c11a2b,
