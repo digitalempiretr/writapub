@@ -1,3 +1,4 @@
+
 import type { CSSProperties } from 'react';
 
 export type TextEffect = {
@@ -12,6 +13,7 @@ export type TextEffect = {
     fontSmoothing?: CSSProperties;
     shadowBaseFontSize?: number; // Base font size the shadow px values are designed for
   };
+  fontValue?: string; // Add this to link to a FontOption
   previewBg?: string;
 };
 
@@ -25,6 +27,7 @@ export const textEffects: TextEffect[] = [
   {
     name: '3D Cartoon',
     id: '3dcartoon',
+    fontValue: 'luckiest-guy',
     style: {
       color: '#ffffff',
       fontFamily: "'Luckiest Guy'",
@@ -60,6 +63,7 @@ export const textEffects: TextEffect[] = [
   {
     name: 'Roses',
     id: 'roses',
+    fontValue: 'niconne',
     style: {
       color: '#fcedd8',
       fontFamily: "'Niconne', cursive",
@@ -81,6 +85,7 @@ export const textEffects: TextEffect[] = [
   {
     name: 'Neon',
     id: 'neon',
+    fontValue: 'neonderthaw',
     style: {
       color: '#ffffff',
       fontFamily: "'Neonderthaw', cursive",
@@ -171,3 +176,5 @@ export const parseShadow = (shadowString: string) => {
     }
     return shadows;
 };
+
+    

@@ -355,9 +355,8 @@ export default function Home() {
 const handleEffectChange = (effect: TextEffect) => {
     setActiveEffect(effect);
 
-    // If the effect has a specific font, apply it.
-    if (effect.style.fontFamily) {
-        const newFont = fontOptions.find(f => f.fontFamily === effect.style.fontFamily);
+    if (effect.fontValue) {
+        const newFont = fontOptions.find(f => f.value === effect.fontValue);
         if (newFont) {
             setActiveFont(newFont);
         }
@@ -365,8 +364,7 @@ const handleEffectChange = (effect: TextEffect) => {
 
     if (effect.id === 'none') {
         setTextShadowEnabled(false);
-        // Optionally reset text color to default or keep as is.
-        // setTextColor(pageInitialColors.textColor); 
+        setTextColor(pageInitialColors.textColor);
     } else {
         const effectColor = effect.style.color || textColor;
         setTextColor(effectColor);
