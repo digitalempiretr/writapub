@@ -817,6 +817,7 @@ export default function Home() {
           <div id="mobile-settings-panel" ref={mobilePanelRef} className="md:hidden">
               {isMobilePanelOpen && <div className="fixed inset-0 bg-black/30 z-40" onClick={closePanel} />}
               
+              {/* This is the sliding panel */}
               <div 
                 className={cn(
                   "fixed bottom-0 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
