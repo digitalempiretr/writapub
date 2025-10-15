@@ -10,7 +10,7 @@ export type TextEffect = {
     fontFamily?: string;
     fontWeight?: string | number;
     fontSmoothing?: CSSProperties;
-    fontSize?: number; // Base size for this effect
+    fontSize?: number | string; // Base size for this effect
   };
   fontValue?: string; // Add this to link to a FontOption
   previewBg?: string;
@@ -56,9 +56,15 @@ export const textEffects: TextEffect[] = [
       fontWeight: 700,
       fontSize: 48,
       textShadow: `     
-          0.021em 0.021em 0em #eb452b, 0.042em 0.042em 0em #efa032, 0.063em 0.063em 0em #46b59b,
-          0.083em 0.083em 0em #017e7f, 0.104em 0.104em 0em #052939, 0.125em 0.125em 0em #c11a2b,
-          0.146em 0.146em 0em #c11a2b, 0.167em 0.167em 0em #c11a2b, 0.188em 0.188em 0em #c11a2b 
+          0.021em 0.021em 0em #eb452b,
+          0.042em 0.042em 0em #efa032,
+          0.063em 0.063em 0em #46b59b,
+          0.083em 0.083em 0em #017e7f,
+          0.104em 0.104em 0em #052939,
+          0.125em 0.125em 0em #c11a2b,
+          0.146em 0.146em 0em #c11a2b,
+          0.167em 0.167em 0em #c11a2b,
+          0.188em 0.188em 0em #c11a2b 
       `,
     },
     previewBg: '#121221',
@@ -84,18 +90,18 @@ export const textEffects: TextEffect[] = [
     id: 'neon2',
     fontValue: 'tilt-neon',
     style: {
-      color: '#ff4400',
+      color: '#fff6a9',
       fontFamily: "'Tilt Neon', cursive",
       glowColor: '#228DFF',
-      fontSize: 48,
+      fontSize: "calc(20px + 18vh)",
       textShadow: `     
-           -0.2em -0.2em 1em #ffffff,
-            0.2em 0.2em 1em #ffffff,
-            0 0 2em var(--neon-text-color),
-            0 0 4em var(--neon-text-color),
-            0 0 6em var(--neon-text-color),
-            0 0 8em var(--neon-text-color),
-            0 0 10em var(--neon-text-color)   
+          0 0 0.05em #ffa500,
+          0 0 0.15em #ffa500,
+          0 0 0.20em #ffa500,
+          0 0 0.40em #ffa500,
+          0 0 0.60em #ff0000,
+          0 0 0.10em #ff8d00,
+          0 0 0.98em #ff0000   
       `,
     },
     previewBg: '#121221',
