@@ -1,3 +1,4 @@
+
 import type { CSSProperties } from 'react';
 
 export type TextEffect = {
@@ -10,7 +11,8 @@ export type TextEffect = {
     fontFamily?: string;
     fontWeight?: string | number;
     fontSmoothing?: CSSProperties;
-    fontSize?: number | string; // Base size for this effect
+    fontSize?: number | string;
+    isResponsive?: boolean;
   };
   fontValue?: string; // Add this to link to a FontOption
   previewBg?: string;
@@ -54,7 +56,7 @@ export const textEffects: TextEffect[] = [
       fontFamily: "'Niconne', cursive",
       glowColor: '#228DFF',
       fontWeight: 700,
-      fontSize: 48,
+      fontSize: 60,
       textShadow: `     
           0.021em 0.021em 0em #eb452b,
           0.042em 0.042em 0em #efa032,
@@ -93,7 +95,8 @@ export const textEffects: TextEffect[] = [
       color: '#fff6a9',
       fontFamily: "'Tilt Neon', cursive",
       glowColor: '#228DFF',
-      fontSize: "calc(20px + 18vh)",
+      fontSize: 20,
+      isResponsive: true,
       textShadow: `     
           0 0 0.05em #ffa500,
           0 0 0.15em #ffa500,
@@ -145,6 +148,8 @@ export const textEffects: TextEffect[] = [
   },
 ];
 
+type Unit = 'px' | 'em' | 'rem';
+
 export const parseShadow = (shadowString: string) => {
     const shadows: any[] = [];
     if (!shadowString || shadowString === 'none') {
@@ -157,11 +162,11 @@ export const parseShadow = (shadowString: string) => {
         shadows.push({
             id: Date.now() + Math.random(),
             offsetX: parseFloat(match[1]),
-            offsetXUnit: match[2] || 'px',
+            offsetXUnit: (match[2] as Unit) || 'px',
             offsetY: parseFloat(match[3]),
-            offsetYUnit: match[4] || 'px',
+            offsetYUnit: (match[4] as Unit) || 'px',
             blur: parseFloat(match[5]) || 0,
-            blurUnit: match[6] || 'px',
+            blurUnit: (match[6] as Unit) || 'px',
             color: match[7],
         });
     }

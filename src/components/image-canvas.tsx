@@ -20,6 +20,7 @@ export type ImageCanvasProps = {
   fontWeight: string | number;
   fontSize: number;
   lineHeight: number; // This is now a multiplier
+  isResponsiveFont: boolean;
   backgroundColor?: string;
   textColor: string;
   textOpacity: number;
@@ -231,6 +232,7 @@ export function ImageCanvas({
   fontWeight,
   fontSize: propFontSize,
   lineHeight: propLineHeight,
+  isResponsiveFont,
   backgroundColor,
   textColor,
   textOpacity,
@@ -255,6 +257,11 @@ export function ImageCanvas({
 }: ImageCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const indexRef = useRef<number | null>(null);
+  const [viewportHeight, setViewportHeight] = React.useState(1080); // Default, updated on client
+
+  useEffect(() => {
+    setViewportHeight(window.innerHeight);
+  }, []);
 
   useEffect(() => {
     if (canvasRef.current && indexRef.current === null) {
@@ -276,7 +283,12 @@ export function ImageCanvas({
       const finalFontWeight = isBold ? Math.min(Number(fontWeight) + 300, 900) : fontWeight;
       
       const scalingFactor = width / 1080;
-      const baseFontSize = isTitle ? propFontSize * 1.5 : propFontSize;
+      let baseFontSize = isTitle ? propFontSize * 1.5 : propFontSize;
+
+      if(isResponsiveFont) {
+        baseFontSize = propFontSize + (viewportHeight * 0.01) // 1vh
+      }
+
       const finalFontSize = baseFontSize * scalingFactor;
       const finalLineHeight = finalFontSize * propLineHeight;
 
@@ -400,7 +412,7 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing]);
+  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, isResponsiveFont, viewportHeight, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing]);
 
   return (
     <canvas

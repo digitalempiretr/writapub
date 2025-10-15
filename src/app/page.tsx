@@ -377,10 +377,10 @@ const handleEffectChange = (effect: TextEffect) => {
     if (effect.fontValue) {
         const newFont = fontOptions.find(f => f.value === effect.fontValue);
         if (newFont) {
-            const newSize = effect.style.fontSize || newFont.size;
+             const newSize = typeof effect.style.fontSize === 'number' ? effect.style.fontSize : newFont.size;
             setActiveFont({ ...newFont, size: newSize });
         }
-    } else if (effect.style.fontSize) {
+    } else if (typeof effect.style.fontSize === 'number') {
         setActiveFont(prevFont => ({...prevFont, size: effect.style.fontSize!}));
     }
 
@@ -571,7 +571,7 @@ const handleEffectChange = (effect: TextEffect) => {
         color: overlayColor,
         opacity: overlayOpacity,
       },
-      effect: {
+       effect: {
         id: activeEffect.id
       }
     };
@@ -647,6 +647,7 @@ const handleEffectChange = (effect: TextEffect) => {
           fontWeight={activeFont.weight}
           fontSize={activeFont.size}
           lineHeight={activeFont.lineHeight}
+          isResponsiveFont={activeEffect.style.isResponsive || false}
           text={design.text}
           textColor={textColor}
           textOpacity={textOpacity}
@@ -794,6 +795,7 @@ const handleEffectChange = (effect: TextEffect) => {
           <div id="mobile-settings-panel" ref={mobilePanelRef} className="md:hidden">
               {isMobilePanelOpen && <div className="fixed inset-0 bg-black/30 z-40" onClick={closePanel} />}
               
+              {/* This is the sliding panel */}
               <div 
                 className={cn(
                   "fixed bottom-14 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
@@ -826,10 +828,11 @@ const handleEffectChange = (effect: TextEffect) => {
                   </Tabs>
               </div>
 
+              {/* This is the static tab list at the bottom */}
               <div 
                 className={cn(
                   "fixed bottom-0 left-0 right-0 z-50 bg-card border-t",
-                  isMobilePanelOpen && "translate-y-full"
+                  isMobilePanelOpen && "translate-y-full opacity-0"
                 )}
               >
                 <TooltipProvider>
@@ -855,3 +858,5 @@ const handleEffectChange = (effect: TextEffect) => {
     </>
   );
 }
+
+    
