@@ -14,6 +14,50 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
+## Version V1.30
+
+#### ENGLISH
+### 1. Bug Fixes & UI Enhancements
+-   **Mobile Tab Logic Overhaul:** A persistent bug preventing the same tab from reopening after being closed in the mobile view has been fixed. The state management for the mobile panel was refactored to correctly reset the active tab (`activeSettingsTab`) when the panel is closed, ensuring any tab can be reliably opened at any time.
+
+#### TURKCE
+### 1. Hata Düzeltmeleri ve Arayüz İyileştirmeleri
+-   **Mobil Sekme Mantığı Düzeltmesi:** Mobil görünümde, kapatıldıktan sonra aynı sekmenin yeniden açılmasını engelleyen inatçı bir hata düzeltildi. Mobil panelin durum yönetimi, panel kapatıldığında aktif sekme durumunu (`activeSettingsTab`) doğru bir şekilde sıfırlayacak şekilde yeniden düzenlendi. Bu, herhangi bir sekmenin istenildiği zaman güvenilir bir şekilde açılabilmesini sağlar.
+
+## Version V1.29
+
+#### ENGLISH
+### 1. UI/UX & Code Refactoring
+-   **Refactored `image-canvas.tsx` for Font Sizing:** The font size logic within `image-canvas` has been significantly improved. A `parseSize` helper function was introduced to dynamically calculate pixel values from string expressions like `'calc(20px + 5vh)'`, allowing for responsive font sizes based on viewport height. The `FontOption` type and related component props were updated to accept `string | number` for `size` and `lineHeight`, providing greater flexibility for defining text styles.
+-   **Advanced Text Effects:** Introduced a new data structure in `src/lib/text-effects.ts` to define complex, multi-layered text effects like "3D Cartoon" and "Roses". These effects can now have their own specific fonts (`fontValue`) and complex `textShadow` properties, which are parsed and rendered correctly on the canvas.
+-   **Dynamic Effect Previews:** The "Text Effects" carousel now dynamically renders previews for each effect, using the effect's own font and style properties to create an accurate visual representation on the preview card.
+-   **Dynamic Font Sizing in Canvas:** The `ImageCanvas` now correctly calculates font and line height based on canvas dimensions and dynamic `vh` units, ensuring text scales appropriately with different canvas sizes.
+-   **New Fonts and Effects:** Added new fonts like 'Luckiest Guy' and 'Niconne' to support new predefined text effects.
+
+#### TURKCE
+### 1. Arayüz/Kullanıcı Deneyimi ve Kod Yeniden Yapılandırması
+-   **Yazı Tipi Boyutlandırması için `image-canvas.tsx` Yeniden Düzenlendi:** `image-canvas` içindeki yazı tipi boyutu mantığı önemli ölçüde iyileştirildi. Görüntü alanı yüksekliğine dayalı olarak duyarlı yazı tipi boyutlarına olanak tanıyan `'calc(20px + 5vh)'` gibi metin ifadelerinden piksel değerlerini dinamik olarak hesaplamak için bir `parseSize` yardımcı fonksiyonu eklendi. `FontOption` tipi ve ilgili bileşen propları, metin stillerini tanımlamak için daha fazla esneklik sağlayacak şekilde `size` ve `lineHeight` için `string | number` kabul edecek şekilde güncellendi.
+-   **Gelişmiş Metin Efektleri:** "3D Çizgi Film" ve "Güller" gibi karmaşık, çok katmanlı metin efektlerini tanımlamak için `src/lib/text-effects.ts` dosyasında yeni bir veri yapısı tanıtıldı. Bu efektler artık tuval üzerinde doğru bir şekilde ayrıştırılan ve işlenen kendi özel yazı tiplerine (`fontValue`) ve karmaşık `textShadow` özelliklerine sahip olabilir.
+-   **Dinamik Efekt Önizlemeleri:** "Metin Efektleri" karuseli, artık her bir efekt için, önizleme kartında doğru bir görsel temsil oluşturmak üzere efektin kendi yazı tipi ve stil özelliklerini kullanarak dinamik olarak önizlemeler oluşturur.
+-   **Kanvasta Dinamik Yazı Tipi Boyutlandırması:** `ImageCanvas` artık yazı tipi ve satır yüksekliğini kanvas boyutlarına ve dinamik `vh` birimlerine göre doğru bir şekilde hesaplayarak metnin farklı kanvas boyutlarıyla uygun şekilde ölçeklenmesini sağlar.
+-   **Yeni Yazı Tipleri ve Efektler:** Yeni önceden tanımlanmış metin efektlerini desteklemek için 'Luckiest Guy' ve 'Niconne' gibi yeni yazı tipleri eklendi.
+
+## Version V1.28
+
+#### ENGLISH
+### 1. UI/UX Improvements
+-   **Enhanced Text Effects Preview:** The text effects carousel in the "Text Settings" panel now accurately previews how each effect will look. The preview cards dynamically render the `textShadow` and `color` properties defined in `text-effects.ts`, including placeholder replacements for dynamic colors, ensuring the preview matches the actual output.
+-   **Improved Mobile Panel Behavior:** The mobile settings panel has been refined for a better user experience.
+    -   **Dynamic Height:** The panel no longer has a fixed height. It now dynamically adjusts its height based on the content of the active tab, up to a maximum of `75vh`.
+    -   **Corrected Layout:** The tab navigation bar is now correctly positioned and remains static at the bottom of the screen, while the content panel slides up from above it.
+
+#### TURKCE
+### 1. Arayüz/Kullanıcı Deneyimi İyileştirmeleri
+-   **Geliştirilmiş Metin Efekti Önizlemesi:** "Metin Ayarları" panelindeki metin efektleri karuseli, artık her bir efektin nasıl görüneceğini doğru bir şekilde önizliyor. Önizleme kartları, `text-effects.ts` dosyasında tanımlanan `textShadow` ve `color` özelliklerini, dinamik renkler için yer tutucu değiştirmeleri de dahil olmak üzere dinamik olarak render eder, böylece önizlemenin gerçek çıktıyla eşleşmesi sağlanır.
+-   **İyileştirilmiş Mobil Panel Davranışı:** Mobil ayarlar paneli, daha iyi bir kullanıcı deneyimi için iyileştirildi.
+    -   **Dinamik Yükseklik:** Panel artık sabit bir yüksekliğe sahip değil. Aktif sekmenin içeriğine göre yüksekliğini dinamik olarak `75vh` maksimum yüksekliğe kadar ayarlar.
+    -   **Düzeltilmiş Yerleşim:** Sekme navigasyon çubuğu artık ekranın altında doğru bir şekilde konumlandırılmış ve sabit kalırken, içerik paneli onun üzerinden yukarı doğru kayar.
+
 ## Version V1.27
 
 #### ENGLISH
@@ -486,8 +530,8 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 #### TURKCE
 ### 1. Dokümantasyon ve Süreç
 -   **Yapay Zeka Geliştirme Süreci Güncellemesi:** Yapay zeka için temel kurallar güncellendi. Yapay zeka artık:
-    1.  Herhangi bir değişikliğe başlamadan önce projenin mevcut durumunu ve kurallarını anlamak için daima `app-rules.md` dosyasını gözden geçirmelidir.
-    2.  Görevler için `plans.md` dosyasını kontrol etmelidir. Eğer dosya boşsa, yapay zekanın sohbette proaktif olarak yeni özellikler veya iyileştirmeler önermesi talimatı verilmiştir.
+    1.  Herhangi bir değişikliğe başlamadan önce projenin mevcut durumunu ve kurallarını anlamak için daima `app-rules.md` dosyasını incelemelidir.
+    2.  Görevler için `plans.md` dosyasını kontrol etmelidir. Eğer dosya boşsa ve kullanıcıdan bir talimat yoksa, yapay zekanın sohbette proaktif olarak yeni özellikler veya iyileştirmeler önermesi talimatı verilmiştir.
 
 ---
 
@@ -582,5 +626,3 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 -   All fonts loaded from Google Fonts must include the `latin-ext` character set to ensure correct display of Turkish characters.
 -   In the font selection menu, the name of each font option should be displayed in its own font style. This allows the user to preview how the fonts look before selecting them.
 -   The default font in the font selection dropdown is set to "Special Elite".
-
-    
