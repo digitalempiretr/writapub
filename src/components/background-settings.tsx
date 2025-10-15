@@ -16,11 +16,11 @@ import { Slider } from "@/components/ui/slider";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { defaultSolidColors, gradientTemplates } from "@/lib/colors";
-import { imageTemplates } from "@/lib/image-templates";
+import { imageTemplates, ImageTemplate } from "@/lib/image-templates";
 import Image from "next/image";
-import { BgOverlayIcon, FeelLucky } from "./ui/icons";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { Switch } from "./ui/switch";
+import { BgOverlayIcon, FeelLucky } from "@/components/ui/icons";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "Art", "Minimal", "Abstract", "Dreamy", "Cinematic", "Surreal", "Vintage", "Futuristic", "Bohemian"];
 
@@ -31,7 +31,7 @@ type BackgroundSettingsProps = {
   bgColor: string;
   handleBgColorSelect: (color: string) => void;
   imageBgUrl: string;
-  handleImageBgUrlSelect: (url: string) => void;
+  handleImageBgUrlSelect: (template: ImageTemplate) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   handleSearchImages: (page?: number) => void;
@@ -200,8 +200,8 @@ export function BackgroundSettings({
               <CarouselContent className="-ml-2">
                 {imageTemplates.map((template) => (
                   <CarouselItem key={template.name} className="basis-1/4 pl-2">
-                    <button onClick={() => handleImageBgUrlSelect(template.imageUrl)} className="w-full">
-                      <Image src={template.imageUrl} alt={template.name} width={100} height={150} className="object-cover aspect-[2/3] rounded-md w-full" />
+                    <button onClick={() => handleImageBgUrlSelect(template)} className="w-full">
+                      <Image src={template.imageUrls.post} alt={template.name} width={100} height={150} className="object-cover aspect-[2/3] rounded-md w-full" />
                     </button>
                   </CarouselItem>
                 ))}
@@ -286,7 +286,7 @@ export function BackgroundSettings({
                 <CarouselContent className="-ml-2">
                   {searchedImages.map((imageUrl, index) => (
                     <CarouselItem key={index} className="basis-1/4">
-                      <div onClick={() => handleImageBgUrlSelect(imageUrl)} className="cursor-pointer">
+                      <div onClick={() => handleImageBgUrlSelect({name: `Search Result ${index}`, imageUrls: {post: imageUrl, story: imageUrl, square: imageUrl}})} className="cursor-pointer">
                         <Image src={imageUrl} alt={`Search Result ${index}`} width={200} height={250} className="object-cover aspect-[2/3] rounded-md" />
                       </div>
                     </CarouselItem>
@@ -304,5 +304,3 @@ export function BackgroundSettings({
     </div>
   );
 }
-
-    

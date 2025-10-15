@@ -37,7 +37,7 @@ import { Download, ImageIcon, LayoutTemplate, Star, Type, X, Frame } from "lucid
 import { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
-import { imageTemplates } from "@/lib/image-templates";
+import { imageTemplates, ImageTemplate } from "@/lib/image-templates";
 import { fontOptions } from "@/lib/font-options";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { defaultText } from "@/lib/default-text";
@@ -85,6 +85,7 @@ export default function Home() {
   const [designToDelete, setDesignToDelete] = useState<string | null>(null);
 
   const [backgroundType, setBackgroundType] = useState<BackgroundType>('image');
+  const [currentTemplate, setCurrentTemplate] = useState<ImageTemplate | null>(imageTemplates[1]);
   
   useEffect(() => {
     setIsClient(true)
@@ -117,7 +118,7 @@ export default function Home() {
   const [textColor, setTextColor] = useState(pageInitialColors.textColor);
   const [textOpacity, setTextOpacity] = useState(1);
   const [gradientBg, setGradientBg] = useState(pageInitialColors.gradientBg);
-  const [imageBgUrl, setImageBgUrl] = useState(imageTemplates[1].imageUrl);
+  const [imageBgUrl, setImageBgUrl] = useState(imageTemplates[1].imageUrls.post);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchedImages, setSearchedImages] = useState<string[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -302,17 +303,27 @@ export default function Home() {
   const handleBgColorSelect = (color: string) => {
     setBgColor(color);
     setBackgroundType('flat');
+    setCurrentTemplate(null);
   };
 
   const handleGradientBgSelect = (css: string) => {
     setGradientBg(css);
     setBackgroundType('gradient');
+    setCurrentTemplate(null);
   };
 
-  const handleImageBgUrlSelect = (url: string) => {
-    setImageBgUrl(url);
+  const handleImageBgUrlSelect = (template: ImageTemplate) => {
+    setCurrentTemplate(template);
     setBackgroundType('image');
+    // The actual URL is set in the useEffect below, which depends on canvasSize
   };
+
+  useEffect(() => {
+    if (backgroundType === 'image' && currentTemplate) {
+      const formatKey = canvasSize.name.toLowerCase() as keyof ImageTemplate['imageUrls'];
+      setImageBgUrl(currentTemplate.imageUrls[formatKey]);
+    }
+  }, [canvasSize, currentTemplate, backgroundType]);
 
 
   useEffect(() => {
@@ -324,8 +335,16 @@ export default function Home() {
 
   const handleFeelLucky = () => {
     const randomSeed = Math.floor(Math.random() * 1000);
-    const randomImageUrl = `https://picsum.photos/seed/${randomSeed}/1080/1350`;
-    handleImageBgUrlSelect(randomImageUrl);
+    const url = `https://picsum.photos/seed/${randomSeed}`;
+    const luckyTemplate: ImageTemplate = {
+      name: 'Lucky',
+      imageUrls: {
+        post: `${url}/1080/1350`,
+        story: `${url}/1080/1920`,
+        square: `${url}/1080/1080`,
+      }
+    };
+    handleImageBgUrlSelect(luckyTemplate);
     setRectBgColor("#f4fdff");
     setRectOpacity(0.6);
   };
@@ -355,23 +374,19 @@ export default function Home() {
 const handleEffectChange = (effect: TextEffect) => {
     setActiveEffect(effect);
 
-    // Update font if the effect has a specific font
     if (effect.fontValue) {
         const newFont = fontOptions.find(f => f.value === effect.fontValue);
         if (newFont) {
-            // If the effect also specifies a font size, use it. Otherwise, keep the current size.
             const newSize = effect.style.fontSize || newFont.size;
             setActiveFont({ ...newFont, size: newSize });
         }
     } else if (effect.style.fontSize) {
-         // If the effect only has a font size, apply it to the current font
         setActiveFont(prevFont => ({...prevFont, size: effect.style.fontSize!}));
     }
 
-
     if (effect.id === 'none') {
         setTextShadowEnabled(false);
-        setTextColor(pageInitialColors.textColor); // Reset to default color
+        setTextColor(pageInitialColors.textColor);
     } else {
         if (effect.style.color) {
             setTextColor(effect.style.color);
@@ -405,22 +420,29 @@ const handleEffectChange = (effect: TextEffect) => {
   const handleApplyTemplate = (template: DesignTemplate) => {
     setBackgroundTab(template.background.type);
     setBackgroundType(template.background.type);
+    setCurrentTemplate(null); // Applying a design template is different from a simple image template
 
     if (template.background.type === 'flat') {
       setBgColor(template.background.value);
     } else if (template.background.type === 'gradient') {
       setGradientBg(template.background.value);
     } else if (template.background.type === 'image') {
-      setImageBgUrl(template.background.value);
+      const imageTemplate: ImageTemplate = {
+        name: template.name,
+        imageUrls: {
+          post: template.background.value,
+          story: template.background.value,
+          square: template.background.value,
+        }
+      }
+      handleImageBgUrlSelect(imageTemplate);
     }
     
-    // Apply effect first, as it might override font and color
     if (template.effect?.id) {
       const effect = textEffects.find(e => e.id === template.effect!.id) || textEffects[0];
       handleEffectChange(effect);
     } else {
-      // If no effect, apply font and color from template directly
-      handleEffectChange(textEffects[0]); // Reset to 'none'
+      handleEffectChange(textEffects[0]); 
       const newFont = fontOptions.find(f => f.value === template.font.value) || fontOptions[0];
       setActiveFont(newFont);
       setTextColor(template.font.color);
@@ -596,40 +618,40 @@ const handleEffectChange = (effect: TextEffect) => {
   
   const renderCanvas = useCallback((design: Design, index: number) => {
     let currentBg: string | undefined;
-    let imageUrl: string | undefined;
+    let finalImageUrl: string | undefined;
 
     switch(backgroundType) {
         case "flat":
             currentBg = bgColor;
-            imageUrl = undefined;
+            finalImageUrl = undefined;
             break;
         case "gradient":
             currentBg = gradientBg;
-            imageUrl = undefined;
+            finalImageUrl = undefined;
             break;
         case "image":
-            currentBg = imageBgUrl;
-            imageUrl = imageBgUrl;
+            currentBg = imageBgUrl; // This is now correctly set by the useEffect
+            finalImageUrl = imageBgUrl;
             break;
         default:
             currentBg = bgColor;
-            imageUrl = undefined;
+            finalImageUrl = undefined;
             break;
     }
     
     return (
         <ImageCanvas
           key={`${backgroundType}-${activeFont.value}-${activeFont.size}-${activeFont.lineHeight}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadowEnabled}-${JSON.stringify(shadows)}-${textStroke}-${strokeColor}-${strokeWidth}-${activeEffect.id}-${canvasSize.width}-${canvasSize.height}`}
+          isTitle={design.isTitle}
           fontFamily={activeFont.fontFamily}
           fontWeight={activeFont.weight}
-          isTitle={design.isTitle}
           fontSize={activeFont.size}
           lineHeight={activeFont.lineHeight}
           text={design.text}
           textColor={textColor}
           textOpacity={textOpacity}
           backgroundColor={currentBg}
-          backgroundImageUrl={imageUrl}
+          backgroundImageUrl={finalImageUrl}
           width={canvasSize.width}
           height={canvasSize.height}
           onCanvasReady={(canvas) => {
