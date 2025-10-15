@@ -1,4 +1,3 @@
-
 import type { CSSProperties } from 'react';
 
 export type TextEffect = {
@@ -11,8 +10,7 @@ export type TextEffect = {
     fontFamily?: string;
     fontWeight?: string | number;
     fontSmoothing?: CSSProperties;
-    fontSize?: number | string;
-    isResponsive?: boolean;
+    fontSize?: number | string; // Base size for this effect
   };
   fontValue?: string; // Add this to link to a FontOption
   previewBg?: string;
@@ -33,7 +31,7 @@ export const textEffects: TextEffect[] = [
       color: '#ffffff',
       fontFamily: "'Luckiest Guy'",
       fontWeight: 400,
-      fontSize: 48,
+      fontSize: 90,
       textShadow: `
           0em -0.031em 0 #212121, 0em -0.031em 0 #212121, 0em  0.031em 0 #212121, 0em  0.031em 0 #212121,
         -0.031em 0em 0 #212121, 0.031em 0em 0 #212121, -0.031em 0em 0 #212121, 0.031em 0em 0 #212121,
@@ -95,8 +93,7 @@ export const textEffects: TextEffect[] = [
       color: '#fff6a9',
       fontFamily: "'Tilt Neon', cursive",
       glowColor: '#228DFF',
-      fontSize: 20,
-      isResponsive: true,
+      fontSize: 'calc(20px + 1vh)',
       textShadow: `     
           0 0 0.05em #ffa500,
           0 0 0.15em #ffa500,

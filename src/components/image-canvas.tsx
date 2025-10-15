@@ -9,8 +9,8 @@ export type FontOption = {
   label: string;
   fontFamily: string;
   weight: string | number;
-  size: number; // Base size for body text, title will be a multiple of this
-  lineHeight: number; // This should be a multiplier, e.g., 1.4
+  size: number | string; // Base size for body text, title will be a multiple of this
+  lineHeight: number | string; // This should be a multiplier, e.g., 1.4
 };
 
 export type ImageCanvasProps = {
@@ -18,9 +18,8 @@ export type ImageCanvasProps = {
   isTitle: boolean;
   fontFamily: string;
   fontWeight: string | number;
-  fontSize: number;
-  lineHeight: number; // This is now a multiplier
-  isResponsiveFont: boolean;
+  fontSize: number | string;
+  lineHeight: number | string; // This is now a multiplier
   backgroundColor?: string;
   textColor: string;
   textOpacity: number;
@@ -225,6 +224,34 @@ function hexToRgba(hex: string, alpha: number) {
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
+// This function safely parses a string like 'calc(20px + 5vh)' into a pixel value.
+const parseSize = (size: string | number, viewportHeight: number): number => {
+    if (typeof size === 'number') {
+      return size;
+    }
+
+    try {
+        const cleanedSize = size.replace(/calc/g, '').replace(/[()]/g, '');
+        const parts = cleanedSize.split('+').map(s => s.trim());
+        let total = 0;
+
+        for (const part of parts) {
+            if (part.includes('vh')) {
+                const value = parseFloat(part.replace('vh', ''));
+                total += (value / 100) * viewportHeight;
+            } else if (part.includes('px')) {
+                total += parseFloat(part.replace('px', ''));
+            } else {
+                total += parseFloat(part);
+            }
+        }
+        return total;
+    } catch (e) {
+        console.error("Could not parse size:", size, e);
+        return typeof size === 'number' ? size : 48; // Fallback
+    }
+};
+
 export function ImageCanvas({
   text,
   isTitle,
@@ -232,7 +259,6 @@ export function ImageCanvas({
   fontWeight,
   fontSize: propFontSize,
   lineHeight: propLineHeight,
-  isResponsiveFont,
   backgroundColor,
   textColor,
   textOpacity,
@@ -283,14 +309,15 @@ export function ImageCanvas({
       const finalFontWeight = isBold ? Math.min(Number(fontWeight) + 300, 900) : fontWeight;
       
       const scalingFactor = width / 1080;
-      let baseFontSize = isTitle ? propFontSize * 1.5 : propFontSize;
-
-      if(isResponsiveFont) {
-        baseFontSize = propFontSize + (viewportHeight * 0.01) // 1vh
+      let baseFontSize = parseSize(propFontSize, viewportHeight);
+      
+      if (isTitle) {
+          baseFontSize *= 1.5;
       }
-
+      
       const finalFontSize = baseFontSize * scalingFactor;
-      const finalLineHeight = finalFontSize * propLineHeight;
+      const finalLineHeight = finalFontSize * (typeof propLineHeight === 'number' ? propLineHeight : parseFloat(propLineHeight));
+
 
       const processedText = isUppercase ? text.toUpperCase() : text;
 
@@ -317,7 +344,8 @@ export function ImageCanvas({
         const maxLinesForMaxHeight = 8;
         
         const slope = (maxLinesForMaxHeight - maxLinesForMinHeight) / (maxLineHeight - minLineHeight);
-        let dynamicMaxLines = Math.floor(maxLinesForMinHeight + slope * (propLineHeight - minLineHeight));
+        const currentLineHeight = typeof propLineHeight === 'number' ? propLineHeight : parseFloat(propLineHeight);
+        let dynamicMaxLines = Math.floor(maxLinesForMinHeight + slope * (currentLineHeight - minLineHeight));
         dynamicMaxLines = Math.max(maxLinesForMaxHeight, Math.min(maxLinesForMinHeight, dynamicMaxLines)); 
 
         const result = measureAndSplitText(ctx, processedText, textMaxWidth, dynamicMaxLines, dynamicMaxLines + 2);
@@ -412,7 +440,7 @@ export function ImageCanvas({
     };
 
     draw();
-  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, isResponsiveFont, viewportHeight, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing]);
+  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, viewportHeight, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing]);
 
   return (
     <canvas

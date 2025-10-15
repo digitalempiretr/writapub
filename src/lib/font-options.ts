@@ -4,8 +4,8 @@ export type FontOption = {
   label: string;
   fontFamily: string;
   weight: string | number;
-  size: number; // Base size for body text, title will be a multiple of this
-  lineHeight: number; // This should be a multiplier, e.g., 1.4
+  size: number | string; // Base size for body text, title will be a multiple of this
+  lineHeight: number | string; // This should be a multiplier, e.g., 1.4
 };
 
 
@@ -77,5 +77,3 @@ export const fontOptions: FontOption[] = [
     { value: 'windsong', label: 'WindSong', fontFamily: 'WindSong', weight: '400', size: 62, lineHeight: 1.3 },
     { value: 'yesteryear', label: 'Yesteryear', fontFamily: 'Yesteryear', weight: '400', size: 58, lineHeight: 1.3 },
 ];
-
-    
