@@ -116,12 +116,12 @@ export function TextSettings({
   const baseId = useId();
   const [internalText, setInternalText] = useState(text);
 
-  const [internalFontSize, setInternalFontSize] = useState(activeFont.size);
-  const [internalLineHeight, setInternalLineHeight] = useState(activeFont.lineHeight);
+  const [internalFontSize, setInternalFontSize] = useState<number>(Number(activeFont.size) || 48);
+  const [internalLineHeight, setInternalLineHeight] = useState<number>(Number(activeFont.lineHeight) || 1.4);
   
   useEffect(() => {
-    setInternalFontSize(activeFont.size);
-    setInternalLineHeight(activeFont.lineHeight);
+    setInternalFontSize(Number(activeFont.size));
+    setInternalLineHeight(Number(activeFont.lineHeight));
   }, [activeFont]);
 
 
@@ -601,4 +601,3 @@ export function TextSettings({
     </TooltipProvider>
   );
 }
-

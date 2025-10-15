@@ -116,9 +116,20 @@ export const textEffects: TextEffect[] = [
     previewBg: '#f0f0f0',
   },
   {
-    name: 'Shadow',
-    id: 'shadow',
-    style: { color: '#000000', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' },
+    name: 'Golden Glow',
+    id: 'goldenGlow',
+    fontValue: 'tilt-neon',
+    style: { 
+      color: ' #ffcc00', 
+      fontFamily: "'Tilt Neon', cursive",
+      fontSize: 48,
+      textShadow: ` 
+        0 0 0.2em #ffcc00,
+        0 0 0.4em #ffb700,
+        0 0 0.6em #e6ac00,
+        0 0 0.8em #b38f00
+    `  },
+    previewBg: '#212121',
   },
   {
     name: 'Outline',
