@@ -93,7 +93,7 @@ export const textEffects: TextEffect[] = [
       color: '#fff6a9',
       fontFamily: "'Tilt Neon', cursive",
       glowColor: '#228DFF',
-      fontSize: 'calc(20px + 1vh)',
+      fontSize: 'calc(20px + 10vh)',
       textShadow: `     
           0 0 0.05em #ffa500,
           0 0 0.15em #ffa500,

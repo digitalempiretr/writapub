@@ -33,7 +33,7 @@ import {
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Star, Type, X, Frame } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Star, Type, X, RectangleVertical, Smartphone, Square } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -52,7 +52,6 @@ import { pageInitialColors } from "@/lib/colors";
 import { CreativeMagicPanel } from "@/components/creative-magic-panel";
 import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
-import { FormatPanel } from "@/components/format-panel";
 
 
 type Design = {
@@ -647,7 +646,6 @@ const handleEffectChange = (effect: TextEffect) => {
           fontWeight={activeFont.weight}
           fontSize={activeFont.size}
           lineHeight={activeFont.lineHeight}
-          isResponsiveFont={activeEffect.style.isResponsive || false}
           text={design.text}
           textColor={textColor}
           textOpacity={textOpacity}
@@ -675,7 +673,7 @@ const handleEffectChange = (effect: TextEffect) => {
         />
     )
   }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize]);
-
+  
   return (
     <>
       <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center">
@@ -718,6 +716,33 @@ const handleEffectChange = (effect: TextEffect) => {
                                   {renderCanvas(design, index)}
                                 </CardContent>
                               </Card>
+                              <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="bg-black/20 backdrop-blur-sm rounded-md p-0.5 flex gap-0.5">
+                                  {canvasSizes.map(size => (
+                                    <TooltipProvider key={size.name}>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className={cn(
+                                              "h-7 w-7 text-white hover:bg-black/50 hover:text-white",
+                                              canvasSize.name === size.name && "bg-white/30"
+                                            )}
+                                            onClick={() => setCanvasSize(size)}
+                                          >
+                                            {size.name === 'Post' && <RectangleVertical className="h-5 w-5" />}
+                                            {size.name === 'Story' && <Smartphone className="h-5 w-5" />}
+                                            {size.name === 'Square' && <Square className="h-5 w-5" />}
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>{size.name} Format</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  ))}
+                                </div>
                                 <AlertDialog>
                                   <TooltipProvider>
                                     <Tooltip>
@@ -726,7 +751,7 @@ const handleEffectChange = (effect: TextEffect) => {
                                           <Button
                                             variant="ghost"
                                             size="icon"
-                                            className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/30 text-white hover:bg-black/50 hover:text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            className="h-8 w-8 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400"
                                           >
                                             <Star className="h-5 w-5" />
                                           </Button>
@@ -750,6 +775,7 @@ const handleEffectChange = (effect: TextEffect) => {
                                   </AlertDialogContent>
                                   </TooltipProvider>
                                 </AlertDialog>
+                              </div>
                             </div>
                           </CarouselItem>
                         ))}
@@ -766,10 +792,9 @@ const handleEffectChange = (effect: TextEffect) => {
                         onValueChange={setActiveSettingsTab}
                         className="w-full flex flex-col-reverse md:flex-col h-full"
                         >
-                        <TabsList className="grid w-full grid-cols-6 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md flex-shrink-0">
+                        <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md flex-shrink-0">
                             <Tooltip><TooltipTrigger asChild><TabsTrigger value="designs"><LayoutTemplate /></TabsTrigger></TooltipTrigger><TooltipContent><p>Designs</p></TooltipContent></Tooltip>
                             <Tooltip><TooltipTrigger asChild><TabsTrigger value="favorites"><Star /></TabsTrigger></TooltipTrigger><TooltipContent><p>Favorites</p></TooltipContent></Tooltip>
-                            <Tooltip><TooltipTrigger asChild><TabsTrigger value="format"><Frame /></TabsTrigger></TooltipTrigger><TooltipContent><p>Format</p></TooltipContent></Tooltip>
                             <Tooltip><TooltipTrigger asChild><TabsTrigger value="background"><ImageIcon /></TabsTrigger></TooltipTrigger><TooltipContent><p>Background</p></TooltipContent></Tooltip>
                             <Tooltip><TooltipTrigger asChild><TabsTrigger value="text"><Type /></TabsTrigger></TooltipTrigger><TooltipContent><p>Text</p></TooltipContent></Tooltip>
                             <Tooltip><TooltipTrigger asChild><TabsTrigger value="download"><Download /></TabsTrigger></TooltipTrigger><TooltipContent><p>Download</p></TooltipContent></Tooltip>
@@ -777,7 +802,6 @@ const handleEffectChange = (effect: TextEffect) => {
                         <div className="flex-grow w-full overflow-hidden relative">
                             <TabsContent value="designs" className="h-full mt-0"><DesignsPanel handleApplyTemplate={handleApplyTemplate} /></TabsContent>
                             <TabsContent value="favorites" className="h-full mt-0"><MyDesignsPanel myDesigns={myDesigns} handleSaveDesign={handleSaveDesign} handleDeleteDesign={handleDeleteDesign} handleUpdateDesign={handleUpdateDesign} editingDesignId={editingDesignId} handleEditClick={handleEditClick} handleCancelEdit={handleCancelEdit} editingName={editingName} setEditingName={setEditingName} designToDelete={designToDelete} setDesignToDelete={setDesignToDelete} handleLogDesign={handleLogDesign} handleApplyTemplate={handleApplyTemplate} /></TabsContent>
-                            <TabsContent value="format" className="h-full mt-0"><FormatPanel canvasSize={canvasSize} setCanvasSize={setCanvasSize} canvasSizes={canvasSizes} /></TabsContent>
                             <TabsContent value="background" className="h-full mt-0"><BackgroundSettings backgroundTab={backgroundTab} setBackgroundTab={setBackgroundTab as (value: string) => void} handleFeelLucky={handleFeelLucky} bgColor={bgColor} handleBgColorSelect={handleBgColorSelect} imageBgUrl={imageBgUrl} handleImageBgUrlSelect={handleImageBgUrlSelect} searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchImages={handleSearchImages} isSearching={isSearching} searchedImages={searchedImages} handleKeywordSearch={handleKeywordSearch} searchPage={searchPage} isOverlayEnabled={isOverlayEnabled} setIsOverlayEnabled={handleOverlayEnable} overlayColor={overlayColor} setOverlayColor={setOverlayColor} overlayOpacity={overlayOpacity} setOverlayOpacity={setOverlayOpacity} gradientBg={gradientBg} handleGradientBgSelect={handleGradientBgSelect} setSearchCarouselApi={setSearchCarouselApi} /></TabsContent>
                             <TabsContent value="text" className="h-full mt-0"><TextSettings text={text} setText={setText} handleGenerate={handleGenerate} isLoading={isLoading} textColor={textColor} setTextColor={handleTextColorChange} textOpacity={textOpacity} setTextOpacity={setTextOpacity} activeFont={activeFont} setActiveFont={setActiveFont} fontOptions={fontOptions} isBold={isBold} setIsBold={setIsBold} isUppercase={isUppercase} setIsUppercase={setIsUppercase} textAlign={textAlign} setTextAlign={setTextAlign} textShadowEnabled={textShadowEnabled} setTextShadowEnabled={setTextShadowEnabled} shadows={shadows} setShadows={setShadows} textStroke={textStroke} setTextStroke={setTextStroke} strokeColor={strokeColor} setStrokeColor={setStrokeColor} strokeWidth={strokeWidth} setStrokeWidth={setStrokeWidth} isTextBoxEnabled={isTextBoxEnabled} setIsTextBoxEnabled={handleTextBoxEnable} rectBgColor={rectBgColor} setRectBgColor={setRectBgColor} rectOpacity={rectOpacity} setRectOpacity={setRectOpacity} activeEffect={activeEffect} setActiveEffect={handleEffectChange} /></TabsContent>
                             <TabsContent value="download" className="h-full mt-0"><DownloadPanel fileName={fileName} setFileName={setFileName} handleDownloadAll={handleDownloadAll} designs={designs} currentSlide={currentSlide} handleDownload={handleDownload} /></TabsContent>
@@ -820,7 +844,6 @@ const handleEffectChange = (effect: TextEffect) => {
                     <div className="flex-grow overflow-y-auto">
                       <TabsContent value="designs" className="mt-0"><DesignsPanel handleApplyTemplate={handleApplyTemplate} /></TabsContent>
                       <TabsContent value="favorites" className="mt-0"><MyDesignsPanel myDesigns={myDesigns} handleSaveDesign={handleSaveDesign} handleDeleteDesign={handleDeleteDesign} handleUpdateDesign={handleUpdateDesign} editingDesignId={editingDesignId} handleEditClick={handleEditClick} handleCancelEdit={handleCancelEdit} editingName={editingName} setEditingName={setEditingName} designToDelete={designToDelete} setDesignToDelete={setDesignToDelete} handleLogDesign={handleLogDesign} handleApplyTemplate={handleApplyTemplate} /></TabsContent>
-                      <TabsContent value="format" className="mt-0"><FormatPanel canvasSize={canvasSize} setCanvasSize={setCanvasSize} canvasSizes={canvasSizes} /></TabsContent>
                       <TabsContent value="background" className="mt-0"><BackgroundSettings backgroundTab={backgroundTab} setBackgroundTab={setBackgroundTab as (value: string) => void} handleFeelLucky={handleFeelLucky} bgColor={bgColor} handleBgColorSelect={handleBgColorSelect} imageBgUrl={imageBgUrl} handleImageBgUrlSelect={handleImageBgUrlSelect} searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchImages={handleSearchImages} isSearching={isSearching} searchedImages={searchedImages} handleKeywordSearch={handleKeywordSearch} searchPage={searchPage} isOverlayEnabled={isOverlayEnabled} setIsOverlayEnabled={handleOverlayEnable} overlayColor={overlayColor} setOverlayColor={setOverlayColor} overlayOpacity={overlayOpacity} setOverlayOpacity={setOverlayOpacity} gradientBg={gradientBg} handleGradientBgSelect={handleGradientBgSelect} setSearchCarouselApi={setSearchCarouselApi} /></TabsContent>
                       <TabsContent value="text" className="mt-0"><TextSettings text={text} setText={setText} handleGenerate={handleGenerate} isLoading={isLoading} textColor={textColor} setTextColor={handleTextColorChange} textOpacity={textOpacity} setTextOpacity={setTextOpacity} activeFont={activeFont} setActiveFont={setActiveFont} fontOptions={fontOptions} isBold={isBold} setIsBold={setIsBold} isUppercase={isUppercase} setIsUppercase={setIsUppercase} textAlign={textAlign} setTextAlign={setTextAlign} textShadowEnabled={textShadowEnabled} setTextShadowEnabled={setTextShadowEnabled} shadows={shadows} setShadows={setShadows} textStroke={textStroke} setTextStroke={setTextStroke} strokeColor={strokeColor} setStrokeColor={setStrokeColor} strokeWidth={strokeWidth} setStrokeWidth={setStrokeWidth} isTextBoxEnabled={isTextBoxEnabled} setIsTextBoxEnabled={handleTextBoxEnable} rectBgColor={rectBgColor} setRectBgColor={setRectBgColor} rectOpacity={rectOpacity} setRectOpacity={setRectOpacity} activeEffect={activeEffect} setActiveEffect={handleEffectChange} /></TabsContent>
                       <TabsContent value="download" className="mt-0"><DownloadPanel fileName={fileName} setFileName={setFileName} handleDownloadAll={handleDownloadAll} designs={designs} currentSlide={currentSlide} handleDownload={handleDownload} /></TabsContent>
@@ -831,7 +854,7 @@ const handleEffectChange = (effect: TextEffect) => {
               {/* This is the static tab list at the bottom */}
               <div 
                 className={cn(
-                  "fixed bottom-0 left-0 right-0 z-50 bg-card border-t",
+                  "fixed bottom-0 left-0 right-0 z-40 bg-card border-t",
                   isMobilePanelOpen && "translate-y-full opacity-0"
                 )}
               >
@@ -842,10 +865,9 @@ const handleEffectChange = (effect: TextEffect) => {
                         setIsMobilePanelOpen(true);
                       }
                   }}>
-                      <TabsList className="grid w-full grid-cols-6 h-14 p-1">
+                      <TabsList className="grid w-full grid-cols-5 h-14 p-1">
                           <Tooltip><TooltipTrigger asChild><TabsTrigger value="designs"><LayoutTemplate /></TabsTrigger></TooltipTrigger><TooltipContent><p>Designs</p></TooltipContent></Tooltip>
                           <Tooltip><TooltipTrigger asChild><TabsTrigger value="favorites"><Star /></TabsTrigger></TooltipTrigger><TooltipContent><p>Favorites</p></TooltipContent></Tooltip>
-                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="format"><Frame /></TabsTrigger></TooltipTrigger><TooltipContent><p>Format</p></TooltipContent></Tooltip>
                           <Tooltip><TooltipTrigger asChild><TabsTrigger value="background"><ImageIcon /></TabsTrigger></TooltipTrigger><TooltipContent><p>Background</p></TooltipContent></Tooltip>
                           <Tooltip><TooltipTrigger asChild><TabsTrigger value="text"><Type /></TabsTrigger></TooltipTrigger><TooltipContent><p>Text</p></TooltipContent></Tooltip>
                           <Tooltip><TooltipTrigger asChild><TabsTrigger value="download"><Download /></TabsTrigger></TooltipTrigger><TooltipContent><p>Download</p></TooltipContent></Tooltip>
@@ -858,5 +880,3 @@ const handleEffectChange = (effect: TextEffect) => {
     </>
   );
 }
-
-    
