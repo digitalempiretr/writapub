@@ -127,7 +127,7 @@ body {
     right: 0;
     width: 100%;
     z-index: 50;
-    background-color: hsl(var(--background));
+    background-color: hsl(var(--card));
     border-top: 1px solid hsl(var(--border));
     padding-bottom: env(safe-area-inset-bottom);
     display: flex;
