@@ -52,7 +52,6 @@ import { pageInitialColors } from "@/lib/colors";
 import { CreativeMagicPanel } from "@/components/creative-magic-panel";
 import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 
 type Design = {
@@ -315,7 +314,6 @@ export default function Home() {
   const handleImageBgUrlSelect = (template: ImageTemplate) => {
     setCurrentTemplate(template);
     setBackgroundType('image');
-    // The actual URL is set in the useEffect below, which depends on canvasSize
   };
 
   useEffect(() => {
@@ -371,56 +369,11 @@ export default function Home() {
     }
   };
 
-const handleEffectChange = (effect: TextEffect) => {
-    setActiveEffect(effect);
-
-    if (effect.fontValue) {
-        const newFont = fontOptions.find(f => f.value === effect.fontValue);
-        if (newFont) {
-             const newSize = typeof effect.style.fontSize === 'number' ? effect.style.fontSize : newFont.size;
-            setActiveFont({ ...newFont, size: newSize });
-        }
-    } else if (typeof effect.style.fontSize === 'number') {
-        setActiveFont(prevFont => ({...prevFont, size: effect.style.fontSize!}));
-    }
-
-    if (effect.id === 'none') {
-        setTextShadowEnabled(false);
-        setTextColor(pageInitialColors.textColor);
-    } else {
-        if (effect.style.color) {
-            setTextColor(effect.style.color);
-        }
-        if (effect.style.textShadow) {
-            setTextShadowEnabled(true);
-            const finalShadowString = effect.style.textShadow
-              .replace(/{{color}}/g, effect.style.color || textColor)
-              .replace(/{{glow}}/g, effect.style.glowColor || effect.style.color || textColor);
-
-            const parsedShadows = parseShadow(finalShadowString);
-            setShadows(parsedShadows);
-        } else {
-            setTextShadowEnabled(false);
-        }
-    }
-};
-
-  const handleTextColorChange = (newColor: string) => {
-    setTextColor(newColor);
-    if (activeEffect && activeEffect.id !== 'none' && activeEffect.style.textShadow) {
-      const finalShadowString = activeEffect.style.textShadow
-        .replace(/{{color}}/g, newColor)
-        .replace(/{{glow}}/g, activeEffect.style.glowColor || newColor);
-      const newShadows = parseShadow(finalShadowString);
-      setShadows(newShadows);
-    }
-  };
-
 
   const handleApplyTemplate = (template: DesignTemplate) => {
     setBackgroundTab(template.background.type);
     setBackgroundType(template.background.type);
-    setCurrentTemplate(null); // Applying a design template is different from a simple image template
+    setCurrentTemplate(null);
 
     if (template.background.type === 'flat') {
       setBgColor(template.background.value);
@@ -615,6 +568,50 @@ const handleEffectChange = (effect: TextEffect) => {
     });
   }, [backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, toast, activeEffect]);
 
+  const handleEffectChange = (effect: TextEffect) => {
+    setActiveEffect(effect);
+
+    if (effect.fontValue) {
+        const newFont = fontOptions.find(f => f.value === effect.fontValue);
+        if (newFont) {
+             const newSize = typeof effect.style.fontSize === 'number' ? effect.style.fontSize : newFont.size;
+            setActiveFont({ ...newFont, size: newSize });
+        }
+    } else if (typeof effect.style.fontSize === 'number') {
+        setActiveFont(prevFont => ({...prevFont, size: effect.style.fontSize!}));
+    }
+
+    if (effect.id === 'none') {
+        setTextShadowEnabled(false);
+        setTextColor(pageInitialColors.textColor);
+    } else {
+        if (effect.style.color) {
+            setTextColor(effect.style.color);
+        }
+        if (effect.style.textShadow) {
+            setTextShadowEnabled(true);
+            const finalShadowString = effect.style.textShadow
+              .replace(/{{color}}/g, effect.style.color || textColor)
+              .replace(/{{glow}}/g, effect.style.glowColor || effect.style.color || textColor);
+
+            const parsedShadows = parseShadow(finalShadowString);
+            setShadows(parsedShadows);
+        } else {
+            setTextShadowEnabled(false);
+        }
+    }
+};
+
+  const handleTextColorChange = (newColor: string) => {
+    setTextColor(newColor);
+    if (activeEffect && activeEffect.id !== 'none' && activeEffect.style.textShadow) {
+      const finalShadowString = activeEffect.style.textShadow
+        .replace(/{{color}}/g, newColor)
+        .replace(/{{glow}}/g, activeEffect.style.glowColor || newColor);
+      const newShadows = parseShadow(finalShadowString);
+      setShadows(newShadows);
+    }
+  };
   
   const renderCanvas = useCallback((design: Design, index: number) => {
     let currentBg: string | undefined;
@@ -630,7 +627,7 @@ const handleEffectChange = (effect: TextEffect) => {
             finalImageUrl = undefined;
             break;
         case "image":
-            currentBg = imageBgUrl; // This is now correctly set by the useEffect
+            currentBg = imageBgUrl; 
             finalImageUrl = imageBgUrl;
             break;
         default:
@@ -830,35 +827,48 @@ const handleEffectChange = (effect: TextEffect) => {
 
        {/* Mobile-only Fixed Bottom Settings Panel */}
         {isClient && designs.length > 0 && (
-          <div className="md:hidden">
-            <Sheet open={isMobilePanelOpen} onOpenChange={setIsMobilePanelOpen}>
-              <SheetContent side="bottom" className="h-auto max-h-[85vh] flex flex-col p-0">
-                <div className="flex-shrink-0 p-2 border-b">
-                   <Tabs value={activeSettingsTab ?? ''} onValueChange={setActiveSettingsTab}>
-                      <TabsList className="grid w-full grid-cols-5">
-                          <TabsTrigger value="designs"><LayoutTemplate className="h-5 w-5" /></TabsTrigger>
-                          <TabsTrigger value="favorites"><Star className="h-5 w-5" /></TabsTrigger>
-                          <TabsTrigger value="background"><ImageIcon className="h-5 w-5" /></TabsTrigger>
-                          <TabsTrigger value="text"><Type className="h-5 w-5" /></TabsTrigger>
-                          <TabsTrigger value="download"><Download className="h-5 w-5" /></TabsTrigger>
-                      </TabsList>
-                   </Tabs>
-                </div>
-                 <div className="flex-grow overflow-y-auto">
-                  {renderActiveTabContent()}
-                </div>
-              </SheetContent>
-            </Sheet>
+            <div ref={mobilePanelRef} className="md:hidden">
+            {/* Overlay */}
+            {isMobilePanelOpen && <div className="fixed inset-0 bg-black/30 z-40" onClick={closePanel} />}
 
-            {!isMobilePanelOpen && (
-              <div className="fixed bottom-0 left-0 right-0 z-40 bg-card border-t p-2">
-                 <Button onClick={() => setIsMobilePanelOpen(true)} className="w-full">
-                    <Palette className="mr-2 h-5 w-5"/>
-                    Edit Design
-                </Button>
-              </div>
-            )}
-          </div>
+            {/* Sliding Panel */}
+            <div
+                className={cn(
+                "fixed bottom-0 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
+                isMobilePanelOpen ? "translate-y-0" : "translate-y-full",
+                )}
+            >
+                <div className="max-h-[75vh] flex flex-col">
+                    {/* Panel Content */}
+                    <div className="flex-grow overflow-y-auto">
+                        <div className="flex justify-end p-1">
+                            <Button variant="ghost" size="icon" onClick={closePanel} className="h-8 w-8 rounded-full">
+                                <X className="h-5 w-5" />
+                                <span className="sr-only">Close Panel</span>
+                            </Button>
+                        </div>
+                        {renderActiveTabContent()}
+                    </div>
+                </div>
+            </div>
+
+            {/* Always visible Tab List */}
+            <div className={cn(
+                "fixed bottom-0 left-0 right-0 z-40 bg-card border-t",
+                isMobilePanelOpen && "hidden" 
+              )}
+            >
+                <Tabs value={activeSettingsTab ?? ''} onValueChange={(tab) => {setActiveSettingsTab(tab); setIsMobilePanelOpen(true);}} >
+                    <TabsList className="grid w-full grid-cols-5 h-14 rounded-none">
+                        <TabsTrigger value="designs"><LayoutTemplate /></TabsTrigger>
+                        <TabsTrigger value="favorites"><Star /></TabsTrigger>
+                        <TabsTrigger value="background"><ImageIcon /></TabsTrigger>
+                        <TabsTrigger value="text"><Type /></TabsTrigger>
+                        <TabsTrigger value="download"><Download /></TabsTrigger>
+                    </TabsList>
+                </Tabs>
+            </div>
+            </div>
         )}
     </>
   );
