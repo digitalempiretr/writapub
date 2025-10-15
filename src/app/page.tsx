@@ -33,7 +33,7 @@ import {
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Star, Type, X, RectangleVertical, Smartphone, Square, Palette } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Star, Type, X, RectangleVertical, Smartphone, Square, Palette, HeartIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -52,6 +52,7 @@ import { pageInitialColors } from "@/lib/colors";
 import { CreativeMagicPanel } from "@/components/creative-magic-panel";
 import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 
 type Design = {
@@ -715,7 +716,7 @@ export default function Home() {
 
   const settingsTabs = [
     { value: "designs", icon: <LayoutTemplate />, label: "Designs" },
-    { value: "favorites", icon: <Star />, label: "Favorites" },
+    { value: "favorites", icon: <HeartIcon />, label: "Favorites" },
     { value: "background", icon: <ImageIcon />, label: "Background" },
     { value: "text", icon: <Type />, label: "Text" },
     { value: "download", icon: <Download />, label: "Download" },
@@ -857,38 +858,30 @@ export default function Home() {
        {/* Mobile-only Fixed Bottom Settings Panel */}
         {isClient && designs.length > 0 && (
             <div ref={mobilePanelRef} className="md:hidden">
-            {isMobilePanelOpen && <div className="fixed inset-0 bg-black/30 z-40" onClick={closePanel} />}
+              {isMobilePanelOpen && <div className="fixed inset-0 bg-black/30 z-40" onClick={closePanel} />}
 
-            <div
-                className={cn(
-                "fixed bottom-0 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
-                isMobilePanelOpen ? "translate-y-0" : "translate-y-full"
-                )}
-            >
-                <div className="max-h-[75vh] flex flex-col">
-                    <div className="flex justify-end p-1">
-                        <Button variant="ghost" size="icon" onClick={closePanel} className="h-8 w-8 rounded-full">
-                            <X className="h-5 w-5" />
-                            <span className="sr-only">Close Panel</span>
-                        </Button>
-                    </div>
-                    <div className="flex-grow overflow-y-auto">
-                      {renderActiveTabContent()}
-                    </div>
-                </div>
-            </div>
+              <Sheet open={isMobilePanelOpen} onOpenChange={setIsMobilePanelOpen}>
+                <SheetContent side="bottom" className="h-[75vh] p-0 flex flex-col">
+                   <div className="p-4 border-b">
+                      <h3 className="text-lg font-semibold capitalize">{activeSettingsTab}</h3>
+                   </div>
+                   <div className="flex-grow overflow-y-auto">
+                    {renderActiveTabContent()}
+                   </div>
+                </SheetContent>
+              </Sheet>
 
-            <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-card border-t", isMobilePanelOpen ? "hidden" : "block")}>
-                <Tabs value={activeSettingsTab ?? ''} className="w-full">
-                <TabsList className="grid w-full grid-cols-5 h-14 rounded-none">
-                   {settingsTabs.map(tab => (
-                        <TabsTrigger key={tab.value} value={tab.value} onClick={() => handleMobileTabClick(tab.value)}>
-                            {tab.icon}
-                        </TabsTrigger>
-                    ))}
-                </TabsList>
-                </Tabs>
-            </div>
+              <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-card border-t", isMobilePanelOpen ? "hidden" : "block")}>
+                  <Tabs value={activeSettingsTab ?? ''} className="w-full">
+                  <TabsList className="grid w-full grid-cols-5 h-14 rounded-none">
+                    {settingsTabs.map(tab => (
+                          <TabsTrigger key={tab.value} value={tab.value} onClick={() => handleMobileTabClick(tab.value)}>
+                              {tab.icon}
+                          </TabsTrigger>
+                      ))}
+                  </TabsList>
+                  </Tabs>
+              </div>
             </div>
         )}
     </>
