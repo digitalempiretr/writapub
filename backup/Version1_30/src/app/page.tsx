@@ -752,7 +752,7 @@ export default function Home() {
         { isClient && designs.length > 0 && (
           <div id="designs-container" ref={designsRef} className="w-full pt-8 flex flex-col items-center">
               <div className="w-full mx-auto flex flex-col items-center">
-                  <div className="w-full max-w-md relative">
+                  <div className="w-full max-w-md">
                     <Carousel className="w-full" setApi={setCarouselApi} opts={{ dragFree: true }}>
                       <CarouselContent>
                         {designs.map((design, index) => (
@@ -763,6 +763,33 @@ export default function Home() {
                                   {renderCanvas(design, index)}
                                 </CardContent>
                               </Card>
+                              <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="bg-black/20 backdrop-blur-sm rounded-md p-0.5 flex gap-0.5">
+                                  {canvasSizes.map(size => (
+                                    <TooltipProvider key={size.name}>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className={cn(
+                                              "h-7 w-7 text-white hover:bg-black/50 hover:text-white",
+                                              canvasSize.name === size.name && "bg-white/30"
+                                            )}
+                                            onClick={() => setCanvasSize(size)}
+                                          >
+                                            {size.name === 'Post' && <RectangleVertical className="h-5 w-5" />}
+                                            {size.name === 'Story' && <Smartphone className="h-5 w-5" />}
+                                            {size.name === 'Square' && <Square className="h-5 w-5" />}
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>{size.name} Format</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  ))}
+                                </div>
                                 <AlertDialog>
                                   <TooltipProvider>
                                     <Tooltip>
@@ -771,7 +798,7 @@ export default function Home() {
                                           <Button
                                             variant="ghost"
                                             size="icon"
-                                            className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/30 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            className="h-8 w-8 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400"
                                           >
                                             <Star className="h-5 w-5" />
                                           </Button>
@@ -795,6 +822,7 @@ export default function Home() {
                                   </AlertDialogContent>
                                   </TooltipProvider>
                                 </AlertDialog>
+                              </div>
                             </div>
                           </CarouselItem>
                         ))}
@@ -804,35 +832,6 @@ export default function Home() {
                     </Carousel>
                   </div>
                   
-                  <div className="w-full max-w-md flex justify-end mt-2">
-                    <div className="bg-card backdrop-blur-sm rounded-md p-1 flex gap-1">
-                        {canvasSizes.map(size => (
-                        <TooltipProvider key={size.name}>
-                            <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                variant="ghost"
-                                size="icon"
-                                className={cn(
-                                    "h-8 w-8",
-                                    canvasSize.name === size.name && "bg-muted"
-                                )}
-                                onClick={() => setCanvasSize(size)}
-                                >
-                                {size.name === 'Post' && <RectangleVertical className="h-5 w-5" />}
-                                {size.name === 'Story' && <Smartphone className="h-5 w-5" />}
-                                {size.name === 'Square' && <Square className="h-5 w-5" />}
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>{size.name} Format</p>
-                            </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                        ))}
-                    </div>
-                  </div>
-
                   {/* Desktop Settings Panel */}
                   <div className="w-full mt-6 hidden md:block md:max-w-4xl">
                     <Tabs value={activeSettingsTab ?? ''} onValueChange={setActiveSettingsTab} className="w-full">
