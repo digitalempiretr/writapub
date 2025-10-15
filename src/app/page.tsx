@@ -33,7 +33,7 @@ import {
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Star, Type, X, RectangleVertical, Smartphone, Square } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Star, Type, X, RectangleVertical, Smartphone, Square, Palette } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -52,6 +52,7 @@ import { pageInitialColors } from "@/lib/colors";
 import { CreativeMagicPanel } from "@/components/creative-magic-panel";
 import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 
 type Design = {
@@ -674,6 +675,23 @@ const handleEffectChange = (effect: TextEffect) => {
     )
   }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize]);
   
+  const renderActiveTabContent = () => {
+    switch (activeSettingsTab) {
+      case 'designs':
+        return <DesignsPanel handleApplyTemplate={handleApplyTemplate} />;
+      case 'favorites':
+        return <MyDesignsPanel myDesigns={myDesigns} handleSaveDesign={handleSaveDesign} handleDeleteDesign={handleDeleteDesign} handleUpdateDesign={handleUpdateDesign} editingDesignId={editingDesignId} handleEditClick={handleEditClick} handleCancelEdit={handleCancelEdit} editingName={editingName} setEditingName={setEditingName} designToDelete={designToDelete} setDesignToDelete={setDesignToDelete} handleLogDesign={handleLogDesign} handleApplyTemplate={handleApplyTemplate} />;
+      case 'background':
+        return <BackgroundSettings backgroundTab={backgroundTab} setBackgroundTab={setBackgroundTab as (value: string) => void} handleFeelLucky={handleFeelLucky} bgColor={bgColor} handleBgColorSelect={handleBgColorSelect} imageBgUrl={imageBgUrl} handleImageBgUrlSelect={handleImageBgUrlSelect} searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchImages={handleSearchImages} isSearching={isSearching} searchedImages={searchedImages} handleKeywordSearch={handleKeywordSearch} searchPage={searchPage} isOverlayEnabled={isOverlayEnabled} setIsOverlayEnabled={handleOverlayEnable} overlayColor={overlayColor} setOverlayColor={setOverlayColor} overlayOpacity={overlayOpacity} setOverlayOpacity={setOverlayOpacity} gradientBg={gradientBg} handleGradientBgSelect={handleGradientBgSelect} setSearchCarouselApi={setSearchCarouselApi} />;
+      case 'text':
+        return <TextSettings text={text} setText={setText} handleGenerate={handleGenerate} isLoading={isLoading} textColor={textColor} setTextColor={handleTextColorChange} textOpacity={textOpacity} setTextOpacity={setTextOpacity} activeFont={activeFont} setActiveFont={setActiveFont} fontOptions={fontOptions} isBold={isBold} setIsBold={setIsBold} isUppercase={isUppercase} setIsUppercase={setIsUppercase} textAlign={textAlign} setTextAlign={setTextAlign} textShadowEnabled={textShadowEnabled} setTextShadowEnabled={setTextShadowEnabled} shadows={shadows} setShadows={setShadows} textStroke={textStroke} setTextStroke={setTextStroke} strokeColor={strokeColor} setStrokeColor={setStrokeColor} strokeWidth={strokeWidth} setStrokeWidth={setStrokeWidth} isTextBoxEnabled={isTextBoxEnabled} setIsTextBoxEnabled={handleTextBoxEnable} rectBgColor={rectBgColor} setRectBgColor={setRectBgColor} rectOpacity={rectOpacity} setRectOpacity={setRectOpacity} activeEffect={activeEffect} setActiveEffect={handleEffectChange} />;
+      case 'download':
+        return <DownloadPanel fileName={fileName} setFileName={setFileName} handleDownloadAll={handleDownloadAll} designs={designs} currentSlide={currentSlide} handleDownload={handleDownload} />;
+      default:
+        return null;
+    }
+  };
+  
   return (
     <>
       <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center">
@@ -800,11 +818,7 @@ const handleEffectChange = (effect: TextEffect) => {
                             <Tooltip><TooltipTrigger asChild><TabsTrigger value="download"><Download /></TabsTrigger></TooltipTrigger><TooltipContent><p>Download</p></TooltipContent></Tooltip>
                         </TabsList>
                         <div className="flex-grow w-full overflow-hidden relative">
-                            <TabsContent value="designs" className="h-full mt-0"><DesignsPanel handleApplyTemplate={handleApplyTemplate} /></TabsContent>
-                            <TabsContent value="favorites" className="h-full mt-0"><MyDesignsPanel myDesigns={myDesigns} handleSaveDesign={handleSaveDesign} handleDeleteDesign={handleDeleteDesign} handleUpdateDesign={handleUpdateDesign} editingDesignId={editingDesignId} handleEditClick={handleEditClick} handleCancelEdit={handleCancelEdit} editingName={editingName} setEditingName={setEditingName} designToDelete={designToDelete} setDesignToDelete={setDesignToDelete} handleLogDesign={handleLogDesign} handleApplyTemplate={handleApplyTemplate} /></TabsContent>
-                            <TabsContent value="background" className="h-full mt-0"><BackgroundSettings backgroundTab={backgroundTab} setBackgroundTab={setBackgroundTab as (value: string) => void} handleFeelLucky={handleFeelLucky} bgColor={bgColor} handleBgColorSelect={handleBgColorSelect} imageBgUrl={imageBgUrl} handleImageBgUrlSelect={handleImageBgUrlSelect} searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchImages={handleSearchImages} isSearching={isSearching} searchedImages={searchedImages} handleKeywordSearch={handleKeywordSearch} searchPage={searchPage} isOverlayEnabled={isOverlayEnabled} setIsOverlayEnabled={handleOverlayEnable} overlayColor={overlayColor} setOverlayColor={setOverlayColor} overlayOpacity={overlayOpacity} setOverlayOpacity={setOverlayOpacity} gradientBg={gradientBg} handleGradientBgSelect={handleGradientBgSelect} setSearchCarouselApi={setSearchCarouselApi} /></TabsContent>
-                            <TabsContent value="text" className="h-full mt-0"><TextSettings text={text} setText={setText} handleGenerate={handleGenerate} isLoading={isLoading} textColor={textColor} setTextColor={handleTextColorChange} textOpacity={textOpacity} setTextOpacity={setTextOpacity} activeFont={activeFont} setActiveFont={setActiveFont} fontOptions={fontOptions} isBold={isBold} setIsBold={setIsBold} isUppercase={isUppercase} setIsUppercase={setIsUppercase} textAlign={textAlign} setTextAlign={setTextAlign} textShadowEnabled={textShadowEnabled} setTextShadowEnabled={setTextShadowEnabled} shadows={shadows} setShadows={setShadows} textStroke={textStroke} setTextStroke={setTextStroke} strokeColor={strokeColor} setStrokeColor={setStrokeColor} strokeWidth={strokeWidth} setStrokeWidth={setStrokeWidth} isTextBoxEnabled={isTextBoxEnabled} setIsTextBoxEnabled={handleTextBoxEnable} rectBgColor={rectBgColor} setRectBgColor={setRectBgColor} rectOpacity={rectOpacity} setRectOpacity={setRectOpacity} activeEffect={activeEffect} setActiveEffect={handleEffectChange} /></TabsContent>
-                            <TabsContent value="download" className="h-full mt-0"><DownloadPanel fileName={fileName} setFileName={setFileName} handleDownloadAll={handleDownloadAll} designs={designs} currentSlide={currentSlide} handleDownload={handleDownload} /></TabsContent>
+                           {renderActiveTabContent()}
                         </div>
                         </Tabs>
                     </TooltipProvider>
@@ -815,66 +829,35 @@ const handleEffectChange = (effect: TextEffect) => {
       </main>
 
        {/* Mobile-only Fixed Bottom Settings Panel */}
-       {isClient && designs.length > 0 && (
-          <div id="mobile-settings-panel" ref={mobilePanelRef} className="md:hidden">
-              {isMobilePanelOpen && <div className="fixed inset-0 bg-black/30 z-40" onClick={closePanel} />}
-              
-              {/* This is the sliding panel */}
-              <div 
-                className={cn(
-                  "fixed bottom-14 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
-                  isMobilePanelOpen ? "translate-y-0" : "translate-y-full",
-                  "h-auto max-h-[75vh]"
-                )}
-              >
-                  <Tabs value={activeSettingsTab ?? ''} className="w-full flex flex-col h-full">
-                    <div className="w-full flex-shrink-0">
-                      <div className="flex justify-end p-1">
-                          <Button 
-                              variant="ghost" 
-                              size="icon" 
-                              onClick={closePanel} 
-                              className="h-8 w-8 rounded-full bg-background hover:bg-muted"
-                          >
-                              <X className="h-5 w-5" />
-                              <span className="sr-only">Close Panel</span>
-                          </Button>
-                      </div>
-                    </div>
-                    <div className="flex-grow overflow-y-auto">
-                      <TabsContent value="designs" className="mt-0"><DesignsPanel handleApplyTemplate={handleApplyTemplate} /></TabsContent>
-                      <TabsContent value="favorites" className="mt-0"><MyDesignsPanel myDesigns={myDesigns} handleSaveDesign={handleSaveDesign} handleDeleteDesign={handleDeleteDesign} handleUpdateDesign={handleUpdateDesign} editingDesignId={editingDesignId} handleEditClick={handleEditClick} handleCancelEdit={handleCancelEdit} editingName={editingName} setEditingName={setEditingName} designToDelete={designToDelete} setDesignToDelete={setDesignToDelete} handleLogDesign={handleLogDesign} handleApplyTemplate={handleApplyTemplate} /></TabsContent>
-                      <TabsContent value="background" className="mt-0"><BackgroundSettings backgroundTab={backgroundTab} setBackgroundTab={setBackgroundTab as (value: string) => void} handleFeelLucky={handleFeelLucky} bgColor={bgColor} handleBgColorSelect={handleBgColorSelect} imageBgUrl={imageBgUrl} handleImageBgUrlSelect={handleImageBgUrlSelect} searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchImages={handleSearchImages} isSearching={isSearching} searchedImages={searchedImages} handleKeywordSearch={handleKeywordSearch} searchPage={searchPage} isOverlayEnabled={isOverlayEnabled} setIsOverlayEnabled={handleOverlayEnable} overlayColor={overlayColor} setOverlayColor={setOverlayColor} overlayOpacity={overlayOpacity} setOverlayOpacity={setOverlayOpacity} gradientBg={gradientBg} handleGradientBgSelect={handleGradientBgSelect} setSearchCarouselApi={setSearchCarouselApi} /></TabsContent>
-                      <TabsContent value="text" className="mt-0"><TextSettings text={text} setText={setText} handleGenerate={handleGenerate} isLoading={isLoading} textColor={textColor} setTextColor={handleTextColorChange} textOpacity={textOpacity} setTextOpacity={setTextOpacity} activeFont={activeFont} setActiveFont={setActiveFont} fontOptions={fontOptions} isBold={isBold} setIsBold={setIsBold} isUppercase={isUppercase} setIsUppercase={setIsUppercase} textAlign={textAlign} setTextAlign={setTextAlign} textShadowEnabled={textShadowEnabled} setTextShadowEnabled={setTextShadowEnabled} shadows={shadows} setShadows={setShadows} textStroke={textStroke} setTextStroke={setTextStroke} strokeColor={strokeColor} setStrokeColor={setStrokeColor} strokeWidth={strokeWidth} setStrokeWidth={setStrokeWidth} isTextBoxEnabled={isTextBoxEnabled} setIsTextBoxEnabled={handleTextBoxEnable} rectBgColor={rectBgColor} setRectBgColor={setRectBgColor} rectOpacity={rectOpacity} setRectOpacity={setRectOpacity} activeEffect={activeEffect} setActiveEffect={handleEffectChange} /></TabsContent>
-                      <TabsContent value="download" className="mt-0"><DownloadPanel fileName={fileName} setFileName={setFileName} handleDownloadAll={handleDownloadAll} designs={designs} currentSlide={currentSlide} handleDownload={handleDownload} /></TabsContent>
-                    </div>
-                  </Tabs>
-              </div>
-
-              {/* This is the static tab list at the bottom */}
-              <div 
-                className={cn(
-                  "fixed bottom-0 left-0 right-0 z-40 bg-card border-t",
-                  isMobilePanelOpen && "translate-y-full opacity-0"
-                )}
-              >
-                <TooltipProvider>
-                  <Tabs value={activeSettingsTab ?? ''} onValueChange={(value) => {
-                      setActiveSettingsTab(value);
-                      if (!isMobilePanelOpen) {
-                        setIsMobilePanelOpen(true);
-                      }
-                  }}>
-                      <TabsList className="grid w-full grid-cols-5 h-14 p-1">
-                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="designs"><LayoutTemplate /></TabsTrigger></TooltipTrigger><TooltipContent><p>Designs</p></TooltipContent></Tooltip>
-                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="favorites"><Star /></TabsTrigger></TooltipTrigger><TooltipContent><p>Favorites</p></TooltipContent></Tooltip>
-                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="background"><ImageIcon /></TabsTrigger></TooltipTrigger><TooltipContent><p>Background</p></TooltipContent></Tooltip>
-                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="text"><Type /></TabsTrigger></TooltipTrigger><TooltipContent><p>Text</p></TooltipContent></Tooltip>
-                          <Tooltip><TooltipTrigger asChild><TabsTrigger value="download"><Download /></TabsTrigger></TooltipTrigger><TooltipContent><p>Download</p></TooltipContent></Tooltip>
+        {isClient && designs.length > 0 && (
+          <div className="md:hidden">
+            <Sheet open={isMobilePanelOpen} onOpenChange={setIsMobilePanelOpen}>
+              <SheetContent side="bottom" className="h-auto max-h-[85vh] flex flex-col p-0">
+                <div className="flex-shrink-0 p-2 border-b">
+                   <Tabs value={activeSettingsTab ?? ''} onValueChange={setActiveSettingsTab}>
+                      <TabsList className="grid w-full grid-cols-5">
+                          <TabsTrigger value="designs"><LayoutTemplate className="h-5 w-5" /></TabsTrigger>
+                          <TabsTrigger value="favorites"><Star className="h-5 w-5" /></TabsTrigger>
+                          <TabsTrigger value="background"><ImageIcon className="h-5 w-5" /></TabsTrigger>
+                          <TabsTrigger value="text"><Type className="h-5 w-5" /></TabsTrigger>
+                          <TabsTrigger value="download"><Download className="h-5 w-5" /></TabsTrigger>
                       </TabsList>
-                  </Tabs>
-                </TooltipProvider>
+                   </Tabs>
+                </div>
+                 <div className="flex-grow overflow-y-auto">
+                  {renderActiveTabContent()}
+                </div>
+              </SheetContent>
+            </Sheet>
+
+            {!isMobilePanelOpen && (
+              <div className="fixed bottom-0 left-0 right-0 z-40 bg-card border-t p-2">
+                 <Button onClick={() => setIsMobilePanelOpen(true)} className="w-full">
+                    <Palette className="mr-2 h-5 w-5"/>
+                    Edit Design
+                </Button>
               </div>
+            )}
           </div>
         )}
     </>
