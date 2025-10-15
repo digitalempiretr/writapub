@@ -154,6 +154,7 @@ export default function Home() {
 
    const closePanel = useCallback(() => {
     setIsMobilePanelOpen(false);
+    setActiveSettingsTab('');
   }, []);
 
    useEffect(() => {
@@ -574,7 +575,7 @@ export default function Home() {
     if (effect.fontValue) {
         const newFont = fontOptions.find(f => f.value === effect.fontValue);
         if (newFont) {
-             const newSize = typeof effect.style.fontSize === 'number' ? effect.style.fontSize : newFont.size;
+            const newSize = typeof effect.style.fontSize === 'number' ? effect.style.fontSize : newFont.size;
             setActiveFont({ ...newFont, size: newSize });
         }
     } else if (typeof effect.style.fontSize === 'number') {
@@ -672,22 +673,53 @@ export default function Home() {
     )
   }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize]);
   
+  const handleMobileTabClick = (tab: string) => {
+    if (isMobilePanelOpen && activeSettingsTab === tab) {
+      closePanel();
+    } else {
+      setActiveSettingsTab(tab);
+      setIsMobilePanelOpen(true);
+    }
+  }
+
   const renderActiveTabContent = () => {
+    const props = {
+        text, setText, handleGenerate, isLoading,
+        backgroundTab, setBackgroundTab: setBackgroundTab as (value: string) => void, handleFeelLucky,
+        bgColor, handleBgColorSelect, imageBgUrl, handleImageBgUrlSelect: (template: ImageTemplate) => handleImageBgUrlSelect(template),
+        searchQuery, setSearchQuery, handleSearchImages, isSearching, searchedImages,
+        handleKeywordSearch, searchPage, isOverlayEnabled, setIsOverlayEnabled: handleOverlayEnable,
+        overlayColor, setOverlayColor, overlayOpacity, setOverlayOpacity, gradientBg,
+        handleGradientBgSelect, setSearchCarouselApi, textColor, setTextColor: handleTextColorChange, textOpacity,
+        setTextOpacity, activeFont, setActiveFont, fontOptions, isBold, setIsBold,
+        isUppercase, setIsUppercase, textAlign, setTextAlign, textShadowEnabled,
+        setTextShadowEnabled, shadows, setShadows, textStroke, setTextStroke,
+        strokeColor, setStrokeColor, strokeWidth, setStrokeWidth, isTextBoxEnabled,
+        setIsTextBoxEnabled: handleTextBoxEnable, rectBgColor, setRectBgColor, rectOpacity,
+        setRectOpacity, activeEffect, setActiveEffect: handleEffectChange, designs, handleDownloadAll, currentSlide,
+        handleDownload, fileName, setFileName, handleApplyTemplate, myDesigns,
+        handleSaveDesign, handleDeleteDesign, handleUpdateDesign, editingDesignId,
+        handleEditClick, handleCancelEdit, editingName, setEditingName, designToDelete,
+        setDesignToDelete, handleLogDesign,
+    };
+
     switch (activeSettingsTab) {
-      case 'designs':
-        return <DesignsPanel handleApplyTemplate={handleApplyTemplate} />;
-      case 'favorites':
-        return <MyDesignsPanel myDesigns={myDesigns} handleSaveDesign={handleSaveDesign} handleDeleteDesign={handleDeleteDesign} handleUpdateDesign={handleUpdateDesign} editingDesignId={editingDesignId} handleEditClick={handleEditClick} handleCancelEdit={handleCancelEdit} editingName={editingName} setEditingName={setEditingName} designToDelete={designToDelete} setDesignToDelete={setDesignToDelete} handleLogDesign={handleLogDesign} handleApplyTemplate={handleApplyTemplate} />;
-      case 'background':
-        return <BackgroundSettings backgroundTab={backgroundTab} setBackgroundTab={setBackgroundTab as (value: string) => void} handleFeelLucky={handleFeelLucky} bgColor={bgColor} handleBgColorSelect={handleBgColorSelect} imageBgUrl={imageBgUrl} handleImageBgUrlSelect={handleImageBgUrlSelect} searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchImages={handleSearchImages} isSearching={isSearching} searchedImages={searchedImages} handleKeywordSearch={handleKeywordSearch} searchPage={searchPage} isOverlayEnabled={isOverlayEnabled} setIsOverlayEnabled={handleOverlayEnable} overlayColor={overlayColor} setOverlayColor={setOverlayColor} overlayOpacity={overlayOpacity} setOverlayOpacity={setOverlayOpacity} gradientBg={gradientBg} handleGradientBgSelect={handleGradientBgSelect} setSearchCarouselApi={setSearchCarouselApi} />;
-      case 'text':
-        return <TextSettings text={text} setText={setText} handleGenerate={handleGenerate} isLoading={isLoading} textColor={textColor} setTextColor={handleTextColorChange} textOpacity={textOpacity} setTextOpacity={setTextOpacity} activeFont={activeFont} setActiveFont={setActiveFont} fontOptions={fontOptions} isBold={isBold} setIsBold={setIsBold} isUppercase={isUppercase} setIsUppercase={setIsUppercase} textAlign={textAlign} setTextAlign={setTextAlign} textShadowEnabled={textShadowEnabled} setTextShadowEnabled={setTextShadowEnabled} shadows={shadows} setShadows={setShadows} textStroke={textStroke} setTextStroke={setTextStroke} strokeColor={strokeColor} setStrokeColor={setStrokeColor} strokeWidth={strokeWidth} setStrokeWidth={setStrokeWidth} isTextBoxEnabled={isTextBoxEnabled} setIsTextBoxEnabled={handleTextBoxEnable} rectBgColor={rectBgColor} setRectBgColor={setRectBgColor} rectOpacity={rectOpacity} setRectOpacity={setRectOpacity} activeEffect={activeEffect} setActiveEffect={handleEffectChange} />;
-      case 'download':
-        return <DownloadPanel fileName={fileName} setFileName={setFileName} handleDownloadAll={handleDownloadAll} designs={designs} currentSlide={currentSlide} handleDownload={handleDownload} />;
-      default:
-        return null;
+      case 'designs': return <DesignsPanel {...props} />;
+      case 'favorites': return <MyDesignsPanel {...props} />;
+      case 'background': return <BackgroundSettings {...props} />;
+      case 'text': return <TextSettings {...props} />;
+      case 'download': return <DownloadPanel {...props} />;
+      default: return null;
     }
   };
+
+  const settingsTabs = [
+    { value: "designs", icon: <LayoutTemplate />, label: "Designs" },
+    { value: "favorites", icon: <Star />, label: "Favorites" },
+    { value: "background", icon: <ImageIcon />, label: "Background" },
+    { value: "text", icon: <Type />, label: "Text" },
+    { value: "download", icon: <Download />, label: "Download" },
+  ];
   
   return (
     <>
@@ -799,26 +831,22 @@ export default function Home() {
                       <CarouselNext className="-right-4 md:-right-12" />
                     </Carousel>
                   </div>
+                  
                   {/* Desktop Settings Panel */}
                   <div className="w-full mt-6 hidden md:block md:max-w-4xl">
-                     <TooltipProvider>
-                        <Tabs
-                        value={activeSettingsTab ?? ''}
-                        onValueChange={setActiveSettingsTab}
-                        className="w-full flex flex-col-reverse md:flex-col h-full"
-                        >
-                        <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md flex-shrink-0">
-                            <Tooltip><TooltipTrigger asChild><TabsTrigger value="designs"><LayoutTemplate /></TabsTrigger></TooltipTrigger><TooltipContent><p>Designs</p></TooltipContent></Tooltip>
-                            <Tooltip><TooltipTrigger asChild><TabsTrigger value="favorites"><Star /></TabsTrigger></TooltipTrigger><TooltipContent><p>Favorites</p></TooltipContent></Tooltip>
-                            <Tooltip><TooltipTrigger asChild><TabsTrigger value="background"><ImageIcon /></TabsTrigger></TooltipTrigger><TooltipContent><p>Background</p></TooltipContent></Tooltip>
-                            <Tooltip><TooltipTrigger asChild><TabsTrigger value="text"><Type /></TabsTrigger></TooltipTrigger><TooltipContent><p>Text</p></TooltipContent></Tooltip>
-                            <Tooltip><TooltipTrigger asChild><TabsTrigger value="download"><Download /></TabsTrigger></TooltipTrigger><TooltipContent><p>Download</p></TooltipContent></Tooltip>
-                        </TabsList>
-                        <div className="flex-grow w-full overflow-hidden relative">
-                           {renderActiveTabContent()}
-                        </div>
-                        </Tabs>
-                    </TooltipProvider>
+                    <Tabs value={activeSettingsTab ?? ''} onValueChange={setActiveSettingsTab} className="w-full">
+                      <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md flex-shrink-0">
+                        {settingsTabs.map(tab => (
+                          <TooltipProvider key={tab.value}>
+                            <Tooltip>
+                              <TooltipTrigger asChild><TabsTrigger value={tab.value}>{tab.icon}</TabsTrigger></TooltipTrigger>
+                              <TooltipContent><p>{tab.label}</p></TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        ))}
+                      </TabsList>
+                      <TabsContent value={activeSettingsTab ?? ''} className="mt-0">{renderActiveTabContent()}</TabsContent>
+                    </Tabs>
                   </div>
               </div>
             </div>
@@ -828,44 +856,36 @@ export default function Home() {
        {/* Mobile-only Fixed Bottom Settings Panel */}
         {isClient && designs.length > 0 && (
             <div ref={mobilePanelRef} className="md:hidden">
-            {/* Overlay */}
             {isMobilePanelOpen && <div className="fixed inset-0 bg-black/30 z-40" onClick={closePanel} />}
 
-            {/* Sliding Panel */}
             <div
                 className={cn(
                 "fixed bottom-0 left-0 right-0 z-50 bg-card border-t transition-transform duration-300 ease-in-out",
-                isMobilePanelOpen ? "translate-y-0" : "translate-y-full",
+                isMobilePanelOpen ? "translate-y-0" : "translate-y-full"
                 )}
             >
                 <div className="max-h-[75vh] flex flex-col">
-                    {/* Panel Content */}
+                    <div className="flex justify-end p-1">
+                        <Button variant="ghost" size="icon" onClick={closePanel} className="h-8 w-8 rounded-full">
+                            <X className="h-5 w-5" />
+                            <span className="sr-only">Close Panel</span>
+                        </Button>
+                    </div>
                     <div className="flex-grow overflow-y-auto">
-                        <div className="flex justify-end p-1">
-                            <Button variant="ghost" size="icon" onClick={closePanel} className="h-8 w-8 rounded-full">
-                                <X className="h-5 w-5" />
-                                <span className="sr-only">Close Panel</span>
-                            </Button>
-                        </div>
-                        {renderActiveTabContent()}
+                      {renderActiveTabContent()}
                     </div>
                 </div>
             </div>
 
-            {/* Always visible Tab List */}
-            <div className={cn(
-                "fixed bottom-0 left-0 right-0 z-40 bg-card border-t",
-                isMobilePanelOpen && "hidden" 
-              )}
-            >
-                <Tabs value={activeSettingsTab ?? ''} onValueChange={(tab) => {setActiveSettingsTab(tab); setIsMobilePanelOpen(true);}} >
-                    <TabsList className="grid w-full grid-cols-5 h-14 rounded-none">
-                        <TabsTrigger value="designs"><LayoutTemplate /></TabsTrigger>
-                        <TabsTrigger value="favorites"><Star /></TabsTrigger>
-                        <TabsTrigger value="background"><ImageIcon /></TabsTrigger>
-                        <TabsTrigger value="text"><Type /></TabsTrigger>
-                        <TabsTrigger value="download"><Download /></TabsTrigger>
-                    </TabsList>
+            <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-card border-t", isMobilePanelOpen ? "hidden" : "block")}>
+                <Tabs value={activeSettingsTab ?? ''} className="w-full">
+                <TabsList className="grid w-full grid-cols-5 h-14 rounded-none">
+                   {settingsTabs.map(tab => (
+                        <TabsTrigger key={tab.value} value={tab.value} onClick={() => handleMobileTabClick(tab.value)}>
+                            {tab.icon}
+                        </TabsTrigger>
+                    ))}
+                </TabsList>
                 </Tabs>
             </div>
             </div>
