@@ -126,10 +126,17 @@ export const textEffects: TextEffect[] = [
     style: {
       color: '#ffffff',
       textShadow: `
-        -1px -1px 0 #000,  1px -1px 0 #000,
-        -1px  1px 0 #000, 1px  1px 0 #000
+        0.057em 0.057em 0 #4074b5,
+        0.057em -0.057em 0 #4074b5,
+      -0.057em 0.057em 0 #4074b5,
+      -0.057em -0.057em 0 #4074b5,
+        0.057em 0em 0 #4074b5,
+        0em 0.057em 0 #4074b5,
+      -0.057em 0em 0 #4074b5,
+        0em -0.057em 0 #4074b5
       `,
     },
+    previewBg: '#ffffff',
   },
   {
     name: 'Fire',
