@@ -755,14 +755,14 @@ export default function Home() {
       <div className="flex flex-grow h-[90vh]">
         {/* Desktop Sidebar */}
         {designs.length > 0 && (
-          <div className={cn("hidden md:flex flex-shrink-0 bg-card border-r transition-all duration-300 ease-in-out", isSidebarOpen ? "w-[40vw]" : "w-[10vw]")}>
+          <div className={cn("hidden md:flex flex-shrink-0 bg-card transition-all duration-300 ease-in-out", isSidebarOpen ? "w-[40vw]" : "w-[10vw]")}>
             <Tabs
               orientation="vertical"
               value={activeSettingsTab}
               onValueChange={setActiveSettingsTab}
               className="flex w-full"
             >
-              <div className="flex flex-col items-center p-2 space-y-2 border-r">
+              <div className="flex flex-col items-center p-2 space-y-2">
                 <TabsList className="flex flex-col h-auto justify-start items-center p-0 bg-transparent space-y-1">
                   {settingsTabs.map(tab => (
                     <TooltipProvider key={tab.value}>
