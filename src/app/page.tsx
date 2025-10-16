@@ -820,8 +820,8 @@ export default function Home() {
                                 )}
                                 onClick={() => setCanvasSize(size)}
                                 >
-                                {size.name === 'Post' && <RectangleVertical className="h-5 w-5" />}
-                                {size.name === 'Story' && <Smartphone className="h-5 w-5" />}
+                                {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
+                                {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
                                 {size.name === 'Square' && <Square className="h-5 w-5" />}
                                 </Button>
                             </TooltipTrigger>

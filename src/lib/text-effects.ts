@@ -25,6 +25,35 @@ export const textEffects: TextEffect[] = [
     previewBg: '#e2e8f0',
   },
   {
+    name: 'Retro 3D',
+    id: 'retro3Dd',
+    style: {
+      color: '#e63946',
+      textShadow: `
+        0.05em 0.05em 0 #222,
+        0.1em 0.1em 0 #444,
+        0.15em 0.15em 0 #666
+      `,
+      fontFamily: 'oswald',
+      fontWeight: 700,
+      fontSize: '3rem',
+    },
+    previewBg: '#121212',
+  },
+  {
+    name: 'Soft Blur',
+    id: 'softBlur',
+    style: {
+      color: '#333',
+      textShadow: `
+        0.06em 0.06em 0.12em rgba(0, 0, 0, 0.4)
+      `,
+      fontFamily: 'Poppins',
+      fontSize: '2.5rem',
+    },
+    previewBg: '#fafafa',
+  },
+  {
     name: '3D Cartoon',
     id: '3dcartoon',
     fontValue: 'luckiest-guy',
@@ -148,24 +177,7 @@ export const textEffects: TextEffect[] = [
     `  },
     previewBg: '#212121',
   },
-  {
-    name: 'Outline',
-    id: 'outline',
-    style: {
-      color: '#ffffff',
-      textShadow: `
-        0.057em 0.057em 0 #4074b5,
-        0.057em -0.057em 0 #4074b5,
-      -0.057em 0.057em 0 #4074b5,
-      -0.057em -0.057em 0 #4074b5,
-        0.057em 0em 0 #4074b5,
-        0em 0.057em 0 #4074b5,
-      -0.057em 0em 0 #4074b5,
-        0em -0.057em 0 #4074b5
-      `,
-    },
-    previewBg: '#ffffff',
-  },
+ 
   {
     name: 'Fire',
     id: 'fire',
