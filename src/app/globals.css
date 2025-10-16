@@ -5,25 +5,9 @@
 
 body {  
   font-family: Arial, Helvetica, sans-serif;
-  /*background: -webkit-linear-gradient(
-    to top right,
-    #FEAC5E,
-    #C779D0,
-    #4BC0C8
-  );*/ 
-  /* Chrome 10-25, Safari 5.1-6 */
-  /*background: linear-gradient(
-    to top right,
-    #FEAC5E,
-    #C779D0,
-    #4BC0C8
-  );*/ 
-  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   background-image: 
   url("https://www.transparenttextures.com/patterns/project-paper.png"),
   linear-gradient(to top right, #FEAC5E, #C779D0, #4BC0C8);
- /*background: #212121; *//* fallback for old browsers */
- /*background-image:  url("https://www.transparenttextures.com/patterns/foggy-birds.png") url("https://i.ibb.co/mrR3vPRn/foggy-birds.png")*/
   min-height: 100vh;
   background-attachment: fixed;
   
@@ -120,26 +104,12 @@ body {
 
 
 @media (max-width: 767px) {
-  #mobile-settings-panel {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    z-index: 50;
-    background-color: hsl(var(--background));
-    border-top: 1px solid hsl(var(--border));
-    padding-bottom: env(safe-area-inset-bottom);
-    display: flex;
-    flex-direction: column;
-  }
-
   .mobile-tab-content {
     overflow-y: auto;
-    max-height: 50vh; /* Adjust as needed */
+    max-height: 70vh;
   }
 
   #designs-container {
-    padding-bottom: 170px; /* Adjust this value to be larger than the tab list height */
+    padding-bottom: 80px; 
   }
 }

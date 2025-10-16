@@ -33,7 +33,7 @@ import {
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Star, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, PanelRight } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Star, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -70,7 +70,7 @@ const canvasSizes: CanvasSize[] = [
     { name: 'Square', width: 1080, height: 1080 },
 ];
 
-function AppContent() {
+export default function Home() {
   const [text, setText] = useState(defaultText);
   const [designs, setDesigns] = useState<Design[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -144,8 +144,8 @@ function AppContent() {
   const [strokeWidth, setStrokeWidth] = useState(2);
   
   const [activeSettingsTab, setActiveSettingsTab] = useState<string>('designs');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [fileName, setFileName] = useState("writa");
 
@@ -687,6 +687,15 @@ function AppContent() {
     }
   }
 
+  const handleDesktopTabClick = (tab: string) => {
+    if(isSidebarOpen && activeSettingsTab === tab) {
+      setIsSidebarOpen(false);
+    } else {
+      setActiveSettingsTab(tab);
+      setIsSidebarOpen(true);
+    }
+  }
+
   const renderActiveTabContent = () => {
     const props = {
         text, setText, handleGenerate, isLoading,
@@ -725,56 +734,75 @@ function AppContent() {
     { value: "text", icon: <Type />, label: "Text" },
     { value: "download", icon: <Download />, label: "Download" },
   ];
+  
+  if (!isClient) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
+        background: 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)'
+      }}>
+          <div className="w-64 h-64">
+              <Lottie animationData={webflowAnimation} loop={true} />
+          </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="h-screen w-screen flex flex-col">
-      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-transparent">
+    <div className="h-screen w-screen flex flex-col overflow-hidden">
+      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-transparent absolute top-0 left-0">
         <Logo className="text-[2rem]" />
       </header>
 
-      <div className="flex flex-grow h-[90vh]">
-        {/* Sidebar Navigation (Desktop) */}
-        <div className={cn("hidden md:flex flex-shrink-0 bg-card border-r transition-all duration-300", isSidebarOpen ? "w-[30vw]" : "w-[10vw]")}>
-          <div className="flex flex-col w-full">
-            <div className="p-2 flex-shrink-0">
-              <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-                {isSidebarOpen ? <PanelLeft /> : <PanelRight />}
-              </Button>
-            </div>
+      <div className="flex flex-grow h-full">
+        {/* Desktop Sidebar */}
+        {designs.length > 0 && (
+          <div className={cn("hidden md:flex flex-shrink-0 bg-card border-r transition-all duration-300 ease-in-out", isSidebarOpen ? "w-[30vw]" : "w-[5vw]")}>
             <Tabs
               orientation="vertical"
               value={activeSettingsTab}
               onValueChange={setActiveSettingsTab}
-              className="flex flex-col flex-grow"
+              className="flex w-full"
             >
-              <TabsList className="flex flex-col h-full justify-start items-center p-2 bg-transparent">
-                {settingsTabs.map(tab => (
-                  <TooltipProvider key={tab.value}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <TabsTrigger value={tab.value} className="w-full data-[state=active]:bg-primary/20">
-                          {tab.icon}
-                           {isSidebarOpen && <span className="ml-2">{tab.label}</span>}
-                        </TabsTrigger>
-                      </TooltipTrigger>
-                       {!isSidebarOpen && <TooltipContent side="right"><p>{tab.label}</p></TooltipContent>}
-                    </Tooltip>
-                  </TooltipProvider>
-                ))}
-              </TabsList>
-              <div className={cn("flex-grow overflow-y-auto", isSidebarOpen ? "block" : "hidden")}>
-                <TabsContent value={activeSettingsTab} className="mt-0 h-full">
-                  {renderActiveTabContent()}
-                </TabsContent>
+              <div className="flex flex-col items-center p-2 space-y-2 border-r">
+                <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+                  <PanelLeft />
+                </Button>
+                <TabsList className="flex flex-col h-auto justify-start items-center p-0 bg-transparent space-y-1">
+                  {settingsTabs.map(tab => (
+                    <TooltipProvider key={tab.value}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <TabsTrigger 
+                            value={tab.value} 
+                            className="w-12 h-12 data-[state=active]:bg-primary/20"
+                            onClick={() => handleDesktopTabClick(tab.value)}
+                          >
+                            {tab.icon}
+                          </TabsTrigger>
+                        </TooltipTrigger>
+                        {!isSidebarOpen && <TooltipContent side="right"><p>{tab.label}</p></TooltipContent>}
+                      </Tooltip>
+                    </TooltipProvider>
+                  ))}
+                </TabsList>
               </div>
+              
+              <div className={cn("flex-grow overflow-hidden transition-all duration-300 ease-in-out", isSidebarOpen ? "w-full" : "w-0")}>
+                {isSidebarOpen && (
+                  <TabsContent value={activeSettingsTab} className="mt-0 h-full overflow-y-auto">
+                    {renderActiveTabContent()}
+                  </TabsContent>
+                )}
+              </div>
+
             </Tabs>
           </div>
-        </div>
+        )}
 
         {/* Main Content Area */}
-        <main className="flex-grow w-full h-full flex items-center justify-center overflow-hidden">
+        <main className="flex-grow flex items-center justify-center overflow-auto h-full p-4">
           {designs.length === 0 ? (
-            <div className="w-full max-w-2xl px-4">
+            <div className="w-full max-w-2xl">
               <CreativeMagicPanel 
                   text={text}
                   setText={setText}
@@ -783,101 +811,103 @@ function AppContent() {
               />
             </div>
           ) : (
-            <div ref={designsRef} className="w-full h-full flex items-center justify-center">
-              <div className="w-full max-w-md relative">
-                <Carousel className="w-full" setApi={setCarouselApi} opts={{ dragFree: true }}>
-                  <CarouselContent>
-                    {designs.map((design, index) => (
-                      <CarouselItem key={index} data-index={index}>
-                        <div className="p-1 group relative">
-                          <Card className="overflow-hidden border-0">
-                            <CardContent className="p-0 relative bg-card" style={{ aspectRatio: `${canvasSize.width}/${canvasSize.height}`}}>
-                              {renderCanvas(design, index)}
-                            </CardContent>
-                          </Card>
-                          <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <AlertDialog>
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <AlertDialogTrigger asChild>
-                                      <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-8 w-8 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400"
-                                      >
-                                        <Star className="h-5 w-5" />
-                                      </Button>
-                                    </AlertDialogTrigger>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Save to Favorites</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    This will save the current background, font, and color settings as a new favorite template.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction onClick={handleSaveDesign}>Save</AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                              </TooltipProvider>
-                            </AlertDialog>
+            <div ref={designsRef} className="w-full h-full flex flex-col items-center justify-center">
+                <div className="w-full max-w-md relative">
+                  <Carousel className="w-full" setApi={setCarouselApi} opts={{ dragFree: true }}>
+                    <CarouselContent>
+                      {designs.map((design, index) => (
+                        <CarouselItem key={index} data-index={index}>
+                          <div className="p-1 group relative">
+                            <Card className="overflow-hidden border-0">
+                              <CardContent className="p-0 relative bg-card" style={{ aspectRatio: `${canvasSize.width}/${canvasSize.height}`}}>
+                                {renderCanvas(design, index)}
+                              </CardContent>
+                            </Card>
+                            <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <AlertDialog>
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <AlertDialogTrigger asChild>
+                                        <Button
+                                          variant="ghost"
+                                          size="icon"
+                                          className="h-8 w-8 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400"
+                                        >
+                                          <Star className="h-5 w-5" />
+                                        </Button>
+                                      </AlertDialogTrigger>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Save to Favorites</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      This will save the current background, font, and color settings as a new favorite template.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction onClick={handleSaveDesign}>Save</AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                                </TooltipProvider>
+                              </AlertDialog>
+                            </div>
                           </div>
-                        </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious className="-left-4 md:-left-12" />
-                  <CarouselNext className="-right-4 md:-right-12" />
-                </Carousel>
-                <div className="w-full flex justify-center mt-4">
-                    <div className="bg-card backdrop-blur-sm rounded-md p-1 flex gap-1">
-                        {canvasSizes.map(size => (
-                        <TooltipProvider key={size.name}>
-                            <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                variant="ghost"
-                                size="icon"
-                                className={cn(
-                                    "h-8 w-8",
-                                    canvasSize.name === size.name && "bg-muted"
-                                )}
-                                onClick={() => setCanvasSize(size)}
-                                >
-                                {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
-                                {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
-                                {size.name === 'Square' && <Square className="h-5 w-5" />}
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>{size.name} Format</p>
-                            </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                        ))}
-                    </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="-left-4 md:-left-12" />
+                    <CarouselNext className="-right-4 md:-right-12" />
+                  </Carousel>
+                </div>
+                
+                <div className="w-full max-w-md flex justify-end mt-2">
+                  <div className="bg-card backdrop-blur-sm rounded-md p-1 flex gap-1">
+                      {canvasSizes.map(size => (
+                      <TooltipProvider key={size.name}>
+                          <Tooltip>
+                          <TooltipTrigger asChild>
+                              <Button
+                              variant="ghost"
+                              size="icon"
+                              className={cn(
+                                  "h-8 w-8",
+                                  canvasSize.name === size.name && "bg-muted"
+                              )}
+                              onClick={() => setCanvasSize(size)}
+                              >
+                              {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
+                              {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
+                              {size.name === 'Square' && <Square className="h-5 w-5" />}
+                              </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                              <p>{size.name} Format</p>
+                          </TooltipContent>
+                          </Tooltip>
+                      </TooltipProvider>
+                      ))}
                   </div>
-              </div>
-            </div>
-          )}
-           {isGeneratingAnimation && (
-            <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
-              background: 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)'
-            }}>
-                <div className="w-64 h-64">
-                    <Lottie animationData={webflowAnimation} loop={true} />
                 </div>
             </div>
-        )}
+          )}
         </main>
       </div>
+
+      {isGeneratingAnimation && (
+          <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
+            background: 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)'
+          }}>
+              <div className="w-64 h-64">
+                  <Lottie animationData={webflowAnimation} loop={true} />
+              </div>
+          </div>
+      )}
 
        {/* Mobile-only Fixed Bottom Settings Panel */}
         {isClient && designs.length > 0 && (
@@ -919,7 +949,3 @@ function AppContent() {
   );
 }
 
-export default function Home() {
-  return <AppContent />;
-}
-    
