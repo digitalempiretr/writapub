@@ -763,9 +763,6 @@ export default function Home() {
               className="flex w-full"
             >
               <div className="flex flex-col items-center p-2 space-y-2 border-r">
-                <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-                  <PanelLeft />
-                </Button>
                 <TabsList className="flex flex-col h-auto justify-start items-center p-0 bg-transparent space-y-1">
                   {settingsTabs.map(tab => (
                     <TooltipProvider key={tab.value}>
@@ -786,13 +783,13 @@ export default function Home() {
                 </TabsList>
               </div>
               
-              <div className={cn("flex-grow overflow-hidden transition-all duration-300 ease-in-out", isSidebarOpen ? "w-full" : "w-0")}>
-                {isSidebarOpen && (
+              {isSidebarOpen && (
+                <div className="w-full overflow-hidden transition-all duration-300 ease-in-out">
                   <TabsContent value={activeSettingsTab} className="mt-0 h-full overflow-y-auto">
                     {renderActiveTabContent()}
                   </TabsContent>
-                )}
-              </div>
+                </div>
+              )}
 
             </Tabs>
           </div>
@@ -943,4 +940,3 @@ export default function Home() {
     </div>
   );
 }
-
