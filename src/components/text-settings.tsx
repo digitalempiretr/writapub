@@ -564,7 +564,7 @@ export function TextSettings({
                     fontFamily: effect.style.fontFamily || "'Playfair Display', serif",
                     fontWeight: effect.style.fontWeight || 'bold',
                   };
-                  const finalColor = effect.style.color || textColor;
+                  const finalColor = effect.style.color || '#000000'; // Default to black if no color is defined
                   effectStyle.color = finalColor;
 
                   if (effect.style.textShadow) {
