@@ -242,7 +242,7 @@ export const designTemplates: DesignTemplate[] = [
       opacity: 0,
     },
   },
-  {
+    {
     id: 'styles-Oceanic-Blue',
     name: "Oceanic Blue",
     category: 'Color Styles',
@@ -263,7 +263,51 @@ export const designTemplates: DesignTemplate[] = [
       color: '#7585A3',
       opacity: 0,
     },
-  },
+},
+{
+    id: 'styles-Cerulean-Dream',
+    name: "Cerulean Dream",
+    category: 'Color Styles',
+    previewImage: "",
+    background: {
+      type: 'flat',
+      value: '#3567DB',
+    },
+    font: {
+      value: 'duru-sans',
+      color: '#FEDAFB',
+    },
+    textBox: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+},
+{
+    id: 'styles-Mystic-Night',
+    name: "Mystic Night",
+    category: 'Color Styles',
+    previewImage: "",
+    background: {
+      type: 'flat',
+      value: '#1C2551',
+    },
+    font: {
+      value: 'duru-sans',
+      color: '#23CBD2',
+    },
+    textBox: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+},
   {
     id: 'template-purpGrad',
     name: "Purple Gradient",
@@ -287,3 +331,5 @@ export const designTemplates: DesignTemplate[] = [
     },
   },
 ];
+
+    
