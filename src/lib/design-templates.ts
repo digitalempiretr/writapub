@@ -1,6 +1,7 @@
 
 import { fontOptions } from './font-options';
 import { gradientTemplates } from './colors';
+import { TextEffect } from './text-effects';
 
 export type DesignTemplate = {
   id: string;

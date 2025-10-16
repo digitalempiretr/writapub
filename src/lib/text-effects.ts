@@ -136,7 +136,8 @@ export const textEffects: TextEffect[] = [
     },
     previewBg: '#121221',
   },
-   {
+  
+  {
     name: 'Retro',
     id: 'retro',
     style: {
@@ -190,6 +191,7 @@ export const textEffects: TextEffect[] = [
       `,
     },
   },
+  
 ];
 
 type Unit = 'px' | 'em' | 'rem';
