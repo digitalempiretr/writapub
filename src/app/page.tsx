@@ -858,11 +858,14 @@ export default function Home() {
        {/* Mobile-only Fixed Bottom Settings Panel */}
         {isClient && designs.length > 0 && (
             <div ref={mobilePanelRef} className="md:hidden">
-              {isMobilePanelOpen && <div className="fixed inset-0 bg-black/30 z-40" onClick={closePanel} />}
-
-              <Sheet open={isMobilePanelOpen} onOpenChange={setIsMobilePanelOpen}>
-                <SheetContent side="bottom" className="h-[75vh] p-0 flex flex-col">
-                   <div className="p-4 border-b">
+              <Sheet open={isMobilePanelOpen} onOpenChange={(open) => {
+                  if (!open) {
+                    closePanel();
+                  }
+                  setIsMobilePanelOpen(open);
+              }}>
+                <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
+                   <div className="p-4 border-b flex-shrink-0">
                       <h3 className="text-lg font-semibold capitalize">{activeSettingsTab}</h3>
                    </div>
                    <div className="flex-grow overflow-y-auto">
@@ -887,3 +890,4 @@ export default function Home() {
     </>
   );
 }
+

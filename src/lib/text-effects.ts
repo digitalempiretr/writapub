@@ -87,7 +87,7 @@ export const textEffects: TextEffect[] = [
     previewBg: '#121221',
   },
   {
-    name: 'Neon 2',
+    name: 'Neon',
     id: 'neon2',
     fontValue: 'tilt-neon',
     style: {
@@ -117,11 +117,27 @@ export const textEffects: TextEffect[] = [
     previewBg: '#f0f0f0',
   },
   {
+    name: 'Retro 3D',
+    id: 'retro3D',
+    style: {
+      color: '#e63946',
+      textShadow: `
+        0.05em 0.05em 0 #222,
+        0.1em 0.1em 0 #444,
+        0.15em 0.15em 0 #666
+      `,
+      fontFamily: '"Bebas Neue", sans-serif',
+      fontWeight: 700,
+      fontSize: '3rem',
+    },
+    previewBg: '#121212',
+  },
+  {
     name: 'Golden Glow',
     id: 'goldenGlow',
     fontValue: 'tilt-neon',
     style: { 
-      color: '#ffcc00', 
+      color: '#feef90', 
       fontFamily: "'Tilt Neon', cursive",
       fontSize: 48,
       textShadow: ` 
