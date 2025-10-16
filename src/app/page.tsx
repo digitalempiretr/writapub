@@ -52,7 +52,7 @@ import { pageInitialColors } from "@/lib/colors";
 import { CreativeMagicPanel } from "@/components/creative-magic-panel";
 import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 
 type Design = {
@@ -145,7 +145,7 @@ export default function Home() {
   
   const [activeSettingsTab, setActiveSettingsTab] = useState<string>('designs');
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const [fileName, setFileName] = useState("writa");
 
@@ -756,7 +756,7 @@ export default function Home() {
       <div className="flex flex-grow h-full">
         {/* Desktop Sidebar */}
         {designs.length > 0 && (
-          <div className={cn("hidden md:flex flex-shrink-0 bg-card border-r transition-all duration-300 ease-in-out", isSidebarOpen ? "w-[30vw]" : "w-[5vw]")}>
+          <div className={cn("hidden md:flex flex-shrink-0 bg-card border-r transition-all duration-300 ease-in-out", isSidebarOpen ? "w-[30vw]" : "w-[10vw]")}>
             <Tabs
               orientation="vertical"
               value={activeSettingsTab}
@@ -800,7 +800,7 @@ export default function Home() {
         )}
 
         {/* Main Content Area */}
-        <main className="flex-grow flex items-center justify-center overflow-auto h-full p-4">
+        <main className={cn("flex-grow flex items-center justify-center overflow-auto h-full p-4", isSidebarOpen ? "w-[70vw]" : "w-[90vw]")}>
           {designs.length === 0 ? (
             <div className="w-full max-w-2xl">
               <CreativeMagicPanel 
@@ -919,13 +919,9 @@ export default function Home() {
                 }
               }}>
                 <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
-                   <div className="p-4 border-b flex-shrink-0 flex justify-between items-center">
-                      <h3 className="text-lg font-semibold capitalize">{activeSettingsTab}</h3>
-                       <Button variant="ghost" size="icon" onClick={closePanel} className="h-8 w-8 rounded-full">
-                            <X className="h-5 w-5" />
-                            <span className="sr-only">Close Panel</span>
-                        </Button>
-                   </div>
+                  <SheetHeader className="p-4 border-b">
+                    <SheetTitle className="capitalize">{activeSettingsTab}</SheetTitle>
+                  </SheetHeader>
                    <div className="flex-grow overflow-y-auto">
                     {renderActiveTabContent()}
                    </div>
