@@ -440,7 +440,7 @@ export default function Home() {
     const newDesign: DesignTemplate = {
       id: `design-${Date.now()}`,
       name: `Favorite ${myDesigns.length + 1}`,
-      category: 'Favorites', // Added category
+      category: 'Favorites',
       previewImage: previewImage,
       background: {
         type: backgroundType,
@@ -767,6 +767,7 @@ export default function Home() {
                                   {renderCanvas(design, index)}
                                 </CardContent>
                               </Card>
+                              <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <AlertDialog>
                                   <TooltipProvider>
                                     <Tooltip>
@@ -775,7 +776,7 @@ export default function Home() {
                                           <Button
                                             variant="ghost"
                                             size="icon"
-                                            className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            className="h-8 w-8 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400"
                                           >
                                             <Star className="h-5 w-5" />
                                           </Button>
@@ -787,7 +788,7 @@ export default function Home() {
                                     </Tooltip>
                                   <AlertDialogContent>
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle>Save to Favorites?</AlertDialogTitle>
+                                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                       <AlertDialogDescription>
                                         This will save the current background, font, and color settings as a new favorite template.
                                       </AlertDialogDescription>
@@ -799,6 +800,7 @@ export default function Home() {
                                   </AlertDialogContent>
                                   </TooltipProvider>
                                 </AlertDialog>
+                              </div>
                             </div>
                           </CarouselItem>
                         ))}
@@ -891,5 +893,4 @@ export default function Home() {
         )}
     </>
   );
-
-    
+}

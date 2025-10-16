@@ -61,7 +61,7 @@ export const textEffects: TextEffect[] = [
       color: '#ffffff',
       fontFamily: "'Luckiest Guy'",
       fontWeight: 400,
-      fontSize: 90,
+      fontSize: 32,
       textShadow: `
           0em -0.031em 0 #212121, 0em -0.031em 0 #212121, 0em  0.031em 0 #212121, 0em  0.031em 0 #212121,
         -0.031em 0em 0 #212121, 0.031em 0em 0 #212121, -0.031em 0em 0 #212121, 0.031em 0em 0 #212121,
@@ -116,7 +116,7 @@ export const textEffects: TextEffect[] = [
     previewBg: '#121221',
   },
   {
-    name: 'Neon',
+    name: 'Neon 2',
     id: 'neon2',
     fontValue: 'tilt-neon',
     style: {
@@ -145,22 +145,6 @@ export const textEffects: TextEffect[] = [
       textShadow: ` -2px 2px 0px #4d82c2, -4px 4px 0px #315e9a `,
     },
     previewBg: '#f0f0f0',
-  },
-  {
-    name: 'Retro 3D',
-    id: 'retro3D',
-    style: {
-      color: '#e63946',
-      textShadow: `
-        0.05em 0.05em 0 #222,
-        0.1em 0.1em 0 #444,
-        0.15em 0.15em 0 #666
-      `,
-      fontFamily: '"Bebas Neue", sans-serif',
-      fontWeight: 700,
-      fontSize: '3rem',
-    },
-    previewBg: '#121212',
   },
   {
     name: 'Golden Glow',
