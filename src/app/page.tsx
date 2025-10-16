@@ -143,7 +143,7 @@ export default function Home() {
   const [strokeColor, setStrokeColor] = useState("#000000");
   const [strokeWidth, setStrokeWidth] = useState(2);
   
-  const [activeSettingsTab, setActiveSettingsTab] = useState<string>("designs");
+  const [activeSettingsTab, setActiveSettingsTab] = useState<string>('');
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
 
   const [fileName, setFileName] = useState("writa");
@@ -440,6 +440,7 @@ export default function Home() {
     const newDesign: DesignTemplate = {
       id: `design-${Date.now()}`,
       name: `Favorite ${myDesigns.length + 1}`,
+      category: 'Favorites', // Added category
       previewImage: previewImage,
       background: {
         type: backgroundType,
@@ -508,8 +509,9 @@ export default function Home() {
     else if (backgroundType === 'gradient') bgValue = gradientBg;
     else if (backgroundType === 'image') bgValue = imageBgUrl;
   
-    const templateToLog: Omit<DesignTemplate, 'id' | 'name' | 'previewImage'> & { previewImage: string } = {
+    const templateToLog: Omit<DesignTemplate, 'id' | 'name' | 'previewImage' | 'category'> & { previewImage: string; category: string } = {
       previewImage: "''", // Placeholder
+      category: "UNCATEGORIZED",
       background: {
         type: backgroundType,
         value: bgValue,
@@ -535,6 +537,7 @@ export default function Home() {
 {
   id: 'template-NEW_ID',
   name: "New Template Name",
+  category: 'Special Effects', // Or 'Color Styles' or 'Image Templates'
   previewImage: "",
   background: {
     type: '${templateToLog.background.type}',
@@ -772,7 +775,7 @@ export default function Home() {
                                           <Button
                                             variant="ghost"
                                             size="icon"
-                                            className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/30 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"
                                           >
                                             <Star className="h-5 w-5" />
                                           </Button>
@@ -820,8 +823,8 @@ export default function Home() {
                                 )}
                                 onClick={() => setCanvasSize(size)}
                                 >
-                                {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
-                                {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
+                                {size.name === 'Post' && <RectangleVertical className="h-5 w-5" />}
+                                {size.name === 'Story' && <Smartphone className="h-5 w-5" />}
                                 {size.name === 'Square' && <Square className="h-5 w-5" />}
                                 </Button>
                             </TooltipTrigger>
@@ -858,15 +861,14 @@ export default function Home() {
        {/* Mobile-only Fixed Bottom Settings Panel */}
         {isClient && designs.length > 0 && (
             <div ref={mobilePanelRef} className="md:hidden">
-              <Sheet open={isMobilePanelOpen} onOpenChange={(open) => {
-                  if (!open) {
-                    closePanel();
-                  }
-                  setIsMobilePanelOpen(open);
-              }}>
+              <Sheet open={isMobilePanelOpen} onOpenChange={setIsMobilePanelOpen}>
                 <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
-                   <div className="p-4 border-b flex-shrink-0">
+                   <div className="p-4 border-b flex-shrink-0 flex justify-between items-center">
                       <h3 className="text-lg font-semibold capitalize">{activeSettingsTab}</h3>
+                       <Button variant="ghost" size="icon" onClick={closePanel} className="h-8 w-8 rounded-full">
+                            <X className="h-5 w-5" />
+                            <span className="sr-only">Close Panel</span>
+                        </Button>
                    </div>
                    <div className="flex-grow overflow-y-auto">
                     {renderActiveTabContent()}
@@ -889,6 +891,5 @@ export default function Home() {
         )}
     </>
   );
-}
 
     
