@@ -17,7 +17,7 @@ body {
   :root {
     --background: 210 20% 98%;
     --foreground: 221 52% 25%; /* Derived from #284177 */
-    --card: 210 20% 98%;
+    --card: hsl(210 20% 98%);
     --card-foreground: 221 52% 25%;
     --popover: 210 20% 98%;
     --popover-foreground: 221 52% 25%;
@@ -53,7 +53,7 @@ body {
   .dark {
     --background: 221 52% 15%;
     --foreground: 220 22% 95%; /* #EDE8E4 */
-    --card: 221 52% 15%;
+    --card: hsl(221 52% 15%);
     --card-foreground: 220 22% 95%;
     --popover: 221 52% 15%;
     --popover-foreground: 220 22% 95%;

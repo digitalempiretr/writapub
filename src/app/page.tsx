@@ -156,7 +156,6 @@ export default function Home() {
 
    const closePanel = useCallback(() => {
     setIsMobilePanelOpen(false);
-    setActiveSettingsTab('');
   }, []);
 
    useEffect(() => {
@@ -749,11 +748,11 @@ export default function Home() {
 
   return (
     <div className="h-screen w-screen flex flex-col overflow-hidden">
-      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-transparent absolute top-0 left-0">
-        <Logo className="text-[2rem]" />
+      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-card border-b">
+        <Logo className="text-[2rem] text-foreground" />
       </header>
 
-      <div className="flex flex-grow h-full">
+      <div className="flex flex-grow h-[90vh]">
         {/* Desktop Sidebar */}
         {designs.length > 0 && (
           <div className={cn("hidden md:flex flex-shrink-0 bg-card border-r transition-all duration-300 ease-in-out", isSidebarOpen ? "w-[30vw]" : "w-[10vw]")}>
@@ -800,7 +799,7 @@ export default function Home() {
         )}
 
         {/* Main Content Area */}
-        <main className={cn("flex-grow flex items-center justify-center overflow-auto h-full p-4", isSidebarOpen ? "w-[70vw]" : "w-[90vw]")}>
+        <main className={cn("flex-grow flex items-center justify-center overflow-auto h-full p-4", designs.length === 0 ? "w-full" : (isSidebarOpen ? "w-[70vw]" : "w-[90vw]"))}>
           {designs.length === 0 ? (
             <div className="w-full max-w-2xl">
               <CreativeMagicPanel 
@@ -913,10 +912,10 @@ export default function Home() {
         {isClient && designs.length > 0 && (
             <div ref={mobilePanelRef} className="md:hidden">
               <Sheet open={isMobilePanelOpen} onOpenChange={(isOpen) => {
-                setIsMobilePanelOpen(isOpen);
                 if (!isOpen) {
                   setActiveSettingsTab('');
                 }
+                setIsMobilePanelOpen(isOpen);
               }}>
                 <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
                   <SheetHeader className="p-4 border-b">
