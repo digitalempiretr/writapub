@@ -396,6 +396,798 @@ textBox: {
       opacity: 0,
     },
 },
+{
+  id: 'styles-Seaweed-Green',
+  name: "Seaweed Green",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#0A406E',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#06CCA0',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Sunshine-Yellow',
+  name: "Sunshine Yellow",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#002778',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#FFD40B',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Blue-Horizon',
+  name: "Blue Horizon",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#2846D3',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#CECBC9',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Deep-Sea',
+  name: "Deep Sea",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#03335F',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#0ECDE1',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Midnight-Wave',
+  name: "Midnight Wave",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#334363',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#DE918C',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Starlit-Sky',
+  name: "Starlit Sky",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#272D50',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#36C4C7',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Azure-Vibe',
+  name: "Azure Vibe",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#453F90',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#CD3536',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Spring-Green',
+  name: "Spring Green",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#004973',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#FCF900',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Deep-Blue',
+  name: "Deep Blue",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#2C2B9B',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#DB141C',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Evening-Sky',
+  name: "Evening Sky",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#1A2B76',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#B41EDF',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Autumn-Mist',
+  name: "Autumn Mist",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#6070B6',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#F2EEF2',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Warm-Ember',
+  name: "Warm Ember",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#D5301C',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#047976',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Crisp-Red',
+  name: "Crisp Red",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#ED0400',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#FAC800',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Vibrant-Pink',
+  name: "Vibrant Pink",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#DD2260',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#0C2955',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Soft-Yellow',
+  name: "Soft Yellow",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#F4BE05',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#984DAE',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Delicate-Peach',
+  name: "Delicate Peach",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#F7F1D2',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#DD9DBA',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Lime-Splash',
+  name: "Lime Splash",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#DDFD00',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#F94071',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Gold-Shimmer',
+  name: "Gold Shimmer",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#FFEF58',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#2D3440',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Pastel-Green',
+  name: "Pastel Green",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#FDF7C1',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#49CDAE',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Forest-Green',
+  name: "Forest Green",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#14473F',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#12BA24',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Teal-Oasis',
+  name: "Teal Oasis",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#0FCE3E',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#104462',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Lush-Foliage',
+  name: "Lush Foliage",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#4A5E46',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#B5CEC1',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Mint-Whisper',
+  name: "Mint Whisper",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#192D1B',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#D6C3CD',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Soft-Sprout',
+  name: "Soft Sprout",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#A2CA57',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#2B5251',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Cool-Dusk',
+  name: "Cool Dusk",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#041F2A',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#96DEA7',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Fresh-Green',
+  name: "Fresh Green",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#00FC69',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#5C0089',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Seafoam-Breeze',
+  name: "Seafoam Breeze",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#062129',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#9DDBA8',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Peacock-Tail',
+  name: "Peacock Tail",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#19CBB1',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#394155',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Misty-Evening',
+  name: "Misty Evening",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#1B4946',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#DA9688',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Forest-Trail',
+  name: "Forest Trail",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#2EC28A',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#1E515D',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Marine-Galaxy',
+  name: "Marine Galaxy",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#02D7B5',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#383E53',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Cloudy-Night',
+  name: "Cloudy Night",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#084047',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#DC948D',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Charcoal-Grass',
+  name: "Charcoal Grass",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#004548',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#E87868',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Dusk-Wave',
+  name: "Dusk Wave",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#68D9D6',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#8C53B5',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Aquamarine-Whisper',
+  name: "Aquamarine Whisper",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#006B99',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#E0CAE8',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+{
+  id: 'styles-Blue-Mosaic',
+  name: "Blue Mosaic",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#3889AC',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#ECDDC8',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
 
   // Gradient Styles Category
   {

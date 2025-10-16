@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
+  CardFooter,
 } from "@/components/ui/card";
 import {
   Carousel,
@@ -32,7 +33,7 @@ import {
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Star, Type, X, RectangleVertical, Smartphone, Square, HeartIcon } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Star, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, PanelRight } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -51,14 +52,7 @@ import { pageInitialColors } from "@/lib/colors";
 import { CreativeMagicPanel } from "@/components/creative-magic-panel";
 import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 
 type Design = {
@@ -71,18 +65,10 @@ type BackgroundType = 'flat' | 'gradient' | 'image';
 type CanvasSize = { name: 'Post' | 'Story' | 'Square'; width: number; height: number };
 
 const canvasSizes: CanvasSize[] = [
-    { name: 'Story', width: 1080, height: 1920 },
     { name: 'Post', width: 1080, height: 1350 },
+    { name: 'Story', width: 1080, height: 1920 },
     { name: 'Square', width: 1080, height: 1080 },
 ];
-
-export default function Home() {
-  return (
-    <SidebarProvider>
-      <AppContent />
-    </SidebarProvider>
-  )
-}
 
 function AppContent() {
   const [text, setText] = useState(defaultText);
@@ -157,7 +143,8 @@ function AppContent() {
   const [strokeColor, setStrokeColor] = useState("#000000");
   const [strokeWidth, setStrokeWidth] = useState(2);
   
-  const [activeSettingsTab, setActiveSettingsTab] = useState<string>('');
+  const [activeSettingsTab, setActiveSettingsTab] = useState<string>('designs');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
 
   const [fileName, setFileName] = useState("writa");
@@ -264,9 +251,6 @@ function AppContent() {
         setIsLoading(false);
         if(designsRef.current) {
             designsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-        if (!isMobile) {
-          setActiveSettingsTab('designs');
         }
     }, 1618);
   }, [text, toast]);
@@ -734,8 +718,6 @@ function AppContent() {
     }
   };
 
-  const isMobile = useIsMobile();
-
   const settingsTabs = [
     { value: "designs", icon: <LayoutTemplate />, label: "Designs" },
     { value: "favorites", icon: <HeartIcon />, label: "Favorites" },
@@ -743,18 +725,6 @@ function AppContent() {
     { value: "text", icon: <Type />, label: "Text" },
     { value: "download", icon: <Download />, label: "Download" },
   ];
-  
-  if (!isClient) {
-    return (
-       <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
-          background: 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)'
-        }}>
-            <div className="w-64 h-64">
-                <Lottie animationData={webflowAnimation} loop={true} />
-            </div>
-        </div>
-    )
-  }
 
   return (
     <div className="h-screen w-screen flex flex-col">
@@ -762,149 +732,156 @@ function AppContent() {
         <Logo className="text-[2rem]" />
       </header>
 
-      {designs.length === 0 ? (
-        <main className="flex-grow flex flex-col items-center justify-center container mx-auto p-4 md:p-8 pt-0">
-            <CreativeMagicPanel 
-                text={text}
-                setText={setText}
-                handleGenerate={handleGenerate}
-                isLoading={isLoading}
-            />
-        </main>
-      ) : (
-        <div className="flex-grow flex h-[90vh]">
-          {!isMobile && (
-            <Sidebar
-              side="left"
-              variant="sidebar"
-              collapsible="icon"
-              className="w-[clamp(400px,30%,500px)] transition-all"
+      <div className="flex flex-grow h-[90vh]">
+        {/* Sidebar Navigation (Desktop) */}
+        <div className={cn("hidden md:flex flex-shrink-0 bg-card border-r transition-all duration-300", isSidebarOpen ? "w-[30vw]" : "w-[10vw]")}>
+          <div className="flex flex-col w-full">
+            <div className="p-2 flex-shrink-0">
+              <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+                {isSidebarOpen ? <PanelLeft /> : <PanelRight />}
+              </Button>
+            </div>
+            <Tabs
+              orientation="vertical"
+              value={activeSettingsTab}
+              onValueChange={setActiveSettingsTab}
+              className="flex flex-col flex-grow"
             >
-              <SidebarContent className="p-0 flex flex-col">
-                <Tabs value={activeSettingsTab} onValueChange={setActiveSettingsTab} className="flex flex-col h-full">
-                  <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2 h-14 rounded-none border-b">
-                    {settingsTabs.map(tab => (
-                      <TooltipProvider key={tab.value}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <TabsTrigger value={tab.value} className="flex-col gap-1 h-full text-xs">
-                              <div className="p-1">{tab.icon}</div>{tab.label}
-                            </TabsTrigger>
-                          </TooltipTrigger>
-                          <TooltipContent side="bottom"><p>{tab.label}</p></TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    ))}
-                  </TabsList>
-                  <div className="flex-grow overflow-y-auto">
-                    <TabsContent value={activeSettingsTab} className="mt-0 h-full">
-                      {renderActiveTabContent()}
-                    </TabsContent>
-                  </div>
-                </Tabs>
-              </SidebarContent>
-            </Sidebar>
-          )}
-
-          <SidebarInset>
-            <main id="designs-container" ref={designsRef} className="flex-1 w-full h-full flex flex-col items-center justify-center p-4">
-                  <div className="w-full max-w-md relative">
-                    <Carousel className="w-full" setApi={setCarouselApi} opts={{ dragFree: true }}>
-                      <CarouselContent>
-                        {designs.map((design, index) => (
-                          <CarouselItem key={index} data-index={index}>
-                            <div className="p-1 group relative">
-                              <Card className="overflow-hidden border-0 bg-transparent shadow-none">
-                                <CardContent className="p-0 relative bg-card" style={{ aspectRatio: `${canvasSize.width}/${canvasSize.height}`}}>
-                                  {renderCanvas(design, index)}
-                                </CardContent>
-                              </Card>
-                              <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <AlertDialog>
-                                  <TooltipProvider>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <AlertDialogTrigger asChild>
-                                          <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-8 w-8 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400"
-                                          >
-                                            <Star className="h-5 w-5" />
-                                          </Button>
-                                        </AlertDialogTrigger>
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                        <p>Save to Favorites</p>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>Save to Favorites?</AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        This will save the current background, font, and color settings as a new favorite template.
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                      <AlertDialogAction onClick={handleSaveDesign}>Save</AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                  </TooltipProvider>
-                                </AlertDialog>
-                              </div>
-                            </div>
-                          </CarouselItem>
-                        ))}
-                      </CarouselContent>
-                      <CarouselPrevious className="-left-4 md:-left-12" />
-                      <CarouselNext className="-right-4 md:-right-12" />
-                    </Carousel>
-                     <div className="w-full flex justify-end mt-2">
-                        <div className="bg-card backdrop-blur-sm rounded-md p-1 flex gap-1">
-                            {canvasSizes.map(size => (
-                            <TooltipProvider key={size.name}>
-                                <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className={cn(
-                                        "h-8 w-8",
-                                        canvasSize.name === size.name && "bg-muted"
-                                    )}
-                                    onClick={() => setCanvasSize(size)}
-                                    >
-                                    {size.name === 'Story' && <Smartphone className="h-5 w-5" />}
-                                    {size.name === 'Post' && <RectangleVertical className="h-5 w-5" />}
-                                    {size.name === 'Square' && <Square className="h-5 w-5" />}
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>{size.name} Format</p>
-                                </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
-                            ))}
-                        </div>
-                    </div>
-                  </div>
-              </main>
-          </SidebarInset>
-        </div>
-      )}
-
-      {isGeneratingAnimation && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{ background: 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)' }}>
-          <div className="w-64 h-64">
-            <Lottie animationData={webflowAnimation} loop={true} />
+              <TabsList className="flex flex-col h-full justify-start items-center p-2 bg-transparent">
+                {settingsTabs.map(tab => (
+                  <TooltipProvider key={tab.value}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <TabsTrigger value={tab.value} className="w-full data-[state=active]:bg-primary/20">
+                          {tab.icon}
+                           {isSidebarOpen && <span className="ml-2">{tab.label}</span>}
+                        </TabsTrigger>
+                      </TooltipTrigger>
+                       {!isSidebarOpen && <TooltipContent side="right"><p>{tab.label}</p></TooltipContent>}
+                    </Tooltip>
+                  </TooltipProvider>
+                ))}
+              </TabsList>
+              <div className={cn("flex-grow overflow-y-auto", isSidebarOpen ? "block" : "hidden")}>
+                <TabsContent value={activeSettingsTab} className="mt-0 h-full">
+                  {renderActiveTabContent()}
+                </TabsContent>
+              </div>
+            </Tabs>
           </div>
         </div>
-      )}
 
-       {/* Mobile-only Bottom Sheet */}
-        {isMobile && designs.length > 0 && (
-            <div ref={mobilePanelRef}>
+        {/* Main Content Area */}
+        <main className="flex-grow w-full h-full flex items-center justify-center overflow-hidden">
+          {designs.length === 0 ? (
+            <div className="w-full max-w-2xl px-4">
+              <CreativeMagicPanel 
+                  text={text}
+                  setText={setText}
+                  handleGenerate={handleGenerate}
+                  isLoading={isLoading}
+              />
+            </div>
+          ) : (
+            <div ref={designsRef} className="w-full h-full flex items-center justify-center">
+              <div className="w-full max-w-md relative">
+                <Carousel className="w-full" setApi={setCarouselApi} opts={{ dragFree: true }}>
+                  <CarouselContent>
+                    {designs.map((design, index) => (
+                      <CarouselItem key={index} data-index={index}>
+                        <div className="p-1 group relative">
+                          <Card className="overflow-hidden border-0">
+                            <CardContent className="p-0 relative bg-card" style={{ aspectRatio: `${canvasSize.width}/${canvasSize.height}`}}>
+                              {renderCanvas(design, index)}
+                            </CardContent>
+                          </Card>
+                          <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <AlertDialog>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <AlertDialogTrigger asChild>
+                                      <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-8 w-8 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400"
+                                      >
+                                        <Star className="h-5 w-5" />
+                                      </Button>
+                                    </AlertDialogTrigger>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Save to Favorites</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This will save the current background, font, and color settings as a new favorite template.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction onClick={handleSaveDesign}>Save</AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                              </TooltipProvider>
+                            </AlertDialog>
+                          </div>
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="-left-4 md:-left-12" />
+                  <CarouselNext className="-right-4 md:-right-12" />
+                </Carousel>
+                <div className="w-full flex justify-center mt-4">
+                    <div className="bg-card backdrop-blur-sm rounded-md p-1 flex gap-1">
+                        {canvasSizes.map(size => (
+                        <TooltipProvider key={size.name}>
+                            <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                variant="ghost"
+                                size="icon"
+                                className={cn(
+                                    "h-8 w-8",
+                                    canvasSize.name === size.name && "bg-muted"
+                                )}
+                                onClick={() => setCanvasSize(size)}
+                                >
+                                {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
+                                {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
+                                {size.name === 'Square' && <Square className="h-5 w-5" />}
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>{size.name} Format</p>
+                            </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                        ))}
+                    </div>
+                  </div>
+              </div>
+            </div>
+          )}
+           {isGeneratingAnimation && (
+            <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
+              background: 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)'
+            }}>
+                <div className="w-64 h-64">
+                    <Lottie animationData={webflowAnimation} loop={true} />
+                </div>
+            </div>
+        )}
+        </main>
+      </div>
+
+       {/* Mobile-only Fixed Bottom Settings Panel */}
+        {isClient && designs.length > 0 && (
+            <div ref={mobilePanelRef} className="md:hidden">
               <Sheet open={isMobilePanelOpen} onOpenChange={(isOpen) => {
                 setIsMobilePanelOpen(isOpen);
                 if (!isOpen) {
@@ -912,13 +889,13 @@ function AppContent() {
                 }
               }}>
                 <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
-                    <SheetHeader className="p-4 border-b flex-shrink-0 flex-row justify-between items-center">
-                        <SheetTitle className="capitalize">{activeSettingsTab}</SheetTitle>
-                        <Button variant="ghost" size="icon" onClick={closePanel} className="h-8 w-8 rounded-full">
+                   <div className="p-4 border-b flex-shrink-0 flex justify-between items-center">
+                      <h3 className="text-lg font-semibold capitalize">{activeSettingsTab}</h3>
+                       <Button variant="ghost" size="icon" onClick={closePanel} className="h-8 w-8 rounded-full">
                             <X className="h-5 w-5" />
                             <span className="sr-only">Close Panel</span>
                         </Button>
-                    </SheetHeader>
+                   </div>
                    <div className="flex-grow overflow-y-auto">
                     {renderActiveTabContent()}
                    </div>
@@ -942,5 +919,7 @@ function AppContent() {
   );
 }
 
-
+export default function Home() {
+  return <AppContent />;
+}
     
