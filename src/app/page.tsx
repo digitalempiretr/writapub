@@ -747,7 +747,7 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen w-screen flex flex-col overflow-hidden">
+    <div className="h-screen w-screen flex flex-col">
       <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-card border-b">
         <Logo className="text-[2rem] text-foreground" />
       </header>
