@@ -30,6 +30,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Download, ImageIcon, LayoutTemplate, Star, Type, X, RectangleVertical, Smartphone, Square, HeartIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -50,11 +51,10 @@ import { pageInitialColors } from "@/lib/colors";
 import { CreativeMagicPanel } from "@/components/creative-magic-panel";
 import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
   Sidebar,
   SidebarContent,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
@@ -62,7 +62,6 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { FormatPanel } from "@/components/format-panel";
 
 
 type Design = {
@@ -83,12 +82,12 @@ const canvasSizes: CanvasSize[] = [
 export default function Home() {
   return (
     <SidebarProvider>
-      <MainPanel />
+      <AppContent />
     </SidebarProvider>
   )
 }
 
-function MainPanel() {
+function AppContent() {
   const [text, setText] = useState(defaultText);
   const [designs, setDesigns] = useState<Design[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -791,7 +790,7 @@ function MainPanel() {
           {/* Desktop Sidebar */}
           {!isMobile && (
              <Sidebar side="left" collapsible="icon" className="w-[30%] min-w-[400px] max-w-[500px]">
-                <SidebarContent>
+                <SidebarContent className="p-0 flex flex-col">
                   <SidebarMenu>
                     {settingsTabs.map(tab => (
                       <SidebarMenuItem key={tab.value}>
@@ -807,9 +806,9 @@ function MainPanel() {
                     ))}
                   </SidebarMenu>
                 </SidebarContent>
-                <SidebarContent className="p-0">
+                <div className="flex-grow overflow-y-auto">
                   {renderActiveTabContent()}
-                </SidebarContent>
+                </div>
               </Sidebar>
           )}
          
@@ -911,16 +910,16 @@ function MainPanel() {
                   }
                 }}>
                   <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
-                    <SheetHeader className="p-4 border-b flex-shrink-0 flex justify-between items-center">
+                    <SheetHeader className="p-4 border-b flex-shrink-0 flex-row justify-between items-center">
                         <SheetTitle className="capitalize">{activeSettingsTab}</SheetTitle>
                         <Button variant="ghost" size="icon" onClick={closePanel} className="h-8 w-8 rounded-full">
                             <X className="h-5 w-5" />
                             <span className="sr-only">Close Panel</span>
                         </Button>
                     </SheetHeader>
-                    <div className="flex-grow overflow-y-auto">
-                        {renderActiveTabContent()}
-                    </div>
+                   <div className="flex-grow overflow-y-auto">
+                    {renderActiveTabContent()}
+                   </div>
                   </SheetContent>
                 </Sheet>
 
@@ -942,3 +941,4 @@ function MainPanel() {
     </>
   );
 }
+
