@@ -825,8 +825,8 @@ export default function Home() {
                                 )}
                                 onClick={() => setCanvasSize(size)}
                                 >
-                                {size.name === 'Post' && <RectangleVertical className="h-5 w-5" />}
-                                {size.name === 'Story' && <Smartphone className="h-5 w-5" />}
+                                {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
+                                {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
                                 {size.name === 'Square' && <Square className="h-5 w-5" />}
                                 </Button>
                             </TooltipTrigger>
@@ -863,7 +863,12 @@ export default function Home() {
        {/* Mobile-only Fixed Bottom Settings Panel */}
         {isClient && designs.length > 0 && (
             <div ref={mobilePanelRef} className="md:hidden">
-              <Sheet open={isMobilePanelOpen} onOpenChange={setIsMobilePanelOpen}>
+              <Sheet open={isMobilePanelOpen} onOpenChange={(isOpen) => {
+                setIsMobilePanelOpen(isOpen);
+                if (!isOpen) {
+                  setActiveSettingsTab('');
+                }
+              }}>
                 <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
                    <div className="p-4 border-b flex-shrink-0 flex justify-between items-center">
                       <h3 className="text-lg font-semibold capitalize">{activeSettingsTab}</h3>
@@ -894,3 +899,5 @@ export default function Home() {
     </>
   );
 }
+
+    
