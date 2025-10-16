@@ -687,13 +687,13 @@ export default function Home() {
   }
 
   const handleDesktopTabClick = (tab: string) => {
-    if(isSidebarOpen && activeSettingsTab === tab) {
+    if (isSidebarOpen && activeSettingsTab === tab) {
       setIsSidebarOpen(false);
     } else {
       setActiveSettingsTab(tab);
       setIsSidebarOpen(true);
     }
-  }
+  };
 
   const renderActiveTabContent = () => {
     const props = {
@@ -784,7 +784,7 @@ export default function Home() {
               </div>
               
               {isSidebarOpen && (
-                <div className="w-full overflow-hidden transition-all duration-300 ease-in-out">
+                <div className={cn("w-full overflow-hidden transition-all duration-300 ease-in-out", isSidebarOpen ? "w-full" : "w-0")}>
                   <TabsContent value={activeSettingsTab} className="mt-0 h-full overflow-y-auto">
                     {renderActiveTabContent()}
                   </TabsContent>
@@ -915,8 +915,9 @@ export default function Home() {
                 setIsMobilePanelOpen(isOpen);
               }}>
                 <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
-                  <SheetHeader className="p-4 border-b">
+                  <SheetHeader className="p-4 border-b flex-row justify-between items-center">
                     <SheetTitle className="capitalize">{activeSettingsTab}</SheetTitle>
+                     {/* The close button is now provided by SheetContent itself */}
                   </SheetHeader>
                    <div className="flex-grow overflow-y-auto">
                     {renderActiveTabContent()}
