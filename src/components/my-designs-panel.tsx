@@ -80,6 +80,9 @@ export function MyDesignsPanel({
     if (effect && effect.style.textShadow) {
       const finalColor = effect.style.color || template.font.color;
       textStyle.color = finalColor;
+      if (effect.style.fontFamily) {
+        textStyle.fontFamily = effect.style.fontFamily;
+      }
       const finalShadowString = effect.style.textShadow
         .replace(/{{color}}/g, finalColor)
         .replace(/{{glow}}/g, effect.style.glowColor || finalColor);
@@ -220,7 +223,7 @@ export function MyDesignsPanel({
           </Carousel>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
               <AlertDialogDescription>
                 This action cannot be undone. This will permanently delete your favorite design.
               </AlertDialogDescription>
