@@ -1,7 +1,6 @@
 
 import { fontOptions } from './font-options';
 import { gradientTemplates } from './colors';
-import { TextEffect } from './text-effects';
 
 export type DesignTemplate = {
   id: string;
@@ -242,7 +241,95 @@ export const designTemplates: DesignTemplate[] = [
       opacity: 0,
     },
   },
-    {
+  {
+    id: 'styles-jet-cloud-white',
+    name: "Jet Cloud White",
+    category: 'Color Styles',
+    previewImage: "",
+    background: {
+      type: 'flat',
+      value: '#FAFAFA',
+    },
+    font: {
+      value: 'duru-sans',
+      color: '#312F2C',
+    },
+    textBox: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+},
+  {
+    id: 'styles-Deep-Sea-Blue',
+    name: "Deep Sea Blue",
+    category: 'Color Styles',
+    previewImage: "",
+    background: {
+      type: 'flat',
+      value: '#050761',
+    },
+    font: {
+      value: 'duru-sans',
+      color: '#40ffa7',
+    },
+    textBox: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+},
+  {
+    id: 'styles-Icy-Horizon',
+    name: "Icy Horizon",
+    category: 'Color Styles',
+    previewImage: "",
+    background: {
+      type: 'flat',
+      value: '#40ffa7',
+    },
+    font: {
+      value: 'duru-sans',
+      color: '#050761',
+    },
+    textBox: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+},
+{
+  id: 'styles-Feldgrau',
+  name: "Feldgrau ",
+  category: 'Color Styles',
+  previewImage: "",
+  background: {
+    type: 'flat',
+    value: '#33412f',
+  },
+  font: {
+    value: 'duru-sans',
+    color: '#Fba0a3',
+  },
+  textBox: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+  overlay: {
+    color: '#7585A3',
+    opacity: 0,
+  },
+},
+  {
     id: 'styles-Oceanic-Blue',
     name: "Oceanic Blue",
     category: 'Color Styles',
@@ -331,5 +418,3 @@ export const designTemplates: DesignTemplate[] = [
     },
   },
 ];
-
-    
