@@ -55,11 +55,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import {
   Sidebar,
   SidebarContent,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarProvider,
   SidebarInset,
+  SidebarProvider,
 } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -74,8 +71,8 @@ type BackgroundType = 'flat' | 'gradient' | 'image';
 type CanvasSize = { name: 'Post' | 'Story' | 'Square'; width: number; height: number };
 
 const canvasSizes: CanvasSize[] = [
-    { name: 'Post', width: 1080, height: 1350 },
     { name: 'Story', width: 1080, height: 1920 },
+    { name: 'Post', width: 1080, height: 1350 },
     { name: 'Square', width: 1080, height: 1080 },
 ];
 
@@ -760,39 +757,26 @@ function AppContent() {
   }
 
   return (
-    <>
-      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center fixed top-0 left-0 right-0 z-20 bg-transparent">
+    <div className="h-screen w-screen flex flex-col">
+      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-transparent">
         <Logo className="text-[2rem]" />
       </header>
 
-      {designs.length === 0 && (
-         <main className="container mx-auto p-4 md:p-8 pt-0">
-            <div className="flex flex-col items-center justify-center h-screen">
-                <CreativeMagicPanel 
-                    text={text}
-                    setText={setText}
-                    handleGenerate={handleGenerate}
-                    isLoading={isLoading}
-                />
-            </div>
-          </main>
-      )}
-
-      {isGeneratingAnimation && (
-          <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
-            background: 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)'
-          }}>
-              <div className="w-64 h-64">
-                  <Lottie animationData={webflowAnimation} loop={true} />
-              </div>
-          </div>
-      )}
-
-      {designs.length > 0 && (
-        <div className="flex h-screen pt-[10vh]">
+      {designs.length === 0 ? (
+        <main className="flex-grow flex flex-col items-center justify-center container mx-auto p-4 md:p-8 pt-0">
+            <CreativeMagicPanel 
+                text={text}
+                setText={setText}
+                handleGenerate={handleGenerate}
+                isLoading={isLoading}
+            />
+        </main>
+      ) : (
+        <div className="flex-grow flex h-[90vh]">
           {!isMobile && (
             <Sidebar
               side="left"
+              variant="sidebar"
               collapsible="icon"
               className="w-[clamp(400px,30%,500px)] transition-all"
             >
@@ -802,22 +786,28 @@ function AppContent() {
                     {settingsTabs.map(tab => (
                       <TooltipProvider key={tab.value}>
                         <Tooltip>
-                          <TooltipTrigger asChild><TabsTrigger value={tab.value} className="flex-col gap-1 h-full text-xs"><div className="p-1">{tab.icon}</div>{tab.label}</TabsTrigger></TooltipTrigger>
+                          <TooltipTrigger asChild>
+                            <TabsTrigger value={tab.value} className="flex-col gap-1 h-full text-xs">
+                              <div className="p-1">{tab.icon}</div>{tab.label}
+                            </TabsTrigger>
+                          </TooltipTrigger>
                           <TooltipContent side="bottom"><p>{tab.label}</p></TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
                     ))}
                   </TabsList>
                   <div className="flex-grow overflow-y-auto">
-                    {renderActiveTabContent()}
+                    <TabsContent value={activeSettingsTab} className="mt-0 h-full">
+                      {renderActiveTabContent()}
+                    </TabsContent>
                   </div>
                 </Tabs>
               </SidebarContent>
             </Sidebar>
           )}
 
-          <main className="flex-1 flex items-center justify-center p-4">
-             <div id="designs-container" ref={designsRef} className="w-full h-full flex flex-col items-center justify-center">
+          <SidebarInset>
+            <main id="designs-container" ref={designsRef} className="flex-1 w-full h-full flex flex-col items-center justify-center p-4">
                   <div className="w-full max-w-md relative">
                     <Carousel className="w-full" setApi={setCarouselApi} opts={{ dragFree: true }}>
                       <CarouselContent>
@@ -899,19 +889,29 @@ function AppContent() {
                         </div>
                     </div>
                   </div>
-              </div>
-          </main>
+              </main>
+          </SidebarInset>
+        </div>
+      )}
 
-           {/* Mobile-only Bottom Sheet */}
-            {isMobile && (
-              <div ref={mobilePanelRef}>
-                <Sheet open={isMobilePanelOpen} onOpenChange={(isOpen) => {
-                  setIsMobilePanelOpen(isOpen);
-                  if (!isOpen) {
-                    setActiveSettingsTab('');
-                  }
-                }}>
-                  <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
+      {isGeneratingAnimation && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{ background: 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)' }}>
+          <div className="w-64 h-64">
+            <Lottie animationData={webflowAnimation} loop={true} />
+          </div>
+        </div>
+      )}
+
+       {/* Mobile-only Bottom Sheet */}
+        {isMobile && designs.length > 0 && (
+            <div ref={mobilePanelRef}>
+              <Sheet open={isMobilePanelOpen} onOpenChange={(isOpen) => {
+                setIsMobilePanelOpen(isOpen);
+                if (!isOpen) {
+                  setActiveSettingsTab('');
+                }
+              }}>
+                <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
                     <SheetHeader className="p-4 border-b flex-shrink-0 flex-row justify-between items-center">
                         <SheetTitle className="capitalize">{activeSettingsTab}</SheetTitle>
                         <Button variant="ghost" size="icon" onClick={closePanel} className="h-8 w-8 rounded-full">
@@ -922,24 +922,25 @@ function AppContent() {
                    <div className="flex-grow overflow-y-auto">
                     {renderActiveTabContent()}
                    </div>
-                  </SheetContent>
-                </Sheet>
+                </SheetContent>
+              </Sheet>
 
-                <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-card border-t", isMobilePanelOpen ? "hidden" : "block")}>
-                    <Tabs value={activeSettingsTab ?? ''} className="w-full">
-                    <TabsList className="grid w-full grid-cols-5 h-14 rounded-none">
-                      {settingsTabs.map(tab => (
-                            <TabsTrigger key={tab.value} value={tab.value} onClick={() => handleMobileTabClick(tab.value)}>
-                                {tab.icon}
-                            </TabsTrigger>
-                        ))}
-                    </TabsList>
-                    </Tabs>
-                </div>
+              <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-card border-t", isMobilePanelOpen ? "hidden" : "block")}>
+                  <Tabs value={activeSettingsTab ?? ''} className="w-full">
+                  <TabsList className="grid w-full grid-cols-5 h-14 rounded-none">
+                    {settingsTabs.map(tab => (
+                          <TabsTrigger key={tab.value} value={tab.value} onClick={() => handleMobileTabClick(tab.value)}>
+                              {tab.icon}
+                          </TabsTrigger>
+                      ))}
+                  </TabsList>
+                  </Tabs>
               </div>
-            )}
-        </div>
-      )}
-    </>
+            </div>
+        )}
+    </div>
   );
 }
+
+
+    
