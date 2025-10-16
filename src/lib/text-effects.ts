@@ -1,3 +1,4 @@
+
 import type { CSSProperties } from 'react';
 
 export type TextEffect = {
@@ -120,7 +121,7 @@ export const textEffects: TextEffect[] = [
     id: 'goldenGlow',
     fontValue: 'tilt-neon',
     style: { 
-      color: ' #ffcc00', 
+      color: '#ffcc00', 
       fontFamily: "'Tilt Neon', cursive",
       fontSize: 48,
       textShadow: ` 
