@@ -160,7 +160,7 @@ function AppContent() {
   const [strokeColor, setStrokeColor] = useState("#000000");
   const [strokeWidth, setStrokeWidth] = useState(2);
   
-  const [activeSettingsTab, setActiveSettingsTab] = useState<string>('designs');
+  const [activeSettingsTab, setActiveSettingsTab] = useState<string>('');
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
 
   const [fileName, setFileName] = useState("writa");
@@ -267,6 +267,9 @@ function AppContent() {
         setIsLoading(false);
         if(designsRef.current) {
             designsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        if (!isMobile) {
+          setActiveSettingsTab('designs');
         }
     }, 1618);
   }, [text, toast]);
@@ -787,34 +790,33 @@ function AppContent() {
 
       {designs.length > 0 && (
         <div className="flex h-screen pt-[10vh]">
-          {/* Desktop Sidebar */}
           {!isMobile && (
-             <Sidebar side="left" collapsible="icon" className="w-[30%] min-w-[400px] max-w-[500px]">
-                <SidebarContent className="p-0 flex flex-col">
-                  <SidebarMenu>
+            <Sidebar
+              side="left"
+              collapsible="icon"
+              className="w-[clamp(400px,30%,500px)] transition-all"
+            >
+              <SidebarContent className="p-0 flex flex-col">
+                <Tabs value={activeSettingsTab} onValueChange={setActiveSettingsTab} className="flex flex-col h-full">
+                  <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2 h-14 rounded-none border-b">
                     {settingsTabs.map(tab => (
-                      <SidebarMenuItem key={tab.value}>
-                        <SidebarMenuButton
-                          onClick={() => setActiveSettingsTab(tab.value)}
-                          isActive={activeSettingsTab === tab.value}
-                          tooltip={tab.label}
-                        >
-                          {tab.icon}
-                          <span>{tab.label}</span>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
+                      <TooltipProvider key={tab.value}>
+                        <Tooltip>
+                          <TooltipTrigger asChild><TabsTrigger value={tab.value} className="flex-col gap-1 h-full text-xs"><div className="p-1">{tab.icon}</div>{tab.label}</TabsTrigger></TooltipTrigger>
+                          <TooltipContent side="bottom"><p>{tab.label}</p></TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     ))}
-                  </SidebarMenu>
-                </SidebarContent>
-                <div className="flex-grow overflow-y-auto">
-                  {renderActiveTabContent()}
-                </div>
-              </Sidebar>
+                  </TabsList>
+                  <div className="flex-grow overflow-y-auto">
+                    {renderActiveTabContent()}
+                  </div>
+                </Tabs>
+              </SidebarContent>
+            </Sidebar>
           )}
-         
 
-          {/* Main Content */}
-          <SidebarInset className="flex-1 flex items-center justify-center">
+          <main className="flex-1 flex items-center justify-center p-4">
              <div id="designs-container" ref={designsRef} className="w-full h-full flex flex-col items-center justify-center">
                   <div className="w-full max-w-md relative">
                     <Carousel className="w-full" setApi={setCarouselApi} opts={{ dragFree: true }}>
@@ -848,7 +850,7 @@ function AppContent() {
                                     </Tooltip>
                                   <AlertDialogContent>
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                      <AlertDialogTitle>Save to Favorites?</AlertDialogTitle>
                                       <AlertDialogDescription>
                                         This will save the current background, font, and color settings as a new favorite template.
                                       </AlertDialogDescription>
@@ -898,7 +900,7 @@ function AppContent() {
                     </div>
                   </div>
               </div>
-          </SidebarInset>
+          </main>
 
            {/* Mobile-only Bottom Sheet */}
             {isMobile && (
@@ -941,4 +943,3 @@ function AppContent() {
     </>
   );
 }
-
