@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
+  CardFooter,
 } from "@/components/ui/card";
 import {
   Carousel,
@@ -30,6 +31,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Download, ImageIcon, LayoutTemplate, Star, Type, X, RectangleVertical, Smartphone, Square, HeartIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -50,19 +52,7 @@ import { pageInitialColors } from "@/lib/colors";
 import { CreativeMagicPanel } from "@/components/creative-magic-panel";
 import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarProvider,
-  SidebarInset,
-} from "@/components/ui/sidebar";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { FormatPanel } from "@/components/format-panel";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 
 type Design = {
@@ -81,14 +71,6 @@ const canvasSizes: CanvasSize[] = [
 ];
 
 export default function Home() {
-  return (
-    <SidebarProvider>
-      <MainPanel />
-    </SidebarProvider>
-  )
-}
-
-function MainPanel() {
   const [text, setText] = useState(defaultText);
   const [designs, setDesigns] = useState<Design[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -161,7 +143,7 @@ function MainPanel() {
   const [strokeColor, setStrokeColor] = useState("#000000");
   const [strokeWidth, setStrokeWidth] = useState(2);
   
-  const [activeSettingsTab, setActiveSettingsTab] = useState<string>('designs');
+  const [activeSettingsTab, setActiveSettingsTab] = useState<string>('');
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
 
   const [fileName, setFileName] = useState("writa");
@@ -735,8 +717,6 @@ function MainPanel() {
     }
   };
 
-  const isMobile = useIsMobile();
-
   const settingsTabs = [
     { value: "designs", icon: <LayoutTemplate />, label: "Designs" },
     { value: "favorites", icon: <HeartIcon />, label: "Favorites" },
@@ -745,27 +725,15 @@ function MainPanel() {
     { value: "download", icon: <Download />, label: "Download" },
   ];
   
-  if (!isClient) {
-    return (
-       <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
-          background: 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)'
-        }}>
-            <div className="w-64 h-64">
-                <Lottie animationData={webflowAnimation} loop={true} />
-            </div>
-        </div>
-    )
-  }
-
   return (
     <>
-      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center fixed top-0 left-0 right-0 z-20 bg-transparent">
+      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center">
         <Logo className="text-[2rem]" />
       </header>
 
-      {designs.length === 0 && (
-         <main className="container mx-auto p-4 md:p-8 pt-0">
-            <div className="flex flex-col items-center justify-center h-screen">
+      <main className="container mx-auto p-4 md:p-8 pt-0">
+        {designs.length === 0 && (
+            <div className="flex flex-col items-center justify-center h-[90vh]">
                 <CreativeMagicPanel 
                     text={text}
                     setText={setText}
@@ -773,57 +741,28 @@ function MainPanel() {
                     isLoading={isLoading}
                 />
             </div>
-          </main>
-      )}
+        )}
+        
+        {isGeneratingAnimation && (
+            <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
+              background: 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)'
+            }}>
+                <div className="w-64 h-64">
+                    <Lottie animationData={webflowAnimation} loop={true} />
+                </div>
+            </div>
+        )}
 
-      {isGeneratingAnimation && (
-          <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
-            background: 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)'
-          }}>
-              <div className="w-64 h-64">
-                  <Lottie animationData={webflowAnimation} loop={true} />
-              </div>
-          </div>
-      )}
-
-      {designs.length > 0 && (
-        <div className="flex h-screen pt-[10vh]">
-          {/* Desktop Sidebar */}
-          {!isMobile && (
-             <Sidebar side="left" collapsible="icon" className="w-[30%] min-w-[400px] max-w-[500px]">
-                <SidebarContent>
-                  <SidebarMenu>
-                    {settingsTabs.map(tab => (
-                      <SidebarMenuItem key={tab.value}>
-                        <SidebarMenuButton
-                          onClick={() => setActiveSettingsTab(tab.value)}
-                          isActive={activeSettingsTab === tab.value}
-                          tooltip={tab.label}
-                        >
-                          {tab.icon}
-                          <span>{tab.label}</span>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))}
-                  </SidebarMenu>
-                </SidebarContent>
-                <SidebarContent className="p-0">
-                  {renderActiveTabContent()}
-                </SidebarContent>
-              </Sidebar>
-          )}
-         
-
-          {/* Main Content */}
-          <SidebarInset className="flex-1 flex items-center justify-center">
-             <div id="designs-container" ref={designsRef} className="w-full h-full flex flex-col items-center justify-center">
+        { isClient && designs.length > 0 && (
+          <div id="designs-container" ref={designsRef} className="w-full pt-8 flex flex-col items-center">
+              <div className="w-full mx-auto flex flex-col items-center">
                   <div className="w-full max-w-md relative">
                     <Carousel className="w-full" setApi={setCarouselApi} opts={{ dragFree: true }}>
                       <CarouselContent>
                         {designs.map((design, index) => (
                           <CarouselItem key={index} data-index={index}>
                             <div className="p-1 group relative">
-                              <Card className="overflow-hidden border-0 bg-transparent shadow-none">
+                              <Card className="overflow-hidden border-0">
                                 <CardContent className="p-0 relative bg-card" style={{ aspectRatio: `${canvasSize.width}/${canvasSize.height}`}}>
                                   {renderCanvas(design, index)}
                                 </CardContent>
@@ -869,76 +808,96 @@ function MainPanel() {
                       <CarouselPrevious className="-left-4 md:-left-12" />
                       <CarouselNext className="-right-4 md:-right-12" />
                     </Carousel>
-                     <div className="w-full flex justify-end mt-2">
-                        <div className="bg-card backdrop-blur-sm rounded-md p-1 flex gap-1">
-                            {canvasSizes.map(size => (
-                            <TooltipProvider key={size.name}>
-                                <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className={cn(
-                                        "h-8 w-8",
-                                        canvasSize.name === size.name && "bg-muted"
-                                    )}
-                                    onClick={() => setCanvasSize(size)}
-                                    >
-                                    {size.name === 'Story' && <Smartphone className="h-5 w-5" />}
-                                    {size.name === 'Post' && <RectangleVertical className="h-5 w-5" />}
-                                    {size.name === 'Square' && <Square className="h-5 w-5" />}
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>{size.name} Format</p>
-                                </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
-                            ))}
-                        </div>
+                  </div>
+                  
+                  <div className="w-full max-w-md flex justify-end mt-2">
+                    <div className="bg-card backdrop-blur-sm rounded-md p-1 flex gap-1">
+                        {canvasSizes.map(size => (
+                        <TooltipProvider key={size.name}>
+                            <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                variant="ghost"
+                                size="icon"
+                                className={cn(
+                                    "h-8 w-8",
+                                    canvasSize.name === size.name && "bg-muted"
+                                )}
+                                onClick={() => setCanvasSize(size)}
+                                >
+                                {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
+                                {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
+                                {size.name === 'Square' && <Square className="h-5 w-5" />}
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>{size.name} Format</p>
+                            </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                        ))}
                     </div>
                   </div>
-              </div>
-          </SidebarInset>
 
-           {/* Mobile-only Bottom Sheet */}
-            {isMobile && (
-              <div ref={mobilePanelRef}>
-                <Sheet open={isMobilePanelOpen} onOpenChange={(isOpen) => {
-                  setIsMobilePanelOpen(isOpen);
-                  if (!isOpen) {
-                    setActiveSettingsTab('');
-                  }
-                }}>
-                  <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
-                    <SheetHeader className="p-4 border-b flex-shrink-0 flex justify-between items-center">
-                        <SheetTitle className="capitalize">{activeSettingsTab}</SheetTitle>
-                        <Button variant="ghost" size="icon" onClick={closePanel} className="h-8 w-8 rounded-full">
+                  {/* Desktop Settings Panel */}
+                  <div className="w-full mt-6 hidden md:block md:max-w-4xl">
+                    <Tabs value={activeSettingsTab ?? ''} onValueChange={setActiveSettingsTab} className="w-full">
+                      <TabsList className="grid w-full grid-cols-5 bg-card text-card-foreground p-2 h-12 rounded-t-lg md:rounded-md flex-shrink-0">
+                        {settingsTabs.map(tab => (
+                          <TooltipProvider key={tab.value}>
+                            <Tooltip>
+                              <TooltipTrigger asChild><TabsTrigger value={tab.value}>{tab.icon}</TabsTrigger></TooltipTrigger>
+                              <TooltipContent><p>{tab.label}</p></TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        ))}
+                      </TabsList>
+                      <TabsContent value={activeSettingsTab ?? ''} className="mt-0">{renderActiveTabContent()}</TabsContent>
+                    </Tabs>
+                  </div>
+              </div>
+            </div>
+        )}
+      </main>
+
+       {/* Mobile-only Fixed Bottom Settings Panel */}
+        {isClient && designs.length > 0 && (
+            <div ref={mobilePanelRef} className="md:hidden">
+              <Sheet open={isMobilePanelOpen} onOpenChange={(isOpen) => {
+                setIsMobilePanelOpen(isOpen);
+                if (!isOpen) {
+                  setActiveSettingsTab('');
+                }
+              }}>
+                <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
+                   <div className="p-4 border-b flex-shrink-0 flex justify-between items-center">
+                      <h3 className="text-lg font-semibold capitalize">{activeSettingsTab}</h3>
+                       <Button variant="ghost" size="icon" onClick={closePanel} className="h-8 w-8 rounded-full">
                             <X className="h-5 w-5" />
                             <span className="sr-only">Close Panel</span>
                         </Button>
-                    </SheetHeader>
-                    <div className="flex-grow overflow-y-auto">
-                        {renderActiveTabContent()}
-                    </div>
-                  </SheetContent>
-                </Sheet>
+                   </div>
+                   <div className="flex-grow overflow-y-auto">
+                    {renderActiveTabContent()}
+                   </div>
+                </SheetContent>
+              </Sheet>
 
-                <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-card border-t", isMobilePanelOpen ? "hidden" : "block")}>
-                    <Tabs value={activeSettingsTab ?? ''} className="w-full">
-                    <TabsList className="grid w-full grid-cols-5 h-14 rounded-none">
-                      {settingsTabs.map(tab => (
-                            <TabsTrigger key={tab.value} value={tab.value} onClick={() => handleMobileTabClick(tab.value)}>
-                                {tab.icon}
-                            </TabsTrigger>
-                        ))}
-                    </TabsList>
-                    </Tabs>
-                </div>
+              <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-card border-t", isMobilePanelOpen ? "hidden" : "block")}>
+                  <Tabs value={activeSettingsTab ?? ''} className="w-full">
+                  <TabsList className="grid w-full grid-cols-5 h-14 rounded-none">
+                    {settingsTabs.map(tab => (
+                          <TabsTrigger key={tab.value} value={tab.value} onClick={() => handleMobileTabClick(tab.value)}>
+                              {tab.icon}
+                          </TabsTrigger>
+                      ))}
+                  </TabsList>
+                  </Tabs>
               </div>
-            )}
-        </div>
-      )}
+            </div>
+        )}
     </>
   );
 }
+
+    
