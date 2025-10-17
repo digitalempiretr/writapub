@@ -753,14 +753,14 @@ export default function Home() {
 
   return (
     <div className="h-screen w-screen flex flex-col">
-      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-card border-b">
+      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-transparent border-b">
         <Logo className="text-[2rem] bg-transparent" />
       </header>
 
       <div className="flex flex-grow h-[90vh]">
         {/* Desktop Sidebar */}
         {designs.length > 0 && (
-          <div className={cn("hidden md:flex flex-shrink-0 bg-card transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[10vw]")}>
+          <div className={cn("hidden md:flex flex-shrink-0 transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[10vw]")}>
             <Tabs
               orientation="vertical"
               value={activeSettingsTab}
@@ -789,7 +789,7 @@ export default function Home() {
               </div>
               
               {isSidebarOpen && (
-                <div className="flex-grow flex flex-col w-full">
+                <div className="flex-grow flex flex-col w-full bg-[#f4fdff]">
                    <div className="p-4 border-b flex-shrink-0 flex justify-between items-center bg-[#f4fdff]">
                       <h3 className="text-lg font-semibold capitalize">{activeTabLabel}</h3>
                        <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="h-8 w-8 rounded-full">
@@ -953,5 +953,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
