@@ -686,10 +686,14 @@ export default function Home() {
     }
   }
 
-  const handleDesktopTabClick = (tab: string) => {
-    setActiveSettingsTab(tab);
-    setIsSidebarOpen(true);
-  };
+ const handleDesktopTabClick = (tab: string) => {
+    if (isSidebarOpen && activeSettingsTab === tab) {
+        setIsSidebarOpen(false);
+    } else {
+        setActiveSettingsTab(tab);
+        setIsSidebarOpen(true);
+    }
+};
 
   const renderActiveTabContent = () => {
     const props = {
@@ -753,7 +757,7 @@ export default function Home() {
       <div className="flex flex-grow h-[90vh]">
         {/* Desktop Sidebar */}
         {designs.length > 0 && (
-          <div className={cn("hidden md:flex flex-shrink-0 bg-card transition-all duration-300 ease-in-out", isSidebarOpen ? "w-[40vw]" : "w-[10vw]")}>
+          <div className={cn("hidden md:flex flex-shrink-0 bg-card transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[10vw]")}>
             <Tabs
               orientation="vertical"
               value={activeSettingsTab}
@@ -783,7 +787,7 @@ export default function Home() {
               
               {isSidebarOpen && (
                 <div className="flex-grow flex flex-col w-full">
-                   <div className="p-4 border-b flex-shrink-0 flex justify-between items-center">
+                   <div className="p-4 border-b flex-shrink-0 flex justify-between items-center bg-[#f4fdff]">
                       <h3 className="text-lg font-semibold capitalize">{activeTabLabel}</h3>
                        <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="h-8 w-8 rounded-full">
                             <X className="h-5 w-5" />
@@ -920,7 +924,7 @@ export default function Home() {
                 setIsMobilePanelOpen(isOpen);
               }}>
                 <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
-                  <SheetHeader className="p-4 border-b flex-row justify-between items-center">
+                  <SheetHeader className="p-4 border-b flex-row justify-between items-center bg-[#f4fdff]">
                     <SheetTitle className="capitalize">{activeSettingsTab}</SheetTitle>
                      {/* The close button is now provided by SheetContent itself */}
                   </SheetHeader>
@@ -946,5 +950,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
