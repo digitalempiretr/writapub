@@ -687,14 +687,8 @@ export default function Home() {
   }
 
  const handleDesktopTabClick = (tab: string) => {
-    if (isSidebarOpen && activeSettingsTab === tab) {
-      setIsSidebarOpen(false);
-    } else if (isSidebarOpen && activeSettingsTab !== tab) {
-      setActiveSettingsTab(tab);
-    } else {
-      setActiveSettingsTab(tab);
-      setIsSidebarOpen(true);
-    }
+    setActiveSettingsTab(tab);
+    setIsSidebarOpen(true);
   };
 
 
@@ -760,15 +754,15 @@ export default function Home() {
       <div className="flex flex-grow h-[90vh]">
         {/* Desktop Sidebar */}
         {designs.length > 0 && (
-          <div className={cn("hidden md:flex flex-shrink-0 transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[10vw]")}>
+          <div className={cn("hidden md:flex flex-shrink-0 bg-card transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[10vw]")}>
             <Tabs
               orientation="vertical"
               value={activeSettingsTab}
               onValueChange={setActiveSettingsTab}
               className="flex w-full"
             >
-              <div className="flex flex-col items-center p-0 space-y-2 bg-[#f4fdff]">
-                <TabsList className="flex flex-col h-full justify-start items-center p-0 bg-[#f4fdff] space-y-1">
+              <div className="flex flex-col items-center p-0 space-y-2 bg-card">
+                <TabsList className="flex flex-col h-full justify-start items-center p-0 bg-card space-y-1">
                   {settingsTabs.map(tab => (
                     <TooltipProvider key={tab.value}>
                       <Tooltip>
@@ -789,8 +783,8 @@ export default function Home() {
               </div>
               
               {isSidebarOpen && (
-                <div className="flex-grow flex flex-col w-full bg-[#f4fdff]">
-                   <div className="p-4 border-b flex-shrink-0 flex justify-between items-center bg-[#f4fdff]">
+                <div className="flex-grow flex flex-col w-full bg-card">
+                   <div className="p-4 border-b flex-shrink-0 flex justify-between items-center bg-card">
                       <h3 className="text-lg font-semibold capitalize">{activeTabLabel}</h3>
                        <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="h-8 w-8 rounded-full">
                             <X className="h-5 w-5" />
@@ -927,7 +921,7 @@ export default function Home() {
                 setIsMobilePanelOpen(isOpen);
               }}>
                 <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
-                  <SheetHeader className="p-4 border-b flex-row justify-between items-center bg-[#f4fdff]">
+                  <SheetHeader className="p-4 border-b flex-row justify-between items-center bg-card">
                     <SheetTitle className="capitalize">{activeSettingsTab}</SheetTitle>
                      {/* The close button is now provided by SheetContent itself */}
                   </SheetHeader>
@@ -953,3 +947,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
