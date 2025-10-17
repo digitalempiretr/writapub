@@ -17,7 +17,7 @@ body {
   :root {
     --background: 210 20% 98%;
     --foreground: 221 52% 25%; /* Derived from #284177 */
-    --card: hsl(210 20% 98%);
+    --card: hsl(200 100% 98%); /* #f4fdff */
     --card-foreground: hsl(221 52% 25%);
     --popover: hsl(210 20% 98%);
     --popover-foreground: hsl(221 52% 25%);
@@ -113,5 +113,3 @@ body {
     padding-bottom: 80px; 
   }
 }
-
-    
