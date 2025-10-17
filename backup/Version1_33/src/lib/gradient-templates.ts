@@ -1,0 +1,20 @@
+
+export const gradientTemplates = [
+  { name: "Sunrise", css: "linear-gradient(to top right, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)" },
+  { name: "Dark Ocean", css: "linear-gradient(to right, #373b44, #4286f4)" },
+  { name: "Sunset", css: "linear-gradient(to top right, #F3904F 0%, #3B4371 100%)" },
+  { name: "Forest", css: "linear-gradient(to top right, #13547a 0%, #80d0c7 100%)" },
+  { name: "Royal", css: "linear-gradient(to top right, #473B7B 0%, #3584A7 50%, #30D2BE 100%)" },
+  { name: "Mojito", css: "linear-gradient(to top, #1d976c, #93f9b9)" },
+  { name: "Cherry", css: "linear-gradient(to top, #eb3349, #f45c43)" },
+  { name: "Pinky", css: "linear-gradient(to top, #dd5e89, #f7bb97)" },
+  { name: "Purple", css: "linear-gradient(to top right, #6a11cb 0%, #2575fc 100%)" },
+  { name: "Sky", css: "linear-gradient(to top right, #4facfe 0%, #00f2fe 100%)" },
+  { name: "Fire", css: "linear-gradient(to top right, #f12711 0%, #f5af19 100%)" },
+  { name: "Aqua", css: "linear-gradient(to top right, #1a2980 0%, #26d0ce 100%)" },
+  { name: "Peach", css: "linear-gradient(to right, #ffecd2 0%, #fcb69f 100%)" },
+  { name: "Violet", css: "linear-gradient(to right, #8e2de2, #4a00e0)" },
+  { name: "Emerald", css: "linear-gradient(to right, #348f50, #56b4d3)" },
+  { name: "Steel", css: "linear-gradient(to right, #65799b, #5e2563)" },
+  { name: "Cosmic", css: "linear-gradient(to right, #ff00cc, #333399)" },
+];
