@@ -196,7 +196,7 @@ export function TextSettings({
 
         <div className="grid grid-cols-1 gap-4">
           <div className="space-y-4">
-             <Label className="bg-zinc-200 p-2 px-6 rounded-md">TEXT SETTINGS</Label>
+             
              <div className="overflow-x-auto pb-2 -mb-2">
                 <div className="flex items-center gap-2 flex-nowrap">
                 <div className="flex-shrink-0 min-w-[150px]">

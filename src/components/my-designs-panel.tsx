@@ -106,7 +106,7 @@ export function MyDesignsPanel({
   return (
     <div className="p-4 bg-[#f4fdff] text-card-foreground rounded-b-lg space-y-4 mobile-tab-content">
       <div className="flex justify-between items-center">
-        <Label className="bg-zinc-200 p-2 px-6 rounded-md">FAVORITES</Label>
+        
         <div className="flex gap-2">
           <TooltipProvider>
           <Tooltip>

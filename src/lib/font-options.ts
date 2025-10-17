@@ -27,6 +27,7 @@ export const fontOptions: FontOption[] = [
     { value: 'fleur-de-leah', label: 'Fleur De Leah', fontFamily: 'Fleur De Leah', weight: '400', size: 54, lineHeight: 1.4 },
     { value: 'grand-hotel', label: 'Grand Hotel', fontFamily: 'Grand Hotel', weight: '400', size: 55, lineHeight: 1.4 },
     { value: 'ibm-plex-sans', label: 'IBM Plex Sans', fontFamily: 'IBM Plex Sans', weight: '700', size: 48, lineHeight: 1.4 },
+    { value: 'instrument-serif', label: 'Instrument Serif', fontFamily: 'Instrument Serif', weight: '400', size: 50, lineHeight: 1.4 },
     { value: 'inter', label: 'Inter', fontFamily: 'Inter', weight: '600', size: 52, lineHeight: 1.4 },
     { value: 'italianno', label: 'Italianno', fontFamily: 'Italianno', weight: '400', size: 60, lineHeight: 1.3 },
     { value: 'josefin-sans', label: 'Josefin Sans', fontFamily: 'Josefin Sans', weight: '700', size: 48, lineHeight: 1.4 },
