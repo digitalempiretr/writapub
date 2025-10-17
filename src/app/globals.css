@@ -18,9 +18,9 @@ body {
     --background: 210 20% 98%;
     --foreground: 221 52% 25%; /* Derived from #284177 */
     --card: hsl(210 20% 98%);
-    --card-foreground: 221 52% 25%;
-    --popover: 210 20% 98%;
-    --popover-foreground: 221 52% 25%;
+    --card-foreground: hsl(221 52% 25%);
+    --popover: hsl(210 20% 98%);
+    --popover-foreground: hsl(221 52% 25%);
     --primary: 33 99% 68%; /* #FEAC5E */
     --primary-foreground: 0 0% 98%;
     --secondary: 210 16% 90%;
@@ -54,9 +54,9 @@ body {
     --background: 221 52% 15%;
     --foreground: 220 22% 95%; /* #EDE8E4 */
     --card: hsl(221 52% 15%);
-    --card-foreground: 220 22% 95%;
-    --popover: 221 52% 15%;
-    --popover-foreground: 220 22% 95%;
+    --card-foreground: hsl(220 22% 95%);
+    --popover: hsl(221 52% 15%);
+    --popover-foreground: hsl(220 22% 95%);
     --primary: 208 100% 47%; /* Lighter #006BBD for dark mode */
     --primary-foreground: 0 0% 98%;
     --secondary: 221 52% 25%;
@@ -114,3 +114,4 @@ body {
   }
 }
 
+    

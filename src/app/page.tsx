@@ -687,12 +687,8 @@ export default function Home() {
   }
 
   const handleDesktopTabClick = (tab: string) => {
-    if (isSidebarOpen && activeSettingsTab === tab) {
-      setIsSidebarOpen(false);
-    } else {
-      setActiveSettingsTab(tab);
-      setIsSidebarOpen(true);
-    }
+    setActiveSettingsTab(tab);
+    setIsSidebarOpen(true);
   };
 
   const renderActiveTabContent = () => {
@@ -733,6 +729,8 @@ export default function Home() {
     { value: "text", icon: <Type />, label: "Text" },
     { value: "download", icon: <Download />, label: "Download" },
   ];
+  
+  const activeTabLabel = settingsTabs.find(tab => tab.value === activeSettingsTab)?.label;
   
   if (!isClient) {
     return (
@@ -784,8 +782,15 @@ export default function Home() {
               </div>
               
               {isSidebarOpen && (
-                <div className={cn("w-full overflow-hidden transition-all duration-300 ease-in-out", isSidebarOpen ? "w-full" : "w-0")}>
-                  <TabsContent value={activeSettingsTab} className="mt-0 h-full overflow-y-auto">
+                <div className="flex-grow flex flex-col w-full">
+                   <div className="p-4 border-b flex-shrink-0 flex justify-between items-center">
+                      <h3 className="text-lg font-semibold capitalize">{activeTabLabel}</h3>
+                       <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="h-8 w-8 rounded-full">
+                            <X className="h-5 w-5" />
+                            <span className="sr-only">Close Panel</span>
+                        </Button>
+                   </div>
+                  <TabsContent value={activeSettingsTab} className="mt-0 flex-grow overflow-y-auto">
                     {renderActiveTabContent()}
                   </TabsContent>
                 </div>
