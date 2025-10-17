@@ -19,7 +19,7 @@ body {
     --foreground: 221 52% 25%; /* Derived from #284177 */
     --card: 200 100% 98%; /* #f4fdff */
     --card-foreground: hsl(221 52% 25%);
-    --popover: hsl(210 20% 98%);
+    --popover: 200 100% 98%;
     --popover-foreground: hsl(221 52% 25%);
     --primary: 33 99% 68%; /* #FEAC5E */
     --primary-foreground: 0 0% 98%;
@@ -113,5 +113,3 @@ body {
     padding-bottom: 80px; 
   }
 }
-
-    

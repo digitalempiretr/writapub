@@ -754,7 +754,7 @@ export default function Home() {
       <div className="flex flex-grow h-[90vh]">
         {/* Desktop Sidebar */}
         {designs.length > 0 && (
-          <div className={cn("hidden md:flex flex-shrink-0 bg-card transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[10vw]")}>
+          <div className={cn("hidden md:flex flex-shrink-0 bg-card transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[3vw]")}>
             <Tabs
               orientation="vertical"
               value={activeSettingsTab}
@@ -802,7 +802,7 @@ export default function Home() {
         )}
 
         {/* Main Content Area */}
-        <main className={cn("flex-grow flex items-center justify-center overflow-auto h-full p-4", designs.length === 0 ? "w-full" : (isSidebarOpen ? "w-[60vw]" : "w-[90vw]"))}>
+        <main className={cn("flex-grow flex items-center justify-center overflow-auto h-full p-4", designs.length === 0 ? "w-full" : (isSidebarOpen ? "w-[60vw]" : "w-[95vw]"))}>
           {designs.length === 0 ? (
             <div className="w-full max-w-2xl">
               <CreativeMagicPanel 
