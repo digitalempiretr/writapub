@@ -52,7 +52,7 @@ import { pageInitialColors } from "@/lib/colors";
 import { CreativeMagicPanel } from "@/components/creative-magic-panel";
 import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 
 type Design = {
@@ -145,7 +145,7 @@ export default function Home() {
   
   const [activeSettingsTab, setActiveSettingsTab] = useState<string>('designs');
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const [fileName, setFileName] = useState("writa");
 
@@ -156,7 +156,6 @@ export default function Home() {
 
    const closePanel = useCallback(() => {
     setIsMobilePanelOpen(false);
-    setActiveSettingsTab('');
   }, []);
 
    useEffect(() => {
@@ -687,14 +686,14 @@ export default function Home() {
     }
   }
 
-  const handleDesktopTabClick = (tab: string) => {
-    if(isSidebarOpen && activeSettingsTab === tab) {
-      setIsSidebarOpen(false);
+ const handleDesktopTabClick = (tab: string) => {
+    if (isSidebarOpen && activeSettingsTab === tab) {
+        setIsSidebarOpen(false);
     } else {
-      setActiveSettingsTab(tab);
-      setIsSidebarOpen(true);
+        setActiveSettingsTab(tab);
+        setIsSidebarOpen(true);
     }
-  }
+};
 
   const renderActiveTabContent = () => {
     const props = {
@@ -735,6 +734,8 @@ export default function Home() {
     { value: "download", icon: <Download />, label: "Download" },
   ];
   
+  const activeTabLabel = settingsTabs.find(tab => tab.value === activeSettingsTab)?.label;
+  
   if (!isClient) {
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
@@ -748,26 +749,23 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen w-screen flex flex-col overflow-hidden">
-      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-transparent absolute top-0 left-0">
-        <Logo className="text-[2rem]" />
+    <div className="h-screen w-screen flex flex-col">
+      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-card border-b">
+        <Logo className="text-[2rem] bg-transparent" />
       </header>
 
-      <div className="flex flex-grow h-full">
+      <div className="flex flex-grow h-[90vh]">
         {/* Desktop Sidebar */}
         {designs.length > 0 && (
-          <div className={cn("hidden md:flex flex-shrink-0 bg-card border-r transition-all duration-300 ease-in-out", isSidebarOpen ? "w-[30vw]" : "w-[5vw]")}>
+          <div className={cn("hidden md:flex flex-shrink-0 bg-card transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[10vw]")}>
             <Tabs
               orientation="vertical"
               value={activeSettingsTab}
               onValueChange={setActiveSettingsTab}
               className="flex w-full"
             >
-              <div className="flex flex-col items-center p-2 space-y-2 border-r">
-                <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-                  <PanelLeft />
-                </Button>
-                <TabsList className="flex flex-col h-auto justify-start items-center p-0 bg-transparent space-y-1">
+              <div className="flex flex-col items-center p-0 space-y-2">
+                <TabsList className="flex flex-col h-full justify-start items-center p-0 bg-[#f4fdff] space-y-1">
                   {settingsTabs.map(tab => (
                     <TooltipProvider key={tab.value}>
                       <Tooltip>
@@ -787,20 +785,27 @@ export default function Home() {
                 </TabsList>
               </div>
               
-              <div className={cn("flex-grow overflow-hidden transition-all duration-300 ease-in-out", isSidebarOpen ? "w-full" : "w-0")}>
-                {isSidebarOpen && (
-                  <TabsContent value={activeSettingsTab} className="mt-0 h-full overflow-y-auto">
+              {isSidebarOpen && (
+                <div className="flex-grow flex flex-col w-full">
+                   <div className="p-4 border-b flex-shrink-0 flex justify-between items-center bg-[#f4fdff]">
+                      <h3 className="text-lg font-semibold capitalize">{activeTabLabel}</h3>
+                       <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="h-8 w-8 rounded-full">
+                            <X className="h-5 w-5" />
+                            <span className="sr-only">Close Panel</span>
+                        </Button>
+                   </div>
+                  <TabsContent value={activeSettingsTab} className="mt-0 flex-grow overflow-y-auto">
                     {renderActiveTabContent()}
                   </TabsContent>
-                )}
-              </div>
+                </div>
+              )}
 
             </Tabs>
           </div>
         )}
 
         {/* Main Content Area */}
-        <main className="flex-grow flex items-center justify-center overflow-auto h-full p-4">
+        <main className={cn("flex-grow flex items-center justify-center overflow-auto h-full p-4", designs.length === 0 ? "w-full" : (isSidebarOpen ? "w-[60vw]" : "w-[90vw]"))}>
           {designs.length === 0 ? (
             <div className="w-full max-w-2xl">
               <CreativeMagicPanel 
@@ -867,7 +872,7 @@ export default function Home() {
                 </div>
                 
                 <div className="w-full max-w-md flex justify-end mt-2">
-                  <div className="bg-card backdrop-blur-sm rounded-md p-1 flex gap-1">
+                  <div className="bg-card backdrop-blur-sm  p-1 flex gap-1">
                       {canvasSizes.map(size => (
                       <TooltipProvider key={size.name}>
                           <Tooltip>
@@ -913,19 +918,16 @@ export default function Home() {
         {isClient && designs.length > 0 && (
             <div ref={mobilePanelRef} className="md:hidden">
               <Sheet open={isMobilePanelOpen} onOpenChange={(isOpen) => {
-                setIsMobilePanelOpen(isOpen);
                 if (!isOpen) {
                   setActiveSettingsTab('');
                 }
+                setIsMobilePanelOpen(isOpen);
               }}>
                 <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
-                   <div className="p-4 border-b flex-shrink-0 flex justify-between items-center">
-                      <h3 className="text-lg font-semibold capitalize">{activeSettingsTab}</h3>
-                       <Button variant="ghost" size="icon" onClick={closePanel} className="h-8 w-8 rounded-full">
-                            <X className="h-5 w-5" />
-                            <span className="sr-only">Close Panel</span>
-                        </Button>
-                   </div>
+                  <SheetHeader className="p-4 border-b flex-row justify-between items-center bg-[#f4fdff]">
+                    <SheetTitle className="capitalize">{activeSettingsTab}</SheetTitle>
+                     {/* The close button is now provided by SheetContent itself */}
+                  </SheetHeader>
                    <div className="flex-grow overflow-y-auto">
                     {renderActiveTabContent()}
                    </div>
@@ -948,4 +950,3 @@ export default function Home() {
     </div>
   );
 }
-

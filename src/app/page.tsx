@@ -688,12 +688,15 @@ export default function Home() {
 
  const handleDesktopTabClick = (tab: string) => {
     if (isSidebarOpen && activeSettingsTab === tab) {
-        setIsSidebarOpen(false);
+      setIsSidebarOpen(false);
+    } else if (isSidebarOpen && activeSettingsTab !== tab) {
+      setActiveSettingsTab(tab);
     } else {
-        setActiveSettingsTab(tab);
-        setIsSidebarOpen(true);
+      setActiveSettingsTab(tab);
+      setIsSidebarOpen(true);
     }
-};
+  };
+
 
   const renderActiveTabContent = () => {
     const props = {
@@ -751,7 +754,7 @@ export default function Home() {
   return (
     <div className="h-screen w-screen flex flex-col">
       <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-card border-b">
-        <Logo className="text-[2rem] text-foreground" />
+        <Logo className="text-[2rem] bg-transparent" />
       </header>
 
       <div className="flex flex-grow h-[90vh]">
@@ -764,8 +767,8 @@ export default function Home() {
               onValueChange={setActiveSettingsTab}
               className="flex w-full"
             >
-              <div className="flex flex-col items-center p-2 space-y-2">
-                <TabsList className="flex flex-col h-auto justify-start items-center p-0 bg-transparent space-y-1">
+              <div className="flex flex-col items-center p-0 space-y-2 bg-[#f4fdff]">
+                <TabsList className="flex flex-col h-full justify-start items-center p-0 bg-[#f4fdff] space-y-1">
                   {settingsTabs.map(tab => (
                     <TooltipProvider key={tab.value}>
                       <Tooltip>
@@ -872,7 +875,7 @@ export default function Home() {
                 </div>
                 
                 <div className="w-full max-w-md flex justify-end mt-2">
-                  <div className="bg-card backdrop-blur-sm rounded-md p-1 flex gap-1">
+                  <div className="bg-card backdrop-blur-sm  p-1 flex gap-1">
                       {canvasSizes.map(size => (
                       <TooltipProvider key={size.name}>
                           <Tooltip>
@@ -950,3 +953,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
