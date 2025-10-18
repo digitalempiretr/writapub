@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Loader2, ArrowUp } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type CreativeMagicPanelProps = {
   text: string;
@@ -21,8 +22,7 @@ export function CreativeMagicPanel({ text, setText, handleGenerate, isLoading }:
   return (
     <div className="space-y-6 max-w-[800px] mx-auto w-full">
       <CardTitle className="text-primary-foreground">Creative Magic</CardTitle>
-      <div className="space-y-4">
-        <Label htmlFor={mainTextAreaId} className="sr-only">Main text area</Label>
+      <div className="relative animated-gradient-border rounded-lg">
         <Textarea
           id={mainTextAreaId}
           name="main-text-area"
@@ -30,23 +30,23 @@ export function CreativeMagicPanel({ text, setText, handleGenerate, isLoading }:
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={8}
-          className="bg-card text-card-foreground placeholder:text-muted-foreground border-0"
+          className="relative z-10 bg-card/80 backdrop-blur-sm text-card-foreground placeholder:text-muted-foreground border-0"
         />
-        <div className="flex items-center justify-end gap-4">
-          <p className="text-xs text-primary-foreground">{text.length} characters</p>
-          <Button
-            onClick={handleGenerate}
-            disabled={isLoading}
-            size="icon"
-            className="rounded-full bg-primary hover:bg-primary/80"
-          >
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <ArrowUp className="h-4 w-4" />
-            )}
-          </Button>
-        </div>
+      </div>
+      <div className="flex items-center justify-end gap-4">
+        <p className="text-xs text-primary-foreground">{text.length} characters</p>
+        <Button
+          onClick={handleGenerate}
+          disabled={isLoading}
+          size="icon"
+          className="rounded-full bg-primary hover:bg-primary/80"
+        >
+          {isLoading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <ArrowUp className="h-4 w-4" />
+          )}
+        </Button>
       </div>
     </div>
   );
