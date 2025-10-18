@@ -5,12 +5,12 @@
 
 body {  
   font-family: Arial, Helvetica, sans-serif;
+  
   background-image: 
   
-  url("https://www.transparenttextures.com/patterns/project-paper.png");
-  
-  /*linear-gradient(to top right, #FEAC5E, #C779D0, #4BC0C8);*/
-  
+  url("https://www.transparenttextures.com/patterns/project-paper.png")
+  /*linear-gradient(to top right, #FEAC5E, #C779D0, #4BC0C8);*/ ;
+  background-color: hsl(var(--secondary));
   min-height: 100vh;
   background-attachment: fixed;
   
@@ -88,58 +88,27 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
-  .dark-supabase {
-    --background: 0 0% 7.0588%;
-    --foreground: 214.2857 31.8182% 91.3725%;
-    --card: 0 0% 9.0196%;
-    --card-foreground: 214.2857 31.8182% 91.3725%;
-    --popover: 0 0% 14.1176%;
-    --popover-foreground: 0 0% 66.2745%;
-    --primary: 154.8980 100.0000% 19.2157%;
-    --primary-foreground: 152.7273 19.2982% 88.8235%;
-    --secondary: 0 0% 14.1176%;
-    --secondary-foreground: 0 0% 98.0392%;
-    --muted: 0 0% 12.1569%;
-    --muted-foreground: 0 0% 63.5294%;
-    --accent: 0 0% 19.2157%;
-    --accent-foreground: 0 0% 98.0392%;
-    --destructive: 6.6667 60.0000% 20.5882%;
-    --destructive-foreground: 12.0000 12.1951% 91.9608%;
-    --border: 0 0% 16.0784%;
-    --input: 0 0% 14.1176%;
-    --ring: 141.8919 69.1589% 58.0392%;
-    --chart-1: 141.8919 69.1589% 58.0392%;
-    --chart-2: 213.1169 93.9024% 67.8431%;
-    --chart-3: 255.1351 91.7355% 76.2745%;
-    --chart-4: 43.2558 96.4126% 56.2745%;
-    --chart-5: 172.4551 66.0079% 50.3922%;
-    --sidebar: 0 0% 7.0588%;
-    --sidebar-foreground: 0 0% 53.7255%;
-    --sidebar-primary: 154.8980 100.0000% 19.2157%;
-    --sidebar-primary-foreground: 152.7273 19.2982% 88.8235%;
-    --sidebar-accent: 0 0% 19.2157%;
-    --sidebar-accent-foreground: 0 0% 98.0392%;
-    --sidebar-border: 0 0% 16.0784%;
-    --sidebar-ring: 141.8919 69.1589% 58.0392%;
-    --font-sans: Outfit, sans-serif;
-    --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-    --font-mono: monospace;
+  .okyanus-temasi {
+    --background: 197 37% 24%; /* #2a4b5d - Dark Teal */
+    --foreground: 210 20% 98%; /* #f8f9fa - Almost White */
+    --card: 197 37% 28%; /* #32586b - Slightly lighter teal */
+    --card-foreground: 210 20% 98%;
+    --popover: 197 37% 20%; /* #223f4f - Even darker teal */
+    --popover-foreground: 210 20% 98%;
+    --primary: 173 58% 39%; /* #2a9d8f - Viridian Green */
+    --primary-foreground: 210 20% 98%;
+    --secondary: 197 37% 35%; /* #416b7f */
+    --secondary-foreground: 210 20% 98%;
+    --muted: 197 37% 35%;
+    --muted-foreground: 210 20% 80%; /* #c8d1d8 */
+    --accent: 43 74% 66%; /* #f4a261 - Sandy Brown */
+    --accent-foreground: 197 37% 15%; /* #1e3542 - Darkest Teal */
+    --destructive: 0 72% 51%; /* #e76f51 - Burnt Sienna */
+    --destructive-foreground: 210 20% 98%;
+    --border: 197 37% 30%; /* #375e70 */
+    --input: 197 37% 30%;
+    --ring: 173 58% 45%; /* #35b0a3 */
     --radius: 0.5rem;
-    --shadow-x: 0px;
-    --shadow-y: 1px;
-    --shadow-blur: 3px;
-    --shadow-spread: 0px;
-    --shadow-opacity: 0.17;
-    --shadow-color: #000000;
-    --shadow-2xs: 0px 1px 3px 0px 0 0% 0% / 0.09;
-    --shadow-xs: 0px 1px 3px 0px 0 0% 0% / 0.09;
-    --shadow-sm: 0px 1px 3px 0px 0 0% 0% / 0.17, 0px 1px 2px -1px 0 0% 0% / 0.17;
-    --shadow: 0px 1px 3px 0px 0 0% 0% / 0.17, 0px 1px 2px -1px 0 0% 0% / 0.17;
-    --shadow-md: 0px 1px 3px 0px 0 0% 0% / 0.17, 0px 2px 4px -1px 0 0% 0% / 0.17;
-    --shadow-lg: 0px 1px 3px 0px 0 0% 0% / 0.17, 0px 4px 6px -1px 0 0% 0% / 0.17;
-    --shadow-xl: 0px 1px 3px 0px 0 0% 0% / 0.17, 0px 8px 10px -1px 0 0% 0% / 0.17;
-    --shadow-2xl: 0px 1px 3px 0px 0 0% 0% / 0.43;
-
   }
 }
 
@@ -169,4 +138,43 @@ body {
   #designs-container {
     padding-bottom: 80px; 
   }
+}
+
+.animated-gradient-border {
+    position: relative;
+    z-index: 0;
+    border-radius: 8px; /* Corresponds to 'rounded-lg' */
+}
+
+.animated-gradient-border::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: -2%;
+    left: -2%;
+    width: 104%;
+    height: 104%;
+    border-radius: 8px;
+    background-image: linear-gradient(
+      var(--rotate),
+      #5ddcff,
+      #3c67e3 43%,
+      #4e00c2
+    );
+    animation: spin 2.5s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        --rotate: 0deg;
+    }
+    100% {
+        --rotate: 360deg;
+    }
+}
+
+@property --rotate {
+    syntax: "<angle>";
+    initial-value: 132deg;
+    inherits: false;
 }
