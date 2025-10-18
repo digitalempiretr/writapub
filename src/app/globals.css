@@ -84,6 +84,29 @@ body {
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  .okyanus-temasi {
+    --background: 205 90% 95%; /* Açık mavi arka plan */
+    --foreground: 215 60% 25%; /* Koyu mavi metin */
+    --card: 205 85% 98%; /* Çok açık mavi kart */
+    --card-foreground: 215 60% 25%;
+    --popover: 205 85% 98%;
+    --popover-foreground: 215 60% 25%;
+    --primary: 190 85% 50%; /* Turkuaz ana renk */
+    --primary-foreground: 0 0% 98%;
+    --secondary: 200 50% 90%; /* Açık gri-mavi */
+    --secondary-foreground: 215 60% 20%;
+    --muted: 200 50% 90%;
+    --muted-foreground: 215 20% 55%;
+    --accent: 180 70% 60%; /* Deniz yeşili vurgu */
+    --accent-foreground: 215 60% 20%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 200 40% 80%; /* Mavi-gri kenarlık */
+    --input: 200 40% 80%;
+    --ring: 190 90% 45%; /* Daha parlak turkuaz ring */
+    --radius: 0.5rem;
+  }
 }
 
 @layer base {
