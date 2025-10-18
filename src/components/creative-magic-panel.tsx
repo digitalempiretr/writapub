@@ -31,7 +31,7 @@ export function CreativeMagicPanel({ text, setText, handleGenerate, isLoading }:
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={8}
-          className="bg-card/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground border-0"
+          className="bg-card/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground border-2 border-primary"
         />
         <div className="flex items-center justify-end gap-4">
           <p className="text-xs text-primary-foreground">{text.length} characters</p>
