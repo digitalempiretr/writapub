@@ -30,7 +30,7 @@ export function CreativeMagicPanel({ text, setText, handleGenerate, isLoading }:
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={8}
-          className="relative z-10 bg-card/80 backdrop-blur-sm text-card-foreground placeholder:text-muted-foreground border-0"
+          className="relative z-10 bg-background text-foreground placeholder:text-muted-foreground border-0"
         />
       </div>
       <div className="flex items-center justify-end gap-4">
