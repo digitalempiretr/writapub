@@ -24,15 +24,17 @@ export function CreativeMagicPanel({ text, setText, handleGenerate, isLoading }:
       <CardTitle className="text-foreground">Creative Magic</CardTitle>
       <div className="space-y-4">
         <Label htmlFor={mainTextAreaId} className="sr-only">Main text area</Label>
-        <Textarea
-          id={mainTextAreaId}
-          name="main-text-area"
-          placeholder="Paste your text here..."
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          rows={8}
-          className="bg-background text-foreground placeholder:text-muted-foreground border-2 border-primary shadow-[0_0_15px_5px_hsl(var(--primary)/0.5)]"
-        />
+        <div className="relative">
+          <Textarea
+            id={mainTextAreaId}
+            name="main-text-area"
+            placeholder="Paste your text here..."
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            rows={8}
+            className="relative z-10 bg-card text-card-foreground placeholder:text-muted-foreground border-0"
+          />
+        </div>
         <div className="flex items-center justify-end gap-4">
           <p className="text-xs text-foreground">{text.length} characters</p>
           <Button

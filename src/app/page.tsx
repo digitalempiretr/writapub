@@ -737,7 +737,7 @@ export default function Home() {
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
         background: 
-        'linear-gradient(to top right, hsl(var(--primary)), hsl(var(--secondary)), hsl(var(--accent))'
+        'linear-gradient(to top right, var(--primary), var(--secondary), var(--accent)'
         // 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)'
         
 
@@ -908,7 +908,7 @@ export default function Home() {
       {isGeneratingAnimation && (
           <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
             background: 
-            'linear-gradient(to top right, hsl(var(--primary)), hsl(var(--secondary)), hsl(var(--accent))'
+            'linear-gradient(to top right,  (--primary),  (--secondary),  (--accent)'
         // 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)'
           }}>
               <div className="w-64 h-64">
