@@ -73,7 +73,7 @@ export function DesignsPanel({ handleApplyTemplate }: DesignsPanelProps) {
   };
 
   return (
-    <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-6 mobile-tab-content">
+    <div className="p-4 bg-sidebar-background text-sidebar-foreground rounded-b-lg space-y-6 mobile-tab-content">
       {Object.entries(groupedTemplates).map(([category, templates]) => (
         <div key={category} className="space-y-3">
           <Label className="bg-zinc-200 p-2 px-6 rounded-md uppercase text-sm font-semibold">{category}</Label>

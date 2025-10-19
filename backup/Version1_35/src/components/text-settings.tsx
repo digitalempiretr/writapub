@@ -164,7 +164,7 @@ export function TextSettings({
 
   return (
     <TooltipProvider>
-      <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-4">
+      <div className="p-4 bg-Sidebar text-Sidebar-primary rounded-b-lg space-y-4">
         <div className="relative">
           <Label htmlFor={`${baseId}-text-editor`} className="sr-only">Text Editor</Label>
           <Textarea

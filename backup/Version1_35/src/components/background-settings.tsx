@@ -79,7 +79,7 @@ export function BackgroundSettings({
   const baseId = useId();
 
   return (
-    <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-4 mobile-tab-content">
+    <div className="p-4 bg-sidebar-background text-sidebar-foreground rounded-b-lg space-y-4 mobile-tab-content">
       <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
         <div className="flex items-center gap-2">
           <TabsList className="grid flex-grow grid-cols-3">

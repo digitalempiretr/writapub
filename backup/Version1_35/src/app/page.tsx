@@ -758,15 +758,15 @@ export default function Home() {
       <div className="flex flex-grow h-[90vh]">
         {/* Desktop Sidebar */}
         {designs.length > 0 && (
-          <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[3vw]")}>
+          <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar-background transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[3vw]")}>
             <Tabs
               orientation="vertical"
               value={activeSettingsTab}
               onValueChange={setActiveSettingsTab}
               className="flex w-full"
             >
-              <div className="flex flex-col items-center p-0 space-y-2 bg-sidebar">
-                <TabsList className="flex flex-col h-full justify-start items-center p-0 bg-sidebar space-y-1">
+              <div className="flex flex-col items-center p-0 space-y-2 bg-sidebar-background">
+                <TabsList className="flex flex-col h-full justify-start items-center p-0 bg-sidebar-background space-y-1">
                   {settingsTabs.map(tab => (
                     <TooltipProvider key={tab.value}>
                       <Tooltip>
@@ -787,8 +787,8 @@ export default function Home() {
               </div>
               
               {isSidebarOpen && (
-                <div className="flex-grow flex flex-col w-full bg-card">
-                   <div className="p-4 border-b flex-shrink-0 flex justify-between items-center bg-card">
+                <div className="flex-grow flex flex-col w-full bg-sidebar-background">
+                   <div className="p-4 border-b flex-shrink-0 flex justify-between items-center bg-sidebar-background">
                       <h3 className="text-lg font-semibold capitalize">{activeTabLabel}</h3>
                        <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="h-8 w-8 rounded-full">
                             <X className="h-5 w-5" />
@@ -954,3 +954,4 @@ export default function Home() {
   );
 }
 
+    

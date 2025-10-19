@@ -104,7 +104,7 @@ export function MyDesignsPanel({
   };
 
   return (
-    <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-4 mobile-tab-content">
+    <div className="p-4 bg-Sidebar text-card-foreground rounded-b-lg space-y-4 mobile-tab-content">
       <div className="flex justify-between items-center">
         
         <div className="flex gap-2">

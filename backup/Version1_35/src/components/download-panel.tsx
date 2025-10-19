@@ -27,7 +27,7 @@ export function DownloadPanel({
   const baseId = useId();
 
   return (
-    <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-4">
+    <div className="p-4 bg-sidebar-background text-sidebar-foreground rounded-b-lg space-y-4">
       
       <div className="space-y-2">
         <Label htmlFor={`${baseId}-file-name`}>File Name</Label>
