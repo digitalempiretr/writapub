@@ -19,31 +19,31 @@ body {
 @layer base {
   :root {
     --background: 210 20% 98%;
-    --foreground: 221 52% 25%; /* Derived from #284177 */
-    --card: 200 100% 98%; /* #f4fdff */
+    --foreground: 221 52% 25%;
+    --card: 200 100% 98%;
     --card-foreground: 221 52% 25%;
     --popover: 200 100% 98%;
     --popover-foreground: 221 52% 25%;
-    --primary: 33 99% 68%; /* #FEAC5E */
+    --primary: 33 99% 68%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 210 16% 90%;
-    --secondary-foreground: 222 84% 5%;
+    --secondary: 181.6901 43.5583% 68.0392%;
+    --secondary-foreground: 0 0% 20%;
     --muted: 210 16% 90%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 292 55% 65%; /* #C779D0 */
+    --accent: 292 55% 65%;
     --accent-foreground: 221 52% 25%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 24 12% 80%; /* #C2AFA8 */
-    --input: 24 12% 80%; /* #C2AFA8 */
-    --ring: 208 100% 37%; /* #006BBD */
+    --border: 24 12% 80%;
+    --input: 24 12% 80%;
+    --ring: 208 100% 37%;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.4rem;
-    --sidebar-background: 220 22% 95%; /* From #EDE8E4 */
+    --sidebar: 220 22% 95%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
@@ -55,22 +55,22 @@ body {
   }
   .dark {
     --background: 221 52% 15%;
-    --foreground: 220 22% 95%; /* #EDE8E4 */
-    --card: var(--background);
+    --foreground: 220 22% 95%;
+    --card: 221 52% 15%;
     --card-foreground: 220 22% 95%;
-    --popover: var(--background);
+    --popover: 221 52% 15%;
     --popover-foreground: 220 22% 95%;
-    --primary: 208 100% 47%; /* Lighter #006BBD for dark mode */
+    --primary: 208 100% 47%;
     --primary-foreground: 0 0% 98%;
     --secondary: 221 52% 25%;
     --secondary-foreground: 0 0% 98%;
     --muted: 221 52% 25%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 204 77% 62%; /* Lighter #80C8EE for dark mode */
+    --accent: 204 77% 62%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 24 12% 40%; /* Darker #C2AFA8 */
+    --border: 24 12% 40%;
     --input: 24 12% 40%;
     --ring: 208 100% 47%;
     --chart-1: 220 70% 50%;
@@ -78,7 +78,7 @@ body {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
+    --sidebar: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
@@ -87,7 +87,8 @@ body {
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
-  .bubblegum{
+  .bubblegum
+  {
     --background: 330 47.0588% 93.3333%;
     --foreground: 0 0% 35.6863%;
     --card: 41.5385 92.8571% 89.0196%;
@@ -112,7 +113,7 @@ body {
     --chart-3: 42.1429 91.3043% 81.9608%;
     --chart-4: 329.6386 77.5701% 79.0196%;
     --chart-5: 330.6294 64.1256% 56.2745%;
-    --sidebar-background: 326.2500 69.5652% 90.9804%;
+    --sidebar: 326.2500 69.5652% 90.9804%;
     --sidebar-foreground: 0 0% 20%;
     --sidebar-primary: 330.3659 81.1881% 60.3922%;
     --sidebar-primary-foreground: 0 0% 100%;
@@ -166,7 +167,7 @@ body {
     --chart-3: 123.0380 46.1988% 33.5294%;
     --chart-4: 124.4776 55.3719% 23.7255%;
     --chart-5: 125.7143 51.2195% 8.0392%;
-    --sidebar: 33.7500 34.7826% 90.9804%;
+    --sidebar: 34 35% 91%;
     --sidebar-foreground: 8.8889 27.8351% 19.0196%;
     --sidebar-primary: 123.0380 46.1988% 33.5294%;
     --sidebar-primary-foreground: 0 0% 100%;
@@ -422,3 +423,4 @@ body {
     initial-value: 132deg;
     inherits: false;
 }
+

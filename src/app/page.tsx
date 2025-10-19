@@ -751,8 +751,8 @@ export default function Home() {
 
   return (
     <div className="h-screen w-screen flex flex-col">
-      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-transparent border-b">
-        <Logo className="text-[2rem] bg-transparent" />
+      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-transparent">
+        <Logo className="text-[2rem] bg-transparent text-primary" />
       </header>
 
       <div className="flex flex-grow h-[90vh]">
@@ -787,8 +787,8 @@ export default function Home() {
               </div>
               
               {isSidebarOpen && (
-                <div className="flex-grow flex flex-col w-full bg-card">
-                   <div className="p-4 border-b flex-shrink-0 flex justify-between items-center bg-card">
+                <div className="flex-grow flex flex-col w-full bg-sidebar">
+                   <div className="p-4 flex-shrink-0 flex justify-between items-center bg-sidebar">
                       <h3 className="text-lg font-semibold capitalize">{activeTabLabel}</h3>
                        <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="h-8 w-8 rounded-full">
                             <X className="h-5 w-5" />
