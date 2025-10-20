@@ -897,14 +897,13 @@ export default function Home() {
             </div>
           ) : (
             <div ref={designsRef} className="w-full h-full flex flex-col items-center justify-center" onWheel={handleWheelZoom}>
-                <div className="w-full max-w-md relative">
+                <div className="relative" style={{ width: `${100 * zoomLevel}%`, maxWidth: '90vw' }}>
                   <Carousel className="w-full" setApi={setCarouselApi} opts={{ dragFree: true }}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
                           <div 
                             className="p-1 group relative transition-transform duration-300"
-                            style={{ transform: `scale(${zoomLevel})` }}
                           >
                             <Card className="overflow-hidden border-0">
                               <CardContent className="p-0 relative bg-card" style={{ aspectRatio: `${canvasSize.width}/${canvasSize.height}`}}>
@@ -1065,3 +1064,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
