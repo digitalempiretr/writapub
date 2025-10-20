@@ -751,8 +751,9 @@ export default function Home() {
 
   return (
     <div className="h-screen w-screen flex flex-col">
-      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-transparent">
-        <Logo className="text-[2rem] bg-transparent text-primary" />
+       {/* HEADER */}
+      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-primary">
+        <Logo className="text-[2rem] bg-transparent text-primary-foreground" />
       </header>
 
       <div className="flex flex-grow h-[90vh]">
@@ -908,7 +909,7 @@ export default function Home() {
       {isGeneratingAnimation && (
           <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
             background: 
-            'linear-gradient(to top right,  (--primary),  (--secondary),  (--accent)'
+            'linear-gradient(to top right,  var(--primary),  var(--secondary),  var(--accent)'
         // 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)'
           }}>
               <div className="w-64 h-64">
