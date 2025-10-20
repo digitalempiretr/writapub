@@ -704,11 +704,9 @@ export default function Home() {
   };
 
   const handleWheelZoom = (event: React.WheelEvent<HTMLDivElement>) => {
-      if (event.ctrlKey) {
-          event.preventDefault();
-          const direction = event.deltaY > 0 ? 'out' : 'in';
-          handleZoom(direction);
-      }
+      event.preventDefault();
+      const direction = event.deltaY > 0 ? 'out' : 'in';
+      handleZoom(direction);
   };
 
 
