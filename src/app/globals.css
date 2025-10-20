@@ -10,7 +10,7 @@ body {
   
   url("https://www.transparenttextures.com/patterns/project-paper.png")
   /*linear-gradient(to top right, #FEAC5E, #C779D0, #4BC0C8);*/ ;
-  background-color: hsl(var(--secondary));
+  background-color: hsl(var(--background));
   min-height: 100vh;
   background-attachment: fixed;
   
@@ -56,9 +56,9 @@ body {
   .dark {
     --background: hsl(221 52% 15%);
     --foreground: hsl(220 22% 95%);
-    --card: var(--background);
+    --card: hsl(var(--background));
     --card-foreground: hsl(220 22% 95%);
-    --popover: var(--background);
+    --popover: hsl(var(--background));
     --popover-foreground: hsl(220 22% 95%);
     --primary: hsl(208 100% 47%);
     --primary-foreground: hsl(0 0% 98%);
@@ -427,7 +427,6 @@ body {
   }
 }
 
-
 @media (max-width: 767px) {
   .mobile-tab-content {
     overflow-y: auto;
@@ -439,41 +438,8 @@ body {
   }
 }
 
-.animated-gradient-border {
-    position: relative;
-    z-index: 0;
-    border-radius: 8px; /* Corresponds to 'rounded-lg' */
+.bullet-indicator[data-active="true"] {
+  @apply bg-primary opacity-100 scale-125;
 }
 
-.animated-gradient-border::before {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    top: -2%;
-    left: -2%;
-    width: 104%;
-    height: 104%;
-    border-radius: 8px;
-    background-image: linear-gradient(
-      var(--rotate),
-      #5ddcff,
-      #3c67e3 43%,
-      #4e00c2
-    );
-    animation: spin 2.5s linear infinite;
-}
-
-@keyframes spin {
-    0% {
-        --rotate: 0deg;
-    }
-    100% {
-        --rotate: 360deg;
-    }
-}
-
-@property --rotate {
-    syntax: "<angle>";
-    initial-value: 132deg;
-    inherits: false;
-}
+    

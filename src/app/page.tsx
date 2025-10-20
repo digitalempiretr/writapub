@@ -9,15 +9,12 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardFooter,
 } from "@/components/ui/card";
 import {
   Carousel,
   CarouselApi,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
 import {
   AlertDialog,
@@ -96,13 +93,15 @@ export default function Home() {
       return
     }
 
-    setCurrentSlide(carouselApi.selectedScrollSnap())
-
     const onSelect = () => {
       setCurrentSlide(carouselApi.selectedScrollSnap())
     }
 
     carouselApi.on("select", onSelect)
+    
+    // Initial call
+    onSelect();
+
     return () => {
       carouselApi.off("select", onSelect)
     }
@@ -752,8 +751,8 @@ export default function Home() {
   return (
     <div className="h-screen w-screen flex flex-col">
        {/* HEADER */}
-      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-primary">
-        <Logo className="text-[2rem] bg-transparent text-primary-foreground" />
+      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-transparent">
+        <Logo className="text-[2rem] text-primary-foreground" />
       </header>
 
       <div className="flex flex-grow h-[90vh]">
@@ -868,11 +867,21 @@ export default function Home() {
                         </CarouselItem>
                       ))}
                     </CarouselContent>
-                    <CarouselPrevious className="-left-4 md:-left-12" />
-                    <CarouselNext className="-right-4 md:-right-12" />
                   </Carousel>
                 </div>
                 
+                {/* Carousel Bullet Navigation */}
+                <div className="flex justify-center gap-2 mt-4">
+                  {designs.map((_, index) => (
+                    <div
+                      key={index}
+                      data-active={index === currentSlide}
+                      onClick={() => carouselApi?.scrollTo(index)}
+                      className="h-2 w-2 rounded-full bg-primary/50 cursor-pointer transition-all duration-300 bullet-indicator"
+                    />
+                  ))}
+                </div>
+
                 <div className="w-full max-w-md flex justify-end mt-2">
                   <div className="bg-card backdrop-blur-sm  p-1 flex gap-1">
                       {canvasSizes.map(size => (
@@ -955,3 +964,4 @@ export default function Home() {
   );
 }
 
+    
