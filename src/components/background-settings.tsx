@@ -82,7 +82,7 @@ export function BackgroundSettings({
     <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-4 mobile-tab-content">
       <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
         <div className="flex items-center gap-2">
-          <TabsList className="grid flex-grow grid-cols-3">
+          <TabsList className="grid flex-grow grid-cols-3 font-sans">
             <TabsTrigger value="flat">Solid Color</TabsTrigger>
             <TabsTrigger value="gradient">Gradient</TabsTrigger>
             <TabsTrigger value="image">Image</TabsTrigger>

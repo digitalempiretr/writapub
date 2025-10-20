@@ -25,6 +25,7 @@ import { Separator } from "./ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { textEffects, TextEffect } from "@/lib/text-effects";
 import { cn } from "@/lib/utils";
+import { useCarouselSync } from "@/hooks/use-carousel-sync";
 
 
 type Unit = 'px' | 'em' | 'rem';
@@ -127,6 +128,9 @@ export function TextSettings({
   const [effectsApi, setEffectsApi] = useState<CarouselApi>();
   const [currentEffectSlide, setCurrentEffectSlide] = useState(0);
 
+  useCarouselSync(colorPaletteApi, setCurrentPaletteSlide);
+  useCarouselSync(effectsApi, setCurrentEffectSlide);
+
   useEffect(() => {
     setInternalFontSize(Number(activeFont.size));
     setInternalLineHeight(Number(activeFont.lineHeight));
@@ -136,23 +140,6 @@ export function TextSettings({
   useEffect(() => {
     setInternalText(text);
   }, [text]);
-
-  useEffect(() => {
-    if (!colorPaletteApi) return;
-    const onSelect = () => setCurrentPaletteSlide(colorPaletteApi.selectedScrollSnap());
-    colorPaletteApi.on("select", onSelect);
-    onSelect();
-    return () => colorPaletteApi.off("select", onSelect);
-  }, [colorPaletteApi]);
-
-  useEffect(() => {
-    if (!effectsApi) return;
-    const onSelect = () => setCurrentEffectSlide(effectsApi.selectedScrollSnap());
-    effectsApi.on("select", onSelect);
-    onSelect();
-    return () => effectsApi.off("select", onSelect);
-  }, [effectsApi]);
-
 
   const handleRegenerateClick = () => {
     setText(internalText);
@@ -678,4 +665,3 @@ export function TextSettings({
     </TooltipProvider>
   );
 }
-

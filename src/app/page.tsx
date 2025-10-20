@@ -30,7 +30,7 @@ import {
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Star, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Star, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -50,6 +50,7 @@ import { CreativeMagicPanel } from "@/components/creative-magic-panel";
 import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Slider } from "@/components/ui/slider";
 
 
 type Design = {
@@ -147,6 +148,7 @@ export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const [fileName, setFileName] = useState("writa");
+  const [zoomLevel, setZoomLevel] = useState(1);
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const designsRef = useRef<HTMLDivElement>(null);
@@ -793,15 +795,17 @@ export default function Home() {
       <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
         background: 
         'linear-gradient(to top right, var(--primary), var(--secondary), var(--accent)'
-        // 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)'
-        
-
       }}>
           <div className="w-64 h-64">
               <Lottie animationData={webflowAnimation} loop={true} />
           </div>
       </div>
     );
+  }
+
+  const handleCanvasSizeChange = (size: CanvasSize) => {
+    setCanvasSize(size);
+    setZoomLevel(1);
   }
 
   return (
@@ -879,7 +883,10 @@ export default function Home() {
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
-                          <div className="p-1 group relative">
+                          <div 
+                            className="p-1 group relative transition-transform duration-300"
+                            style={{ transform: `scale(${zoomLevel})` }}
+                          >
                             <Card className="overflow-hidden border-0">
                               <CardContent className="p-0 relative bg-card" style={{ aspectRatio: `${canvasSize.width}/${canvasSize.height}`}}>
                                 {renderCanvas(design, index)}
@@ -929,8 +936,40 @@ export default function Home() {
                 {/* Carousel Bullet Navigation */}
                 {renderBulletNavigation()}
 
-                <div className="w-full max-w-md flex justify-end mt-2">
-                  <div className="bg-card backdrop-blur-sm  p-1 flex gap-1">
+                <div className="w-full max-w-md flex justify-between items-center mt-4 space-x-2">
+                   {/* Zoom Controls */}
+                   <div className="bg-card backdrop-blur-sm p-1 flex-grow flex items-center gap-2">
+                        <ZoomOut className="h-5 w-5 text-muted-foreground" />
+                        <Slider
+                            value={[zoomLevel]}
+                            onValueChange={(value) => setZoomLevel(value[0])}
+                            min={0.25}
+                            max={3}
+                            step={0.05}
+                            className="flex-grow"
+                        />
+                        <ZoomIn className="h-5 w-5 text-muted-foreground" />
+                        <TooltipProvider>
+                            <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={() => setZoomLevel(1)}
+                                >
+                                <RotateCcw className="h-5 w-5" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Reset Zoom</p>
+                            </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </div>
+
+                  {/* Format Controls */}
+                  <div className="bg-card backdrop-blur-sm  p-1 flex gap-1 flex-shrink-0">
                       {canvasSizes.map(size => (
                       <TooltipProvider key={size.name}>
                           <Tooltip>
@@ -942,7 +981,7 @@ export default function Home() {
                                   "h-8 w-8",
                                   canvasSize.name === size.name && "bg-muted"
                               )}
-                              onClick={() => setCanvasSize(size)}
+                              onClick={() => handleCanvasSizeChange(size)}
                               >
                               {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
                               {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
@@ -966,7 +1005,6 @@ export default function Home() {
           <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
             background: 
             'linear-gradient(to top right,  var(--primary),  var(--secondary),  var(--accent)'
-        // 'linear-gradient(to bottom, #FEAC5E, #C779D0, #4BC0C8)'
           }}>
               <div className="w-64 h-64">
                   <Lottie animationData={webflowAnimation} loop={true} />
@@ -986,7 +1024,6 @@ export default function Home() {
                 <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
                   <SheetHeader className="p-4 border-b flex-row justify-between items-center bg-card">
                     <SheetTitle className="capitalize">{activeTabLabel}</SheetTitle>
-                     {/* The close button is now provided by SheetContent itself */}
                   </SheetHeader>
                    <div className="flex-grow overflow-y-auto">
                     {renderActiveTabContent()}
