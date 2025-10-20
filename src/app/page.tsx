@@ -952,11 +952,9 @@ export default function Home() {
                   </Carousel>
                 </div>
                 
-                {/* Carousel Bullet Navigation */}
                 {renderBulletNavigation()}
 
                 <div className="w-full max-w-md flex justify-between items-center mt-4 space-x-2">
-                   {/* Zoom Controls */}
                     <div className="bg-card backdrop-blur-sm p-1 flex items-center gap-1 flex-grow">
                       <TooltipProvider>
                           <Tooltip>
@@ -990,7 +988,6 @@ export default function Home() {
                   </div>
                   
 
-                  {/* Format Controls */}
                   <div className="bg-card backdrop-blur-sm p-1 flex gap-1 flex-shrink-0">
                       {canvasSizes.map(size => (
                       <TooltipProvider key={size.name}>
@@ -1034,8 +1031,7 @@ export default function Home() {
           </div>
       )}
 
-       {/* Mobile-only Fixed Bottom Settings Panel */}
-        {isClient && designs.length > 0 && (
+       {isClient && designs.length > 0 && (
             <div ref={mobilePanelRef} className="md:hidden">
               <Sheet open={isMobilePanelOpen} onOpenChange={(isOpen) => {
                 if (!isOpen) {
@@ -1069,7 +1065,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
-
-    
