@@ -18,12 +18,14 @@ import { Bold, CaseUpper, AlignLeft, AlignCenter, AlignRight, Loader2, Trash2, P
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselApi } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { defaultSolidColors } from "@/lib/colors";
 import { Separator } from "./ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { textEffects, TextEffect } from "@/lib/text-effects";
+import { cn } from "@/lib/utils";
+
 
 type Unit = 'px' | 'em' | 'rem';
 
@@ -119,6 +121,12 @@ export function TextSettings({
   const [internalFontSize, setInternalFontSize] = useState<number>(Number(activeFont.size) || 48);
   const [internalLineHeight, setInternalLineHeight] = useState<number>(Number(activeFont.lineHeight) || 1.4);
   
+  const [colorPaletteApi, setColorPaletteApi] = useState<CarouselApi>();
+  const [currentPaletteSlide, setCurrentPaletteSlide] = useState(0);
+
+  const [effectsApi, setEffectsApi] = useState<CarouselApi>();
+  const [currentEffectSlide, setCurrentEffectSlide] = useState(0);
+
   useEffect(() => {
     setInternalFontSize(Number(activeFont.size));
     setInternalLineHeight(Number(activeFont.lineHeight));
@@ -128,6 +136,23 @@ export function TextSettings({
   useEffect(() => {
     setInternalText(text);
   }, [text]);
+
+  useEffect(() => {
+    if (!colorPaletteApi) return;
+    const onSelect = () => setCurrentPaletteSlide(colorPaletteApi.selectedScrollSnap());
+    colorPaletteApi.on("select", onSelect);
+    onSelect();
+    return () => colorPaletteApi.off("select", onSelect);
+  }, [colorPaletteApi]);
+
+  useEffect(() => {
+    if (!effectsApi) return;
+    const onSelect = () => setCurrentEffectSlide(effectsApi.selectedScrollSnap());
+    effectsApi.on("select", onSelect);
+    onSelect();
+    return () => effectsApi.off("select", onSelect);
+  }, [effectsApi]);
+
 
   const handleRegenerateClick = () => {
     setText(internalText);
@@ -161,6 +186,60 @@ export function TextSettings({
   }
 
   const unitOptions: Unit[] = ['px', 'em', 'rem'];
+
+  const renderBulletNavigation = (api: CarouselApi | undefined, current: number, total: number) => {
+    if (!api || total <= 1) return null;
+
+    const visibleDots = 7;
+    const half = Math.floor(visibleDots / 2);
+
+    let start = Math.max(current - half, 0);
+    let end = start + visibleDots - 1;
+
+    if (end >= total) {
+      end = total - 1;
+      start = Math.max(end - visibleDots + 1, 0);
+    }
+
+    const dots = [];
+    for (let i = start; i <= end; i++) {
+        dots.push(
+            <div
+                key={i}
+                data-active={i === current}
+                onClick={() => api?.scrollTo(i)}
+                className="h-2 w-2 rounded-full bg-foreground/50 cursor-pointer transition-all duration-300 bullet-indicator"
+            />
+        );
+    }
+
+    return (
+      <div className="flex justify-center items-center gap-2 mt-2">
+        {start > 0 && (
+          <>
+            <div
+              key={0}
+              onClick={() => api?.scrollTo(0)}
+              className="h-2 w-2 rounded-full bg-foreground/50 cursor-pointer transition-all duration-300 bullet-indicator"
+            />
+            {start > 1 && <span className="text-foreground/50 -translate-y-1">...</span>}
+          </>
+        )}
+        {dots}
+        {end < total - 1 && (
+          <>
+            {end < total - 2 && <span className="text-foreground/50 -translate-y-1">...</span>}
+            <div
+              key={total - 1}
+              onClick={() => api?.scrollTo(total - 1)}
+              className="h-2 w-2 rounded-full bg-foreground/50 cursor-pointer transition-all duration-300 bullet-indicator"
+            />
+          </>
+        )}
+      </div>
+    );
+  };
+
 
   return (
     <TooltipProvider>
@@ -527,7 +606,7 @@ export function TextSettings({
             
           <div className="pt-2">
             <Label className="text-sm font-medium">Color Palette</Label>
-            <Carousel className="w-full" opts={{ dragFree: true }}>
+             <Carousel className="w-full" opts={{ dragFree: true }} setApi={setColorPaletteApi}>
               <CarouselContent>
                 {defaultSolidColors.map(color => (
                   <CarouselItem key={color} className="basis-1/7">
@@ -549,14 +628,13 @@ export function TextSettings({
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="-left-4" />
-              <CarouselNext className="-right-4" />
             </Carousel>
+            {renderBulletNavigation(colorPaletteApi, currentPaletteSlide, defaultSolidColors.length)}
           </div>
 
           <div className="pt-2">
             <Label>Text Effects</Label>
-            <Carousel className="w-full" opts={{ dragFree: true, align: "start" }}>
+            <Carousel className="w-full" opts={{ dragFree: true, align: "start" }} setApi={setEffectsApi}>
               <CarouselContent>
                 {textEffects.map(effect => {
                   const effectStyle: React.CSSProperties = {
@@ -591,9 +669,8 @@ export function TextSettings({
                   )
                 })}
               </CarouselContent>
-              <CarouselPrevious className="-left-4" />
-              <CarouselNext className="-right-4" />
             </Carousel>
+            {renderBulletNavigation(effectsApi, currentEffectSlide, textEffects.length)}
           </div>
           </div>
         </div>
@@ -601,3 +678,4 @@ export function TextSettings({
     </TooltipProvider>
   );
 }
+
