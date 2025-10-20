@@ -68,6 +68,10 @@ const canvasSizes: CanvasSize[] = [
     { name: 'Square', width: 1080, height: 1080 },
 ];
 
+const ZOOM_STEP = 0.1;
+const MAX_ZOOM = 3.0;
+const MIN_ZOOM = 0.2;
+
 export default function Home() {
   const [text, setText] = useState(defaultText);
   const [designs, setDesigns] = useState<Design[]>([]);
@@ -692,6 +696,21 @@ export default function Home() {
     setIsSidebarOpen(true);
   };
 
+  const handleZoom = (direction: 'in' | 'out') => {
+    setZoomLevel(prev => {
+        const newZoom = direction === 'in' ? prev + ZOOM_STEP : prev - ZOOM_STEP;
+        return Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newZoom));
+    });
+  };
+
+  const handleWheelZoom = (event: React.WheelEvent<HTMLDivElement>) => {
+      if (event.ctrlKey) {
+          event.preventDefault();
+          const direction = event.deltaY > 0 ? 'out' : 'in';
+          handleZoom(direction);
+      }
+  };
+
 
   const renderActiveTabContent = () => {
     const props = {
@@ -877,7 +896,7 @@ export default function Home() {
               />
             </div>
           ) : (
-            <div ref={designsRef} className="w-full h-full flex flex-col items-center justify-center">
+            <div ref={designsRef} className="w-full h-full flex flex-col items-center justify-center" onWheel={handleWheelZoom}>
                 <div className="w-full max-w-md relative">
                   <Carousel className="w-full" setApi={setCarouselApi} opts={{ dragFree: true }}>
                     <CarouselContent>
@@ -938,38 +957,41 @@ export default function Home() {
 
                 <div className="w-full max-w-md flex justify-between items-center mt-4 space-x-2">
                    {/* Zoom Controls */}
-                   <div className="bg-card backdrop-blur-sm p-1 flex-grow flex items-center gap-2">
-                        <ZoomOut className="h-5 w-5 text-muted-foreground" />
-                        <Slider
-                            value={[zoomLevel]}
-                            onValueChange={(value) => setZoomLevel(value[0])}
-                            min={0.25}
-                            max={3}
-                            step={0.05}
-                            className="flex-grow"
-                        />
-                        <ZoomIn className="h-5 w-5 text-muted-foreground" />
-                        <TooltipProvider>
-                            <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8"
-                                onClick={() => setZoomLevel(1)}
-                                >
-                                <RotateCcw className="h-5 w-5" />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Reset Zoom</p>
-                            </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                    </div>
+                    <div className="bg-card backdrop-blur-sm p-1 flex items-center gap-1 flex-grow">
+                      <TooltipProvider>
+                          <Tooltip>
+                          <TooltipTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleZoom('out')} disabled={zoomLevel <= MIN_ZOOM}>
+                                  <ZoomOut className="h-5 w-5" />
+                              </Button>
+                          </TooltipTrigger>
+                          <TooltipContent><p>Zoom Out (-)</p></TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                          <TooltipTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setZoomLevel(1)}>
+                                  <RotateCcw className="h-5 w-5" />
+                              </Button>
+                          </TooltipTrigger>
+                          <TooltipContent><p>Reset Zoom</p></TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                          <TooltipTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleZoom('in')} disabled={zoomLevel >= MAX_ZOOM}>
+                                  <ZoomIn className="h-5 w-5" />
+                              </Button>
+                          </TooltipTrigger>
+                          <TooltipContent><p>Zoom In (+)</p></TooltipContent>
+                          </Tooltip>
+                      </TooltipProvider>
+                      <div className="text-sm font-semibold tabular-nums w-16 text-center bg-background rounded-sm p-1.5 border">
+                          {Math.round(zoomLevel * 100)}%
+                      </div>
+                  </div>
+                  
 
                   {/* Format Controls */}
-                  <div className="bg-card backdrop-blur-sm  p-1 flex gap-1 flex-shrink-0">
+                  <div className="bg-card backdrop-blur-sm p-1 flex gap-1 flex-shrink-0">
                       {canvasSizes.map(size => (
                       <TooltipProvider key={size.name}>
                           <Tooltip>
@@ -1047,5 +1069,7 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     
