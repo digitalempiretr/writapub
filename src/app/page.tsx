@@ -807,7 +807,7 @@ export default function Home() {
   return (
     <div className="h-screen w-screen flex flex-col">
        {/* HEADER */}
-      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-transparent">
+      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-primary">
         <Logo className="text-[2rem] text-primary-foreground" />
       </header>
 
