@@ -74,6 +74,60 @@ const TemplateCarousel = ({ templates, handleApplyTemplate }: { templates: Desig
       api.off("select", onSelect);
     };
   }, [api]);
+  
+  const renderBulletNavigation = () => {
+    const totalSlides = templates.length;
+    if (totalSlides <= 1) return null;
+
+    const visibleDots = 7;
+    const half = Math.floor(visibleDots / 2);
+
+    let start = Math.max(current - half, 0);
+    let end = start + visibleDots - 1;
+
+    if (end >= totalSlides) {
+      end = totalSlides - 1;
+      start = Math.max(end - visibleDots + 1, 0);
+    }
+    
+    const dots = [];
+    for (let i = start; i <= end; i++) {
+        dots.push(
+            <div
+                key={i}
+                data-active={i === current}
+                onClick={() => api?.scrollTo(i)}
+                className="h-2 w-2 rounded-full bg-primary/50 cursor-pointer transition-all duration-300 bullet-indicator"
+            />
+        );
+    }
+
+    return (
+      <div className="flex justify-center items-center gap-2 mt-2">
+        {start > 0 && (
+          <>
+            <div
+              key={0}
+              onClick={() => api?.scrollTo(0)}
+              className="h-2 w-2 rounded-full bg-primary/50 cursor-pointer transition-all duration-300 bullet-indicator"
+            />
+            {start > 1 && <span className="text-primary/50 -translate-y-1">...</span>}
+          </>
+        )}
+        {dots}
+        {end < totalSlides - 1 && (
+          <>
+            {end < totalSlides - 2 && <span className="text-primary/50 -translate-y-1">...</span>}
+            <div
+              key={totalSlides - 1}
+              onClick={() => api?.scrollTo(totalSlides - 1)}
+              className="h-2 w-2 rounded-full bg-primary/50 cursor-pointer transition-all duration-300 bullet-indicator"
+            />
+          </>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-2">
@@ -102,16 +156,7 @@ const TemplateCarousel = ({ templates, handleApplyTemplate }: { templates: Desig
           ))}
         </CarouselContent>
       </Carousel>
-      <div className="flex justify-center gap-2">
-        {templates.map((_, index) => (
-          <div
-            key={index}
-            data-active={index === current}
-            onClick={() => api?.scrollTo(index)}
-            className="h-2 w-2 rounded-full bg-primary/50 cursor-pointer transition-all duration-300 bullet-indicator"
-          />
-        ))}
-      </div>
+      {renderBulletNavigation()}
     </div>
   );
 };

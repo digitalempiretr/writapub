@@ -731,6 +731,62 @@ export default function Home() {
   ];
   
   const activeTabLabel = settingsTabs.find(tab => tab.value === activeSettingsTab)?.label;
+
+  const renderBulletNavigation = () => {
+    if (!carouselApi) return null;
+    
+    const totalSlides = designs.length;
+    if (totalSlides <= 1) return null;
+
+    const visibleDots = 7;
+    const half = Math.floor(visibleDots / 2);
+
+    let start = Math.max(currentSlide - half, 0);
+    let end = start + visibleDots - 1;
+
+    if (end >= totalSlides) {
+      end = totalSlides - 1;
+      start = Math.max(end - visibleDots + 1, 0);
+    }
+    
+    const dots = [];
+    for (let i = start; i <= end; i++) {
+        dots.push(
+            <div
+                key={i}
+                data-active={i === currentSlide}
+                onClick={() => carouselApi?.scrollTo(i)}
+                className="h-2 w-2 rounded-full bg-primary/50 cursor-pointer transition-all duration-300 bullet-indicator"
+            />
+        );
+    }
+
+    return (
+      <div className="flex justify-center items-center gap-2 mt-4">
+        {start > 0 && (
+          <>
+            <div
+              key={0}
+              onClick={() => carouselApi?.scrollTo(0)}
+              className="h-2 w-2 rounded-full bg-primary/50 cursor-pointer transition-all duration-300 bullet-indicator"
+            />
+            {start > 1 && <span className="text-primary/50 -translate-y-1">...</span>}
+          </>
+        )}
+        {dots}
+        {end < totalSlides - 1 && (
+          <>
+            {end < totalSlides - 2 && <span className="text-primary/50 -translate-y-1">...</span>}
+            <div
+              key={totalSlides - 1}
+              onClick={() => carouselApi?.scrollTo(totalSlides - 1)}
+              className="h-2 w-2 rounded-full bg-primary/50 cursor-pointer transition-all duration-300 bullet-indicator"
+            />
+          </>
+        )}
+      </div>
+    );
+  };
   
   if (!isClient) {
     return (
@@ -871,16 +927,7 @@ export default function Home() {
                 </div>
                 
                 {/* Carousel Bullet Navigation */}
-                <div className="flex justify-center gap-2 mt-4">
-                  {designs.map((_, index) => (
-                    <div
-                      key={index}
-                      data-active={index === currentSlide}
-                      onClick={() => carouselApi?.scrollTo(index)}
-                      className="h-2 w-2 rounded-full bg-primary/50 cursor-pointer transition-all duration-300 bullet-indicator"
-                    />
-                  ))}
-                </div>
+                {renderBulletNavigation()}
 
                 <div className="w-full max-w-md flex justify-end mt-2">
                   <div className="bg-card backdrop-blur-sm  p-1 flex gap-1">
@@ -938,7 +985,7 @@ export default function Home() {
               }}>
                 <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
                   <SheetHeader className="p-4 border-b flex-row justify-between items-center bg-card">
-                    <SheetTitle className="capitalize">{activeSettingsTab}</SheetTitle>
+                    <SheetTitle className="capitalize">{activeTabLabel}</SheetTitle>
                      {/* The close button is now provided by SheetContent itself */}
                   </SheetHeader>
                    <div className="flex-grow overflow-y-auto">
