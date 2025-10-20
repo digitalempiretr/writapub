@@ -756,7 +756,7 @@ export default function Home() {
                 key={i}
                 data-active={i === currentSlide}
                 onClick={() => carouselApi?.scrollTo(i)}
-                className="h-2 w-2 rounded-full bg-primary/50 cursor-pointer transition-all duration-300 bullet-indicator"
+                className="h-2 w-2 rounded-full bg-foreground/50 cursor-pointer transition-all duration-300 bullet-indicator"
             />
         );
     }
@@ -768,19 +768,19 @@ export default function Home() {
             <div
               key={0}
               onClick={() => carouselApi?.scrollTo(0)}
-              className="h-2 w-2 rounded-full bg-primary/50 cursor-pointer transition-all duration-300 bullet-indicator"
+              className="h-2 w-2 rounded-full bg-foreground/50 cursor-pointer transition-all duration-300 bullet-indicator"
             />
-            {start > 1 && <span className="text-primary/50 -translate-y-1">...</span>}
+            {start > 1 && <span className="text-foreground/50 -translate-y-1">...</span>}
           </>
         )}
         {dots}
         {end < totalSlides - 1 && (
           <>
-            {end < totalSlides - 2 && <span className="text-primary/50 -translate-y-1">...</span>}
+            {end < totalSlides - 2 && <span className="text-foreground/50 -translate-y-1">...</span>}
             <div
               key={totalSlides - 1}
               onClick={() => carouselApi?.scrollTo(totalSlides - 1)}
-              className="h-2 w-2 rounded-full bg-primary/50 cursor-pointer transition-all duration-300 bullet-indicator"
+              className="h-2 w-2 rounded-full bg-foreground/50 cursor-pointer transition-all duration-300 bullet-indicator"
             />
           </>
         )}
