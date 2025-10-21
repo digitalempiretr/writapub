@@ -707,11 +707,21 @@ export default function Home() {
     });
   };
 
-  const handleWheelZoom = (event: React.WheelEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      const direction = event.deltaY > 0 ? 'out' : 'in';
-      handleZoom(direction);
-  };
+  const handleWheelZoom = useCallback((event: WheelEvent) => {
+    event.preventDefault();
+    const direction = event.deltaY > 0 ? 'out' : 'in';
+    handleZoom(direction);
+  }, []);
+
+   useEffect(() => {
+    const designsElement = designsRef.current;
+    if (designsElement) {
+        designsElement.addEventListener('wheel', handleWheelZoom, { passive: false });
+        return () => {
+            designsElement.removeEventListener('wheel', handleWheelZoom);
+        };
+    }
+  }, [handleWheelZoom]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -1035,7 +1045,6 @@ export default function Home() {
             </div>
           ) : (
             <div ref={designsRef} className="w-full h-full flex flex-col items-center justify-center cursor-grab"
-              onWheel={handleWheelZoom}
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
@@ -1150,5 +1159,7 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     
