@@ -700,20 +700,20 @@ export default function Home() {
     setIsSidebarOpen(true);
   };
 
-  const handleZoom = (direction: 'in' | 'out') => {
+  const handleZoom = useCallback((direction: 'in' | 'out') => {
     setZoomLevel(prev => {
         const newZoom = direction === 'in' ? prev + ZOOM_STEP : prev - ZOOM_STEP;
         return Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newZoom));
     });
-  };
+  }, []);
 
   const handleWheelZoom = useCallback((event: WheelEvent) => {
     event.preventDefault();
     const direction = event.deltaY > 0 ? 'out' : 'in';
     handleZoom(direction);
-  }, []);
+  }, [handleZoom]);
 
-   useEffect(() => {
+  useEffect(() => {
     const designsElement = designsRef.current;
     if (designsElement) {
         designsElement.addEventListener('wheel', handleWheelZoom, { passive: false });
@@ -1159,7 +1159,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
-
-    
