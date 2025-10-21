@@ -700,28 +700,12 @@ export default function Home() {
     setIsSidebarOpen(true);
   };
 
-  const handleZoom = useCallback((direction: 'in' | 'out') => {
+  const handleZoom = (direction: 'in' | 'out') => {
     setZoomLevel(prev => {
         const newZoom = direction === 'in' ? prev + ZOOM_STEP : prev - ZOOM_STEP;
         return Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newZoom));
     });
-  }, []);
-
-  const handleWheelZoom = useCallback((event: WheelEvent) => {
-    event.preventDefault();
-    const direction = event.deltaY > 0 ? 'out' : 'in';
-    handleZoom(direction);
-  }, [handleZoom]);
-
-  useEffect(() => {
-    const designsElement = designsRef.current;
-    if (designsElement) {
-        designsElement.addEventListener('wheel', handleWheelZoom, { passive: false });
-        return () => {
-            designsElement.removeEventListener('wheel', handleWheelZoom);
-        };
-    }
-  }, [handleWheelZoom]);
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -1044,11 +1028,18 @@ export default function Home() {
               />
             </div>
           ) : (
-            <div ref={designsRef} className="w-full h-full flex flex-col items-center justify-center cursor-grab"
+            <div 
+              ref={designsRef} 
+              className="w-full h-full flex flex-col items-center justify-center cursor-grab"
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
               onMouseLeave={handleMouseUp}
+              onWheel={(e) => {
+                e.preventDefault();
+                const direction = e.deltaY > 0 ? 'out' : 'in';
+                handleZoom(direction);
+              }}
             >
                 <div 
                   className="relative transition-transform duration-75" 
@@ -1159,3 +1150,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
