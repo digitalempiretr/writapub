@@ -50,8 +50,6 @@ import { CreativeMagicPanel } from "@/components/0_creative-magic-panel";
 import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Slider } from "@/components/ui/slider";
-
 
 type Design = {
   text: string;
@@ -70,7 +68,7 @@ const canvasSizes: CanvasSize[] = [
 
 const ZOOM_STEP = 0.1;
 const MAX_ZOOM = 3.0;
-const MIN_ZOOM = 0.2;
+const MIN_ZOOM = 0.25;
 
 export default function Home() {
   const [text, setText] = useState(defaultText);
@@ -152,7 +150,11 @@ export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const [fileName, setFileName] = useState("writa");
-  const [zoomLevel, setZoomLevel] = useState(0.4);
+  const [zoomLevel, setZoomLevel] = useState(0.5);
+
+  const [isPanning, setIsPanning] = useState(false);
+  const [panStart, setPanStart] = useState({ x: 0, y: 0 });
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const designsRef = useRef<HTMLDivElement>(null);
@@ -709,6 +711,69 @@ export default function Home() {
       handleZoom(direction);
   };
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        setIsPanning(true);
+        document.body.style.cursor = 'grab';
+      }
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        setIsPanning(false);
+        document.body.style.cursor = 'default';
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isPanning) {
+      e.preventDefault();
+      document.body.style.cursor = 'grabbing';
+      setPanStart({ x: e.clientX - panOffset.x, y: e.clientY - panOffset.y });
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isPanning && e.buttons === 1) {
+      e.preventDefault();
+      setPanOffset({
+        x: e.clientX - panStart.x,
+        y: e.clientY - panStart.y,
+      });
+    }
+  };
+
+  const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isPanning) {
+      document.body.style.cursor = 'grab';
+    }
+  };
+
+  const resetPanAndZoom = (size: CanvasSize) => {
+    let newZoom;
+    switch(size.name) {
+        case 'Story': newZoom = 0.4; break;
+        case 'Post': newZoom = 0.5; break;
+        case 'Square': newZoom = 0.6; break;
+        default: newZoom = 0.5; break;
+    }
+    setZoomLevel(newZoom);
+    setPanOffset({ x: 0, y: 0 });
+    return newZoom;
+  };
+
+  const handleCanvasSizeChange = (size: CanvasSize) => {
+    setCanvasSize(size);
+    resetPanAndZoom(size);
+  }
 
   const renderActiveTabContent = () => {
     const props = {
@@ -820,28 +885,6 @@ export default function Home() {
     );
   }
 
-  const handleCanvasSizeChange = (size: CanvasSize) => {
-    setCanvasSize(size);
-    const storyRatio = 1080 / 1920;
-    const postRatio = 1080 / 1350;
-    const squareRatio = 1;
-
-    let newZoom;
-    switch(size.name) {
-        case 'Story':
-            newZoom = 0.4;
-            break;
-        case 'Post':
-            newZoom = 0.5;
-            break;
-        case 'Square':
-        default:
-            newZoom = 0.6
-            break;
-    }
-    setZoomLevel(newZoom);
-  }
-
   return (
     <div className="h-screen w-screen flex flex-col">
        {/* HEADER */}
@@ -888,7 +931,7 @@ export default function Home() {
                           </Tooltip>
                           <Tooltip>
                           <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20" onClick={() => handleCanvasSizeChange(canvasSize)}>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20" onClick={() => resetPanAndZoom(canvasSize)}>
                                   <RotateCcw className="h-5 w-5" />
                               </Button>
                           </TooltipTrigger>
@@ -963,7 +1006,7 @@ export default function Home() {
         )}
 
         {/* Main Content Area */}
-        <main className={cn("flex-grow flex items-center justify-center overflow-auto h-full p-4", designs.length === 0 ? "w-full" : (isSidebarOpen ? "w-[60vw]" : "w-[95vw]"))}>
+        <main className={cn("flex-grow flex items-center justify-center overflow-hidden h-full p-4 relative", designs.length === 0 ? "w-full" : (isSidebarOpen ? "w-[60vw]" : "w-[95vw]"))}>
           {designs.length === 0 ? (
             <div className="w-full max-w-2xl">
               <CreativeMagicPanel 
@@ -974,14 +1017,23 @@ export default function Home() {
               />
             </div>
           ) : (
-            <div ref={designsRef} className="w-full h-full flex flex-col items-center justify-center" onWheel={handleWheelZoom}>
-                <div className="relative" style={{ width: `${100 * zoomLevel}%`, maxWidth: '90vw' }}>
+            <div ref={designsRef} className="w-full h-full flex flex-col items-center justify-center cursor-grab"
+              onWheel={handleWheelZoom}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+            >
+                <div 
+                  className="relative transition-transform duration-75" 
+                  style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
+                >
                   <Carousel className="w-full" setApi={setCarouselApi} opts={{ dragFree: true }}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
                           <div 
-                            className="p-1 group relative transition-transform duration-300"
+                            className="p-1 group relative"
                           >
                             <Card className="overflow-hidden border-0">
                               <CardContent className="p-0 relative bg-card" style={{ aspectRatio: `${canvasSize.width}/${canvasSize.height}`}}>
