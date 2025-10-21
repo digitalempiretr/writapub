@@ -40,13 +40,13 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { defaultText } from "@/lib/default-text";
 import { DesignTemplate } from "@/lib/design-templates";
 import { useLocalStorage } from "@/hooks/use-local-storage";
-import { TextSettings, type Shadow } from "@/components/text-settings";
-import { BackgroundSettings } from "@/components/background-settings";
-import { DesignsPanel } from "@/components/designs-panel";
-import { MyDesignsPanel } from "@/components/my-designs-panel";
-import { DownloadPanel } from "@/components/download-panel";
+import { TextSettings, type Shadow } from "@/components/3_text-settings";
+import { BackgroundSettings } from "@/components/2_background-settings";
+import { DesignsPanel } from "@/components/1_templates";
+import { MyDesignsPanel } from "@/components/4_favorites";
+import { DownloadPanel } from "@/components/5_download-panel";
 import { pageInitialColors } from "@/lib/colors";
-import { CreativeMagicPanel } from "@/components/creative-magic-panel";
+import { CreativeMagicPanel } from "@/components/0_creative-magic-panel";
 import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -152,7 +152,7 @@ export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const [fileName, setFileName] = useState("writa");
-  const [zoomLevel, setZoomLevel] = useState(1);
+  const [zoomLevel, setZoomLevel] = useState(0.4);
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const designsRef = useRef<HTMLDivElement>(null);
@@ -743,9 +743,9 @@ export default function Home() {
 
   const settingsTabs = [
     { value: "designs", icon: <LayoutTemplate />, label: "Templates" },
-    { value: "favorites", icon: <HeartIcon />, label: "Favorites" },
-    { value: "background", icon: <ImageIcon />, label: "Background" },
-    { value: "text", icon: <Type />, label: "Text" },
+    { value: "background", icon: <ImageIcon />, label: "Background Settings" },
+    { value: "text", icon: <Type />, label: "Text Settings" },
+    { value: "favorites", icon: <HeartIcon />, label: "My Favorites" },
     { value: "download", icon: <Download />, label: "Download" },
   ];
   
@@ -761,15 +761,15 @@ export default function Home() {
     const half = Math.floor(visibleDots / 2);
 
     let start = Math.max(currentSlide - half, 0);
-    let end = start + visibleDots - 1;
+    let end = start + visibleDots;
 
-    if (end >= totalSlides) {
-      end = totalSlides - 1;
-      start = Math.max(end - visibleDots + 1, 0);
+    if (end > totalSlides) {
+      end = totalSlides;
+      start = Math.max(end - visibleDots, 0);
     }
     
     const dots = [];
-    for (let i = start; i <= end; i++) {
+    for (let i = start; i < end; i++) {
         dots.push(
             <div
                 key={i}
@@ -793,9 +793,9 @@ export default function Home() {
           </>
         )}
         {dots}
-        {end < totalSlides - 1 && (
+        {end < totalSlides && (
           <>
-            {end < totalSlides - 2 && <span className="text-foreground/50 -translate-y-1">...</span>}
+            {end < totalSlides - 1 && <span className="text-foreground/50 -translate-y-1">...</span>}
             <div
               key={totalSlides - 1}
               onClick={() => carouselApi?.scrollTo(totalSlides - 1)}
@@ -828,8 +828,36 @@ export default function Home() {
   return (
     <div className="h-screen w-screen flex flex-col">
        {/* HEADER */}
-      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center flex-shrink-0 z-20 bg-primary">
-        <Logo className="text-[2rem] text-primary-foreground" />
+      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center justify-between flex-shrink-0 z-20 bg-primary">
+        <Logo className="text-[1.5rem] text-primary-foreground" />
+        {designs.length > 0 && (
+            <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
+              {canvasSizes.map(size => (
+              <TooltipProvider key={size.name}>
+                  <Tooltip>
+                  <TooltipTrigger asChild>
+                      <Button
+                      variant="ghost"
+                      size="icon"
+                      className={cn(
+                          "h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground",
+                          canvasSize.name === size.name && "bg-primary-foreground/20"
+                      )}
+                      onClick={() => handleCanvasSizeChange(size)}
+                      >
+                      {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
+                      {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
+                      {size.name === 'Square' && <Square className="h-5 w-5" />}
+                      </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                      <p>{size.name} Format</p>
+                  </TooltipContent>
+                  </Tooltip>
+              </TooltipProvider>
+              ))}
+          </div>
+        )}
       </header>
 
       <div className="flex flex-grow h-[90vh]">
@@ -951,7 +979,7 @@ export default function Home() {
                 
                 {renderBulletNavigation()}
 
-                <div className="w-full max-w-md flex justify-between items-center mt-4 space-x-2">
+                <div className="w-full max-w-md flex justify-center items-center mt-4 space-x-2">
                     <div className="bg-card backdrop-blur-sm p-1 flex items-center gap-1 flex-grow">
                       <TooltipProvider>
                           <Tooltip>
@@ -982,34 +1010,6 @@ export default function Home() {
                       <div className="text-sm font-semibold tabular-nums w-16 text-center bg-background rounded-sm p-1.5 border">
                           {Math.round(zoomLevel * 100)}%
                       </div>
-                  </div>
-                  
-
-                  <div className="bg-card backdrop-blur-sm p-1 flex gap-1 flex-shrink-0">
-                      {canvasSizes.map(size => (
-                      <TooltipProvider key={size.name}>
-                          <Tooltip>
-                          <TooltipTrigger asChild>
-                              <Button
-                              variant="ghost"
-                              size="icon"
-                              className={cn(
-                                  "h-8 w-8",
-                                  canvasSize.name === size.name && "bg-muted"
-                              )}
-                              onClick={() => handleCanvasSizeChange(size)}
-                              >
-                              {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
-                              {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
-                              {size.name === 'Square' && <Square className="h-5 w-5" />}
-                              </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                              <p>{size.name} Format</p>
-                          </TooltipContent>
-                          </Tooltip>
-                      </TooltipProvider>
-                      ))}
                   </div>
                 </div>
             </div>
@@ -1062,5 +1062,3 @@ export default function Home() {
     </div>
   );
 }
-
-    

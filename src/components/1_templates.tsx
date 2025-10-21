@@ -97,7 +97,7 @@ const TemplateCarousel = ({ templates, handleApplyTemplate }: { templates: Desig
                 key={i}
                 data-active={i === current}
                 onClick={() => api?.scrollTo(i)}
-                className="h-2 w-2 rounded-full bg-foreground/50 cursor-pointer transition-all duration-300 bullet-indicator"
+                className="h-2 w-2 rounded-full bg-accent cursor-pointer transition-all duration-300 bullet-indicator"
             />
         );
     }
@@ -109,7 +109,7 @@ const TemplateCarousel = ({ templates, handleApplyTemplate }: { templates: Desig
             <div
               key={0}
               onClick={() => api?.scrollTo(0)}
-              className="h-2 w-2 rounded-full bg-foreground/50 cursor-pointer transition-all duration-300 bullet-indicator"
+              className="h-2 w-2 rounded-full bg-accent cursor-pointer transition-all duration-300 bullet-indicator"
             />
             {start > 1 && <span className="text-foreground/50 -translate-y-1">...</span>}
           </>
@@ -121,7 +121,7 @@ const TemplateCarousel = ({ templates, handleApplyTemplate }: { templates: Desig
             <div
               key={totalSlides - 1}
               onClick={() => api?.scrollTo(totalSlides - 1)}
-              className="h-2 w-2 rounded-full bg-foreground/50 cursor-pointer transition-all duration-300 bullet-indicator"
+              className="h-2 w-2 rounded-full bg-accent cursor-pointer transition-all duration-300 bullet-indicator"
             />
           </>
         )}

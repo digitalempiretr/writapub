@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import type { Shadow } from "@/components/text-settings";
+import type { Shadow } from "@/components/3_text-settings";
 
 export type FontOption = {
   value: string;

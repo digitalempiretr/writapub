@@ -20,7 +20,7 @@ export function CreativeMagicPanel({ text, setText, handleGenerate, isLoading }:
   const mainTextAreaId = useId();
 
   return (
-    <div className="space-y-6 max-w-[800px] mx-auto w-full">
+    <div className="space-y-6 max-w-[1000px] mx-auto w-full">
       <CardTitle className="text-foreground text-3xl">Creative Magic</CardTitle>
       <div className="space-y-4">
         <Label htmlFor={mainTextAreaId} className="sr-only">Main text area</Label>
@@ -32,7 +32,7 @@ export function CreativeMagicPanel({ text, setText, handleGenerate, isLoading }:
             value={text}
             onChange={(e) => setText(e.target.value)}
             rows={8}
-            className="relative z-10 text-xl bg-card text-card-foreground placeholder:text-muted-foreground border-1 shadow-[0_0_15px_5px_hsl(var(--primary)/0.5] "
+            className="rounded-lg relative z-10 text-xl bg-card text-card-foreground placeholder:text-muted-foreground border-1 shadow-[0_0_15px_5px_var(--shadow-color)]"
           />
         </div>
         <div className="flex items-center justify-end gap-4">
