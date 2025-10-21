@@ -50,6 +50,7 @@ import { CreativeMagicPanel } from "@/components/0_creative-magic-panel";
 import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type Design = {
   text: string;
@@ -160,6 +161,7 @@ export default function Home() {
   const designsRef = useRef<HTMLDivElement>(null);
   const mobilePanelRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
    const closePanel = useCallback(() => {
     setIsMobilePanelOpen(false);
@@ -757,18 +759,33 @@ export default function Home() {
     }
   };
 
-  const resetPanAndZoom = (size: CanvasSize) => {
+  const resetPanAndZoom = useCallback((size: CanvasSize) => {
     let newZoom;
-    switch(size.name) {
-        case 'Story': newZoom = 0.4; break;
-        case 'Post': newZoom = 0.5; break;
-        case 'Square': newZoom = 0.6; break;
-        default: newZoom = 0.5; break;
+    if (isMobile) {
+        switch(size.name) {
+            case 'Story': newZoom = 0.8; break;
+            case 'Post': newZoom = 1.0; break;
+            case 'Square': newZoom = 1.0; break;
+            default: newZoom = 1.0; break;
+        }
+    } else {
+        switch(size.name) {
+            case 'Story': newZoom = 0.4; break;
+            case 'Post': newZoom = 0.5; break;
+            case 'Square': newZoom = 0.6; break;
+            default: newZoom = 0.5; break;
+        }
     }
     setZoomLevel(newZoom);
     setPanOffset({ x: 0, y: 0 });
     return newZoom;
-  };
+  }, [isMobile]);
+
+  useEffect(() => {
+    if(isClient){
+      resetPanAndZoom(canvasSize);
+    }
+  }, [isClient, canvasSize, resetPanAndZoom]);
 
   const handleCanvasSizeChange = (size: CanvasSize) => {
     setCanvasSize(size);
@@ -1133,3 +1150,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
