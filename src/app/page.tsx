@@ -822,7 +822,24 @@ export default function Home() {
 
   const handleCanvasSizeChange = (size: CanvasSize) => {
     setCanvasSize(size);
-    setZoomLevel(1);
+    const storyRatio = 1080 / 1920;
+    const postRatio = 1080 / 1350;
+    const squareRatio = 1;
+
+    let newZoom;
+    switch(size.name) {
+        case 'Story':
+            newZoom = 0.4;
+            break;
+        case 'Post':
+            newZoom = 0.5;
+            break;
+        case 'Square':
+        default:
+            newZoom = 0.6
+            break;
+    }
+    setZoomLevel(newZoom);
   }
 
   return (
@@ -830,34 +847,69 @@ export default function Home() {
        {/* HEADER */}
       <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center justify-between flex-shrink-0 z-20 bg-primary">
         <Logo className="text-[1.5rem] text-primary-foreground" />
-        {designs.length > 0 && (
-            <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
-              {canvasSizes.map(size => (
-              <TooltipProvider key={size.name}>
-                  <Tooltip>
-                  <TooltipTrigger asChild>
-                      <Button
-                      variant="ghost"
-                      size="icon"
-                      className={cn(
-                          "h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground",
-                          canvasSize.name === size.name && "bg-primary-foreground/20"
-                      )}
-                      onClick={() => handleCanvasSizeChange(size)}
-                      >
-                      {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
-                      {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
-                      {size.name === 'Square' && <Square className="h-5 w-5" />}
-                      </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                      <p>{size.name} Format</p>
-                  </TooltipContent>
-                  </Tooltip>
-              </TooltipProvider>
-              ))}
-          </div>
-        )}
+        <div className="flex items-center gap-4">
+            {designs.length > 0 && (
+                <>
+                    <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
+                        {canvasSizes.map(size => (
+                        <TooltipProvider key={size.name}>
+                            <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                variant="ghost"
+                                size="icon"
+                                className={cn(
+                                    "h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground",
+                                    canvasSize.name === size.name && "bg-primary-foreground/20"
+                                )}
+                                onClick={() => handleCanvasSizeChange(size)}
+                                >
+                                {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
+                                {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
+                                {size.name === 'Square' && <Square className="h-5 w-5" />}
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>{size.name} Format</p>
+                            </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                        ))}
+                    </div>
+                     <div className="bg-card/20 backdrop-blur-sm p-1 flex items-center gap-1 rounded-md">
+                      <TooltipProvider>
+                          <Tooltip>
+                          <TooltipTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20" onClick={() => handleZoom('out')} disabled={zoomLevel <= MIN_ZOOM}>
+                                  <ZoomOut className="h-5 w-5" />
+                              </Button>
+                          </TooltipTrigger>
+                          <TooltipContent><p>Zoom Out (-)</p></TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                          <TooltipTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20" onClick={() => handleCanvasSizeChange(canvasSize)}>
+                                  <RotateCcw className="h-5 w-5" />
+                              </Button>
+                          </TooltipTrigger>
+                          <TooltipContent><p>Reset Zoom</p></TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                          <TooltipTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20" onClick={() => handleZoom('in')} disabled={zoomLevel >= MAX_ZOOM}>
+                                  <ZoomIn className="h-5 w-5" />
+                              </Button>
+                          </TooltipTrigger>
+                          <TooltipContent><p>Zoom In (+)</p></TooltipContent>
+                          </Tooltip>
+                      </TooltipProvider>
+                      <div className="text-sm font-semibold tabular-nums w-16 text-center bg-background rounded-sm p-1.5 border text-foreground">
+                          {Math.round(zoomLevel * 100)}%
+                      </div>
+                  </div>
+                </>
+            )}
+        </div>
       </header>
 
       <div className="flex flex-grow h-[90vh]">
@@ -979,39 +1031,6 @@ export default function Home() {
                 
                 {renderBulletNavigation()}
 
-                <div className="w-full max-w-md flex justify-center items-center mt-4 space-x-2">
-                    <div className="bg-card backdrop-blur-sm p-1 flex items-center gap-1 flex-grow">
-                      <TooltipProvider>
-                          <Tooltip>
-                          <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleZoom('out')} disabled={zoomLevel <= MIN_ZOOM}>
-                                  <ZoomOut className="h-5 w-5" />
-                              </Button>
-                          </TooltipTrigger>
-                          <TooltipContent><p>Zoom Out (-)</p></TooltipContent>
-                          </Tooltip>
-                          <Tooltip>
-                          <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setZoomLevel(1)}>
-                                  <RotateCcw className="h-5 w-5" />
-                              </Button>
-                          </TooltipTrigger>
-                          <TooltipContent><p>Reset Zoom</p></TooltipContent>
-                          </Tooltip>
-                          <Tooltip>
-                          <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleZoom('in')} disabled={zoomLevel >= MAX_ZOOM}>
-                                  <ZoomIn className="h-5 w-5" />
-                              </Button>
-                          </TooltipTrigger>
-                          <TooltipContent><p>Zoom In (+)</p></TooltipContent>
-                          </Tooltip>
-                      </TooltipProvider>
-                      <div className="text-sm font-semibold tabular-nums w-16 text-center bg-background rounded-sm p-1.5 border">
-                          {Math.round(zoomLevel * 100)}%
-                      </div>
-                  </div>
-                </div>
             </div>
           )}
         </main>
