@@ -957,9 +957,6 @@ export default function Home() {
                           <TooltipContent><p>Zoom In (+)</p></TooltipContent>
                           </Tooltip>
                       </TooltipProvider>
-                      <div className="text-sm font-semibold tabular-nums w-16 text-center bg-background rounded-sm p-1.5 border text-foreground">
-                          {Math.round(zoomLevel * 100)}%
-                      </div>
                   </div>
                 </>
             )}
@@ -1035,7 +1032,7 @@ export default function Home() {
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
               onMouseLeave={handleMouseUp}
-              onWheel={(e) => {
+               onWheel={(e) => {
                 e.preventDefault();
                 const direction = e.deltaY > 0 ? 'out' : 'in';
                 handleZoom(direction);
