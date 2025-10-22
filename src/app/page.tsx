@@ -700,12 +700,12 @@ export default function Home() {
     setIsSidebarOpen(true);
   };
 
-  const handleZoom = (direction: 'in' | 'out') => {
+  const handleZoom = useCallback((direction: 'in' | 'out') => {
     setZoomLevel(prev => {
         const newZoom = direction === 'in' ? prev + ZOOM_STEP : prev - ZOOM_STEP;
         return Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newZoom));
     });
-  };
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -963,7 +963,7 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="flex flex-grow h-[90vh] md:h-[97vh]">
+      <div className="flex h-[90vh] md:h-[97vh]">
         {/* Desktop Sidebar */}
         {designs.length > 0 && (
           <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[3vw]")}>
