@@ -963,7 +963,7 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="flex h-[90vh] md:h-[97vh]">
+      <div className="flex flex-1">
         {/* Desktop Sidebar */}
         {designs.length > 0 && (
           <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[3vw]")}>
