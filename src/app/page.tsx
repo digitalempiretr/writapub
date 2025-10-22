@@ -851,7 +851,7 @@ export default function Home() {
                 key={i}
                 data-active={i === currentSlide}
                 onClick={() => carouselApi?.scrollTo(i)}
-                className="h-2 w-2 rounded-full bg-foreground/50 cursor-pointer transition-all duration-300 bullet-indicator"
+                className="h-2 w-2 rounded-full bg-accent cursor-pointer transition-all duration-300 bullet-indicator"
             />
         );
     }
@@ -863,7 +863,7 @@ export default function Home() {
             <div
               key={0}
               onClick={() => carouselApi?.scrollTo(0)}
-              className="h-2 w-2 rounded-full bg-foreground/50 cursor-pointer transition-all duration-300 bullet-indicator"
+              className="h-2 w-2 rounded-full bg-accent cursor-pointer transition-all duration-300 bullet-indicator"
             />
             {start > 1 && <span className="text-foreground/50 -translate-y-1">...</span>}
           </>
@@ -875,7 +875,7 @@ export default function Home() {
             <div
               key={totalSlides - 1}
               onClick={() => carouselApi?.scrollTo(totalSlides - 1)}
-              className="h-2 w-2 rounded-full bg-foreground/50 cursor-pointer transition-all duration-300 bullet-indicator"
+              className="h-2 w-2 rounded-full bg-accent cursor-pointer transition-all duration-300 bullet-indicator"
             />
           </>
         )}
@@ -899,7 +899,7 @@ export default function Home() {
   return (
     <div className="h-screen w-screen flex flex-col">
        {/* HEADER */}
-      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center justify-between flex-shrink-0 z-20 bg-primary">
+      <header className="w-full text-left p-4 md:p-8 h-[10vh] md:h-[3vh] flex items-center justify-between flex-shrink-0 z-20 bg-primary">
         <Logo className="text-[1.5rem] text-primary-foreground" />
         <div className="flex items-center gap-4">
             {designs.length > 0 && (
@@ -963,7 +963,7 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="flex flex-grow h-[90vh]">
+      <div className="flex flex-grow h-[90vh] md:h-[97vh]">
         {/* Desktop Sidebar */}
         {designs.length > 0 && (
           <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[3vw]")}>
@@ -997,7 +997,7 @@ export default function Home() {
               {isSidebarOpen && (
                 <div className="flex-grow flex flex-col w-full bg-sidebar">
                    <div className="p-4 flex-shrink-0 flex justify-between items-center bg-sidebar">
-                      <h3 className="text-lg font-semibold capitalize">{activeTabLabel}</h3>
+                      <h3 className="text-lg font-semibold capitalize text-sidebar-foreground">{activeTabLabel}</h3>
                        <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="h-8 w-8 rounded-full">
                             <X className="h-5 w-5" />
                             <span className="sr-only">Close Panel</span>
@@ -1032,7 +1032,7 @@ export default function Home() {
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
               onMouseLeave={handleMouseUp}
-               onWheel={(e) => {
+              onWheel={(e) => {
                 e.preventDefault();
                 const direction = e.deltaY > 0 ? 'out' : 'in';
                 handleZoom(direction);

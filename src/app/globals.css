@@ -7,13 +7,12 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   
   background-image: 
-  
   url("https://www.transparenttextures.com/patterns/project-paper.png")
   /*linear-gradient(to top right, #FEAC5E, #C779D0, #4BC0C8);*/ ;
-  background-color: var(--background);
+  background-color: var(--card);
+  background-blend-mode: luminosity;
   min-height: 100vh;
   background-attachment: fixed;
-  
 }
 
 @layer base {
@@ -120,7 +119,113 @@ body {
     --tracking-normal: 0em;
     --spacing: 0.25rem;
   }
+  .writa {
+    --background: hsl(0 0% 99.2157%);
+    --foreground: hsl(0 0% 0%);
+    --card: hsl(0 0% 99.2157%);
+    --card-foreground: hsl(0 0% 0%);
+    --popover: hsl(0 0% 98.8235%);
+    --popover-foreground: hsl(0 0% 0%);
+    --primary: hsl(77.9412 100% 60%);
+    --primary-foreground: hsl(0 0% 100%);
+    --secondary: hsl(34.2857 24.1379% 94.3137%);
+    --secondary-foreground: hsl(0 0% 3.1373%);
+    --muted: hsl(0 0% 96.0784%);
+    --muted-foreground: hsl(0 0% 32.1569%);
+    --accent: hsl(41.3793 100% 94.3137%);
+    --accent-foreground: hsl(36.3158 76% 49.0196%);
+    --destructive: hsl(178.4416 74.7573% 59.6078%);
+    --destructive-foreground: hsl(0 0% 100%);
+    --border: hsl(60 17.0732% 91.9608%);
+    --input: hsl(0 0% 92.1569%);
+    --ring: hsl(0 0% 0%);
+    --chart-1: hsl(328.0952 53.3898% 53.7255%);
+    --chart-2: hsl(77.9412 100% 60%);
+    --chart-3: hsl(204.8571 98.1308% 58.0392%);
+    --chart-4: hsl(37.0787 76.7241% 54.5098%);
+    --chart-5: hsl(0 0% 45.4902%);
+    --sidebar: hsl(30 42.8571% 97.2549%);
+    --sidebar-foreground: hsl(0 0% 0%);
+    --sidebar-primary: hsl(0 0% 0%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(0 0% 92.1569%);
+    --sidebar-accent-foreground: hsl(0 0% 0%);
+    --sidebar-border: hsl(0 0% 92.1569%);
+    --sidebar-ring: hsl(0 0% 0%);
+    --font-sans: Ubuntu, ui-sans-serif, sans-serif, system-ui;
+    --font-serif: Instrument Serif, ui-serif, serif;
+    --font-mono: IBM Plex Mono, monospace;
+    --radius: 1.4rem;
+    --shadow-x: 0px;
+    --shadow-y: 2px;
+    --shadow-blur: 3px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 0.16;
+    --shadow-color: #1a1a1a;
+    --shadow-2xs: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.08);
+    --shadow-xs: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.08);
+    --shadow-sm: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 1px 2px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 1px 2px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow-md: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 2px 4px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow-lg: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 4px 6px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow-xl: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 8px 10px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow-2xl: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.40);
+    --tracking-normal: -0.025em;
+    --spacing: 0.27rem;
+  }
   
+  .writadark {
+    --background: hsl(45 7.1429% 10.9804%);
+    --foreground: hsl(0 0% 94.1176%);
+    --card: hsl(48.0000 6.8493% 14.3137%);
+    --card-foreground: hsl(0 0% 94.1176%);
+    --popover: hsl(48.0000 6.8493% 14.3137%);
+    --popover-foreground: hsl(0 0% 94.1176%);
+    --primary: hsl(77.6687 100% 68.0392%);
+    --primary-foreground: hsl(0 0% 100%);
+    --secondary: hsl(46.6667 9.6774% 18.2353%);
+    --secondary-foreground: hsl(0 0% 94.1176%);
+    --muted: hsl(46.6667 9.6774% 18.2353%);
+    --muted-foreground: hsl(0 0% 62.7451%);
+    --accent: hsl(37.2414 32.5843% 17.4510%);
+    --accent-foreground: hsl(28.2090 100.0000% 73.7255%);
+    --destructive: hsl(180 90.6040% 70.7843%);
+    --destructive-foreground: hsl(0 0% 100%);
+    --border: hsl(42.8571 6.4220% 21.3725%);
+    --input: hsl(42.8571 6.4220% 21.3725%);
+    --ring: hsl(77.6687 100% 68.0392%);
+    --chart-1: hsl(321.8919 69.1589% 58.0392%);
+    --chart-2: hsl(77.6687 100% 68.0392%);
+    --chart-3: hsl(180 93.5484% 81.7647%);
+    --chart-4: hsl(37.5484 87.5706% 65.2941%);
+    --chart-5: hsl(0 0% 62.7451%);
+    --sidebar: hsl(60 5.8824% 10%);
+    --sidebar-foreground: hsl(0 0% 94.1176%);
+    --sidebar-primary: hsl(77.6687 100% 68.0392%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(46.6667 9.6774% 18.2353%);
+    --sidebar-accent-foreground: hsl(77.6687 100% 68.0392%);
+    --sidebar-border: hsl(42.8571 6.4220% 21.3725%);
+    --sidebar-ring: hsl(77.6687 100% 68.0392%);
+    --font-sans: Ubuntu, ui-sans-serif, sans-serif, system-ui;
+    --font-serif: Instrument Serif, ui-serif, serif;
+    --font-mono: IBM Plex Mono, monospace;
+    --radius: 1.4rem;
+    --shadow-x: 0px;
+    --shadow-y: 2px;
+    --shadow-blur: 3px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 0.16;
+    --shadow-color: #1a1a1a;
+    --shadow-2xs: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.08);
+    --shadow-xs: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.08);
+    --shadow-sm: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 1px 2px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 1px 2px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow-md: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 2px 4px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow-lg: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 4px 6px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow-xl: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 8px 10px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow-2xl: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.40);
+  }
   .bubblegum{
     --background: hsl(330 47.0588% 93.3333%);
     --foreground: hsl(0 0% 35.6863%);
@@ -155,7 +260,7 @@ body {
     --sidebar-border: hsl(268.6957 100.0000% 95.4902%);
     --sidebar-ring: hsl(330.3659 81.1881% 60.3922%);
     --font-sans: Poppins, sans-serif;
-    --font-serif: Lora, serif;
+    --font-serif: Instrument Serif, ui-serif, serif;
     --font-mono: Fira Code, monospace;
     --radius: 0.4rem;
     --shadow-x: 3px;
@@ -174,6 +279,58 @@ body {
     --shadow-2xl: 3px 3px 0px 0px hsl(325.7800 58.1800% 56.8600% / 2.50);
     --tracking-normal: 0em;
     --spacing: 0.25rem;
+  }
+  .bubblegum-dark {
+    --background: hsl(201.4286 43.7500% 12.5490%);
+    --foreground: hsl(333.7500 40.0000% 92.1569%);
+    --card: hsl(201.4286 33.3333% 16.4706%);
+    --card-foreground: hsl(333.7500 40.0000% 92.1569%);
+    --popover: hsl(201.4286 33.3333% 16.4706%);
+    --popover-foreground: hsl(333.7500 40.0000% 92.1569%);
+    --primary: hsl(42.1429 91.3043% 81.9608%);
+    --primary-foreground: hsl(201.4286 43.7500% 12.5490%);
+    --secondary: hsl(346.3636 55.0000% 76.4706%);
+    --secondary-foreground: hsl(201.4286 43.7500% 12.5490%);
+    --muted: hsl(214.2857 8.8608% 15.4902%);
+    --muted-foreground: hsl(346.3636 55.0000% 76.4706%);
+    --accent: hsl(338.4000 39.6825% 62.9412%);
+    --accent-foreground: hsl(333.7500 40.0000% 92.1569%);
+    --destructive: hsl(328.4211 70.3704% 62.9412%);
+    --destructive-foreground: hsl(201.4286 43.7500% 12.5490%);
+    --border: hsl(206.1538 28.0576% 27.2549%);
+    --input: hsl(200.6897 31.1828% 18.2353%);
+    --ring: hsl(184.1176 41.1290% 51.3725%);
+    --chart-1: hsl(184.1176 41.1290% 51.3725%);
+    --chart-2: hsl(346.3636 55.0000% 76.4706%);
+    --chart-3: hsl(338.4000 39.6825% 62.9412%);
+    --chart-4: hsl(191.2941 64.8855% 25.6863%);
+    --chart-5: hsl(214.2857 8.8608% 15.4902%);
+    --sidebar: hsl(202.5000 42.8571% 10.9804%);
+    --sidebar-foreground: hsl(220.0000 14.2857% 95.8824%);
+    --sidebar-primary: hsl(330.3659 81.1881% 60.3922%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(327.4074 87.0968% 81.7647%);
+    --sidebar-accent-foreground: hsl(215.0000 27.9070% 16.8627%);
+    --sidebar-border: hsl(216.9231 19.1176% 26.6667%);
+    --sidebar-ring: hsl(330.3659 81.1881% 60.3922%);
+    --font-sans: Poppins, sans-serif;
+    --font-serif: Instrument Serif, ui-serif, serif;
+    --font-mono: Fira Code, monospace;
+    --radius: 0.4rem;
+    --shadow-x: 3px;
+    --shadow-y: 3px;
+    --shadow-blur: 0px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 1.0;
+    --shadow-color: #324859;
+    --shadow-2xs: 3px 3px 0px 0px hsl(206.1538 28.0576% 27.2549% / 0.50);
+    --shadow-xs: 3px 3px 0px 0px hsl(206.1538 28.0576% 27.2549% / 0.50);
+    --shadow-sm: 3px 3px 0px 0px hsl(206.1538 28.0576% 27.2549% / 1.00), 3px 1px 2px -1px hsl(206.1538 28.0576% 27.2549% / 1.00);
+    --shadow: 3px 3px 0px 0px hsl(206.1538 28.0576% 27.2549% / 1.00), 3px 1px 2px -1px hsl(206.1538 28.0576% 27.2549% / 1.00);
+    --shadow-md: 3px 3px 0px 0px hsl(206.1538 28.0576% 27.2549% / 1.00), 3px 2px 4px -1px hsl(206.1538 28.0576% 27.2549% / 1.00);
+    --shadow-lg: 3px 3px 0px 0px hsl(206.1538 28.0576% 27.2549% / 1.00), 3px 4px 6px -1px hsl(206.1538 28.0576% 27.2549% / 1.00);
+    --shadow-xl: 3px 3px 0px 0px hsl(206.1538 28.0576% 27.2549% / 1.00), 3px 8px 10px -1px hsl(206.1538 28.0576% 27.2549% / 1.00);
+    --shadow-2xl: 3px 3px 0px 0px hsl(206.1538 28.0576% 27.2549% / 2.50);
   }
   .nature{
     --background: hsl(37.5000 36.3636% 95.6863%);
@@ -652,7 +809,339 @@ body {
     --shadow-xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 8px 10px -2px hsl(0 0% 0% / 0.10);
     --shadow-2xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.25);
   }
-  
+  /* Editor (Light) */
+.editor {
+  /* Temel yüzeyler ve metin */
+  --background: hsl(210 20% 98%);
+  --foreground: hsl(222 22% 15%);
+
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(222 22% 15%);
+
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(222 22% 15%);
+
+  /* Aksiyon renkleri */
+  --primary: hsl(200 88% 46%);
+  --primary-foreground: hsl(0 0% 100%);
+
+  --secondary: hsl(260 60% 60%);
+  --secondary-foreground: hsl(0 0% 15%);
+
+  --muted: hsl(210 28% 94%);
+  --muted-foreground: hsl(215 15% 45%);
+
+  --accent: hsl(28 95% 67%);
+  --accent-foreground: hsl(0 0% 15%);
+
+  --destructive: hsl(0 75% 55%);
+  --destructive-foreground: hsl(0 0% 100%);
+
+  /* Kenarlık, alan ve vurgu */
+  --border: hsl(210 16% 86%);
+  --input: hsl(210 16% 86%);
+  --ring: hsl(200 100% 40%);
+
+  /* Grafik paleti (uyumlu 5’li) */
+  --chart-1: hsl(200 88% 46%);
+  --chart-2: hsl(160 65% 40%);
+  --chart-3: hsl(28 95% 55%);
+  --chart-4: hsl(260 60% 60%);
+  --chart-5: hsl(340 70% 52%);
+
+  /* Sidebar */
+  --sidebar: hsl(210 30% 97%);
+  --sidebar-foreground: hsl(222 22% 15%);
+  --sidebar-primary: hsl(200 88% 46%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(210 24% 92%);
+  --sidebar-accent-foreground: hsl(222 22% 20%);
+  --sidebar-border: hsl(210 16% 86%);
+  --sidebar-ring: hsl(200 100% 40%);
+
+  /* Tipografi ve ölçüler */
+  --font-sans: Poppins, system-ui, sans-serif;
+  --font-serif: Instrument Serif, ui-serif, serif;
+  --font-mono: Fira Code, ui-monospace, monospace;
+  --radius: 0.5rem;
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  /* Gölge sistemi (yumuşak) */
+  --shadow-x: 0;
+  --shadow-y: 8px;
+  --shadow-blur: 24px;
+  --shadow-spread: -8px;
+  --shadow-opacity: 0.18;
+  --shadow-color: hsl(210 10% 20% / 0.18);
+  --shadow-2xs: 0 1px 2px 0 hsl(210 10% 20% / 0.06);
+  --shadow-xs: 0 2px 4px 0 hsl(210 10% 20% / 0.08);
+  --shadow-sm: 0 4px 12px -2px hsl(210 10% 20% / 0.10);
+  --shadow: 0 8px 24px -6px hsl(210 10% 20% / 0.14);
+  --shadow-md: 0 12px 32px -8px hsl(210 10% 20% / 0.16);
+  --shadow-lg: 0 16px 40px -10px hsl(210 10% 20% / 0.18);
+  --shadow-xl: 0 24px 64px -16px hsl(210 10% 20% / 0.22);
+  --shadow-2xl: 0 32px 80px -20px hsl(210 10% 20% / 0.28);
+
+  /* Kanvas & içerik özel tokenları */
+  --canvas: var(--card);
+  --canvas-foreground: var(--card-foreground);
+  --canvas-grid: hsl(210 16% 90% / 0.6);
+
+  /* Oran önayarları (var() ile tüketilir) */
+  --aspect-square: 1 / 1;
+  --aspect-post: 4 / 5;
+  --aspect-story: 9 / 16;
+
+  /* Güvenli alan önayarları (piksel bazlı) */
+  --safe-square-inset: 72px;
+  --safe-post-top: 80px;
+  --safe-post-bottom: 120px;
+  --safe-story-top: 250px;
+  --safe-story-bottom: 340px;
+
+  /* Tipografik boyut önerileri (var() ile bileşenler tüketir) */
+  --title-size: clamp(28px, 6vmin, 64px);
+  --lead-size: clamp(16px, 3vmin, 28px);
+  --quote-size: clamp(18px, 3.25vmin, 32px);
+  --meta-size: clamp(12px, 2vmin, 16px);
+}
+
+/* Editor (Dark) */
+.editor-dark {
+  --background: hsl(220 15% 10%);
+  --foreground: hsl(0 0% 96%);
+
+  --card: hsl(220 15% 13%);
+  --card-foreground: hsl(0 0% 96%);
+
+  --popover: hsl(220 15% 13%);
+  --popover-foreground: hsl(0 0% 96%);
+
+  --primary: hsl(200 88% 65%);
+  --primary-foreground: hsl(220 15% 10%);
+
+  --secondary: hsl(260 55% 72%);
+  --secondary-foreground: hsl(220 15% 10%);
+
+  --muted: hsl(220 10% 20%);
+  --muted-foreground: hsl(260 30% 80%);
+
+  --accent: hsl(28 95% 70%);
+  --accent-foreground: hsl(220 15% 10%);
+
+  --destructive: hsl(0 70% 62%);
+  --destructive-foreground: hsl(220 15% 10%);
+
+  --border: hsl(220 12% 26%);
+  --input: hsl(220 12% 18%);
+  --ring: hsl(190 100% 55%);
+
+  --chart-1: hsl(200 88% 65%);
+  --chart-2: hsl(160 55% 52%);
+  --chart-3: hsl(28 95% 60%);
+  --chart-4: hsl(260 55% 72%);
+  --chart-5: hsl(340 70% 62%);
+
+  --sidebar: hsl(220 18% 9%);
+  --sidebar-foreground: hsl(0 0% 96%);
+  --sidebar-primary: hsl(200 88% 65%);
+  --sidebar-primary-foreground: hsl(220 15% 10%);
+  --sidebar-accent: hsl(220 16% 16%);
+  --sidebar-accent-foreground: hsl(0 0% 96%);
+  --sidebar-border: hsl(220 12% 26%);
+  --sidebar-ring: hsl(190 100% 55%);
+
+  --font-sans: Poppins, system-ui, sans-serif;
+  --font-serif: Instrument Serif, ui-serif, serif;
+  --font-mono: Fira Code, ui-monospace, monospace;
+  --radius: 0.5rem;
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  --shadow-x: 0;
+  --shadow-y: 10px;
+  --shadow-blur: 28px;
+  --shadow-spread: -10px;
+  --shadow-opacity: 0.28;
+  --shadow-color: hsl(210 10% 2% / 0.28);
+  --shadow-2xs: 0 1px 2px 0 hsl(210 10% 2% / 0.10);
+  --shadow-xs: 0 2px 6px 0 hsl(210 10% 2% / 0.12);
+  --shadow-sm: 0 6px 16px -2px hsl(210 10% 2% / 0.16);
+  --shadow: 0 10px 28px -8px hsl(210 10% 2% / 0.20);
+  --shadow-md: 0 14px 36px -10px hsl(210 10% 2% / 0.24);
+  --shadow-lg: 0 20px 48px -12px hsl(210 10% 2% / 0.28);
+  --shadow-xl: 0 28px 72px -16px hsl(210 10% 2% / 0.32);
+  --shadow-2xl: 0 36px 96px -20px hsl(210 10% 2% / 0.40);
+
+  --canvas: var(--card);
+  --canvas-foreground: var(--card-foreground);
+  --canvas-grid: hsl(220 12% 26% / 0.6);
+
+  --aspect-square: 1 / 1;
+  --aspect-post: 4 / 5;
+  --aspect-story: 9 / 16;
+
+  --safe-square-inset: 72px;
+  --safe-post-top: 80px;
+  --safe-post-bottom: 120px;
+  --safe-story-top: 250px;
+  --safe-story-bottom: 340px;
+
+  --title-size: clamp(28px, 6vmin, 64px);
+  --lead-size: clamp(16px, 3vmin, 28px);
+  --quote-size: clamp(18px, 3.25vmin, 32px);
+  --meta-size: clamp(12px, 2vmin, 16px);
+}
+/* Classic Elegance — Light */
+.classic-elegance{
+  /* Yüzeyler ve metin */
+  --background: hsl(30 24% 87%);
+  --foreground: hsl(188 37% 19%);
+
+  --card: hsl(30 22% 92%);
+  --card-foreground: hsl(188 37% 19%);
+
+  --popover: hsl(30 22% 92%);
+  --popover-foreground: hsl(188 37% 19%);
+
+  /* Aksiyon paleti (image: #1F3E43, #B38C6A, #5B2C36) */
+  --primary: hsl(188 37% 24%);
+  --primary-foreground: hsl(30 24% 96%);
+
+  --secondary: hsl(28 32% 56%);
+  --secondary-foreground: hsl(188 40% 14%);
+
+  --muted: hsl(30 20% 93%);
+  --muted-foreground: hsl(188 12% 38%);
+
+  --accent: hsl(346 35% 27%);
+  --accent-foreground: hsl(30 24% 96%);
+
+  --destructive: hsl(346 45% 35%);
+  --destructive-foreground: hsl(0 0% 100%);
+
+  /* Çizgiler ve odak */
+  --border: hsl(30 18% 80%);
+  --input: hsl(30 18% 80%);
+  --ring: hsl(188 40% 40%);
+
+  /* Grafik renkleri */
+  --chart-1: hsl(188 37% 24%);
+  --chart-2: hsl(346 35% 27%);
+  --chart-3: hsl(28 32% 56%);
+  --chart-4: hsl(30 24% 87%);
+  --chart-5: hsl(188 37% 19%);
+
+  /* Sidebar */
+  --sidebar: hsl(30 26% 94%);
+  --sidebar-foreground: hsl(188 37% 19%);
+  --sidebar-primary: hsl(188 37% 28%);
+  --sidebar-primary-foreground: hsl(30 24% 96%);
+  --sidebar-accent: hsl(28 24% 72%);
+  --sidebar-accent-foreground: hsl(188 40% 14%);
+  --sidebar-border: hsl(30 18% 80%);
+  --sidebar-ring: hsl(188 40% 40%);
+
+  /* Yazı tipleri ve ölçüler */
+  --font-sans: Montserrat, Poppins, sans-serif;
+  --font-serif: Instrument Serif, ui-serif, serif;
+  --font-mono: "Fira Code", monospace;
+  --radius: 0.5rem;
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  /* Gölge sistemi (teal tabanlı yumuşak) */
+  --shadow-x: 0;
+  --shadow-y: 10px;
+  --shadow-blur: 28px;
+  --shadow-spread: -10px;
+  --shadow-opacity: 0.22;
+  --shadow-color: hsl(188 37% 19% / 0.22);
+  --shadow-2xs: 0 1px 2px 0 hsl(188 20% 20% / 0.06);
+  --shadow-xs: 0 2px 6px 0 hsl(188 20% 20% / 0.10);
+  --shadow-sm: 0 6px 16px -2px hsl(188 20% 20% / 0.12);
+  --shadow: 0 10px 28px -8px hsl(188 20% 20% / 0.16);
+  --shadow-md: 0 14px 36px -10px hsl(188 20% 20% / 0.18);
+  --shadow-lg: 0 20px 48px -12px hsl(188 20% 20% / 0.20);
+  --shadow-xl: 0 28px 72px -16px hsl(188 20% 20% / 0.24);
+  --shadow-2xl: 0 36px 96px -20px hsl(188 20% 20% / 0.30);
+}
+
+/* Classic Elegance — Dark */
+.classic-elegance-dark{
+  /* Yüzeyler ve metin (gece modu) */
+  --background: hsl(188 37% 11%);
+  --foreground: hsl(30 24% 92%);
+
+  --card: hsl(188 37% 14%);
+  --card-foreground: hsl(30 24% 92%);
+
+  --popover: hsl(188 37% 14%);
+  --popover-foreground: hsl(30 24% 92%);
+
+  /* Aksiyon paleti tersine uyum */
+  --primary: hsl(28 32% 62%);
+  --primary-foreground: hsl(188 37% 11%);
+
+  --secondary: hsl(346 35% 32%);
+  --secondary-foreground: hsl(30 24% 92%);
+
+  --muted: hsl(188 22% 20%);
+  --muted-foreground: hsl(30 20% 80%);
+
+  --accent: hsl(30 24% 80%);
+  --accent-foreground: hsl(188 37% 11%);
+
+  --destructive: hsl(346 45% 38%);
+  --destructive-foreground: hsl(30 24% 92%);
+
+  /* Çizgiler ve odak */
+  --border: hsl(188 18% 26%);
+  --input: hsl(188 18% 20%);
+  --ring: hsl(28 32% 62%);
+
+  /* Grafik renkleri */
+  --chart-1: hsl(28 32% 62%);
+  --chart-2: hsl(346 35% 32%);
+  --chart-3: hsl(30 24% 80%);
+  --chart-4: hsl(188 37% 24%);
+  --chart-5: hsl(188 37% 11%);
+
+  /* Sidebar */
+  --sidebar: hsl(188 37% 10%);
+  --sidebar-foreground: hsl(30 24% 92%);
+  --sidebar-primary: hsl(28 32% 62%);
+  --sidebar-primary-foreground: hsl(188 37% 11%);
+  --sidebar-accent: hsl(188 28% 18%);
+  --sidebar-accent-foreground: hsl(30 24% 92%);
+  --sidebar-border: hsl(188 18% 26%);
+  --sidebar-ring: hsl(28 32% 62%);
+
+  /* Yazı tipleri ve ölçüler */
+  --font-sans: Montserrat, Poppins, sans-serif;
+  --font-serif: Instrument Serif, ui-serif, serif;
+  --font-mono: "Fira Code", monospace;
+  --radius: 0.5rem;
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  /* Gölge sistemi (daha yoğun) */
+  --shadow-x: 0;
+  --shadow-y: 12px;
+  --shadow-blur: 32px;
+  --shadow-spread: -12px;
+  --shadow-opacity: 0.28;
+  --shadow-color: hsl(188 37% 4% / 0.28);
+  --shadow-2xs: 0 1px 2px 0 hsl(188 20% 6% / 0.12);
+  --shadow-xs: 0 2px 8px 0 hsl(188 20% 6% / 0.14);
+  --shadow-sm: 0 6px 18px -2px hsl(188 20% 6% / 0.18);
+  --shadow: 0 12px 32px -8px hsl(188 20% 6% / 0.22);
+  --shadow-md: 0 16px 44px -10px hsl(188 20% 6% / 0.26);
+  --shadow-lg: 0 24px 56px -12px hsl(188 20% 6% / 0.30);
+  --shadow-xl: 0 32px 80px -16px hsl(188 20% 6% / 0.34);
+  --shadow-2xl: 0 40px 110px -20px hsl(188 20% 6% / 0.40);
+}  
 }
 
 @layer base {
