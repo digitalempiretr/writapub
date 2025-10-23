@@ -1069,10 +1069,9 @@ export default function Home() {
                                       <AlertDialogTrigger asChild>
                                         <Button
                                           variant="ghost"
-                                          size="icon"
-                                          className="h-16 w-16 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400 m-2"
+                                          className="h-12 w-12 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400 m-2 flex items-center justify-center"
                                         >
-                                          <BookmarkStarIcon className="h-16 w-16" />
+                                          <BookmarkStarIcon className="h-8 w-8" />
                                         </Button>
                                       </AlertDialogTrigger>
                                     </TooltipTrigger>
