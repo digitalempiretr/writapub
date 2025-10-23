@@ -700,12 +700,12 @@ export default function Home() {
     setIsSidebarOpen(true);
   };
 
-  const handleZoom = useCallback((direction: 'in' | 'out') => {
+  const handleZoom = (direction: 'in' | 'out') => {
     setZoomLevel(prev => {
         const newZoom = direction === 'in' ? prev + ZOOM_STEP : prev - ZOOM_STEP;
         return Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newZoom));
     });
-  }, []);
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -899,7 +899,7 @@ export default function Home() {
   return (
     <div className="h-screen w-screen flex flex-col">
        {/* HEADER */}
-      <header className="w-full text-left p-4 md:p-8 h-[10vh] md:h-[3vh] flex items-center justify-between flex-shrink-0 z-20 bg-primary">
+      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center justify-between flex-shrink-0 z-20 bg-primary">
         <Logo className="text-[1.5rem] text-primary-foreground" />
         <div className="flex items-center gap-4">
             {designs.length > 0 && (
@@ -963,7 +963,7 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="flex flex-1">
+      <div className="flex flex-grow h-[90vh]">
         {/* Desktop Sidebar */}
         {designs.length > 0 && (
           <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[3vw]")}>
@@ -1014,7 +1014,7 @@ export default function Home() {
         )}
 
         {/* Main Content Area */}
-        <main className={cn("flex-grow flex items-center justify-center overflow-hidden h-full p-4 relative", designs.length === 0 ? "w-full" : "")}>
+        <main className={cn("flex-grow flex items-center justify-center overflow-hidden h-full p-4 relative", designs.length === 0 ? "w-full" : (isSidebarOpen ? "w-[60vw]" : "w-[95vw]"))}>
           {designs.length === 0 ? (
             <div className="w-full max-w-2xl">
               <CreativeMagicPanel 
@@ -1032,7 +1032,7 @@ export default function Home() {
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
               onMouseLeave={handleMouseUp}
-              onWheel={(e) => {
+               onWheel={(e) => {
                 e.preventDefault();
                 const direction = e.deltaY > 0 ? 'out' : 'in';
                 handleZoom(direction);
@@ -1147,3 +1147,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
