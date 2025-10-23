@@ -165,6 +165,7 @@ export default function Home() {
 
    const closePanel = useCallback(() => {
     setIsMobilePanelOpen(false);
+    setActiveSettingsTab('');
   }, []);
 
    useEffect(() => {
@@ -1068,9 +1069,9 @@ export default function Home() {
                                         <Button
                                           variant="ghost"
                                           size="icon"
-                                          className="h-8 w-8 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400"
+                                          className="h-10 w-10 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400"
                                         >
-                                          <Star className="h-5 w-5" />
+                                          <Star className="h-6 w-6" />
                                         </Button>
                                       </AlertDialogTrigger>
                                     </TooltipTrigger>
@@ -1129,6 +1130,10 @@ export default function Home() {
                 <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
                   <SheetHeader className="p-4 border-b flex-row justify-between items-center bg-card">
                     <SheetTitle className="capitalize">{activeTabLabel}</SheetTitle>
+                     <Button variant="ghost" size="icon" onClick={closePanel} className="h-8 w-8 rounded-full">
+                        <X className="h-5 w-5" />
+                        <span className="sr-only">Close Panel</span>
+                    </Button>
                   </SheetHeader>
                    <div className="flex-grow overflow-y-auto">
                     {renderActiveTabContent()}
