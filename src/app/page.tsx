@@ -93,24 +93,25 @@ export default function Home() {
     setIsClient(true)
   }, [])
   
+  const handleSelectCarousel = useCallback(() => {
+    if (!carouselApi) {
+      return
+    }
+    setCurrentSlide(carouselApi.selectedScrollSnap())
+  }, [carouselApi]);
+
   useEffect(() => {
     if (!carouselApi) {
       return
     }
 
-    const onSelect = () => {
-      setCurrentSlide(carouselApi.selectedScrollSnap())
-    }
-
-    carouselApi.on("select", onSelect)
-    
-    // Initial call
-    onSelect();
+    handleSelectCarousel();
+    carouselApi.on("select", handleSelectCarousel)
 
     return () => {
-      carouselApi.off("select", onSelect)
+      carouselApi.off("select", handleSelectCarousel)
     }
-  }, [carouselApi]);
+  }, [carouselApi, handleSelectCarousel]);
 
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'duru-sans') || fontOptions[0]);
 
@@ -1049,7 +1050,7 @@ export default function Home() {
                   className="relative transition-transform duration-75" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
-                  <Carousel className="w-full" setApi={setCarouselApi} opts={{}}>
+                  <Carousel className="w-full" setApi={setCarouselApi}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
@@ -1157,5 +1158,7 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     
