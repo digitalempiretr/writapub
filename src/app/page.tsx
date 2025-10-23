@@ -826,11 +826,11 @@ export default function Home() {
   };
 
   const settingsTabs = [
-    { value: "designs", icon: <LayoutTemplate />, label: "Templates" },
-    { value: "background", icon: <ImageIcon />, label: "Background Settings" },
-    { value: "text", icon: <Type />, label: "Text Settings" },
-    { value: "favorites", icon: <HeartIcon />, label: "My Favorites" },
-    { value: "download", icon: <Download />, label: "Download" },
+    { value: "designs", icon: <LayoutTemplate className="h-5 w-5"/>, label: "Templates" },
+    { value: "background", icon: <ImageIcon className="h-5 w-5"/>, label: "Background Settings" },
+    { value: "text", icon: <Type className="h-5 w-5"/>, label: "Text Settings" },
+    { value: "favorites", icon: <HeartIcon className="h-5 w-5"/>, label: "My Favorites" },
+    { value: "download", icon: <Download className="h-5 w-5"/>, label: "Download" },
   ];
   
   const activeTabLabel = settingsTabs.find(tab => tab.value === activeSettingsTab)?.label;
@@ -1070,7 +1070,7 @@ export default function Home() {
                                       <AlertDialogTrigger asChild>
                                         <Button
                                           variant="ghost"
-                                          className="h-12 w-12 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400 m-2 flex items-center justify-center"
+                                          className="h-12 w-12 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400 m-2"
                                         >
                                           <BookmarkStarIcon className="h-8 w-8" />
                                         </Button>
