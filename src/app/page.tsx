@@ -899,7 +899,7 @@ export default function Home() {
   return (
     <div className="h-screen w-screen flex flex-col">
        {/* HEADER */}
-      <header className="w-full text-left p-4 md:p-8 h-[10vh] flex items-center justify-between flex-shrink-0 z-20 bg-primary">
+      <header className="w-full text-left p-4 md:px-8 flex items-center justify-between flex-shrink-0 z-20 bg-primary h-[10vh] md:h-[3vh]">
         <Logo className="text-[1.5rem] text-primary-foreground" />
         <div className="flex items-center gap-4">
             {designs.length > 0 && (
@@ -963,7 +963,7 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="flex flex-grow h-[90vh]">
+      <div className="flex-1 flex overflow-hidden">
         {/* Desktop Sidebar */}
         {designs.length > 0 && (
           <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[3vw]")}>
@@ -1014,7 +1014,7 @@ export default function Home() {
         )}
 
         {/* Main Content Area */}
-        <main className={cn("flex-grow flex items-center justify-center overflow-hidden h-full p-4 relative", designs.length === 0 ? "w-full" : (isSidebarOpen ? "w-[60vw]" : "w-[95vw]"))}>
+        <main className={cn("flex-grow flex items-center justify-center overflow-hidden h-full p-4 relative")}>
           {designs.length === 0 ? (
             <div className="w-full max-w-2xl">
               <CreativeMagicPanel 
@@ -1042,7 +1042,7 @@ export default function Home() {
                   className="relative transition-transform duration-75" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
-                  <Carousel className="w-full" setApi={setCarouselApi} opts={{ dragFree: true }}>
+                  <Carousel className="w-full" setApi={setCarouselApi}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
@@ -1147,5 +1147,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
