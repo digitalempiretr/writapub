@@ -1014,7 +1014,7 @@ export default function Home() {
         )}
 
         {/* Main Content Area */}
-        <main className={cn("flex-grow flex items-center justify-center overflow-hidden h-full p-4 relative", designs.length === 0 ? "w-full" : (isSidebarOpen ? "w-[60vw]" : "w-[95vw]"))}>
+        <main className={cn("flex-grow flex items-center justify-center overflow-hidden h-full p-4 relative", designs.length === 0 ? "w-full" : "")}>
           {designs.length === 0 ? (
             <div className="w-full max-w-2xl">
               <CreativeMagicPanel 
@@ -1147,5 +1147,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
