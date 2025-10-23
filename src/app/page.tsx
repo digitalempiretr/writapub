@@ -31,7 +31,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Download, ImageIcon, LayoutTemplate, Star, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
 import { imageTemplates, ImageTemplate } from "@/lib/image-templates";
@@ -652,7 +652,6 @@ export default function Home() {
     
     return (
         <ImageCanvas
-          key={`${backgroundType}-${activeFont.value}-${activeFont.size}-${activeFont.lineHeight}-${bgColor}-${textColor}-${textOpacity}-${gradientBg}-${imageBgUrl}-${rectBgColor}-${rectOpacity}-${overlayColor}-${overlayOpacity}-${index}-${design.text}-${textAlign}-${isBold}-${isUppercase}-${textShadowEnabled}-${JSON.stringify(shadows)}-${textStroke}-${strokeColor}-${strokeWidth}-${activeEffect.id}-${canvasSize.width}-${canvasSize.height}`}
           isTitle={design.isTitle}
           fontFamily={activeFont.fontFamily}
           fontWeight={activeFont.weight}
@@ -684,7 +683,13 @@ export default function Home() {
           fontSmoothing={activeEffect.style.fontSmoothing}
         />
     )
-  }, [backgroundType, activeFont, bgColor, textColor, textOpacity, gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, handleTextRemaining, isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize]);
+  }, [
+    backgroundType, activeFont, bgColor, textColor, textOpacity, 
+    gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, 
+    overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, 
+    shadows, textStroke, strokeColor, strokeWidth, handleTextRemaining, 
+    isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize
+  ]);
   
   const handleMobileTabClick = (tab: string) => {
     if (isMobilePanelOpen && activeSettingsTab === tab) {

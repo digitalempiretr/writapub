@@ -252,7 +252,7 @@ const parseSize = (size: string | number, viewportHeight: number): number => {
     }
 };
 
-export function ImageCanvas({
+const ImageCanvasComponent = ({
   text,
   isTitle,
   fontFamily,
@@ -280,7 +280,7 @@ export function ImageCanvas({
   strokeColor,
   strokeWidth,
   fontSmoothing,
-}: ImageCanvasProps) {
+}: ImageCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const indexRef = useRef<number | null>(null);
   const [viewportHeight, setViewportHeight] = React.useState(1080); // Default, updated on client
@@ -452,3 +452,4 @@ export function ImageCanvas({
     />
   );
 }
+export const ImageCanvas = React.memo(ImageCanvasComponent);
