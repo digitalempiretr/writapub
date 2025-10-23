@@ -1072,7 +1072,7 @@ export default function Home() {
                                           size="icon"
                                           className="h-20 w-20 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400 m-2"
                                         >
-                                          <BookmarkStarIcon  />
+                                          <BookmarkStarIcon className="h-10 w-10" />
                                         </Button>
                                       </AlertDialogTrigger>
                                     </TooltipTrigger>
