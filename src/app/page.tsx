@@ -30,7 +30,7 @@ import {
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Star, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -51,6 +51,7 @@ import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { BookmarkStarIcon } from "@/components/ui/icons";
 
 type Design = {
   text: string;
@@ -1060,7 +1061,7 @@ export default function Home() {
                                 {renderCanvas(design, index)}
                               </CardContent>
                             </Card>
-                            <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="absolute top-4 right-4 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                               <AlertDialog>
                                 <TooltipProvider>
                                   <Tooltip>
@@ -1069,9 +1070,9 @@ export default function Home() {
                                         <Button
                                           variant="ghost"
                                           size="icon"
-                                          className="h-10 w-10 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400"
+                                          className="h-10 w-10 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400 m-2"
                                         >
-                                          <Star className="h-6 w-6" />
+                                          <BookmarkStarIcon />
                                         </Button>
                                       </AlertDialogTrigger>
                                     </TooltipTrigger>
@@ -1157,5 +1158,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
