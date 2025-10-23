@@ -904,9 +904,9 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen w-screen flex flex-col">
+    <div className="flex h-screen flex-col overflow-hidden">
        {/* HEADER */}
-      <header className="w-full text-left p-4 md:px-8 flex items-center justify-between flex-shrink-0 z-20 bg-primary h-[10vh] md:h-[5vh]">
+      <header className="w-full text-left p-4 md:px-8 h-[10vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-primary">
         <Logo className="text-[1.5rem] text-primary-foreground" />
         <div className="flex items-center gap-4">
             {designs.length > 0 && (
@@ -1070,9 +1070,9 @@ export default function Home() {
                                         <Button
                                           variant="ghost"
                                           size="icon"
-                                          className="h-20 w-20 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400 m-2"
+                                          className="h-16 w-16 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400 m-2"
                                         >
-                                          <BookmarkStarIcon className="h-10 w-10" />
+                                          <BookmarkStarIcon className="h-16 w-16" />
                                         </Button>
                                       </AlertDialogTrigger>
                                     </TooltipTrigger>
@@ -1158,3 +1158,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
