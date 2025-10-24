@@ -1050,7 +1050,7 @@ export default function Home() {
                   className="relative transition-transform duration-75" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
-                  <Carousel className="w-full" setApi={setCarouselApi}>
+                  <Carousel className="w-full" setApi={setCarouselApi} opts={{}}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
@@ -1070,15 +1070,14 @@ export default function Home() {
                                       <AlertDialogTrigger asChild>
                                         <Button
                                           variant="ghost"
-                                          size="icon"
-                                          className="h-20 w-20 flex items-center justify-center rounded-full bg-black/10 backdrop-blur-sm text-white hover:bg-red/50 hover:text-red-400 m-2 [&_svg]:size-12"
+                                          className="h-12 w-12 flex items-center justify-center rounded-full bg-black/10 backdrop-blur-sm text-white hover:bg-red-500/50 hover:text-white m-2"
                                         >
-                                          <HeartIconG className="h-5 w-5 hover:bg-red/50 " />
+                                          <BookmarkStarIcon className="h-8 w-8" />
                                         </Button>
                                       </AlertDialogTrigger>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                      <p className="text-base">Save to Favorites</p>
+                                      Save to Favorites
                                     </TooltipContent>
                                   </Tooltip>
                                 <AlertDialogContent>
@@ -1159,6 +1158,8 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     
 
