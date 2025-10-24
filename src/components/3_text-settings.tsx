@@ -151,11 +151,6 @@ export function TextSettings({
     setShadows(shadows.filter(s => s.id !== id));
   };
 
-  const handleFontChange = (value: string) => {
-    const newFont = fontOptions.find(f => f.value === value) || activeFont;
-    setActiveFont(newFont);
-  };
-  
   const handleFontValueChange = <K extends keyof FontOption>(key: K, value: FontOption[K]) => {
     setActiveFont({
       ...activeFont,
@@ -659,5 +654,3 @@ export function TextSettings({
     </TooltipProvider>
   );
 }
-
-    
