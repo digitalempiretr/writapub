@@ -36,7 +36,7 @@ import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
 import { imageTemplates, ImageTemplate } from "@/lib/image-templates";
 import { fontOptions } from "@/lib/font-options";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/components/ui/tooltip";
 import { defaultText } from "@/lib/default-text";
 import { DesignTemplate } from "@/lib/design-templates";
 import { useLocalStorage } from "@/hooks/use-local-storage";
@@ -1050,7 +1050,7 @@ export default function Home() {
                   className="relative transition-transform duration-75" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
-                  <Carousel className="w-full" setApi={setCarouselApi} opts={{}}>
+                  <Carousel className="w-full" setApi={setCarouselApi}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
@@ -1070,14 +1070,15 @@ export default function Home() {
                                       <AlertDialogTrigger asChild>
                                         <Button
                                           variant="ghost"
-                                          className="h-12 w-12 flex items-center justify-center rounded-full bg-black/10 backdrop-blur-sm text-white hover:bg-red-500/50 hover:text-white m-2"
+                                          size="icon"
+                                          className="h-20 w-20 flex items-center justify-center rounded-full bg-gray/20 backdrop-blur-sm text-white hover:bg-red/50 hover:text-red-400 m-2 [&_svg]:size-11"
                                         >
-                                          <BookmarkStarIcon className="h-8 w-8" />
+                                          <HeartIconG className="h-5 w-5" />
                                         </Button>
                                       </AlertDialogTrigger>
                                     </TooltipTrigger>
-                                    <TooltipContent>
-                                      Save to Favorites
+                                    <TooltipContent side="left">
+                                     <p className="text-2xl font-sans">Save to Favorites</p>
                                     </TooltipContent>
                                   </Tooltip>
                                 <AlertDialogContent>
@@ -1158,8 +1159,6 @@ export default function Home() {
     </div>
   );
 }
-
-    
 
     
 

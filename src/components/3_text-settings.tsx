@@ -605,10 +605,10 @@ export function TextSettings({
                         className="h-20 flex items-center justify-center p-0"
                       >
                          <span
-                            className="font-['Playfair_Display'] text-5xl font-bold"
+                            className="font-['Oswald'] text-4xl font-bold"
                             style={{ color: color }}
                           >
-                            W
+                            Abc
                           </span>
                       </CardContent>
                     </Card>

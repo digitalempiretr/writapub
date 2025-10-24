@@ -4,13 +4,13 @@
 @tailwind utilities;
 
 body {  
-  font-family: var(--font-serif), Arial, Helvetica, sans-serif;
+  font-family: var(--font-serif), 'Instrument Serif', Arial, Helvetica, sans-serif;
   
   background-image: 
   url("https://www.transparenttextures.com/patterns/project-paper.png")
   /*linear-gradient(to top right, #FEAC5E, #C779D0, #4BC0C8);*/ ;
   background-color: var(--card);
-  background-blend-mode: hard-light;
+  background-blend-mode: overlay;
   min-height: 100vh;
   background-attachment: fixed;
 }
@@ -153,7 +153,7 @@ body {
     --sidebar-border: hsl(0 0% 92.1569%);
     --sidebar-ring: hsl(0 0% 0%);
     --font-sans: Ubuntu, ui-sans-serif, sans-serif, system-ui;
-    --font-serif: Instrument Serif, ui-serif, serif;
+    --font-serif: 'Instrument Serif',  ui-serif, serif;
     --font-mono: IBM Plex Mono, monospace;
     --radius: 1.4rem;
     --shadow-x: 0px;
@@ -208,7 +208,7 @@ body {
     --sidebar-border: hsl(42.8571 6.4220% 21.3725%);
     --sidebar-ring: hsl(77.6687 100% 68.0392%);
     --font-sans: Ubuntu, ui-sans-serif, sans-serif, system-ui;
-    --font-serif: Instrument Serif, ui-serif, serif;
+    --font-serif: 'Instrument Serif',  ui-serif, serif;
     --font-mono: IBM Plex Mono, monospace;
     --radius: 1.4rem;
     --shadow-x: 0px;
@@ -260,7 +260,7 @@ body {
     --sidebar-border: hsl(268.6957 100.0000% 95.4902%);
     --sidebar-ring: hsl(330.3659 81.1881% 60.3922%);
     --font-sans: Poppins, sans-serif;
-    --font-serif: Instrument Serif, ui-serif, serif;
+    --font-serif: 'Instrument Serif',  ui-serif, serif;
     --font-mono: Fira Code, monospace;
     --radius: 0.4rem;
     --shadow-x: 3px;
@@ -314,7 +314,7 @@ body {
     --sidebar-border: hsl(216.9231 19.1176% 26.6667%);
     --sidebar-ring: hsl(330.3659 81.1881% 60.3922%);
     --font-sans: Poppins, sans-serif;
-    --font-serif: Instrument Serif, ui-serif, serif;
+    --font-serif: 'Instrument Serif',  ui-serif, serif;
     --font-mono: Fira Code, monospace;
     --radius: 0.4rem;
     --shadow-x: 3px;
@@ -366,7 +366,7 @@ body {
     --sidebar-border: hsl(33.9130 27.0588% 83.3333%);
     --sidebar-ring: hsl(123.0380 46.1988% 33.5294%);
     --font-sans: Montserrat, sans-serif;
-    --font-serif: Merriweather, serif;
+    --font-serif: 'Instrument Serif', Merriweather, serif;
     --font-mono: 'Source Code Pro', monospace;
     --radius: 0.5rem;
     --shadow-x: 0;
@@ -419,7 +419,7 @@ body {
     --sidebar-border: hsl(115.3846 9.6296% 26.4706%);
     --sidebar-ring: hsl(122.4242 39.4422% 49.2157%);
     --font-sans: Montserrat, sans-serif;
-    --font-serif: Merriweather, serif;
+    --font-serif: 'Instrument Serif', Merriweather, serif;
     --font-mono: Source Code Pro, monospace;
     --radius: 0.5rem;
     --shadow-x: 0;
@@ -471,7 +471,7 @@ body {
     --sidebar-border: hsl(0 0% 16.0784%);
     --sidebar-ring: hsl(141.8919 69.1589% 58.0392%);
     --font-sans: Outfit, sans-serif;
-    --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-serif: 'Instrument Serif', ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
     --font-mono: monospace;
     --radius: 0.5rem;
     --shadow-x: 0px;
@@ -523,7 +523,7 @@ body {
     --sidebar-border: hsl(0 0% 83.1373%);
     --sidebar-ring: hsl(349.5238 100% 87.6471%);
     --font-sans: 'Poppins', sans-serif;
-    --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-serif: 'Instrument Serif', ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
     --font-mono: 'Roboto Mono', monospace;
     --radius: 0.5rem;
     --shadow-x: 0;
@@ -576,7 +576,7 @@ body {
     --sidebar-border: hsl(0 0% 0%);
     --sidebar-ring: hsl(0 100% 60%);
     --font-sans: 'DM Sans', sans-serif;
-    --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-serif: 'Instrument Serif', ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
     --font-mono: 'Space Mono', monospace;
     --radius: 0px;
     --shadow-x: 4px;
@@ -630,7 +630,7 @@ body {
     --sidebar-border: hsl(0 0% 100%);
     --sidebar-ring: hsl(0 100.0000% 70%);
     --font-sans: DM Sans, sans-serif;
-    --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-serif: 'Instrument Serif', ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
     --font-mono: Space Mono, monospace;
     --radius: 0px;
     --shadow-x: 4px;
@@ -682,7 +682,7 @@ body {
     --sidebar-border: hsl(0 0% 92.1569%);
     --sidebar-ring: hsl(0 0% 0%);
     --font-sans: 'Plus Jakarta Sans', sans-serif;
-    --font-serif: Lora, serif;
+    --font-serif: 'Instrument Serif', Lora, serif;
     --font-mono: 'IBM Plex Mono', monospace;
     --radius: 1.4rem;
     --shadow-x: 0px;
@@ -737,7 +737,7 @@ body {
     --sidebar-border: hsl(220 13.0435% 90.9804%);
     --sidebar-ring: hsl(142.0859 70.5628% 45.2941%);
     --font-sans: DM Sans, sans-serif;
-    --font-serif: 'Instrument Serif', serif;
+    --font-serif: 'Instrument Serif',  serif;
     --font-mono: IBM Plex Mono, monospace;
     --radius: 0.5rem;
     --shadow-x: 0px;
@@ -791,7 +791,7 @@ body {
     --sidebar-border: hsl(215 13.7931% 34.1176%);
     --sidebar-ring: hsl(158.1132 64.3725% 51.5686%);
     --font-sans: DM Sans, sans-serif;
-    --font-serif: 'Instrument Serif', serif;
+    --font-serif: 'Instrument Serif',  serif;
     --font-mono: IBM Plex Mono, monospace;
     --radius: 0.5rem;
     --shadow-x: 0px;
@@ -861,7 +861,7 @@ body {
 
   /* Tipografi ve ölçüler */
   --font-sans: Poppins, system-ui, sans-serif;
-  --font-serif: Instrument Serif, ui-serif, serif;
+  --font-serif: 'Instrument Serif',  ui-serif, serif;
   --font-mono: Fira Code, ui-monospace, monospace;
   --radius: 0.5rem;
   --tracking-normal: 0em;
@@ -953,7 +953,7 @@ body {
   --sidebar-ring: hsl(190 100% 55%);
 
   --font-sans: Poppins, system-ui, sans-serif;
-  --font-serif: Instrument Serif, ui-serif, serif;
+  --font-serif: 'Instrument Serif', ui-serif, serif;
   --font-mono: Fira Code, ui-monospace, monospace;
   --radius: 0.5rem;
   --tracking-normal: 0em;
@@ -1045,7 +1045,7 @@ body {
 
   /* Yazı tipleri ve ölçüler */
   --font-sans: Montserrat, Poppins, sans-serif;
-  --font-serif: Instrument Serif, ui-serif, serif;
+  --font-serif: 'Instrument Serif',  ui-serif, serif;
   --font-mono: "Fira Code", monospace;
   --radius: 0.5rem;
   --tracking-normal: 0em;
@@ -1120,7 +1120,7 @@ body {
 
   /* Yazı tipleri ve ölçüler */
   --font-sans: Montserrat, Poppins, sans-serif;
-  --font-serif: Instrument Serif, ui-serif, serif;
+  --font-serif: 'Instrument Serif',  ui-serif, serif;
   --font-mono: "Fira Code", monospace;
   --radius: 0.5rem;
   --tracking-normal: 0em;
@@ -1197,7 +1197,7 @@ body {
 
   /* Tipografi ve ölçüler */
   --font-sans: Poppins, Montserrat, sans-serif;
-  --font-serif: "Cormorant Garamond", Lora, serif;
+  --font-serif: 'Instrument Serif', "Cormorant Garamond", Lora, serif;
   --font-mono: Fira Code, monospace;
   --radius: 0.5rem;
   --tracking-normal: 0em;
@@ -1268,7 +1268,7 @@ body {
 
   /* Tipografi ve ölçüler */
   --font-sans: Poppins, Montserrat, sans-serif;
-  --font-serif: "Cormorant Garamond", Lora, serif;
+  --font-serif: 'Instrument Serif', "Cormorant Garamond", Lora, serif;
   --font-mono: Fira Code, monospace;
   --radius: 0.5rem;
   --tracking-normal: 0em;

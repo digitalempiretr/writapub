@@ -16,7 +16,7 @@ export const imageTemplates: ImageTemplate[] = [
     { name: "bg-wall", imageUrls: { post: "https://i.ibb.co/Txg2jcJz/bg.jpg", story: "https://i.ibb.co/Txg2jcJz/bg.jpg", square: "https://i.ibb.co/Txg2jcJz/bg.jpg" } },
     { name: "bg-casette", imageUrls: { post: "https://i.ibb.co/7JRjdmHF/bg-Casette.jpg", story: "https://i.ibb.co/7JRjdmHF/bg-Casette.jpg", square: "https://i.ibb.co/7JRjdmHF/bg-Casette.jpg" } },
     { name: "bg-grass", imageUrls: { post: "https://i.ibb.co/6c3XD0xk/bg-grass.jpg", story: "https://i.ibb.co/6c3XD0xk/bg-grass.jpg", square: "https://i.ibb.co/6c3XD0xk/bg-grass.jpg" } },
-    { name: "bgImage-28", imageUrls: { post: "https://i.ibb.co/1jZdJPV/28.jpg", story: "https://i.ibb.co/1jZdJPV/28.jpg", square: "https://i.ibb.co/1jZdJPV/28.jpg" } },
+    { name: "book-shadow", imageUrls: { post: "https://i.ibb.co/nMxGgznf/book-shadow-post.jpg", story: "https://i.ibb.co/0j9vpVyN/book-shadow-story.jpg", square: "https://i.ibb.co/tTSfSNmS/book-shadow-square.jpg" } },
     { name: "square", imageUrls: { post: "https://i.ibb.co/5hRnrGqX/25.jpg", story: "https://i.ibb.co/5hRnrGqX/25.jpg", square: "https://i.ibb.co/5hRnrGqX/25.jpg" } },
     { name: "twoLines", imageUrls: { post: "https://i.ibb.co/cSNxXVn5/1.jpg", story: "https://i.ibb.co/ZRZ2h1Nm/1-story.jpg", square: "https://i.ibb.co/h1tBWKLC/1-square.jpg" } },
     { name: "cardboard paper", imageUrls: { post: "https://i.ibb.co/21RBM4zK/2.jpg", story: "https://i.ibb.co/7ty50ybz/2-story.jpg", square: "https://i.ibb.co/MJvRrkh/2-square.jpg" } },
