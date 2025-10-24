@@ -12,7 +12,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Input } from "@/components/ui/input";
 import { TextColorChooseIcon, TextBgBoxIcon, TextBoxOpacity, TextStrokeIcon, RefreshIcon, FontSizeIcon, TextShadowIcon } from "@/components/ui/icons";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FontOption } from "@/lib/font-options";
+import { FontOption, fontOptions } from "@/lib/font-options";
 import { Button } from "@/components/ui/button";
 import { Bold, CaseUpper, AlignLeft, AlignCenter, AlignRight, Loader2, Trash2, Plus } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -52,7 +52,6 @@ type TextSettingsProps = {
   setTextOpacity: (value: number) => void;
   activeFont: FontOption;
   setActiveFont: (font: FontOption) => void;
-  fontOptions: FontOption[];
   isBold: boolean;
   setIsBold: (value: boolean) => void;
   isUppercase: boolean;
@@ -90,7 +89,6 @@ export function TextSettings({
   setTextOpacity,
   activeFont,
   setActiveFont,
-  fontOptions,
   isBold,
   setIsBold,
   isUppercase,
