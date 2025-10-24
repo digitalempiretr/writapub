@@ -119,9 +119,6 @@ export function TextSettings({
   const baseId = useId();
   const [internalText, setInternalText] = useState(text);
 
-  const [internalFontSize, setInternalFontSize] = useState<number>(Number(activeFont.size) || 48);
-  const [internalLineHeight, setInternalLineHeight] = useState<number>(Number(activeFont.lineHeight) || 1.4);
-  
   const [colorPaletteApi, setColorPaletteApi] = useState<CarouselApi>();
   const [currentPaletteSlide, setCurrentPaletteSlide] = useState(0);
 
@@ -130,12 +127,6 @@ export function TextSettings({
 
   useCarouselSync(colorPaletteApi, setCurrentPaletteSlide);
   useCarouselSync(effectsApi, setCurrentEffectSlide);
-
-  useEffect(() => {
-    setInternalFontSize(Number(activeFont.size));
-    setInternalLineHeight(Number(activeFont.lineHeight));
-  }, [activeFont]);
-
 
   useEffect(() => {
     setInternalText(text);
@@ -301,15 +292,15 @@ export function TextSettings({
                     <div className="space-y-2">
                         <Label htmlFor={`${baseId}-font-size-slider`}>Font Size</Label>
                          <div className="flex items-center gap-2">
-                            <Slider id={`${baseId}-font-size-slider`} max={200} min={20} step={1} value={[internalFontSize]} onValueChange={(v) => setInternalFontSize(v[0])} onValueCommit={(v) => handleFontValueChange('size', v[0])}/>
-                            <Input type="number" value={internalFontSize} onChange={(e) => setInternalFontSize(Number(e.target.value))} onBlur={() => handleFontValueChange('size', internalFontSize)} className="w-20 h-8 text-xs" />
+                            <Slider id={`${baseId}-font-size-slider`} max={200} min={20} step={1} value={[typeof activeFont.size === 'number' ? activeFont.size : 48]} onValueChange={(v) => handleFontValueChange('size', v[0])}/>
+                            <Input type="number" value={activeFont.size} onChange={(e) => handleFontValueChange('size', Number(e.target.value))} className="w-20 h-8 text-xs" />
                          </div>
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor={`${baseId}-line-height-slider`}>Line Height</Label>
                         <div className="flex items-center gap-2">
-                            <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[internalLineHeight]} onValueChange={(v) => setInternalLineHeight(v[0])} onValueCommit={(v) => handleFontValueChange('lineHeight', v[0])}/>
-                             <Input type="number" value={internalLineHeight} onChange={(e) => setInternalLineHeight(Number(e.target.value))} onBlur={() => handleFontValueChange('lineHeight', internalLineHeight)} step="0.1" className="w-20 h-8 text-xs" />
+                            <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[typeof activeFont.lineHeight === 'number' ? activeFont.lineHeight : 1.4]} onValueChange={(v) => handleFontValueChange('lineHeight', v[0])}/>
+                             <Input type="number" value={activeFont.lineHeight} onChange={(e) => handleFontValueChange('lineHeight', Number(e.target.value))} step="0.1" className="w-20 h-8 text-xs" />
                         </div>
                     </div>
                   </PopoverContent>
