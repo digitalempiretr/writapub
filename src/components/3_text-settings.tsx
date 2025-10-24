@@ -252,10 +252,15 @@ export function TextSettings({
              <div className="overflow-x-auto pb-2 -mb-2">
                 <div className="flex items-center gap-2 flex-nowrap">
                 <div className="flex-shrink-0 min-w-[150px]">
-                  <Select value={activeFont.value} onValueChange={(value) => {
+                  <Select
+                    value={activeFont.value}
+                    onValueChange={(value) => {
                       const newFont = fontOptions.find(f => f.value === value);
-                      if (newFont) setActiveFont(newFont);
-                  }}>
+                      if (newFont) {
+                        setActiveFont(newFont);
+                      }
+                    }}
+                  >
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <SelectTrigger className="w-full h-10" id={`${baseId}-font-select`} aria-label="Select Font">
@@ -654,3 +659,5 @@ export function TextSettings({
     </TooltipProvider>
   );
 }
+
+    
