@@ -384,10 +384,6 @@ export default function Home() {
   };
 
   const handleApplyTemplate = (template: DesignTemplate) => {
-    // Set the canvas size from the template
-    const newCanvasSize = canvasSizes.find(s => s.name === template.canvasSize) || canvasSizes[0];
-    setCanvasSize(newCanvasSize);
-
     // Apply background settings
     setBackgroundTab(template.background.type);
     setBackgroundType(template.background.type);
@@ -411,7 +407,12 @@ export default function Home() {
     
     // Apply font and text color
     const newFont = fontOptions.find(f => f.value === template.font.value) || fontOptions[0];
-    const newFontSize = template.canvasSize === 'Square' ? 36 : 48;
+    let newFontSize;
+    if (canvasSize.name === 'Square') {
+      newFontSize = 36;
+    } else {
+      newFontSize = 48;
+    }
     setActiveFont({ ...newFont, size: newFontSize });
 
     // Apply effect or text color
