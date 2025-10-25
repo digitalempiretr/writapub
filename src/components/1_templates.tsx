@@ -173,7 +173,7 @@ export function DesignsPanel({ handleApplyTemplate }: DesignsPanelProps) {
   }, {} as Record<string, DesignTemplate[]>);
 
   return (
-    <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-6 mobile-tab-content">
+    <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-6">
       {Object.entries(groupedTemplates).map(([category, templates]) => (
         <div key={category} className="space-y-3">
           <Label className="bg-transparent p-2 px-0 rounded-md capitalize text-md font-semibold text-sidebar-foreground">{category}</Label>
@@ -183,3 +183,5 @@ export function DesignsPanel({ handleApplyTemplate }: DesignsPanelProps) {
     </div>
   );
 }
+
+    
