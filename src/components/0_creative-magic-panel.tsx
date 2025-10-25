@@ -21,7 +21,7 @@ export function CreativeMagicPanel({ text, setText, handleGenerate, isLoading }:
 
   return (
     <div className="space-y-6 max-w-[1000px] mx-auto w-full">
-      <CardTitle className="text-foreground text-3xl font-serif font-light">Hello <span className = "text-primary">Mirac</span></CardTitle>
+      <CardTitle className="text-foreground text-3xl font-serif font-light">Hello <span className = "text-primary">Dear</span></CardTitle>
       <div className="space-y-4">
         <Label htmlFor={mainTextAreaId} className="sr-only">Main text area</Label>
         <div className="relative text-xl">

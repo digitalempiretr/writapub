@@ -1162,10 +1162,6 @@ export default function Home() {
                 <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
                   <SheetHeader className="p-4 border-b flex-row justify-between items-center bg-card">
                     <SheetTitle className="capitalize">{activeTabLabel}</SheetTitle>
-                     <Button variant="ghost" size="icon" onClick={closePanel} className="h-8 w-8 rounded-full">
-                        <X className="h-5 w-5" />
-                        <span className="sr-only">Close Panel</span>
-                    </Button>
                   </SheetHeader>
                    <div className="flex-grow overflow-y-auto">
                     {renderActiveTabContent()}
@@ -1189,5 +1185,7 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     
