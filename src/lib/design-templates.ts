@@ -38,6 +38,7 @@ export const designTemplates: DesignTemplate[] = [
     name: "Daktilo",
     category: 'Authors Templates', // Or 'Color Styles' or 'Special Effects'
     previewImage: "https://i.ibb.co/N6Qvdnbw/daktilo-template.jpg",
+    canvasSize: 'Post',
     background: {
       type: 'image',
       value: 'https://i.ibb.co/nMxGgznf/book-shadow-post.jpg',
@@ -55,7 +56,6 @@ export const designTemplates: DesignTemplate[] = [
       color: '#008080',
       opacity: 0,
     },
-    canvasSize: 'Post',
     effect: {
       id: 'none',
     }
@@ -65,6 +65,7 @@ export const designTemplates: DesignTemplate[] = [
     name: "Milky",
     category: 'Authors Templates',
     previewImage: "https://i.ibb.co/zhYZ5H5V/milky-1.jpg",
+    canvasSize: 'Post',
     background: {
       type: 'image',
       value: 'https://i.ibb.co/kVJS28vc/6.jpg',
@@ -82,13 +83,13 @@ export const designTemplates: DesignTemplate[] = [
       color: '#7585A3',
       opacity: 0,
     },
-    canvasSize: 'Post',
   },
   {
     id: 'template-art-school-of-athens',
     name: "Art School Of Athens",
     category: 'Authors Templates',
     previewImage: "https://i.ibb.co/sd7gmFQk/Art-School-Of-Athens.jpg",
+    canvasSize: 'Post',
     background: {
       type: 'image',
       value: 'https://images.pexels.com/photos/159862/art-school-of-athens-raphael-italian-painter-fresco-159862.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
@@ -106,13 +107,13 @@ export const designTemplates: DesignTemplate[] = [
       color: '#7585A3',
       opacity: 0,
     },
-    canvasSize: 'Post',
   },
   {
     id: 'template-marble',
     name: "Marble",
     category: 'Authors Templates',
     previewImage: "https://i.ibb.co/Q763twkW/marble-template.jpg",
+    canvasSize: 'Post',
     background: {
       type: 'image',
       value: 'https://i.ibb.co/DDZ3y2Lk/7.jpg',
@@ -130,13 +131,13 @@ export const designTemplates: DesignTemplate[] = [
       color: '#7585A3',
       opacity: 0,
     },
-    canvasSize: 'Post',
   },
   {
     id: 'template-birdseyesea',
     name: "Birds Eye Sea",
     category: 'Authors Templates',
     previewImage: "https://i.ibb.co/qYdKfn9F/Birds-Eye-Sea.jpg",
+    canvasSize: 'Post',
     background: {
       type: 'image',
       value: 'https://images.pexels.com/photos/1655166/pexels-photo-1655166.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
@@ -154,7 +155,6 @@ export const designTemplates: DesignTemplate[] = [
       color: '#7585A3',
       opacity: 0,
     },
-    canvasSize: 'Post',
   },  
 
   // Special Effects Category
@@ -163,6 +163,7 @@ export const designTemplates: DesignTemplate[] = [
     name: "Blue Neon",
     category: 'Special Effects',
     previewImage: "",
+    canvasSize: 'Post',
     background: {
       type: 'flat',
       value: '#121221',
@@ -180,7 +181,6 @@ export const designTemplates: DesignTemplate[] = [
       color: '#008080',
       opacity: 0,
     },
-    canvasSize: 'Post',
     effect: {
       id: 'neon',
     }
@@ -190,6 +190,7 @@ export const designTemplates: DesignTemplate[] = [
     name: "Red 3D Cartoon",
     category: 'Special Effects',
     previewImage: "",
+    canvasSize: 'Post',
     background: {
       type: 'flat',
       value: '#FF5757',
@@ -207,7 +208,6 @@ export const designTemplates: DesignTemplate[] = [
       color: '#008080',
       opacity: 0,
     },
-    canvasSize: 'Post',
     effect: {
       id: '3dcartoon',
     }
@@ -217,6 +217,7 @@ export const designTemplates: DesignTemplate[] = [
     name: "Roses",
     category: 'Special Effects',
     previewImage: "",
+    canvasSize: 'Post',
     background: {
       type: 'flat',
       value: '#121221',
@@ -234,7 +235,6 @@ export const designTemplates: DesignTemplate[] = [
       color: '#008080',
       opacity: 0,
     },
-    canvasSize: 'Post',
     effect: {
       id: 'roses',
     }
@@ -248,6 +248,7 @@ export const designTemplates: DesignTemplate[] = [
     name: "Night Chalk",
     category: 'Color Styles',
     previewImage: "",
+    canvasSize: 'Post',
     background: {
       type: 'flat',
       value: '#212121',
@@ -265,13 +266,13 @@ export const designTemplates: DesignTemplate[] = [
       color: '#7585A3',
       opacity: 0,
     },
-    canvasSize: 'Post',
 },
   {
     id: 'styles-oat-foam',
     name: "Oat Foam",
     category: 'Color Styles',
     previewImage: "",
+    canvasSize: 'Post',
     background: {
       type: 'flat',
       value: '#F4ede4',
@@ -289,13 +290,13 @@ export const designTemplates: DesignTemplate[] = [
       color: '#7585A3',
       opacity: 0,
     },
-    canvasSize: 'Post',
 },
   {
     id: 'styles-jet-cloud-white',
     name: "Jet Cloud White",
     category: 'Color Styles',
     previewImage: "",
+    canvasSize: 'Post',
     background: {
       type: 'flat',
       value: '#FAFAFA',
@@ -313,13 +314,13 @@ export const designTemplates: DesignTemplate[] = [
       color: '#7585A3',
       opacity: 0,
     },
-    canvasSize: 'Post',
 },
   {
     id: 'styles-Deep-Sea-Blue',
     name: "Deep Sea Blue",
     category: 'Color Styles',
     previewImage: "",
+    canvasSize: 'Post',
     background: {
       type: 'flat',
       value: '#050761',
@@ -337,13 +338,13 @@ export const designTemplates: DesignTemplate[] = [
       color: '#7585A3',
       opacity: 0,
     },
-    canvasSize: 'Post',
 },
   {
     id: 'styles-Icy-Horizon',
     name: "Icy Horizon",
     category: 'Color Styles',
     previewImage: "",
+    canvasSize: 'Post',
     background: {
       type: 'flat',
       value: '#40ffa7',
@@ -361,13 +362,13 @@ export const designTemplates: DesignTemplate[] = [
       color: '#7585A3',
       opacity: 0,
     },
-    canvasSize: 'Post',
 },
 {
   id: 'styles-Feldgrau',
   name: "Feldgrau ",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#33412f',
@@ -385,13 +386,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
   {
     id: 'styles-Oceanic-Blue',
     name: "Oceanic Blue",
     category: 'Color Styles',
     previewImage: "",
+    canvasSize: 'Post',
     background: {
       type: 'flat',
       value: '#143A63',
@@ -409,13 +410,13 @@ export const designTemplates: DesignTemplate[] = [
       color: '#7585A3',
       opacity: 0,
     },
-    canvasSize: 'Post',
 },
 {
     id: 'styles-Cerulean-Dream',
     name: "Cerulean Dream",
     category: 'Color Styles',
     previewImage: "",
+    canvasSize: 'Post',
     background: {
       type: 'flat',
       value: '#3567DB',
@@ -433,13 +434,13 @@ export const designTemplates: DesignTemplate[] = [
       color: '#7585A3',
       opacity: 0,
     },
-    canvasSize: 'Post',
 },
 {
     id: 'styles-Mystic-Night',
     name: "Mystic Night",
     category: 'Color Styles',
     previewImage: "",
+    canvasSize: 'Post',
     background: {
       type: 'flat',
       value: '#1C2551',
@@ -457,13 +458,13 @@ export const designTemplates: DesignTemplate[] = [
       color: '#7585A3',
       opacity: 0,
     },
-    canvasSize: 'Post',
 },
 {
   id: 'styles-Seaweed-Green',
   name: "Seaweed Green",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#0A406E',
@@ -481,13 +482,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Sunshine-Yellow',
   name: "Sunshine Yellow",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#002778',
@@ -505,13 +506,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Blue-Horizon',
   name: "Blue Horizon",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#2846D3',
@@ -529,13 +530,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Deep-Sea',
   name: "Deep Sea",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#03335F',
@@ -553,13 +554,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Midnight-Wave',
   name: "Midnight Wave",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#334363',
@@ -577,13 +578,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Starlit-Sky',
   name: "Starlit Sky",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#272D50',
@@ -601,13 +602,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Azure-Vibe',
   name: "Azure Vibe",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#453F90',
@@ -625,13 +626,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Spring-Green',
   name: "Spring Green",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#004973',
@@ -649,13 +650,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Deep-Blue',
   name: "Deep Blue",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#2C2B9B',
@@ -673,13 +674,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Evening-Sky',
   name: "Evening Sky",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#1A2B76',
@@ -697,13 +698,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Autumn-Mist',
   name: "Autumn Mist",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#6070B6',
@@ -721,13 +722,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Warm-Ember',
   name: "Warm Ember",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#D5301C',
@@ -745,13 +746,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Crisp-Red',
   name: "Crisp Red",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#ED0400',
@@ -769,13 +770,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Vibrant-Pink',
   name: "Vibrant Pink",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#DD2260',
@@ -793,13 +794,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Soft-Yellow',
   name: "Soft Yellow",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#F4BE05',
@@ -817,13 +818,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Delicate-Peach',
   name: "Delicate Peach",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#F7F1D2',
@@ -841,13 +842,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Lime-Splash',
   name: "Lime Splash",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#DDFD00',
@@ -865,13 +866,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Gold-Shimmer',
   name: "Gold Shimmer",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#FFEF58',
@@ -889,13 +890,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Pastel-Green',
   name: "Pastel Green",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#FDF7C1',
@@ -913,13 +914,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Forest-Green',
   name: "Forest Green",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#14473F',
@@ -937,13 +938,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Teal-Oasis',
   name: "Teal Oasis",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#0FCE3E',
@@ -961,13 +962,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Lush-Foliage',
   name: "Lush Foliage",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#4A5E46',
@@ -985,13 +986,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Mint-Whisper',
   name: "Mint Whisper",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#192D1B',
@@ -1009,13 +1010,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Soft-Sprout',
   name: "Soft Sprout",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#A2CA57',
@@ -1033,13 +1034,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Cool-Dusk',
   name: "Cool Dusk",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#041F2A',
@@ -1057,13 +1058,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Fresh-Green',
   name: "Fresh Green",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#00FC69',
@@ -1081,13 +1082,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Seafoam-Breeze',
   name: "Seafoam Breeze",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#062129',
@@ -1105,13 +1106,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Peacock-Tail',
   name: "Peacock Tail",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#19CBB1',
@@ -1129,13 +1130,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Misty-Evening',
   name: "Misty Evening",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#1B4946',
@@ -1153,13 +1154,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Forest-Trail',
   name: "Forest Trail",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#2EC28A',
@@ -1177,13 +1178,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Marine-Galaxy',
   name: "Marine Galaxy",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#02D7B5',
@@ -1201,13 +1202,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Cloudy-Night',
   name: "Cloudy Night",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#084047',
@@ -1225,13 +1226,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Charcoal-Grass',
   name: "Charcoal Grass",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#004548',
@@ -1249,13 +1250,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Dusk-Wave',
   name: "Dusk Wave",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#68D9D6',
@@ -1273,13 +1274,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Aquamarine-Whisper',
   name: "Aquamarine Whisper",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#006B99',
@@ -1297,13 +1298,13 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 {
   id: 'styles-Blue-Mosaic',
   name: "Blue Mosaic",
   category: 'Color Styles',
   previewImage: "",
+  canvasSize: 'Post',
   background: {
     type: 'flat',
     value: '#3889AC',
@@ -1321,7 +1322,6 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-  canvasSize: 'Post',
 },
 
   // Gradient Styles Category
@@ -1330,6 +1330,7 @@ export const designTemplates: DesignTemplate[] = [
     name: "Purple Gradient",
     category: 'Gradient Styles',
     previewImage: "",
+    canvasSize: 'Post',
     background: {
       type: 'gradient',
       value: gradientTemplates.find(g => g.name === 'Purple')?.css || 'linear-gradient(to right, #8e2de2, #4a00e0)',
@@ -1347,6 +1348,7 @@ export const designTemplates: DesignTemplate[] = [
       color: '#7585A3',
       opacity: 0,
     },
-    canvasSize: 'Post',
   },
 ];
+
+    

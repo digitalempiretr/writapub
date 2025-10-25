@@ -383,11 +383,12 @@ export default function Home() {
     }
   };
 
-
   const handleApplyTemplate = (template: DesignTemplate) => {
+    // Set the canvas size from the template
     const newCanvasSize = canvasSizes.find(s => s.name === template.canvasSize) || canvasSizes[0];
     setCanvasSize(newCanvasSize);
 
+    // Apply background settings
     setBackgroundTab(template.background.type);
     setBackgroundType(template.background.type);
     setCurrentTemplate(null);
@@ -408,20 +409,26 @@ export default function Home() {
       handleImageBgUrlSelect(imageTemplate);
     }
     
+    // Apply font and text color
+    const newFont = fontOptions.find(f => f.value === template.font.value) || fontOptions[0];
+    const newFontSize = template.canvasSize === 'Square' ? 36 : 48;
+    setActiveFont({ ...newFont, size: newFontSize });
+
+    // Apply effect or text color
     if (template.effect?.id) {
       const effect = textEffects.find(e => e.id === template.effect!.id) || textEffects[0];
       handleEffectChange(effect);
     } else {
       handleEffectChange(textEffects[0]); 
-      const newFont = fontOptions.find(f => f.value === template.font.value) || fontOptions[0];
-      setActiveFont({ ...newFont, size: template.font.fontSize });
       setTextColor(template.font.color);
     }
 
+    // Apply text box settings
     setRectBgColor(template.textBox.color);
     setRectOpacity(template.textBox.opacity);
     setIsTextBoxEnabled(template.textBox.opacity > 0);
 
+    // Apply overlay settings
     setOverlayColor(template.overlay.color);
     setOverlayOpacity(template.overlay.opacity);
     setIsOverlayEnabled(template.overlay.opacity > 0);
@@ -1059,6 +1066,10 @@ export default function Home() {
               onMouseUp={handleMouseUp}
               onMouseLeave={handleMouseUp}
                onWheel={(e) => {
+                const activeElement = document.activeElement;
+                if (activeElement && (activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'INPUT')) {
+                  return;
+                }
                 e.preventDefault();
                 const direction = e.deltaY > 0 ? 'out' : 'in';
                 handleZoom(direction);
@@ -1177,11 +1188,5 @@ export default function Home() {
     </div>
   );
 }
-
-    
-
-    
-
-      
 
     
