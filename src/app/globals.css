@@ -4,7 +4,7 @@
 @tailwind utilities;
 
 body {  
-  font-family: var(--font-serif), 'Instrument Serif', Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), 'Instrument Serif', Arial, Helvetica, sans-serif;
   
   background-image: 
   url("https://www.transparenttextures.com/patterns/project-paper.png")

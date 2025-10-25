@@ -12,7 +12,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Input } from "@/components/ui/input";
 import { TextColorChooseIcon, TextBgBoxIcon, TextBoxOpacity, TextStrokeIcon, RefreshIcon, FontSizeIcon, TextShadowIcon } from "@/components/ui/icons";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FontOption, fontOptions } from "@/lib/font-options";
+import { FontOption } from "@/lib/font-options";
 import { Button } from "@/components/ui/button";
 import { Bold, CaseUpper, AlignLeft, AlignCenter, AlignRight, Loader2, Trash2, Plus } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -52,6 +52,7 @@ type TextSettingsProps = {
   setTextOpacity: (value: number) => void;
   activeFont: FontOption;
   setActiveFont: (font: FontOption) => void;
+  fontOptions: FontOption[];
   isBold: boolean;
   setIsBold: (value: boolean) => void;
   isUppercase: boolean;
@@ -89,6 +90,7 @@ export function TextSettings({
   setTextOpacity,
   activeFont,
   setActiveFont,
+  fontOptions,
   isBold,
   setIsBold,
   isUppercase,
@@ -117,6 +119,9 @@ export function TextSettings({
   const baseId = useId();
   const [internalText, setInternalText] = useState(text);
 
+  const [internalFontSize, setInternalFontSize] = useState<number>(Number(activeFont.size) || 48);
+  const [internalLineHeight, setInternalLineHeight] = useState<number>(Number(activeFont.lineHeight) || 1.4);
+  
   const [colorPaletteApi, setColorPaletteApi] = useState<CarouselApi>();
   const [currentPaletteSlide, setCurrentPaletteSlide] = useState(0);
 
@@ -125,6 +130,12 @@ export function TextSettings({
 
   useCarouselSync(colorPaletteApi, setCurrentPaletteSlide);
   useCarouselSync(effectsApi, setCurrentEffectSlide);
+
+  useEffect(() => {
+    setInternalFontSize(Number(activeFont.size));
+    setInternalLineHeight(Number(activeFont.lineHeight));
+  }, [activeFont]);
+
 
   useEffect(() => {
     setInternalText(text);
@@ -149,6 +160,11 @@ export function TextSettings({
     setShadows(shadows.filter(s => s.id !== id));
   };
 
+  const handleFontChange = (value: string) => {
+    const newFont = fontOptions.find(f => f.value === value) || activeFont;
+    setActiveFont(newFont);
+  };
+  
   const handleFontValueChange = <K extends keyof FontOption>(key: K, value: FontOption[K]) => {
     setActiveFont({
       ...activeFont,
@@ -250,15 +266,7 @@ export function TextSettings({
              <div className="overflow-x-auto pb-2 -mb-2">
                 <div className="flex items-center gap-2 flex-nowrap">
                 <div className="flex-shrink-0 min-w-[150px]">
-                  <Select
-                    value={activeFont.value}
-                    onValueChange={(value) => {
-                      const newFont = fontOptions.find(f => f.value === value);
-                      if (newFont) {
-                        setActiveFont(newFont);
-                      }
-                    }}
-                  >
+                  <Select value={activeFont.value} onValueChange={handleFontChange}>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <SelectTrigger className="w-full h-10" id={`${baseId}-font-select`} aria-label="Select Font">
@@ -293,15 +301,15 @@ export function TextSettings({
                     <div className="space-y-2">
                         <Label htmlFor={`${baseId}-font-size-slider`}>Font Size</Label>
                          <div className="flex items-center gap-2">
-                            <Slider id={`${baseId}-font-size-slider`} max={200} min={20} step={1} value={[typeof activeFont.size === 'number' ? activeFont.size : 48]} onValueChange={(v) => handleFontValueChange('size', v[0])}/>
-                            <Input type="number" value={activeFont.size} onChange={(e) => handleFontValueChange('size', Number(e.target.value))} className="w-20 h-8 text-xs" />
+                            <Slider id={`${baseId}-font-size-slider`} max={200} min={20} step={1} value={[internalFontSize]} onValueChange={(v) => setInternalFontSize(v[0])} onValueCommit={(v) => handleFontValueChange('size', v[0])}/>
+                            <Input type="number" value={internalFontSize} onChange={(e) => setInternalFontSize(Number(e.target.value))} onBlur={() => handleFontValueChange('size', internalFontSize)} className="w-20 h-8 text-xs" />
                          </div>
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor={`${baseId}-line-height-slider`}>Line Height</Label>
                         <div className="flex items-center gap-2">
-                            <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[typeof activeFont.lineHeight === 'number' ? activeFont.lineHeight : 1.4]} onValueChange={(v) => handleFontValueChange('lineHeight', v[0])}/>
-                             <Input type="number" value={activeFont.lineHeight} onChange={(e) => handleFontValueChange('lineHeight', Number(e.target.value))} step="0.1" className="w-20 h-8 text-xs" />
+                            <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[internalLineHeight]} onValueChange={(v) => setInternalLineHeight(v[0])} onValueCommit={(v) => handleFontValueChange('lineHeight', v[0])}/>
+                             <Input type="number" value={internalLineHeight} onChange={(e) => setInternalLineHeight(Number(e.target.value))} onBlur={() => handleFontValueChange('lineHeight', internalLineHeight)} step="0.1" className="w-20 h-8 text-xs" />
                         </div>
                     </div>
                   </PopoverContent>
@@ -657,5 +665,3 @@ export function TextSettings({
     </TooltipProvider>
   );
 }
-
-    

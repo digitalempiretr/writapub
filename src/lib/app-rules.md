@@ -14,22 +14,6 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
-## Version V1.31
-
-#### ENGLISH
-### 1. Font System Overhaul
--   **Comprehensive Font Loading:** The Google Fonts `<link>` in `layout.tsx` has been completely rebuilt to correctly load all specified fonts, including their necessary weights (`wght`). This resolves the critical issue where fonts like 'Special Elite' and 'Bebas Neue' were not being loaded and therefore not rendering.
--   **Standardized `font-family` Names:** All font definitions in `font-options.ts` have been reviewed. The `fontFamily` property for each font now correctly uses a string with proper CSS syntax (e.g., `'Special Elite', cursive`), ensuring the browser can reliably find and apply the font.
--   **Consistent Font Weights:** The `weight` property for each font in `font-options.ts` has been verified to match the weights actually being loaded from Google Fonts, eliminating inconsistencies.
--   **Readjusted Font Sizes:** Default `size` and `lineHeight` values for all fonts have been re-evaluated and adjusted for better visual harmony and readability across the entire font library.
-
-#### TURKCE
-### 1. Font Sistemi Genel Bakımı
--   **Kapsamlı Font Yüklemesi:** `layout.tsx` dosyasındaki Google Fonts `<link>` etiketi, 'Special Elite' ve 'Bebas Neue' gibi fontların yüklenmemesi ve dolayısıyla render edilmemesi sorununu çözmek için, belirtilen tüm fontları ve gerekli kalınlıklarını (`wght`) doğru bir şekilde yükleyecek şekilde tamamen yeniden oluşturuldu.
--   **Standardize Edilmiş `font-family` İsimleri:** `font-options.ts` dosyasındaki tüm font tanımları gözden geçirildi. Her fontun `fontFamily` özelliği, tarayıcının fontu güvenilir bir şekilde bulup uygulamasını sağlamak için artık doğru CSS sözdizimine sahip (örneğin, `'Special Elite', cursive`) bir metin dizesi kullanıyor.
--   **Tutarlı Font Kalınlıkları:** `font-options.ts` dosyasındaki her font için `weight` özelliği, Google Fonts'tan yüklenen gerçek kalınlıklarla eşleşecek şekilde doğrulandı ve tutarsızlıklar giderildi.
--   **Yeniden Ayarlanan Font Boyutları:** Tüm fontlar için varsayılan `size` ve `lineHeight` değerleri, tüm font kütüphanesinde daha iyi bir görsel uyum ve okunabilirlik için yeniden değerlendirildi ve ayarlandı.
-
 ## Version V1.30
 
 #### ENGLISH
@@ -642,4 +626,3 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 -   All fonts loaded from Google Fonts must include the `latin-ext` character set to ensure correct display of Turkish characters.
 -   In the font selection menu, the name of each font option should be displayed in its own font style. This allows the user to preview how the fonts look before selecting them.
 -   The default font in the font selection dropdown is set to "Special Elite".
-

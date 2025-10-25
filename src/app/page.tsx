@@ -51,7 +51,7 @@ import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { BookmarkStarIcon  } from "@/components/ui/icons";
+import { BookmarkStarIcon, HeartIconG  } from "@/components/ui/icons";
 
 type Design = {
   text: string;
@@ -1071,14 +1071,14 @@ export default function Home() {
                                         <Button
                                           variant="ghost"
                                           size="icon"
-                                          className="h-12 w-12 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/50 hover:text-yellow-400 m-2"
+                                          className="h-20 w-20 flex items-center justify-center rounded-full bg-gray/20 backdrop-blur-sm text-white hover:bg-red/50 hover:text-red-400 m-2 [&_svg]:size-11"
                                         >
-                                          <BookmarkStarIcon className="h-8 w-8"  />
+                                          <HeartIconG className="h-5 w-5" />
                                         </Button>
                                       </AlertDialogTrigger>
                                     </TooltipTrigger>
-                                    <TooltipContent>
-                                     <p>Save to Favorites</p>
+                                    <TooltipContent side="left">
+                                     <p className="text-2xl font-sans">Save to Favorites</p>
                                     </TooltipContent>
                                   </Tooltip>
                                 <AlertDialogContent>
@@ -1159,5 +1159,7 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     
