@@ -388,7 +388,7 @@ export default function Home() {
     setBackgroundTab(template.background.type);
     setBackgroundType(template.background.type);
     setCurrentTemplate(null);
-
+  
     if (template.background.type === 'flat') {
       setBgColor(template.background.value);
     } else if (template.background.type === 'gradient') {
@@ -404,36 +404,37 @@ export default function Home() {
       }
       handleImageBgUrlSelect(imageTemplate);
     }
-    
+  
     // Apply font and text color
-    const newFont = fontOptions.find(f => f.value === template.font.value) || fontOptions[0];
-    let newFontSize;
+    const newFont = fontOptions.find(f => f.value === template.font.value) || activeFont;
+    setActiveFont(newFont);
+  
+    // Determine font size based on current canvas format
     if (canvasSize.name === 'Square') {
-      newFontSize = 36;
+      setActiveFont(prevFont => ({...prevFont, size: 36}));
     } else {
-      newFontSize = 48;
+      setActiveFont(prevFont => ({...prevFont, size: 48}));
     }
-    setActiveFont({ ...newFont, size: newFontSize });
-
+  
     // Apply effect or text color
     if (template.effect?.id) {
       const effect = textEffects.find(e => e.id === template.effect!.id) || textEffects[0];
       handleEffectChange(effect);
     } else {
-      handleEffectChange(textEffects[0]); 
+      handleEffectChange(textEffects[0]);
       setTextColor(template.font.color);
     }
-
+  
     // Apply text box settings
     setRectBgColor(template.textBox.color);
     setRectOpacity(template.textBox.opacity);
     setIsTextBoxEnabled(template.textBox.opacity > 0);
-
+  
     // Apply overlay settings
     setOverlayColor(template.overlay.color);
     setOverlayOpacity(template.overlay.opacity);
     setIsOverlayEnabled(template.overlay.opacity > 0);
-    
+  
     toast({
       title: "Template Applied",
       description: `"${template.name}" template has been set.`,
@@ -853,9 +854,9 @@ export default function Home() {
 
   const settingsTabs = [
     { value: "designs", icon: <LayoutTemplate className="h-5 w-5"/>, label: "Templates" },
-    { value: "background", icon: <ImageIcon className="h-5 w-5"/>, label: "Background Settings" },
-    { value: "text", icon: <Type className="h-5 w-5"/>, label: "Text Settings" },
-    { value: "favorites", icon: <HeartIcon className="h-5 w-5"/>, label: "My Favorites" },
+    { value: "background", icon: <ImageIcon className="h-5 w-5"/>, label: "Background" },
+    { value: "text", icon: <Type className="h-5 w-5"/>, label: "Text" },
+    { value: "favorites", icon: <HeartIcon className="h-5 w-5"/>, label: "Favorites" },
     { value: "download", icon: <Download className="h-5 w-5"/>, label: "Download" },
   ];
   
@@ -998,54 +999,64 @@ export default function Home() {
       </header>
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Desktop Sidebar */}
-        {designs.length > 0 && (
+      {/******************************************************
+      *
+      * DESKTOP SIDEBAR
+      * This section is only visible on screens wider than 767px (md breakpoint).
+      * It contains the main settings tabs and their content.
+      *
+      *******************************************************/}
+      {designs.length > 0 && (
           <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[3vw]")}>
-            <Tabs
-              orientation="vertical"
-              value={activeSettingsTab}
-              onValueChange={setActiveSettingsTab}
-              className="flex w-full"
-            >
-              <div className="flex flex-col items-center p-0 space-y-2 bg-sidebar">
-                <TabsList className="flex flex-col h-full justify-start items-center p-0 bg-sidebar space-y-1">
-                  {settingsTabs.map(tab => (
-                    <TooltipProvider key={tab.value}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <TabsTrigger 
-                            value={tab.value} 
-                            className="w-12 h-12 data-[state=active]:bg-primary/20"
-                            onClick={() => handleDesktopTabClick(tab.value)}
-                          >
-                            {tab.icon}
-                          </TabsTrigger>
-                        </TooltipTrigger>
-                        {!isSidebarOpen && <TooltipContent side="right"><p>{tab.label}</p></TooltipContent>}
-                      </Tooltip>
-                    </TooltipProvider>
-                  ))}
-                </TabsList>
-              </div>
-              
-              {isSidebarOpen && (
-                <div className="flex-grow flex flex-col w-full bg-sidebar">
-                   <div className="p-4 flex-shrink-0 flex justify-between items-center bg-sidebar">
-                      <h3 className="text-lg font-semibold capitalize text-sidebar-foreground">{activeTabLabel}</h3>
-                       <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="h-8 w-8 rounded-full">
-                            <X className="h-5 w-5" />
-                            <span className="sr-only">Close Panel</span>
-                        </Button>
-                   </div>
-                  <TabsContent value={activeSettingsTab} className="mt-0 flex-grow overflow-y-auto">
-                    {renderActiveTabContent()}
-                  </TabsContent>
-                </div>
-              )}
-
-            </Tabs>
+              <Tabs
+                  orientation="vertical"
+                  value={activeSettingsTab}
+                  onValueChange={setActiveSettingsTab}
+                  className="flex w-full"
+              >
+                  <div className="flex flex-col items-center p-0 space-y-2 bg-sidebar">
+                      <TabsList className="flex flex-col h-full justify-start items-center p-0 bg-sidebar space-y-1">
+                          {settingsTabs.map(tab => (
+                              <TooltipProvider key={tab.value}>
+                                  <Tooltip>
+                                      <TooltipTrigger asChild>
+                                          <TabsTrigger 
+                                              value={tab.value} 
+                                              className="w-12 h-12 data-[state=active]:bg-primary/20"
+                                              onClick={() => handleDesktopTabClick(tab.value)}
+                                          >
+                                              {tab.icon}
+                                          </TabsTrigger>
+                                      </TooltipTrigger>
+                                      {!isSidebarOpen && <TooltipContent side="right"><p>{tab.label}</p></TooltipContent>}
+                                  </Tooltip>
+                              </TooltipProvider>
+                          ))}
+                      </TabsList>
+                  </div>
+                  
+                  {isSidebarOpen && (
+                      <div className="flex-grow flex flex-col w-full bg-sidebar">
+                          <div className="p-4 flex-shrink-0 flex justify-between items-center bg-sidebar">
+                              <h3 className="text-lg font-semibold capitalize text-sidebar-foreground">{activeTabLabel}</h3>
+                              <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="h-8 w-8 rounded-full">
+                                  <X className="h-5 w-5" />
+                                  <span className="sr-only">Close Panel</span>
+                              </Button>
+                          </div>
+                          <TabsContent value={activeSettingsTab} className="mt-0 flex-grow overflow-y-auto">
+                              {renderActiveTabContent()}
+                          </TabsContent>
+                      </div>
+                  )}
+              </Tabs>
           </div>
-        )}
+      )}
+      {/******************************************************
+      *
+      * END DESKTOP SIDEBAR
+      *
+      *******************************************************/}
 
         {/* Main Content Area */}
         <main className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative")}>
@@ -1151,41 +1162,50 @@ export default function Home() {
           </div>
       )}
 
-       {isClient && designs.length > 0 && (
-            <div ref={mobilePanelRef} className="md:hidden">
+      {/******************************************************
+      *
+      * MOBILE TAB SYSTEM
+      * This section is only visible on screens narrower than 768px (md breakpoint).
+      * It uses a Sheet component to display settings from the bottom.
+      *
+      *******************************************************/}
+      {isClient && designs.length > 0 && (
+          <div ref={mobilePanelRef} className="md:hidden">
               <Sheet open={isMobilePanelOpen} onOpenChange={(isOpen) => {
-                if (!isOpen) {
-                  setActiveSettingsTab('');
-                }
-                setIsMobilePanelOpen(isOpen);
+                  if (!isOpen) {
+                      setActiveSettingsTab('');
+                  }
+                  setIsMobilePanelOpen(isOpen);
               }}>
-                <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
-                  <SheetHeader className="p-4 border-b flex-row justify-between items-center bg-card">
-                    <SheetTitle className="capitalize">{activeTabLabel}</SheetTitle>
-                  </SheetHeader>
-                   <div className="flex-grow overflow-y-auto">
-                    {renderActiveTabContent()}
-                   </div>
-                </SheetContent>
+                  <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
+                      <SheetHeader className="p-4 border-b flex-row justify-between items-center bg-card">
+                          <SheetTitle className="capitalize">{activeTabLabel}</SheetTitle>
+                          {/* The close button is now automatically provided by SheetContent */}
+                      </SheetHeader>
+                      <div className="flex-grow overflow-y-auto">
+                          {renderActiveTabContent()}
+                      </div>
+                  </SheetContent>
               </Sheet>
 
               <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-card border-t", isMobilePanelOpen ? "hidden" : "block")}>
                   <Tabs value={activeSettingsTab ?? ''} className="w-full">
-                  <TabsList className="grid w-full grid-cols-5 h-14 rounded-none">
-                    {settingsTabs.map(tab => (
-                          <TabsTrigger key={tab.value} value={tab.value} onClick={() => handleMobileTabClick(tab.value)}>
-                              {tab.icon}
-                          </TabsTrigger>
-                      ))}
-                  </TabsList>
+                      <TabsList className="grid w-full grid-cols-5 h-14 rounded-none">
+                          {settingsTabs.map(tab => (
+                              <TabsTrigger key={tab.value} value={tab.value} onClick={() => handleMobileTabClick(tab.value)}>
+                                  {tab.icon}
+                              </TabsTrigger>
+                          ))}
+                      </TabsList>
                   </Tabs>
               </div>
-            </div>
-        )}
+          </div>
+      )}
+      {/******************************************************
+      *
+      * END MOBILE TAB SYSTEM
+      *
+      *******************************************************/}
     </div>
   );
 }
-
-    
-
-    

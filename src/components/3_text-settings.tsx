@@ -241,9 +241,9 @@ export function TextSettings({
               onChange={(e) => setInternalText(e.target.value)}
               onBlur={() => setText(internalText)}
               rows={4}
-              className="bg-background text-foreground placeholder:text-muted-foreground border pr-12"
+              className="bg-background text-foreground placeholder:text-muted-foreground border pr-10"
           />
-           <div className="absolute md:bottom-2 md:right-5 bottom-1 right-9">
+           <div className="absolute md:bottom-2 md:right-5 bottom-1 right-4">
             <Button
               onClick={handleRegenerateClick}
               disabled={isLoading}
@@ -319,7 +319,7 @@ export function TextSettings({
                   <TooltipTrigger asChild>
                     <div className="relative h-10 w-10 flex-shrink-0">
                       <Label htmlFor={`${baseId}-text-color-picker`} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
-                        <TextColorChooseIcon color={textColor} />
+                        <TextColorChooseIcon color={textColor} className="h-5 w-5" />
                       </Label>
                       <Input
                         id={`${baseId}-text-color-picker`}

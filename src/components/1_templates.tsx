@@ -21,7 +21,7 @@ type DesignsPanelProps = {
 
 const renderPreview = (template: DesignTemplate) => {
   if (template.previewImage) {
-    return <Image src={template.previewImage} alt={template.name} width={200} height={300} className="object-cover h-full w-full transition-transform duration-300 group-hover:scale-105" />;
+    return <Image src={template.previewImage} alt={template.name} width={200} height={250} className="object-cover h-full w-full transition-transform duration-300 group-hover:scale-115" />;
   }
   
   const font = fontOptions.find(f => f.value === template.font.value);
@@ -111,13 +111,13 @@ const TemplateCarousel = ({ templates, handleApplyTemplate }: { templates: Desig
               onClick={() => api?.scrollTo(0)}
               className="h-2 w-2 rounded-full bg-accent cursor-pointer transition-all duration-300 bullet-indicator"
             />
-            {start > 1 && <span className="text-foreground/50 -translate-y-1">...</span>}
+            {start > 1 && <span className="text-accent -translate-y-1">...</span>}
           </>
         )}
         {dots}
         {end < totalSlides - 1 && (
           <>
-            {end < totalSlides - 2 && <span className="text-foreground/50 -translate-y-1">...</span>}
+            {end < totalSlides - 2 && <span className="text-accent -translate-y-1">...</span>}
             <div
               key={totalSlides - 1}
               onClick={() => api?.scrollTo(totalSlides - 1)}
@@ -141,10 +141,10 @@ const TemplateCarousel = ({ templates, handleApplyTemplate }: { templates: Desig
       >
         <CarouselContent className="-ml-2">
           {templates.map((template) => (
-            <CarouselItem key={template.id} className="basis-1/3 md:basis-1/4 pl-2">
+            <CarouselItem key={template.id} className="basis-1/4 md:basis-1/4 pl-2">
               <button onClick={() => handleApplyTemplate(template)} className="w-full group">
                 <Card className="overflow-hidden">
-                  <CardContent className="p-0 aspect-[2/3] w-full">
+                  <CardContent className="p-0 aspect-[4/5] w-full">
                     {renderPreview(template)}
                   </CardContent>
                   <CardFooter className="p-2 justify-center">
