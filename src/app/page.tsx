@@ -385,6 +385,9 @@ export default function Home() {
 
 
   const handleApplyTemplate = (template: DesignTemplate) => {
+    const newCanvasSize = canvasSizes.find(s => s.name === template.canvasSize) || canvasSizes[0];
+    setCanvasSize(newCanvasSize);
+
     setBackgroundTab(template.background.type);
     setBackgroundType(template.background.type);
     setCurrentTemplate(null);
@@ -411,7 +414,7 @@ export default function Home() {
     } else {
       handleEffectChange(textEffects[0]); 
       const newFont = fontOptions.find(f => f.value === template.font.value) || fontOptions[0];
-      setActiveFont(newFont);
+      setActiveFont({ ...newFont, size: template.font.fontSize });
       setTextColor(template.font.color);
     }
 
@@ -454,6 +457,7 @@ export default function Home() {
       name: `Favorite ${myDesigns.length + 1}`,
       category: 'Favorites',
       previewImage: previewImage,
+      canvasSize: canvasSize.name,
       background: {
         type: backgroundType,
         value: bgValue,
@@ -461,6 +465,7 @@ export default function Home() {
       font: {
         value: activeFont.value,
         color: textColor,
+        fontSize: typeof activeFont.size === 'number' ? activeFont.size : 48,
       },
       textBox: {
         color: rectBgColor,
@@ -483,7 +488,7 @@ export default function Home() {
       duration: 2000,
     });
 
-  }, [currentSlide, backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, myDesigns.length, setMyDesigns, toast, activeEffect]);
+  }, [currentSlide, backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, myDesigns.length, setMyDesigns, toast, activeEffect, canvasSize]);
 
   const handleDeleteDesign = (id: string) => {
     setMyDesigns(prev => prev.filter(d => d.id !== id));
@@ -521,9 +526,10 @@ export default function Home() {
     else if (backgroundType === 'gradient') bgValue = gradientBg;
     else if (backgroundType === 'image') bgValue = imageBgUrl;
   
-    const templateToLog: Omit<DesignTemplate, 'id' | 'name' | 'previewImage' | 'category'> & { previewImage: string; category: string } = {
+    const templateToLog = {
       previewImage: "''", // Placeholder
       category: "UNCATEGORIZED",
+      canvasSize: canvasSize.name,
       background: {
         type: backgroundType,
         value: bgValue,
@@ -531,6 +537,7 @@ export default function Home() {
       font: {
         value: activeFont.value,
         color: textColor,
+        fontSize: typeof activeFont.size === 'number' ? activeFont.size : 48,
       },
       textBox: {
         color: rectBgColor,
@@ -551,6 +558,7 @@ export default function Home() {
   name: "New Template Name",
   category: 'Special Effects', // Or 'Color Styles' or 'Image Templates'
   previewImage: "",
+  canvasSize: '${templateToLog.canvasSize}',
   background: {
     type: '${templateToLog.background.type}',
     value: ${templateToLog.background.type === 'gradient' 
@@ -561,6 +569,7 @@ export default function Home() {
   font: {
     value: '${templateToLog.font.value}',
     color: '${templateToLog.font.color}',
+    fontSize: ${templateToLog.font.fontSize},
   },
   textBox: {
     color: '${templateToLog.textBox.color}',
@@ -583,7 +592,7 @@ export default function Home() {
       description: "Open developer tools (F12) to see the design code.",
       duration: 5000,
     });
-  }, [backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, toast, activeEffect]);
+  }, [backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, toast, activeEffect, canvasSize]);
 
   const handleEffectChange = (effect: TextEffect) => {
     setActiveEffect(effect);

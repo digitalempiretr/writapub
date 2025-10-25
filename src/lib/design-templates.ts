@@ -15,6 +15,7 @@ export type DesignTemplate = {
   font: {
     value: string;
     color: string;
+    fontSize: number;
   };
   textBox: {
     color: string;
@@ -24,6 +25,7 @@ export type DesignTemplate = {
     color: string;
     opacity: number;
   };
+  canvasSize: 'Post' | 'Story' | 'Square';
   effect?: {
     id: string;
   };
@@ -43,6 +45,7 @@ export const designTemplates: DesignTemplate[] = [
     font: {
       value: 'special-elite',
       color: '#0F2027',
+      fontSize: 48,
     },
     textBox: {
       color: '#f4ede4',
@@ -52,6 +55,7 @@ export const designTemplates: DesignTemplate[] = [
       color: '#008080',
       opacity: 0,
     },
+    canvasSize: 'Post',
     effect: {
       id: 'none',
     }
@@ -68,15 +72,17 @@ export const designTemplates: DesignTemplate[] = [
     font: {
       value: 'style-script',
       color: '#3f5b4d',
+      fontSize: 58,
     },
-textBox: {
-    color: '#e5e5ff',
-    opacity: 0,
-  },
+    textBox: {
+      color: '#e5e5ff',
+      opacity: 0,
+    },
     overlay: {
       color: '#7585A3',
       opacity: 0,
     },
+    canvasSize: 'Post',
   },
   {
     id: 'template-art-school-of-athens',
@@ -90,6 +96,7 @@ textBox: {
     font: {
       value: 'duru-sans',
       color: '#FFFFFF',
+      fontSize: 48,
     },
     textBox: {
         color: '#383839',
@@ -99,6 +106,7 @@ textBox: {
       color: '#7585A3',
       opacity: 0,
     },
+    canvasSize: 'Post',
   },
   {
     id: 'template-marble',
@@ -112,6 +120,7 @@ textBox: {
     font: {
       value: 'duru-sans',
       color: '#706051',
+      fontSize: 48,
     },
     textBox: {
         color: '#a79c92',
@@ -121,6 +130,7 @@ textBox: {
       color: '#7585A3',
       opacity: 0,
     },
+    canvasSize: 'Post',
   },
   {
     id: 'template-birdseyesea',
@@ -134,6 +144,7 @@ textBox: {
     font: {
       value: 'duru-sans',
       color: '#FFFFFF',
+      fontSize: 48,
     },
     textBox: {
         color: '#7585A3',
@@ -143,6 +154,7 @@ textBox: {
       color: '#7585A3',
       opacity: 0,
     },
+    canvasSize: 'Post',
   },  
 
   // Special Effects Category
@@ -158,8 +170,9 @@ textBox: {
     font: {
       value: 'luckiest-guy',
       color: '#ffffff',
+      fontSize: 48,
     },
-  textBox: {
+    textBox: {
       color: '#f4ede4',
       opacity: 0,
     },
@@ -167,6 +180,7 @@ textBox: {
       color: '#008080',
       opacity: 0,
     },
+    canvasSize: 'Post',
     effect: {
       id: 'neon',
     }
@@ -183,8 +197,9 @@ textBox: {
     font: {
       value: 'luckiest-guy',
       color: '#ffffff',
+      fontSize: 48,
     },
-  textBox: {
+    textBox: {
       color: '#f4ede4',
       opacity: 0,
     },
@@ -192,6 +207,7 @@ textBox: {
       color: '#008080',
       opacity: 0,
     },
+    canvasSize: 'Post',
     effect: {
       id: '3dcartoon',
     }
@@ -208,8 +224,9 @@ textBox: {
     font: {
       value: 'niconne', 
       color: '#fcedd8',
+      fontSize: 70,
     },
-  textBox: {
+    textBox: {
       color: '#f4ede4',
       opacity: 0,
     },
@@ -217,6 +234,7 @@ textBox: {
       color: '#008080',
       opacity: 0,
     },
+    canvasSize: 'Post',
     effect: {
       id: 'roses',
     }
@@ -237,6 +255,7 @@ textBox: {
     font: {
       value: 'duru-sans',
       color: '#F4ede4',
+      fontSize: 48,
     },
     textBox: {
       color: '#7585A3',
@@ -246,6 +265,7 @@ textBox: {
       color: '#7585A3',
       opacity: 0,
     },
+    canvasSize: 'Post',
 },
   {
     id: 'styles-oat-foam',
@@ -259,6 +279,7 @@ textBox: {
     font: {
       value: 'duru-sans',
       color: '#212121',
+      fontSize: 48,
     },
     textBox: {
       color: '#7585A3',
@@ -268,6 +289,7 @@ textBox: {
       color: '#7585A3',
       opacity: 0,
     },
+    canvasSize: 'Post',
 },
   {
     id: 'styles-jet-cloud-white',
@@ -281,6 +303,7 @@ textBox: {
     font: {
       value: 'duru-sans',
       color: '#312F2C',
+      fontSize: 48,
     },
     textBox: {
       color: '#7585A3',
@@ -290,6 +313,7 @@ textBox: {
       color: '#7585A3',
       opacity: 0,
     },
+    canvasSize: 'Post',
 },
   {
     id: 'styles-Deep-Sea-Blue',
@@ -303,6 +327,7 @@ textBox: {
     font: {
       value: 'duru-sans',
       color: '#40ffa7',
+      fontSize: 48,
     },
     textBox: {
       color: '#7585A3',
@@ -312,6 +337,7 @@ textBox: {
       color: '#7585A3',
       opacity: 0,
     },
+    canvasSize: 'Post',
 },
   {
     id: 'styles-Icy-Horizon',
@@ -325,6 +351,7 @@ textBox: {
     font: {
       value: 'duru-sans',
       color: '#050761',
+      fontSize: 48,
     },
     textBox: {
       color: '#7585A3',
@@ -334,6 +361,7 @@ textBox: {
       color: '#7585A3',
       opacity: 0,
     },
+    canvasSize: 'Post',
 },
 {
   id: 'styles-Feldgrau',
@@ -347,6 +375,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#Fba0a3',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -356,6 +385,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
   {
     id: 'styles-Oceanic-Blue',
@@ -369,6 +399,7 @@ textBox: {
     font: {
       value: 'duru-sans',
       color: '#FD6749',
+      fontSize: 48,
     },
     textBox: {
       color: '#7585A3',
@@ -378,6 +409,7 @@ textBox: {
       color: '#7585A3',
       opacity: 0,
     },
+    canvasSize: 'Post',
 },
 {
     id: 'styles-Cerulean-Dream',
@@ -391,6 +423,7 @@ textBox: {
     font: {
       value: 'duru-sans',
       color: '#FEDAFB',
+      fontSize: 48,
     },
     textBox: {
       color: '#7585A3',
@@ -400,6 +433,7 @@ textBox: {
       color: '#7585A3',
       opacity: 0,
     },
+    canvasSize: 'Post',
 },
 {
     id: 'styles-Mystic-Night',
@@ -413,6 +447,7 @@ textBox: {
     font: {
       value: 'duru-sans',
       color: '#23CBD2',
+      fontSize: 48,
     },
     textBox: {
       color: '#7585A3',
@@ -422,6 +457,7 @@ textBox: {
       color: '#7585A3',
       opacity: 0,
     },
+    canvasSize: 'Post',
 },
 {
   id: 'styles-Seaweed-Green',
@@ -435,6 +471,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#06CCA0',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -444,6 +481,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Sunshine-Yellow',
@@ -457,6 +495,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#FFD40B',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -466,6 +505,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Blue-Horizon',
@@ -479,6 +519,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#CECBC9',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -488,6 +529,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Deep-Sea',
@@ -501,6 +543,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#0ECDE1',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -510,6 +553,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Midnight-Wave',
@@ -523,6 +567,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#DE918C',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -532,6 +577,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Starlit-Sky',
@@ -545,6 +591,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#36C4C7',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -554,6 +601,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Azure-Vibe',
@@ -567,6 +615,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#CD3536',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -576,6 +625,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Spring-Green',
@@ -589,6 +639,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#FCF900',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -598,6 +649,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Deep-Blue',
@@ -611,6 +663,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#DB141C',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -620,6 +673,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Evening-Sky',
@@ -633,6 +687,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#B41EDF',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -642,6 +697,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Autumn-Mist',
@@ -655,6 +711,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#F2EEF2',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -664,6 +721,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Warm-Ember',
@@ -677,6 +735,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#047976',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -686,6 +745,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Crisp-Red',
@@ -699,6 +759,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#FAC800',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -708,6 +769,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Vibrant-Pink',
@@ -721,6 +783,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#0C2955',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -730,6 +793,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Soft-Yellow',
@@ -743,6 +807,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#984DAE',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -752,6 +817,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Delicate-Peach',
@@ -765,6 +831,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#DD9DBA',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -774,6 +841,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Lime-Splash',
@@ -787,6 +855,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#F94071',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -796,6 +865,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Gold-Shimmer',
@@ -809,6 +879,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#2D3440',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -818,6 +889,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Pastel-Green',
@@ -831,6 +903,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#49CDAE',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -840,6 +913,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Forest-Green',
@@ -853,6 +927,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#12BA24',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -862,6 +937,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Teal-Oasis',
@@ -875,6 +951,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#104462',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -884,6 +961,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Lush-Foliage',
@@ -897,6 +975,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#B5CEC1',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -906,6 +985,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Mint-Whisper',
@@ -919,6 +999,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#D6C3CD',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -928,6 +1009,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Soft-Sprout',
@@ -941,6 +1023,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#2B5251',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -950,6 +1033,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Cool-Dusk',
@@ -963,6 +1047,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#96DEA7',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -972,6 +1057,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Fresh-Green',
@@ -985,6 +1071,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#5C0089',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -994,6 +1081,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Seafoam-Breeze',
@@ -1007,6 +1095,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#9DDBA8',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -1016,6 +1105,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Peacock-Tail',
@@ -1029,6 +1119,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#394155',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -1038,6 +1129,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Misty-Evening',
@@ -1051,6 +1143,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#DA9688',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -1060,6 +1153,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Forest-Trail',
@@ -1073,6 +1167,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#1E515D',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -1082,6 +1177,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Marine-Galaxy',
@@ -1095,6 +1191,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#383E53',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -1104,6 +1201,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Cloudy-Night',
@@ -1117,6 +1215,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#DC948D',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -1126,6 +1225,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Charcoal-Grass',
@@ -1139,6 +1239,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#E87868',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -1148,6 +1249,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Dusk-Wave',
@@ -1161,6 +1263,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#8C53B5',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -1170,6 +1273,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Aquamarine-Whisper',
@@ -1183,6 +1287,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#E0CAE8',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -1192,6 +1297,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 {
   id: 'styles-Blue-Mosaic',
@@ -1205,6 +1311,7 @@ textBox: {
   font: {
     value: 'duru-sans',
     color: '#ECDDC8',
+    fontSize: 48,
   },
   textBox: {
     color: '#7585A3',
@@ -1214,6 +1321,7 @@ textBox: {
     color: '#7585A3',
     opacity: 0,
   },
+  canvasSize: 'Post',
 },
 
   // Gradient Styles Category
@@ -1229,6 +1337,7 @@ textBox: {
     font: {
       value: 'poppins',
       color: '#E2A9F1',
+      fontSize: 48,
     },
     textBox: {
       color: '#7585A3',
@@ -1238,5 +1347,6 @@ textBox: {
       color: '#7585A3',
       opacity: 0,
     },
+    canvasSize: 'Post',
   },
 ];
