@@ -796,6 +796,11 @@ export default function Home() {
   const handleCanvasSizeChange = (size: CanvasSize) => {
     setCanvasSize(size);
     resetPanAndZoom(size);
+    if (size.name === 'Square') {
+      setActiveFont(prevFont => ({...prevFont, size: 36}));
+    } else {
+      setActiveFont(prevFont => ({...prevFont, size: 48}));
+    }
   }
 
   const renderActiveTabContent = () => {
@@ -807,7 +812,7 @@ export default function Home() {
         handleKeywordSearch, searchPage, isOverlayEnabled, setIsOverlayEnabled: handleOverlayEnable,
         overlayColor, setOverlayColor, overlayOpacity, setOverlayOpacity, gradientBg,
         handleGradientBgSelect, setSearchCarouselApi, textColor, setTextColor: handleTextColorChange, textOpacity,
-        setTextOpacity, activeFont, setActiveFont: (font: FontOption) => setActiveFont(font), fontOptions, isBold, setIsBold,
+        setTextOpacity, activeFont, setActiveFont, fontOptions, isBold, setIsBold,
         isUppercase, setIsUppercase, textAlign, setTextAlign, textShadowEnabled,
         setTextShadowEnabled, shadows, setShadows, textStroke, setTextStroke,
         strokeColor, setStrokeColor, strokeWidth, setStrokeWidth, isTextBoxEnabled,
@@ -1169,3 +1174,5 @@ export default function Home() {
     
 
       
+
+    

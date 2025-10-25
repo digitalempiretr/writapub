@@ -6,7 +6,7 @@ import { TextEffect } from './text-effects';
 export type DesignTemplate = {
   id: string;
   name: string;
-  category: 'Special Effects' | 'Color Styles' | 'Image Templates' | 'Gradient Styles' | 'Favorites';
+  category: 'Special Effects' | 'Color Styles' | 'Authors Templates' | 'Gradient Styles' | 'Favorites';
   previewImage: string;
   background: {
     type: 'flat' | 'gradient' | 'image';
@@ -30,6 +30,121 @@ export type DesignTemplate = {
 };
 
 export const designTemplates: DesignTemplate[] = [
+   // Authors Templates Category
+   {
+    id: 'daktilo',
+    name: "Daktilo",
+    category: 'Authors Templates', // Or 'Color Styles' or 'Special Effects'
+    previewImage: "https://i.ibb.co/N6Qvdnbw/daktilo-template.jpg",
+    background: {
+      type: 'image',
+      value: 'https://i.ibb.co/nMxGgznf/book-shadow-post.jpg',
+    },
+    font: {
+      value: 'special-elite',
+      color: '#0F2027',
+    },
+    textBox: {
+      color: '#f4ede4',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#008080',
+      opacity: 0,
+    },
+    effect: {
+      id: 'none',
+    }
+  },
+  {
+    id: 'template-milky',
+    name: "Milky",
+    category: 'Authors Templates',
+    previewImage: "https://i.ibb.co/zhYZ5H5V/milky-1.jpg",
+    background: {
+      type: 'image',
+      value: 'https://i.ibb.co/kVJS28vc/6.jpg',
+    },
+    font: {
+      value: 'style-script',
+      color: '#3f5b4d',
+    },
+textBox: {
+    color: '#e5e5ff',
+    opacity: 0,
+  },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+  },
+  {
+    id: 'template-art-school-of-athens',
+    name: "Art School Of Athens",
+    category: 'Authors Templates',
+    previewImage: "https://i.ibb.co/sd7gmFQk/Art-School-Of-Athens.jpg",
+    background: {
+      type: 'image',
+      value: 'https://images.pexels.com/photos/159862/art-school-of-athens-raphael-italian-painter-fresco-159862.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    },
+    font: {
+      value: 'duru-sans',
+      color: '#FFFFFF',
+    },
+    textBox: {
+        color: '#383839',
+        opacity: 0.53,
+      },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+  },
+  {
+    id: 'template-marble',
+    name: "Marble",
+    category: 'Authors Templates',
+    previewImage: "https://i.ibb.co/Q763twkW/marble-template.jpg",
+    background: {
+      type: 'image',
+      value: 'https://i.ibb.co/DDZ3y2Lk/7.jpg',
+    },
+    font: {
+      value: 'duru-sans',
+      color: '#706051',
+    },
+    textBox: {
+        color: '#a79c92',
+        opacity: 0.5,
+      },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+  },
+  {
+    id: 'template-birdseyesea',
+    name: "Birds Eye Sea",
+    category: 'Authors Templates',
+    previewImage: "https://i.ibb.co/qYdKfn9F/Birds-Eye-Sea.jpg",
+    background: {
+      type: 'image',
+      value: 'https://images.pexels.com/photos/1655166/pexels-photo-1655166.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    },
+    font: {
+      value: 'duru-sans',
+      color: '#FFFFFF',
+    },
+    textBox: {
+        color: '#7585A3',
+        opacity: 0,
+      },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+  },  
+
   // Special Effects Category
   {
     id: 'template-neon-blue',
@@ -107,95 +222,7 @@ export const designTemplates: DesignTemplate[] = [
     }
   },
 
-  // Image Templates Category
-  {
-    id: 'template-milky',
-    name: "Milky",
-    category: 'Image Templates',
-    previewImage: "https://i.ibb.co/zhYZ5H5V/milky-1.jpg",
-    background: {
-      type: 'image',
-      value: 'https://i.ibb.co/kVJS28vc/6.jpg',
-    },
-    font: {
-      value: 'style-script',
-      color: '#3f5b4d',
-    },
-textBox: {
-    color: '#e5e5ff',
-    opacity: 0,
-  },
-    overlay: {
-      color: '#7585A3',
-      opacity: 0,
-    },
-  },
-  {
-    id: 'template-art-school-of-athens',
-    name: "Art School Of Athens",
-    category: 'Image Templates',
-    previewImage: "https://i.ibb.co/sd7gmFQk/Art-School-Of-Athens.jpg",
-    background: {
-      type: 'image',
-      value: 'https://images.pexels.com/photos/159862/art-school-of-athens-raphael-italian-painter-fresco-159862.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    },
-    font: {
-      value: 'duru-sans',
-      color: '#FFFFFF',
-    },
-    textBox: {
-        color: '#383839',
-        opacity: 0.53,
-      },
-    overlay: {
-      color: '#7585A3',
-      opacity: 0,
-    },
-  },
-  {
-    id: 'template-marble',
-    name: "Marble",
-    category: 'Image Templates',
-    previewImage: "https://i.ibb.co/Q763twkW/marble-template.jpg",
-    background: {
-      type: 'image',
-      value: 'https://i.ibb.co/DDZ3y2Lk/7.jpg',
-    },
-    font: {
-      value: 'duru-sans',
-      color: '#706051',
-    },
-    textBox: {
-        color: '#a79c92',
-        opacity: 0.5,
-      },
-    overlay: {
-      color: '#7585A3',
-      opacity: 0,
-    },
-  },
-  {
-    id: 'template-birdseyesea',
-    name: "Birds Eye Sea",
-    category: 'Image Templates',
-    previewImage: "https://i.ibb.co/qYdKfn9F/Birds-Eye-Sea.jpg",
-    background: {
-      type: 'image',
-      value: 'https://images.pexels.com/photos/1655166/pexels-photo-1655166.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    },
-    font: {
-      value: 'duru-sans',
-      color: '#FFFFFF',
-    },
-    textBox: {
-        color: '#7585A3',
-        opacity: 0,
-      },
-    overlay: {
-      color: '#7585A3',
-      opacity: 0,
-    },
-  },  
+ 
 
   // Color Styles Category
   {
