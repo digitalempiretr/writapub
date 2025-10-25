@@ -933,7 +933,11 @@ export default function Home() {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-       {/* HEADER */}
+       {/******************************************************
+      *
+      * HEADER
+      *
+      *******************************************************/}
       <header className="w-full text-left p-4 md:px-8 h-[10vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-primary">
         <Logo className="text-[1.5rem] text-primary-foreground" />
         <div className="flex items-center gap-4">
@@ -998,7 +1002,7 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden" style={{ height: isMobile ? 'calc(100vh - 10vh - 56px)' : 'auto' }}>
       {/******************************************************
       *
       * DESKTOP SIDEBAR
@@ -1058,7 +1062,11 @@ export default function Home() {
       *
       *******************************************************/}
 
-        {/* Main Content Area */}
+        {/******************************************************
+        *
+        * Main Content Area
+        *
+        *******************************************************/}
         <main className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative")}>
           {designs.length === 0 ? (
             <div className="w-full max-w-2xl">
@@ -1180,7 +1188,6 @@ export default function Home() {
                   <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
                       <SheetHeader className="p-4 border-b flex-row justify-between items-center bg-card">
                           <SheetTitle className="capitalize">{activeTabLabel}</SheetTitle>
-                          {/* The close button is now automatically provided by SheetContent */}
                       </SheetHeader>
                       <div className="flex-grow overflow-y-auto">
                           {renderActiveTabContent()}
@@ -1209,3 +1216,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
