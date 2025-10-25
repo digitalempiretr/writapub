@@ -717,6 +717,10 @@ export default function Home() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      const activeElement = document.activeElement;
+      if (activeElement && (activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'INPUT')) {
+        return;
+      }
       if (e.code === 'Space') {
         e.preventDefault();
         setIsPanning(true);
@@ -803,7 +807,7 @@ export default function Home() {
         handleKeywordSearch, searchPage, isOverlayEnabled, setIsOverlayEnabled: handleOverlayEnable,
         overlayColor, setOverlayColor, overlayOpacity, setOverlayOpacity, gradientBg,
         handleGradientBgSelect, setSearchCarouselApi, textColor, setTextColor: handleTextColorChange, textOpacity,
-        setTextOpacity, activeFont, setActiveFont, fontOptions, isBold, setIsBold,
+        setTextOpacity, activeFont, setActiveFont: (font: FontOption) => setActiveFont(font), fontOptions, isBold, setIsBold,
         isUppercase, setIsUppercase, textAlign, setTextAlign, textShadowEnabled,
         setTextShadowEnabled, shadows, setShadows, textStroke, setTextStroke,
         strokeColor, setStrokeColor, strokeWidth, setStrokeWidth, isTextBoxEnabled,
@@ -1078,7 +1082,7 @@ export default function Home() {
                                       </AlertDialogTrigger>
                                     </TooltipTrigger>
                                     <TooltipContent side="left">
-                                     <p className="text-2xl font-sans">Save to Favorites</p>
+                                     <p>Save to Favorites</p>
                                     </TooltipContent>
                                   </Tooltip>
                                 <AlertDialogContent>
@@ -1163,3 +1167,5 @@ export default function Home() {
     
 
     
+
+      
