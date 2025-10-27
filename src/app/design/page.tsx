@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { findImages } from "@/ai/flows/find-images-flow";
@@ -1040,7 +1041,7 @@ export default function DesignPage() {
             </div>
           ) : (
             <>
-            <div className="absolute top-4 right-4 flex items-center gap-4 z-10">
+            <div className="absolute top-4 right-4 flex items-center gap-4 z-20">
                 <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
                     {canvasSizes.map(size => (
                     <TooltipProvider key={size.name}>
