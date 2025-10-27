@@ -53,7 +53,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { HeartIconG  } from "@/components/ui/icons";
 import { useUser, useFirestore, useMemoFirebase, useCollection, addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from "@/firebase";
 import { collection, doc, serverTimestamp } from "firebase/firestore";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 type Design = {
   text: string;
@@ -182,6 +182,7 @@ export default function DesignPage() {
   const mobilePanelRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const pathname = usePathname();
 
    const closePanel = useCallback(() => {
     setIsMobilePanelOpen(false);
@@ -1041,62 +1042,6 @@ export default function DesignPage() {
             </div>
           ) : (
             <>
-            <div className="absolute top-4 right-4 flex items-center gap-4 z-20">
-                <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
-                    {canvasSizes.map(size => (
-                    <TooltipProvider key={size.name}>
-                        <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button
-                            variant="ghost"
-                            size="icon"
-                            className={cn(
-                                "h-8 w-8 text-primary",
-                                canvasSize.name === size.name && "bg-primary-foreground/20"
-                            )}
-                            onClick={() => handleCanvasSizeChange(size)}
-                            >
-                            {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
-                            {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
-                            {size.name === 'Square' && <Square className="h-5 w-5" />}
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>{size.name} Format</p>
-                        </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                    ))}
-                </div>
-                  <div className="bg-card/20 backdrop-blur-sm p-1 flex items-center gap-1 rounded-md">
-                  <TooltipProvider>
-                      <Tooltip>
-                      <TooltipTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('out')} disabled={zoomLevel <= MIN_ZOOM}>
-                              <ZoomOut className="h-5 w-5" />
-                          </Button>
-                      </TooltipTrigger>
-                      <TooltipContent><p>Zoom Out (-)</p></TooltipContent>
-                      </Tooltip>
-                      <Tooltip>
-                      <TooltipTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => resetPanAndZoom(canvasSize)}>
-                              <RotateCcw className="h-5 w-5" />
-                          </Button>
-                      </TooltipTrigger>
-                      <TooltipContent><p>Reset Zoom</p></TooltipContent>
-                      </Tooltip>
-                      <Tooltip>
-                      <TooltipTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('in')} disabled={zoomLevel >= MAX_ZOOM}>
-                              <ZoomIn className="h-5 w-5" />
-                          </Button>
-                      </TooltipTrigger>
-                      <TooltipContent><p>Zoom In (+)</p></TooltipContent>
-                      </Tooltip>
-                  </TooltipProvider>
-              </div>
-            </div>
             <div 
               ref={designsRef} 
               className="w-full h-full flex flex-col items-center justify-center cursor-grab"
