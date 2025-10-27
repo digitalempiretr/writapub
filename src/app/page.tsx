@@ -30,7 +30,7 @@ import {
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw, LogIn, LogOut, Loader2 } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -39,7 +39,6 @@ import { fontOptions } from "@/lib/font-options";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/components/ui/tooltip";
 import { defaultText } from "@/lib/default-text";
 import { DesignTemplate } from "@/lib/design-templates";
-import { useLocalStorage } from "@/hooks/use-local-storage";
 import { TextSettings, type Shadow } from "@/components/3_text-settings";
 import { BackgroundSettings } from "@/components/2_background-settings";
 import { DesignsPanel } from "@/components/1_templates";
@@ -52,6 +51,11 @@ import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { BookmarkStarIcon, HeartIconG  } from "@/components/ui/icons";
+import { useUser, useFirestore, useMemoFirebase, useCollection, addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from "@/firebase";
+import { collection, doc, serverTimestamp } from "firebase/firestore";
+import { getAuth, GoogleAuthProvider, signInWithRedirect, signOut } from "firebase/auth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 type Design = {
   text: string;
@@ -73,6 +77,9 @@ const MAX_ZOOM = 3.0;
 const MIN_ZOOM = 0.25;
 
 export default function Home() {
+  const { user, isUserLoading } = useUser();
+  const firestore = useFirestore();
+
   const [text, setText] = useState(defaultText);
   const [designs, setDesigns] = useState<Design[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -81,7 +88,7 @@ export default function Home() {
   const [carouselApi, setCarouselApi] = useState<CarouselApi | undefined>();
   const [searchCarouselApi, setSearchCarouselApi] = useState<CarouselApi | undefined>();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [myDesigns, setMyDesigns] = useLocalStorage<DesignTemplate[]>('writa-designs', []);
+  
   const [editingDesignId, setEditingDesignId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
   const [designToDelete, setDesignToDelete] = useState<string | null>(null);
@@ -89,6 +96,12 @@ export default function Home() {
   const [backgroundType, setBackgroundType] = useState<BackgroundType>('image');
   const [currentTemplate, setCurrentTemplate] = useState<ImageTemplate | null>(imageTemplates[1]);
   
+  const myDesignsQuery = useMemoFirebase(() => {
+    if (!user || !firestore) return null;
+    return collection(firestore, 'users', user.uid, 'designs');
+  }, [firestore, user]);
+  const { data: myDesigns } = useCollection<DesignTemplate>(myDesignsQuery);
+
   useEffect(() => {
     setIsClient(true)
   }, [])
@@ -443,6 +456,15 @@ export default function Home() {
   };
 
   const handleSaveDesign = useCallback(() => {
+    if (!user || !firestore) {
+        toast({
+            variant: "destructive",
+            title: "Login Required",
+            description: "You need to be logged in to save favorites.",
+            duration: 2000,
+        });
+        return;
+    }
     const canvas = canvasRefs.current[currentSlide];
     if (!canvas) {
       toast({
@@ -461,9 +483,8 @@ export default function Home() {
     else if (backgroundType === 'gradient') bgValue = gradientBg;
     else if (backgroundType === 'image') bgValue = imageBgUrl;
 
-    const newDesign: DesignTemplate = {
-      id: `design-${Date.now()}`,
-      name: `Favorite ${myDesigns.length + 1}`,
+    const newDesign: Omit<DesignTemplate, 'id'> = {
+      name: `Favorite ${(myDesigns?.length || 0) + 1}`,
       category: 'Favorites',
       previewImage: previewImage,
       canvasSize: canvasSize.name,
@@ -486,10 +507,11 @@ export default function Home() {
       },
       effect: {
         id: activeEffect.id,
-      }
+      },
     };
-
-    setMyDesigns(prev => [...prev, newDesign]);
+    if (myDesignsQuery) {
+        addDocumentNonBlocking(myDesignsQuery, {...newDesign, createdAt: serverTimestamp()});
+    }
 
     toast({
       title: "Design Saved",
@@ -497,10 +519,12 @@ export default function Home() {
       duration: 2000,
     });
 
-  }, [currentSlide, backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, myDesigns.length, setMyDesigns, toast, activeEffect, canvasSize]);
+  }, [currentSlide, backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, myDesigns, toast, activeEffect, canvasSize, user, firestore, myDesignsQuery]);
 
   const handleDeleteDesign = (id: string) => {
-    setMyDesigns(prev => prev.filter(d => d.id !== id));
+    if (!user || !firestore) return;
+    const docRef = doc(firestore, 'users', user.uid, 'designs', id);
+    deleteDocumentNonBlocking(docRef);
     setDesignToDelete(null);
     toast({
       title: "Favorite Deleted",
@@ -520,7 +544,9 @@ export default function Home() {
   };
 
   const handleUpdateDesign = (id: string) => {
-    setMyDesigns(prev => prev.map(d => d.id === id ? { ...d, name: editingName } : d));
+    if (!user || !firestore) return;
+    const docRef = doc(firestore, 'users', user.uid, 'designs', id);
+    updateDocumentNonBlocking(docRef, { name: editingName });
     handleCancelEdit();
     toast({
       title: "Favorite Updated",
@@ -836,7 +862,7 @@ export default function Home() {
         strokeColor, setStrokeColor, strokeWidth, setStrokeWidth, isTextBoxEnabled,
         setIsTextBoxEnabled: handleTextBoxEnable, rectBgColor, setRectBgColor, rectOpacity,
         setRectOpacity, activeEffect, setActiveEffect: handleEffectChange, designs, handleDownloadAll, currentSlide,
-        handleDownload, fileName, setFileName, handleApplyTemplate, myDesigns,
+        handleDownload, fileName, setFileName, handleApplyTemplate, myDesigns: myDesigns || [],
         handleSaveDesign, handleDeleteDesign, handleUpdateDesign, editingDesignId,
         handleEditClick, handleCancelEdit, editingName, setEditingName, designToDelete,
         setDesignToDelete, handleLogDesign,
@@ -861,6 +887,17 @@ export default function Home() {
   ];
   
   const activeTabLabel = settingsTabs.find(tab => tab.value === activeSettingsTab)?.label;
+
+  const handleLogin = () => {
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    signInWithRedirect(auth, provider);
+  };
+  
+  const handleLogout = () => {
+    const auth = getAuth();
+    signOut(auth);
+  };
 
   const renderBulletNavigation = () => {
     if (!carouselApi) return null;
@@ -998,6 +1035,51 @@ export default function Home() {
                       </TooltipProvider>
                   </div>
                 </>
+            )}
+             {isUserLoading ? (
+              <Button variant="outline" size="sm" disabled>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Loading...
+              </Button>
+            ) : user ? (
+              <DropdownMenu>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
+                            <AvatarFallback>{user.displayName?.charAt(0) || 'U'}</AvatarFallback>
+                          </Avatar>
+                        </Button>
+                      </DropdownMenuTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Profile</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user.displayName}</p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button onClick={handleLogin}>
+                <LogIn className="mr-2 h-4 w-4" /> Login with Google
+              </Button>
             )}
         </div>
       </header>
