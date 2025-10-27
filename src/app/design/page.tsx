@@ -30,7 +30,7 @@ import {
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Type, X, HeartIcon } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -54,6 +54,7 @@ import { HeartIconG  } from "@/components/ui/icons";
 import { useUser, useFirestore, useMemoFirebase, useCollection, addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from "@/firebase";
 import { collection, doc, serverTimestamp } from "firebase/firestore";
 import { useRouter, usePathname } from "next/navigation";
+import { Header } from "@/components/header";
 
 type Design = {
   text: string;
@@ -765,32 +766,6 @@ export default function DesignPage() {
     });
   };
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const activeElement = document.activeElement;
-      if (activeElement && (activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'INPUT')) {
-        return;
-      }
-      if (e.code === 'Space') {
-        e.preventDefault();
-        setIsPanning(true);
-        document.body.style.cursor = 'grab';
-      }
-    };
-    const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.code === 'Space') {
-        setIsPanning(false);
-        document.body.style.cursor = 'default';
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-    };
-  }, []);
-
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isPanning) {
       e.preventDefault();
@@ -965,6 +940,16 @@ export default function DesignPage() {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
+       <Header
+          canvasSize={canvasSize}
+          handleCanvasSizeChange={handleCanvasSizeChange}
+          canvasSizes={canvasSizes}
+          zoomLevel={zoomLevel}
+          handleZoom={handleZoom}
+          resetPanAndZoom={() => resetPanAndZoom(canvasSize)}
+          MIN_ZOOM={MIN_ZOOM}
+          MAX_ZOOM={MAX_ZOOM}
+        />
       <div className="flex-1 flex overflow-hidden">
         {/******************************************************
         *
