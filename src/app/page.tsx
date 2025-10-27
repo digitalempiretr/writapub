@@ -6,27 +6,31 @@ import { useUser } from '@/firebase';
 import { getAuth, GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
 
 export default function WelcomePage() {
-  const { user, isUserLoading } = useUser();
+  const { user, isUserLoading: isAuthLoading } = useUser();
+  const [isLoginInProgress, setIsLoginInProgress] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    if (!isUserLoading && user) {
+    if (!isAuthLoading && user) {
       router.push('/dashboard');
     }
-  }, [user, isUserLoading, router]);
+  }, [user, isAuthLoading, router]);
 
   const handleLogin = () => {
+    setIsLoginInProgress(true);
     const auth = getAuth();
     const provider = new GoogleAuthProvider();
     signInWithRedirect(auth, provider);
   };
+  
+  const isLoading = isAuthLoading || isLoginInProgress;
 
-  if (isUserLoading || user) {
+  if (isLoading || user) {
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen bg-background">
         <div className="w-64 h-64">
@@ -52,8 +56,8 @@ export default function WelcomePage() {
           playsInline
         ></video>
       </div>
-      <Button onClick={handleLogin} size="lg" disabled={isUserLoading}>
-        {isUserLoading ? (
+      <Button onClick={handleLogin} size="lg" disabled={isLoading}>
+        {isLoading ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
           'Get Started with Google'
