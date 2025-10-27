@@ -38,6 +38,7 @@ export function DownloadPanel({
           placeholder="Enter file name..."
           value={fileName}
           onChange={(e) => setFileName(e.target.value)}
+          className="bg-sidebar stroke-1"
         />
       </div>
       <div className="flex justify-around items-center pt-2">

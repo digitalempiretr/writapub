@@ -886,7 +886,7 @@ export default function Home() {
                 key={i}
                 data-active={i === currentSlide}
                 onClick={() => carouselApi?.scrollTo(i)}
-                className="h-2 w-2 rounded-full bg-accent cursor-pointer transition-all duration-300 bullet-indicator"
+                className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
             />
         );
     }
@@ -898,19 +898,19 @@ export default function Home() {
             <div
               key={0}
               onClick={() => carouselApi?.scrollTo(0)}
-              className="h-2 w-2 rounded-full bg-accent cursor-pointer transition-all duration-300 bullet-indicator"
+              className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
             />
-            {start > 1 && <span className="text-foreground/50 -translate-y-1">...</span>}
+            {start > 1 && <span className="text-foreground -translate-y-1">...</span>}
           </>
         )}
         {dots}
         {end < totalSlides && (
           <>
-            {end < totalSlides - 1 && <span className="text-foreground/50 -translate-y-1">...</span>}
+            {end < totalSlides - 1 && <span className="text-foreground -translate-y-1">...</span>}
             <div
               key={totalSlides - 1}
               onClick={() => carouselApi?.scrollTo(totalSlides - 1)}
-              className="h-2 w-2 rounded-full bg-accent cursor-pointer transition-all duration-300 bullet-indicator"
+              className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
             />
           </>
         )}
@@ -938,8 +938,8 @@ export default function Home() {
       * HEADER
       *
       *******************************************************/}
-      <header className="w-full text-left p-4 md:px-8 h-[10vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-primary">
-        <Logo className="text-[1.5rem] text-primary-foreground" />
+      <header className="w-full text-left p-4 md:px-8 h-[6vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-background">
+        <Logo className="text-[1.5rem] text-primary" />
         <div className="flex items-center gap-4">
             {designs.length > 0 && (
                 <>
@@ -952,7 +952,7 @@ export default function Home() {
                                 variant="ghost"
                                 size="icon"
                                 className={cn(
-                                    "h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground",
+                                    "h-8 w-8 text-primary",
                                     canvasSize.name === size.name && "bg-primary-foreground/20"
                                 )}
                                 onClick={() => handleCanvasSizeChange(size)}
@@ -973,7 +973,7 @@ export default function Home() {
                       <TooltipProvider>
                           <Tooltip>
                           <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20" onClick={() => handleZoom('out')} disabled={zoomLevel <= MIN_ZOOM}>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('out')} disabled={zoomLevel <= MIN_ZOOM}>
                                   <ZoomOut className="h-5 w-5" />
                               </Button>
                           </TooltipTrigger>
@@ -981,7 +981,7 @@ export default function Home() {
                           </Tooltip>
                           <Tooltip>
                           <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20" onClick={() => resetPanAndZoom(canvasSize)}>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => resetPanAndZoom(canvasSize)}>
                                   <RotateCcw className="h-5 w-5" />
                               </Button>
                           </TooltipTrigger>
@@ -989,7 +989,7 @@ export default function Home() {
                           </Tooltip>
                           <Tooltip>
                           <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20" onClick={() => handleZoom('in')} disabled={zoomLevel >= MAX_ZOOM}>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('in')} disabled={zoomLevel >= MAX_ZOOM}>
                                   <ZoomIn className="h-5 w-5" />
                               </Button>
                           </TooltipTrigger>
@@ -1120,9 +1120,9 @@ export default function Home() {
                                         <Button
                                           variant="ghost"
                                           size="icon"
-                                          className="h-20 w-20 flex items-center justify-center rounded-full bg-gray/20 backdrop-blur-sm text-white hover:bg-red/50 hover:text-red-400 m-2 [&_svg]:size-11"
+                                          className="h-14 w-14 flex items-center justify-center rounded-full bg-gray/20 backdrop-blur-sm text-white hover:bg-red/50 hover:text-red-400 [&_svg]:size-8"
                                         >
-                                          <HeartIconG className="h-5 w-5" />
+                                          <HeartIconG className="h-12 w-12" />
                                         </Button>
                                       </AlertDialogTrigger>
                                     </TooltipTrigger>
@@ -1162,7 +1162,7 @@ export default function Home() {
       {isGeneratingAnimation && (
           <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
             background: 
-            'linear-gradient(to top right,  var(--primary),  var(--secondary),  var(--accent)'
+            'linear-gradient(to top right,  var(--primary),  var(--secondary)'
           }}>
               <div className="w-64 h-64">
                   <Lottie animationData={webflowAnimation} loop={true} />
@@ -1185,8 +1185,8 @@ export default function Home() {
                   }
                   setIsMobilePanelOpen(isOpen);
               }}>
-                  <SheetContent side="bottom" className="h-auto max-h-[75vh] p-0 flex flex-col">
-                      <SheetHeader className="p-4 border-b flex-row justify-between items-center bg-card">
+                  <SheetContent side="bottom" className="h-auto max-h-[40vh] p-0 flex flex-col bg-background">
+                      <SheetHeader className="p-4 border-b flex-row justify-between items-center bg-background">
                           <SheetTitle className="capitalize">{activeTabLabel}</SheetTitle>
                       </SheetHeader>
                       <div className="flex-grow overflow-y-auto">
@@ -1195,9 +1195,9 @@ export default function Home() {
                   </SheetContent>
               </Sheet>
 
-              <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-card border-t", isMobilePanelOpen ? "hidden" : "block")}>
+              <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-background border-t", isMobilePanelOpen ? "hidden" : "block")}>
                   <Tabs value={activeSettingsTab ?? ''} className="w-full">
-                      <TabsList className="grid w-full grid-cols-5 h-14 rounded-none">
+                      <TabsList className="grid w-full grid-cols-5 h-14 rounded-none bg-background">
                           {settingsTabs.map(tab => (
                               <TabsTrigger key={tab.value} value={tab.value} onClick={() => handleMobileTabClick(tab.value)}>
                                   {tab.icon}

@@ -20,11 +20,11 @@ export function CreativeMagicPanel({ text, setText, handleGenerate, isLoading }:
   const mainTextAreaId = useId();
 
   return (
-    <div className="space-y-6 max-w-[1000px] mx-auto w-full">
-      <CardTitle className="text-foreground text-3xl font-serif font-light">Hello <span className = "text-primary">Dear</span></CardTitle>
+    <div className="space-y-10 max-w-[1000px] mx-auto w-full">
+      <CardTitle className="text-foreground text-3xl md:text-5xl text-center font-sans ">What will you <span className = "text-primary">Write </span>today?</CardTitle>
       <div className="space-y-4">
         <Label htmlFor={mainTextAreaId} className="sr-only">Main text area</Label>
-        <div className="relative text-xl">
+        <div className="relative text-xl rounded-lg">
           <Textarea
             id={mainTextAreaId}
             name="main-text-area"
@@ -32,7 +32,7 @@ export function CreativeMagicPanel({ text, setText, handleGenerate, isLoading }:
             value={text}
             onChange={(e) => setText(e.target.value)}
             rows={8}
-            className="rounded-lg relative z-10 text-xl bg-card text-card-foreground placeholder:text-muted-foreground border-1 shadow"
+            className="rounded-lg relative z-10 text-xl text-card-foreground placeholder:text-muted-foreground border-1 shadow font-serif "
 
             // shadow-[0_0_15px_5px_var(--shadow-color)]
           />
@@ -43,7 +43,7 @@ export function CreativeMagicPanel({ text, setText, handleGenerate, isLoading }:
             onClick={handleGenerate}
             disabled={isLoading}
             size="icon"
-            className="rounded-full bg-primary hover:bg-primary/80"
+            className="rounded-full bg-primary hover:bg-background text-primary-foreground hover:text-primary"
           >
             {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />

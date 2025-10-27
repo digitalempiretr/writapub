@@ -1,0 +1,181 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the Post Weaver application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the User entity."
+        },
+        "googleId": {
+          "type": "string",
+          "description": "The unique identifier provided by Google Authentication."
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address.",
+          "format": "email"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User's display name."
+        },
+        "profileImageUrl": {
+          "type": "string",
+          "description": "URL to the user's profile image.",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "id",
+        "googleId",
+        "email",
+        "displayName"
+      ]
+    },
+    "Design": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Design",
+      "type": "object",
+      "description": "Represents a design created by a user, including the text, template, and font used.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Design entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Design)"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the design."
+        },
+        "content": {
+          "type": "string",
+          "description": "The article/text content of the design."
+        },
+        "templateId": {
+          "type": "string",
+          "description": "Reference to Template. (Relationship: Template 1:N Design)"
+        },
+        "font": {
+          "type": "string",
+          "description": "The name of the font used in the design."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the design was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "content",
+        "templateId",
+        "font",
+        "createdAt"
+      ]
+    },
+    "Template": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Template",
+      "type": "object",
+      "description": "Represents a design template with background color, gradient, or other visual properties.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Template entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the template (e.g., Flat, Gradient)."
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of template (e.g., Flat, Gradient)."
+        },
+        "backgroundColor": {
+          "type": "string",
+          "description": "Background color of the template (if applicable)."
+        },
+        "gradient": {
+          "type": "string",
+          "description": "Gradient information (if applicable)."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "type"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profiles. The 'userId' parameter corresponds to the Firebase Authentication UID.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The Firebase Authentication UID of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/designs/{designId}",
+        "definition": {
+          "entityName": "Design",
+          "schema": {
+            "$ref": "#/backend/entities/Design"
+          },
+          "description": "Stores designs created by users. Includes denormalized 'userId' for authorization independence.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The Firebase Authentication UID of the user who owns the design."
+            },
+            {
+              "name": "designId",
+              "description": "The unique identifier of the design."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/templates/{templateId}",
+        "definition": {
+          "entityName": "Template",
+          "schema": {
+            "$ref": "#/backend/entities/Template"
+          },
+          "description": "Stores design templates. These templates are globally accessible.",
+          "params": [
+            {
+              "name": "templateId",
+              "description": "The unique identifier of the design template."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to securely manage user data, designs, and templates for the Post Weaver application, focusing on authorization independence and scalability. The structure adheres to the principle of Authorization Independence by storing user-specific data under their respective user ID paths, avoiding hierarchical dependencies and enabling atomic operations. Designs are stored as subcollections of users, ensuring clear ownership and simplifying security rules. No 'get()' calls are necessary for validating a user's ownership of design data. Templates are stored as global data. This structure also facilitates listing operations as the rules can easily validate the user id against the requested userId. The design data also includes the `userId` which serves as the basis of our security rules. By associating designs with their owners at the document level, authorization rules need only compare the request authentication ID to the `userId`."
+  }
+}
