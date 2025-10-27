@@ -3,8 +3,7 @@
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/firebase';
-import { getAuth, GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
-import { Loader2 } from 'lucide-react';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
@@ -21,13 +20,21 @@ export default function WelcomePage() {
     }
   }, [user, isAuthLoading, router]);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setIsLoginInProgress(true);
     const auth = getAuth();
     const provider = new GoogleAuthProvider();
-    signInWithRedirect(auth, provider);
+    try {
+      await signInWithPopup(auth, provider);
+      // Successful sign-in is handled by the useEffect hook
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      // Optionally, show a toast notification to the user
+    } finally {
+      setIsLoginInProgress(false);
+    }
   };
-  
+
   const isLoading = isAuthLoading || isLoginInProgress;
 
   if (isLoading || (!isAuthLoading && user)) {
@@ -40,7 +47,6 @@ export default function WelcomePage() {
     );
   }
 
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 text-center">
       <Logo className="text-7xl md:text-8xl text-primary mb-4" />
@@ -48,11 +54,7 @@ export default function WelcomePage() {
         Create beautiful, shareable posts from your text in seconds.
       </h2>
       <Button onClick={handleLogin} size="lg" disabled={isLoading}>
-        {isLoading ? (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          'Get Started with Google'
-        )}
+        Get Started with Google
       </Button>
     </div>
   );
