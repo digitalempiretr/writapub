@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
+import { Header } from '@/components/header';
 
 export default function WelcomePage() {
   const { user, isUserLoading: isAuthLoading } = useUser();
@@ -16,7 +17,7 @@ export default function WelcomePage() {
 
   useEffect(() => {
     if (!isAuthLoading && user) {
-      router.push('/dashboard');
+      router.push('/home');
     }
   }, [user, isAuthLoading, router]);
 
@@ -48,14 +49,17 @@ export default function WelcomePage() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-8 text-center">
-      <Logo className="text-7xl md:text-8xl text-primary mb-4" />
-      <h2 className="text-xl md:text-2xl text-foreground mb-8 font-serif">
-        Create beautiful, shareable posts from your text in seconds.
-      </h2>
-      <Button onClick={handleLogin} size="lg" disabled={isLoading}>
-        Get Started with Google
-      </Button>
-    </div>
+    <>
+      <Header />
+      <div className="flex flex-col items-center justify-center min-h-screen p-8 text-center">
+        <Logo className="text-7xl md:text-8xl text-primary mb-4" />
+        <h2 className="text-xl md:text-2xl text-foreground mb-8 font-serif">
+          Create beautiful, shareable posts from your text in seconds.
+        </h2>
+        <Button onClick={handleLogin} size="lg" disabled={isLoading}>
+          Get Started with Google
+        </Button>
+      </div>
+    </>
   );
 }

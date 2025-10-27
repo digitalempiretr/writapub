@@ -54,6 +54,7 @@ import { HeartIconG  } from "@/components/ui/icons";
 import { useUser, useFirestore, useMemoFirebase, useCollection, addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from "@/firebase";
 import { collection, doc, serverTimestamp } from "firebase/firestore";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Header } from "@/components/header";
 
 type Design = {
   text: string;
@@ -807,17 +808,17 @@ export default function DesignPage() {
     }
   };
 
-  const resetPanAndZoom = useCallback((size: CanvasSize) => {
+  const resetPanAndZoom = useCallback(() => {
     let newZoom;
     if (isMobile) {
-        switch(size.name) {
+        switch(canvasSize.name) {
             case 'Story': newZoom = 0.8; break;
             case 'Post': newZoom = 1.0; break;
             case 'Square': newZoom = 1.0; break;
             default: newZoom = 1.0; break;
         }
     } else {
-        switch(size.name) {
+        switch(canvasSize.name) {
             case 'Story': newZoom = 0.4; break;
             case 'Post': newZoom = 0.5; break;
             case 'Square': newZoom = 0.6; break;
@@ -826,18 +827,17 @@ export default function DesignPage() {
     }
     setZoomLevel(newZoom);
     setPanOffset({ x: 0, y: 0 });
-    return newZoom;
-  }, [isMobile]);
+  }, [isMobile, canvasSize]);
 
   useEffect(() => {
     if(isClient){
-      resetPanAndZoom(canvasSize);
+      resetPanAndZoom();
     }
   }, [isClient, canvasSize, resetPanAndZoom]);
 
   const handleCanvasSizeChange = (size: CanvasSize) => {
     setCanvasSize(size);
-    resetPanAndZoom(size);
+    resetPanAndZoom();
     if (size.name === 'Square') {
       setActiveFont(prevFont => ({...prevFont, size: 36}));
     } else {
@@ -957,6 +957,16 @@ export default function DesignPage() {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
+        <Header 
+          canvasSize={canvasSize}
+          handleCanvasSizeChange={handleCanvasSizeChange}
+          canvasSizes={canvasSizes}
+          zoomLevel={zoomLevel}
+          handleZoom={handleZoom}
+          resetPanAndZoom={resetPanAndZoom}
+          MIN_ZOOM={MIN_ZOOM}
+          MAX_ZOOM={MAX_ZOOM}
+        />
       <div className="flex-1 flex overflow-hidden">
         {/******************************************************
         *
