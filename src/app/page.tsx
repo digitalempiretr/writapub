@@ -30,7 +30,7 @@ export default function WelcomePage() {
   
   const isLoading = isAuthLoading || isLoginInProgress;
 
-  if (isLoading || user) {
+  if (isLoading || (!isAuthLoading && user)) {
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen bg-background">
         <div className="w-64 h-64">
@@ -39,6 +39,7 @@ export default function WelcomePage() {
       </div>
     );
   }
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 text-center">

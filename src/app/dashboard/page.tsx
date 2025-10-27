@@ -59,7 +59,7 @@ export default function DashboardPage() {
           {myDesigns && myDesigns.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {myDesigns.map(design => (
-                <Link href="/design" key={design.id}>
+                <Link href={`/design?templateId=${design.id}`} key={design.id}>
                   <Card className="overflow-hidden group cursor-pointer">
                     <CardContent className="p-0 aspect-[4/5] w-full">
                        <Image src={design.previewImage} alt={design.name} width={200} height={250} className="object-cover h-full w-full transition-transform duration-300 group-hover:scale-105" />

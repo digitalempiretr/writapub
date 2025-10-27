@@ -39,7 +39,7 @@ export function Header() {
   }
 
   return (
-    <header className="w-full text-left p-4 md:px-8 h-[6vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-background">
+    <header className="w-full text-left p-4 md:px-8 flex items-center justify-between z-20 bg-background/80 backdrop-blur-sm sticky top-0 border-b">
       <Link href={user ? "/dashboard" : "/"} aria-label="Go to homepage">
         <Logo className="text-[1.5rem] text-primary" />
       </Link>
