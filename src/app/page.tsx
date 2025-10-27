@@ -46,16 +46,6 @@ export default function WelcomePage() {
       <h2 className="text-xl md:text-2xl text-foreground mb-8 font-serif">
         Create beautiful, shareable posts from your text in seconds.
       </h2>
-      <div className="max-w-4xl mx-auto mb-12">
-        <video
-          className="rounded-lg shadow-2xl border"
-          src="https://cdn.dribbble.com/userupload/11831448/file/original-5979201b13b708b7921855325a75b7a5.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
-        ></video>
-      </div>
       <Button onClick={handleLogin} size="lg" disabled={isLoading}>
         {isLoading ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
