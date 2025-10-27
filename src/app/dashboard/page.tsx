@@ -4,7 +4,7 @@ import { Header } from '@/components/header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCollection, useUser, useFirestore, useMemoFirebase } from '@/firebase';
-import { DesignTemplate } from '@/lib/design-templates';
+import { designTemplates, DesignTemplate } from '@/lib/design-templates';
 import { collection } from 'firebase/firestore';
 import { PlusCircle } from 'lucide-react';
 import Image from 'next/image';
@@ -41,8 +41,8 @@ export default function DashboardPage() {
   return (
     <>
       <Header />
-      <div className="container mx-auto p-4 md:p-8">
-        <div className="flex justify-between items-center mb-8">
+      <div className="container mx-auto p-4 md:p-8 space-y-12">
+        <div className="flex justify-between items-center">
           <h1 className="text-3xl md:text-4xl font-bold">Dashboard</h1>
           <Button asChild>
             <Link href="/design">
@@ -82,6 +82,31 @@ export default function DashboardPage() {
                 </Button>
               </div>
             )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Design Templates</CardTitle>
+            <CardDescription>
+              Get started with one of our pre-made templates.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              {designTemplates.map(template => (
+                <Link href={`/design?templateId=${template.id}`} key={template.id}>
+                  <Card className="overflow-hidden group cursor-pointer">
+                    <CardContent className="p-0 aspect-[4/5] w-full">
+                       <Image src={template.previewImage || 'https://placehold.co/200x250'} alt={template.name} width={200} height={250} className="object-cover h-full w-full transition-transform duration-300 group-hover:scale-105" />
+                    </CardContent>
+                     <CardFooter className="p-2 justify-center">
+                        <p className="text-xs font-semibold truncate">{template.name}</p>
+                     </CardFooter>
+                  </Card>
+                </Link>
+              ))}
+            </div>
           </CardContent>
         </Card>
       </div>

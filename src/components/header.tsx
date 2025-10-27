@@ -2,7 +2,7 @@
 
 import { useUser } from '@/firebase';
 import { getAuth, GoogleAuthProvider, signInWithRedirect, signOut } from 'firebase/auth';
-import { Loader2, LogIn, LogOut, RectangleVertical, Smartphone, Square, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { Loader2, LogIn, LogOut, RectangleVertical, Smartphone, Square, ZoomIn, ZoomOut, RotateCcw, LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
@@ -55,11 +55,6 @@ export function Header({
     const auth = getAuth();
     signOut(auth);
   };
-
-  // Do not render the header on the landing page if the user is not logged in.
-  if (pathname === '/' && !user) {
-    return null;
-  }
 
   return (
     <header className="w-full text-left p-4 md:px-8 flex items-center justify-between z-20 bg-background/80 backdrop-blur-sm sticky top-0 border-b">
@@ -157,6 +152,13 @@ export function Header({
                   <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
                 </div>
               </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+               <DropdownMenuItem asChild>
+                  <Link href="/dashboard">
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    <span>Dashboard</span>
+                  </Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />

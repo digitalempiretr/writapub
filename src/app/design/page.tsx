@@ -53,8 +53,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { HeartIconG  } from "@/components/ui/icons";
 import { useUser, useFirestore, useMemoFirebase, useCollection, addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from "@/firebase";
 import { collection, doc, serverTimestamp } from "firebase/firestore";
-import { useRouter, usePathname } from "next/navigation";
-import { Header } from "@/components/header";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type Design = {
   text: string;
@@ -79,6 +78,7 @@ export default function DesignPage() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [text, setText] = useState(defaultText);
   const [designs, setDesigns] = useState<Design[]>([]);
@@ -183,7 +183,6 @@ export default function DesignPage() {
   const mobilePanelRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const isMobile = useIsMobile();
-  const pathname = usePathname();
 
    const closePanel = useCallback(() => {
     setIsMobilePanelOpen(false);
@@ -403,7 +402,7 @@ export default function DesignPage() {
     }
   };
 
-  const handleApplyTemplate = (template: DesignTemplate) => {
+  const handleApplyTemplate = useCallback((template: DesignTemplate) => {
     // Apply background settings
     setBackgroundTab(template.background.type);
     setBackgroundType(template.background.type);
@@ -460,7 +459,25 @@ export default function DesignPage() {
       description: `"${template.name}" template has been set.`,
       duration: 2000,
     });
-  };
+  }, [activeFont, canvasSize.name, toast]);
+
+  useEffect(() => {
+    const templateId = searchParams.get('templateId');
+    if (templateId) {
+      let template: DesignTemplate | undefined;
+      // First, check the main design templates
+      template = designTemplates.find(t => t.id === templateId);
+      
+      // If not found, check the user's saved designs
+      if (!template && myDesigns) {
+        template = myDesigns.find(t => t.id === templateId);
+      }
+      
+      if (template) {
+        handleApplyTemplate(template);
+      }
+    }
+  }, [searchParams, myDesigns, handleApplyTemplate]);
 
   const handleSaveDesign = useCallback(() => {
     if (!user || !firestore) {
@@ -551,7 +568,7 @@ export default function DesignPage() {
   };
 
   const handleUpdateDesign = (id: string) => {
-    if (!user || !firestore) return;
+    if (!user || !firestore || !editingName.trim()) return;
     const docRef = doc(firestore, 'users', user.uid, 'designs', id);
     updateDocumentNonBlocking(docRef, { name: editingName });
     handleCancelEdit();
@@ -940,16 +957,6 @@ export default function DesignPage() {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-       <Header
-          canvasSize={canvasSize}
-          handleCanvasSizeChange={handleCanvasSizeChange}
-          canvasSizes={canvasSizes}
-          zoomLevel={zoomLevel}
-          handleZoom={handleZoom}
-          resetPanAndZoom={() => resetPanAndZoom(canvasSize)}
-          MIN_ZOOM={MIN_ZOOM}
-          MAX_ZOOM={MAX_ZOOM}
-        />
       <div className="flex-1 flex overflow-hidden">
         {/******************************************************
         *
