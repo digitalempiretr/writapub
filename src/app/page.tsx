@@ -17,38 +17,43 @@ export default function WelcomePage() {
   useEffect(() => {
     const auth = getAuth();
 
-    // First, check for redirect result
-    getRedirectResult(auth)
-      .then((result) => {
+    // This effect should only run once on component mount.
+    // It handles both the redirect result and the initial auth state.
+    const checkAuthStatus = async () => {
+      try {
+        const result = await getRedirectResult(auth);
         if (result && result.user) {
-          // User successfully signed in via redirect.
-          // The user object is available in result.user.
-          // We can now redirect to the home page.
+          // User signed in via redirect. Navigate to home.
+          // The loading screen will persist until navigation completes.
           router.push('/home');
-          // We don't need to setIsLoading(false) here because we are navigating away.
-        } else {
-          // No redirect result, now check current auth state
-          const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-              // User is already signed in
-              router.push('/home');
-            } else {
-              // No user signed in, authentication process is complete.
-              // Show the login page.
-              setIsLoading(false);
-            }
-            unsubscribe(); // Clean up the listener
-          }, (error) => {
-             console.error("onAuthStateChanged error:", error);
-             setIsLoading(false);
-             unsubscribe();
-          });
+          return; // Stop further execution
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error getting redirect result:", error);
-        setIsLoading(false);
+        // Fall through to check onAuthStateChanged even if redirect fails.
+      }
+      
+      // If there was no redirect result, check the current auth state.
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // User is already signed in. Navigate to home.
+          router.push('/home');
+        } else {
+          // No user is signed in from redirect or existing session.
+          // It's now safe to show the login page.
+          setIsLoading(false);
+        }
+        // This is crucial: unsubscribe after the first check to avoid memory leaks
+        // and to prevent re-running on auth state changes initiated by the user on this page.
+        unsubscribe();
+      }, (error) => {
+         console.error("onAuthStateChanged error:", error);
+         setIsLoading(false);
+         unsubscribe();
       });
+    };
+
+    checkAuthStatus();
   }, [router]);
 
 
