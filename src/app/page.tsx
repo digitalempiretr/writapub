@@ -3,7 +3,7 @@
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/firebase';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
@@ -21,19 +21,15 @@ export default function WelcomePage() {
     }
   }, [user, isAuthLoading, router]);
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     setIsLoginInProgress(true);
     const auth = getAuth();
     const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      // Successful sign-in is handled by the useEffect hook
-    } catch (error) {
-      console.error("Google sign-in error:", error);
-      // Optionally, show a toast notification to the user
-    } finally {
-      setIsLoginInProgress(false);
-    }
+    // Use signInWithRedirect to avoid popup blockers
+    signInWithRedirect(auth, provider).catch(error => {
+        console.error("Google sign-in error:", error);
+        setIsLoginInProgress(false);
+    });
   };
 
   const isLoading = isAuthLoading || isLoginInProgress;
