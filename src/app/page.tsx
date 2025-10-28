@@ -9,7 +9,8 @@ import { useEffect, useState, useCallback } from 'react';
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
 import { Icons } from '@/components/ui/icons';
-import { useUser, useAuth, app } from '@/firebase';
+import { useUser, useAuth, useFirestore } from '@/firebase';
+import { app } from '@/firebase/config';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
@@ -17,6 +18,7 @@ import { useToast } from '@/hooks/use-toast';
 export default function WelcomePage() {
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
+  const firestore = useFirestore();
   const router = useRouter();
   const { toast } = useToast();
 
@@ -31,7 +33,6 @@ export default function WelcomePage() {
         try {
             const result = await getRedirectResult(auth);
             if (result && result.user) {
-                const firestore = getFirestore(app);
                 const userDocRef = doc(firestore, "users", result.user.uid);
                 const userDoc = await getDoc(userDocRef);
 
@@ -53,25 +54,23 @@ export default function WelcomePage() {
                 title: 'Login Failed',
                 description: error.message || 'An error occurred during sign-in.',
             });
+        } finally {
+            if (!user) {
+              setIsLoading(false);
+            }
         }
+    } else {
+      setIsLoading(isUserLoading);
     }
-  }, [auth, user, toast]);
+  }, [auth, user, isUserLoading, firestore, toast]);
 
   useEffect(() => {
-    handleRedirectResult();
-  }, [handleRedirectResult]);
-  
-  useEffect(() => {
-    if (!isUserLoading) {
-      if (user) {
+    if (user) {
         router.push('/home');
-      } else {
-        // Only set loading to false when we are certain there's no user
-        // and the redirect has been processed.
-        setIsLoading(false);
-      }
+    } else {
+        handleRedirectResult();
     }
-  }, [user, isUserLoading, router]);
+  }, [user, router, handleRedirectResult]);
 
   const handleGoogleLogin = () => {
     setIsLoading(true);
@@ -98,7 +97,6 @@ export default function WelcomePage() {
     }
 
     setIsLoading(true);
-    const firestore = getFirestore(app);
 
     try {
         if (isSignUp) {
