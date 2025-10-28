@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "User": {
@@ -31,7 +32,6 @@
       },
       "required": [
         "id",
-        "googleId",
         "email",
         "displayName"
       ]
@@ -117,7 +117,8 @@
   },
   "auth": {
     "providers": [
-      "google"
+      "google",
+      "password"
     ]
   },
   "firestore": {
