@@ -17,34 +17,23 @@ export default function WelcomePage() {
   useEffect(() => {
     const auth = getAuth();
 
-    // This effect should only run once on component mount.
-    // It handles both the redirect result and the initial auth state.
     const checkAuthStatus = async () => {
       try {
         const result = await getRedirectResult(auth);
         if (result && result.user) {
-          // User signed in via redirect. Navigate to home.
-          // The loading screen will persist until navigation completes.
           router.push('/home');
-          return; // Stop further execution
+          return; 
         }
       } catch (error) {
         console.error("Error getting redirect result:", error);
-        // Fall through to check onAuthStateChanged even if redirect fails.
       }
       
-      // If there was no redirect result, check the current auth state.
       const unsubscribe = onAuthStateChanged(auth, (user) => {
         if (user) {
-          // User is already signed in. Navigate to home.
           router.push('/home');
         } else {
-          // No user is signed in from redirect or existing session.
-          // It's now safe to show the login page.
           setIsLoading(false);
         }
-        // This is crucial: unsubscribe after the first check to avoid memory leaks
-        // and to prevent re-running on auth state changes initiated by the user on this page.
         unsubscribe();
       }, (error) => {
          console.error("onAuthStateChanged error:", error);
@@ -58,12 +47,12 @@ export default function WelcomePage() {
 
 
   const handleGoogleLogin = () => {
-    setIsLoading(true); // Show loader immediately on click
+    setIsLoading(true); 
     const auth = getAuth();
     const provider = new GoogleAuthProvider();
     signInWithRedirect(auth, provider).catch(error => {
         console.error("Google sign-in error:", error);
-        setIsLoading(false); // If redirect fails, stop loading
+        setIsLoading(false);
     });
   };
   
@@ -71,7 +60,6 @@ export default function WelcomePage() {
     console.log("Email login not implemented");
   }
 
-  // Splash screen or loading indicator
   if (isLoading) {
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
@@ -83,7 +71,6 @@ export default function WelcomePage() {
       </div>
     );
   }
-  // End of splash screen
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 text-center bg-background text-foreground">
