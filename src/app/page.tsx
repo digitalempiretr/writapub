@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
+import { Icons } from '@/components/ui/icons';
 
 export default function WelcomePage() {
   const { user, isUserLoading: isAuthLoading } = useUser();
@@ -24,7 +25,6 @@ export default function WelcomePage() {
     setIsLoginInProgress(true);
     const auth = getAuth();
     const provider = new GoogleAuthProvider();
-    // Use signInWithRedirect to avoid popup blockers
     signInWithRedirect(auth, provider).catch(error => {
         console.error("Google sign-in error:", error);
         setIsLoginInProgress(false);
@@ -32,7 +32,6 @@ export default function WelcomePage() {
   };
   
   const handleEmailLogin = () => {
-    // Placeholder for email login
     console.log("Email login not implemented");
   }
 
@@ -52,7 +51,7 @@ export default function WelcomePage() {
     <div className="flex flex-col items-center justify-center min-h-screen p-8 text-center bg-background text-foreground">
       <div className="w-full max-w-xs">
           <div className="flex justify-center mb-8">
-              <Logo className="h-12 w-auto" />
+              <Logo className="h-12 w-auto text-primary" />
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">
             Welcome to Writa
@@ -61,7 +60,8 @@ export default function WelcomePage() {
             Unlock all features by logging in
           </p>
           <div className="space-y-3">
-              <Button onClick={handleGoogleLogin} size="lg" disabled={isLoading} className="w-full">
+              <Button onClick={handleGoogleLogin} size="lg" disabled={isLoading} className="w-full bg-muted text-muted-foreground hover:bg-muted/90">
+                <Icons.google className="mr-2 h-4 w-4"/>
                 Continue with Google
               </Button>
               <div className="relative">
@@ -74,7 +74,8 @@ export default function WelcomePage() {
                       </span>
                   </div>
               </div>
-              <Button onClick={handleEmailLogin} size="lg" disabled={isLoading} className="w-full" variant="secondary">
+              <Button onClick={handleEmailLogin} size="lg" disabled={isLoading} className="w-full bg-muted text-muted-foreground hover:bg-muted/90">
+                <Icons.mail className="mr-2 h-4 w-4"/>
                 Continue with Email
               </Button>
           </div>
