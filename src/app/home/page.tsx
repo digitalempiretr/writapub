@@ -20,7 +20,7 @@ export default function HomePage() {
     }
   }, [user, isUserLoading, router]);
 
-  if (isUserLoading) {
+  if (isUserLoading || !user) {
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
         background: 'linear-gradient(to top right, var(--primary), var(--secondary), var(--accent))'

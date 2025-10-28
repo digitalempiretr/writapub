@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Logo } from '@/components/logo';
@@ -6,78 +5,69 @@ import { Button } from '@/components/ui/button';
 import { GoogleAuthProvider, signInWithRedirect, createUserWithEmailAndPassword, signInWithEmailAndPassword, getRedirectResult } from 'firebase/auth';
 import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
 import { Icons } from '@/components/ui/icons';
-import { useUser, useAuth, initializeFirebase } from '@/firebase'; // Import useAuth
+import { useUser, useAuth, app } from '@/firebase';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 
 export default function WelcomePage() {
   const { user, isUserLoading } = useUser();
-  const auth = useAuth(); // Get the shared auth instance from the provider
+  const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
 
-  const [isLoading, setIsLoading] = useState(true); // Start with loading state
+  const [isLoading, setIsLoading] = useState(true);
   const [isSignUp, setIsSignUp] = useState(false);
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const handleRedirectResult = useCallback(async () => {
+    if (auth && !user) {
+        try {
+            const result = await getRedirectResult(auth);
+            if (result && result.user) {
+                const firestore = getFirestore(app);
+                const userDocRef = doc(firestore, "users", result.user.uid);
+                const userDoc = await getDoc(userDocRef);
+
+                if (!userDoc.exists()) {
+                    await setDoc(userDocRef, {
+                        id: result.user.uid,
+                        displayName: result.user.displayName || result.user.email?.split('@')[0],
+                        email: result.user.email,
+                        profileImageUrl: result.user.photoURL,
+                        googleId: result.user.providerData.find(p => p.providerId === 'google.com')?.uid || null,
+                    }, { merge: true });
+                }
+                // The onAuthStateChanged listener in useUser will handle the user state update and trigger redirection.
+            }
+        } catch (error: any) {
+            console.error("Error processing redirect result:", error);
+            toast({
+                variant: 'destructive',
+                title: 'Login Failed',
+                description: error.message || 'An error occurred during sign-in.',
+            });
+        }
+    }
+  }, [auth, user, toast]);
+
+  useEffect(() => {
+    handleRedirectResult();
+  }, [handleRedirectResult]);
   
   useEffect(() => {
-    // This effect runs once on component mount to handle both
-    // redirect results and existing user sessions.
-    
-    // Check for redirect result first
-    getRedirectResult(auth)
-      .then(async (result) => {
-        if (result && result.user) {
-          // User successfully signed in via redirect.
-          const firestore = getFirestore(auth.app);
-          const userDocRef = doc(firestore, "users", result.user.uid);
-          const userDoc = await getDoc(userDocRef);
-
-          if (!userDoc.exists()) {
-            // New user, save their data
-            await setDoc(userDocRef, {
-              id: result.user.uid,
-              displayName: result.user.displayName || result.user.email?.split('@')[0],
-              email: result.user.email,
-              profileImageUrl: result.user.photoURL,
-              googleId: result.user.providerData.find(p => p.providerId === 'google.com')?.uid || null,
-            }, { merge: true });
-          }
-          // Redirect will be handled by the second useEffect watching `user`
-        }
-      })
-      .catch((error) => {
-        console.error("Error getting redirect result:", error);
-        toast({
-          variant: 'destructive',
-          title: 'Login Error',
-          description: error.message,
-        });
-      })
-      .finally(() => {
-        // After checking redirect, if there's no user and auth is not loading,
-        // we can stop the main loading state.
-        // The `useUser` hook's `onAuthStateChanged` will handle existing sessions.
-        if (!auth.currentUser && !isUserLoading) {
-            setIsLoading(false);
-        }
-      });
-  }, [auth, toast, isUserLoading]);
-
-  useEffect(() => {
-    // This effect handles redirection based on the final user state.
     if (!isUserLoading) {
       if (user) {
         router.push('/home');
       } else {
-        // Only stop loading if we are sure there is no user.
+        // Only set loading to false when we are certain there's no user
+        // and the redirect has been processed.
         setIsLoading(false);
       }
     }
@@ -108,12 +98,11 @@ export default function WelcomePage() {
     }
 
     setIsLoading(true);
-    const { firestore } = initializeFirebase(); // Firestore can be initialized here for the one-off write.
+    const firestore = getFirestore(app);
 
     try {
-        let userCredential;
         if (isSignUp) {
-            userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
             const userRef = doc(firestore, 'users', user.uid);
             await setDoc(userRef, {
@@ -126,7 +115,7 @@ export default function WelcomePage() {
         } else {
             await signInWithEmailAndPassword(auth, email, password);
         }
-        // Redirection is handled by the `useEffect` watching the `user` state.
+        // Redirection is handled by the useEffect watching the `user` state.
     } catch (error: any) {
         let description = "An unexpected error occurred. Please try again.";
         switch (error.code) {
@@ -155,7 +144,6 @@ export default function WelcomePage() {
         });
         setIsLoading(false); // Stop loading on error
     }
-    // No need to set isLoading to false here, the redirection effect will handle it.
 };
 
   if (isLoading) {

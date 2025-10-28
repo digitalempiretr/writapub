@@ -11,6 +11,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import Lottie from 'lottie-react';
+import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
 
 export default function DashboardPage() {
   const { user, isUserLoading } = useUser();
@@ -30,10 +32,14 @@ export default function DashboardPage() {
     }
   }, [user, isUserLoading, router]);
 
-  if (isUserLoading || areDesignsLoading) {
+  if (isUserLoading || areDesignsLoading || !user) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p>Loading...</p>
+      <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
+        background: 'linear-gradient(to top right, var(--primary), var(--secondary), var(--accent))'
+      }}>
+          <div className="w-64 h-64">
+              <Lottie animationData={webflowAnimation} loop={true} />
+          </div>
       </div>
     );
   }
