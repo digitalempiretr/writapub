@@ -3,59 +3,41 @@
 
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
-import { getAuth, GoogleAuthProvider, signInWithRedirect, onAuthStateChanged, User, createUserWithEmailAndPassword, signInWithEmailAndPassword, getRedirectResult } from 'firebase/auth';
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
+import { GoogleAuthProvider, signInWithRedirect, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
 import { Icons } from '@/components/ui/icons';
-import { initializeFirebase } from '@/firebase';
+import { useUser, useAuth, initializeFirebase } from '@/firebase'; // Import useAuth
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 
 export default function WelcomePage() {
-  const [isLoading, setIsLoading] = useState(true);
+  const { user, isUserLoading } = useUser();
+  const auth = useAuth(); // Get the shared auth instance from the provider
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const [isProcessing, setIsProcessing] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const router = useRouter();
-  const { toast } = useToast();
-
+  
+  // This effect handles redirecting the user if they are already logged in.
   useEffect(() => {
-    const { auth, firestore } = initializeFirebase();
-
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userRef = doc(firestore, 'users', user.uid);
-        const userSnap = await getDoc(userRef);
-
-        if (!userSnap.exists()) {
-          const { uid, displayName, email, photoURL } = user;
-          await setDoc(userRef, {
-            id: uid,
-            displayName: displayName || email?.split('@')[0],
-            email: email,
-            profileImageUrl: photoURL || `https://i.pravatar.cc/150?u=${uid}`,
-            googleId: user.providerData.find(p => p.providerId === 'google.com')?.uid || null,
-          }, { merge: true });
-        }
-        router.push('/home');
-      } else {
-        setIsLoading(false);
-      }
-    });
-
-    return () => unsubscribe();
-  }, [router]);
-
+    if (!isUserLoading && user) {
+      router.push('/home');
+    }
+  }, [user, isUserLoading, router]);
 
   const handleGoogleLogin = () => {
-    setIsLoading(true);
-    const { auth } = initializeFirebase();
+    setIsProcessing(true);
     const provider = new GoogleAuthProvider();
+    // Use the auth instance from the context
     signInWithRedirect(auth, provider).catch(error => {
       console.error("Google sign-in error:", error);
       toast({
@@ -63,7 +45,7 @@ export default function WelcomePage() {
         title: 'Login Error',
         description: error.message,
       });
-      setIsLoading(false);
+      setIsProcessing(false);
     });
   };
 
@@ -77,8 +59,8 @@ export default function WelcomePage() {
         return;
     }
 
-    setIsLoading(true);
-    const { auth, firestore } = initializeFirebase();
+    setIsProcessing(true);
+    const { firestore } = initializeFirebase(); // Firestore can be initialized here for the one-off write.
 
     try {
         let userCredential;
@@ -86,17 +68,17 @@ export default function WelcomePage() {
             userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
             const userRef = doc(firestore, 'users', user.uid);
-            const { uid } = user;
             await setDoc(userRef, {
-                id: uid,
+                id: user.uid,
                 displayName: user.displayName || email.split('@')[0],
-                email,
-                profileImageUrl: user.photoURL || `https://i.pravatar.cc/150?u=${uid}`,
+                email: user.email,
+                profileImageUrl: user.photoURL || `https://i.pravatar.cc/150?u=${user.uid}`,
                 googleId: null,
             }, { merge: true });
         } else {
-            userCredential = await signInWithEmailAndPassword(auth, email, password);
+            await signInWithEmailAndPassword(auth, email, password);
         }
+        // No need to redirect here, the `useEffect` above will handle it when `user` state changes.
     } catch (error: any) {
         let description = "An unexpected error occurred. Please try again.";
         switch (error.code) {
@@ -123,11 +105,12 @@ export default function WelcomePage() {
             title: isSignUp ? "Sign Up Failed" : "Sign In Failed",
             description: description,
         });
-        setIsLoading(false);
+    } finally {
+        setIsProcessing(false);
     }
 };
 
-  if (isLoading) {
+  if (isUserLoading || user) {
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
             background: 'linear-gradient(to top right, #ffc0cb, #87ceeb)'
@@ -176,8 +159,8 @@ export default function WelcomePage() {
                         required
                     />
                 </div>
-                <Button onClick={handleEmailAuth} size="lg" disabled={isLoading} className="w-full">
-                  {isLoading ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Sign In')}
+                <Button onClick={handleEmailAuth} size="lg" disabled={isProcessing} className="w-full">
+                  {isProcessing ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Sign In')}
                 </Button>
                  <p className="mt-6 text-center text-sm text-muted-foreground">
                     {isSignUp ? "Already have an account?" : "Don't have an account?"}{' '}
@@ -191,11 +174,11 @@ export default function WelcomePage() {
             </div>
           ) : (
             <div className="space-y-4">
-                <Button onClick={handleGoogleLogin} size="lg" variant="outline" disabled={isLoading} className="w-full">
+                <Button onClick={handleGoogleLogin} size="lg" variant="outline" disabled={isProcessing} className="w-full">
                     <Icons.google className="mr-2 h-4 w-4"/>
                     Continue with Google
                 </Button>
-                <Button onClick={() => setShowEmailForm(true)} size="lg" disabled={isLoading} className="w-full bg-muted text-muted-foreground hover:bg-muted/90">
+                <Button onClick={() => setShowEmailForm(true)} size="lg" disabled={isProcessing} className="w-full bg-muted text-muted-foreground hover:bg-muted/90">
                     <Icons.mail className="mr-2 h-4 w-4"/>
                     Continue with Email
                 </Button>
