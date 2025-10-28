@@ -3,7 +3,7 @@
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/firebase';
-import { getAuth, GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
@@ -12,9 +12,29 @@ import { Icons } from '@/components/ui/icons';
 
 export default function WelcomePage() {
   const { user, isUserLoading: isAuthLoading } = useUser();
-  const [isLoginInProgress, setIsLoginInProgress] = useState(false);
+  const [isLoginInProgress, setIsLoginInProgress] = useState(true); // Start with true to handle redirect
   const [showSplashScreen, setShowSplashScreen] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    const auth = getAuth();
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result) {
+          // This means a redirect has just completed. The onAuthStateChanged listener
+          // will handle the user state update, so we just keep the loading indicator on.
+          // The main user effect will then redirect to /home.
+        } else {
+          // No redirect result, so probably a direct visit.
+          // Let the auth state listener determine the next step.
+          setIsLoginInProgress(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error getting redirect result:", error);
+        setIsLoginInProgress(false);
+      });
+  }, []);
 
   useEffect(() => {
     if (!isAuthLoading && user) {
@@ -31,6 +51,9 @@ export default function WelcomePage() {
       }, 1000); // Wait for 1 extra second after loading is finished
 
       return () => clearTimeout(timer);
+    }
+     else {
+        setShowSplashScreen(true);
     }
   }, [isLoading]);
 
@@ -50,7 +73,7 @@ export default function WelcomePage() {
   }
 
   // Splash screen
-  if (showSplashScreen) {
+  if (showSplashScreen || isLoading) {
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
         background: 
@@ -58,10 +81,7 @@ export default function WelcomePage() {
       }}>
           <div className="flex justify-center mb-8">
               <Logo className="h-30 w-auto text-muted text-4xl text-center" />
-              
           </div>
-          
-          
       </div>
     );
   }
