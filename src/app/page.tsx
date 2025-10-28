@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
-import { Header } from '@/components/header';
 
 export default function WelcomePage() {
   const { user, isUserLoading: isAuthLoading } = useUser();
@@ -21,7 +20,7 @@ export default function WelcomePage() {
     }
   }, [user, isAuthLoading, router]);
 
-  const handleLogin = () => {
+  const handleGoogleLogin = () => {
     setIsLoginInProgress(true);
     const auth = getAuth();
     const provider = new GoogleAuthProvider();
@@ -31,6 +30,11 @@ export default function WelcomePage() {
         setIsLoginInProgress(false);
     });
   };
+  
+  const handleEmailLogin = () => {
+    // Placeholder for email login
+    console.log("Email login not implemented");
+  }
 
   const isLoading = isAuthLoading || isLoginInProgress;
 
@@ -45,17 +49,40 @@ export default function WelcomePage() {
   }
 
   return (
-    <>
-      <Header />
-      <div className="flex flex-col items-center justify-center min-h-screen p-8 text-center">
-        <Logo className="text-7xl md:text-8xl text-primary mb-4" />
-        <h2 className="text-xl md:text-2xl text-foreground mb-8 font-serif">
-          Create beautiful, shareable posts from your text in seconds.
-        </h2>
-        <Button onClick={handleLogin} size="lg" disabled={isLoading}>
-          Get Started with Google
-        </Button>
+    <div className="flex flex-col items-center justify-center min-h-screen p-8 text-center bg-background text-foreground">
+      <div className="w-full max-w-xs">
+          <div className="flex justify-center mb-8">
+              <Logo className="h-12 w-auto" />
+          </div>
+          <h2 className="text-2xl font-bold text-foreground mb-2">
+            Welcome to Writa
+          </h2>
+          <p className="text-muted-foreground mb-8">
+            Unlock all features by logging in
+          </p>
+          <div className="space-y-3">
+              <Button onClick={handleGoogleLogin} size="lg" disabled={isLoading} className="w-full">
+                Continue with Google
+              </Button>
+              <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">
+                      or
+                      </span>
+                  </div>
+              </div>
+              <Button onClick={handleEmailLogin} size="lg" disabled={isLoading} className="w-full" variant="secondary">
+                Continue with Email
+              </Button>
+          </div>
       </div>
-    </>
+      <footer className="fixed bottom-0 w-full p-6 text-center text-xs text-muted-foreground">
+        <p>By logging in, you agree to our <a href="/terms" className="underline">Terms of Service</a> and <a href="/privacy" className="underline">Privacy Policy</a></p>
+        <p>copyright © 2025 Powered by Writa</p>
+      </footer>
+    </div>
   );
 }
