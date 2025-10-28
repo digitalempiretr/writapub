@@ -3,8 +3,8 @@
 
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
-import { GoogleAuthProvider, signInWithRedirect, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { GoogleAuthProvider, signInWithRedirect, createUserWithEmailAndPassword, signInWithEmailAndPassword, getRedirectResult } from 'firebase/auth';
+import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
@@ -21,23 +21,71 @@ export default function WelcomePage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Start with loading state
   const [isSignUp, setIsSignUp] = useState(false);
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   
-  // This effect handles redirecting the user if they are already logged in.
   useEffect(() => {
-    if (!isUserLoading && user) {
-      router.push('/home');
+    // This effect runs once on component mount to handle both
+    // redirect results and existing user sessions.
+    
+    // Check for redirect result first
+    getRedirectResult(auth)
+      .then(async (result) => {
+        if (result && result.user) {
+          // User successfully signed in via redirect.
+          const firestore = getFirestore(auth.app);
+          const userDocRef = doc(firestore, "users", result.user.uid);
+          const userDoc = await getDoc(userDocRef);
+
+          if (!userDoc.exists()) {
+            // New user, save their data
+            await setDoc(userDocRef, {
+              id: result.user.uid,
+              displayName: result.user.displayName || result.user.email?.split('@')[0],
+              email: result.user.email,
+              profileImageUrl: result.user.photoURL,
+              googleId: result.user.providerData.find(p => p.providerId === 'google.com')?.uid || null,
+            }, { merge: true });
+          }
+          // Redirect will be handled by the second useEffect watching `user`
+        }
+      })
+      .catch((error) => {
+        console.error("Error getting redirect result:", error);
+        toast({
+          variant: 'destructive',
+          title: 'Login Error',
+          description: error.message,
+        });
+      })
+      .finally(() => {
+        // After checking redirect, if there's no user and auth is not loading,
+        // we can stop the main loading state.
+        // The `useUser` hook's `onAuthStateChanged` will handle existing sessions.
+        if (!auth.currentUser && !isUserLoading) {
+            setIsLoading(false);
+        }
+      });
+  }, [auth, toast, isUserLoading]);
+
+  useEffect(() => {
+    // This effect handles redirection based on the final user state.
+    if (!isUserLoading) {
+      if (user) {
+        router.push('/home');
+      } else {
+        // Only stop loading if we are sure there is no user.
+        setIsLoading(false);
+      }
     }
   }, [user, isUserLoading, router]);
 
   const handleGoogleLogin = () => {
-    setIsProcessing(true);
+    setIsLoading(true);
     const provider = new GoogleAuthProvider();
-    // Use the auth instance from the context
     signInWithRedirect(auth, provider).catch(error => {
       console.error("Google sign-in error:", error);
       toast({
@@ -45,7 +93,7 @@ export default function WelcomePage() {
         title: 'Login Error',
         description: error.message,
       });
-      setIsProcessing(false);
+      setIsLoading(false);
     });
   };
 
@@ -59,7 +107,7 @@ export default function WelcomePage() {
         return;
     }
 
-    setIsProcessing(true);
+    setIsLoading(true);
     const { firestore } = initializeFirebase(); // Firestore can be initialized here for the one-off write.
 
     try {
@@ -78,7 +126,7 @@ export default function WelcomePage() {
         } else {
             await signInWithEmailAndPassword(auth, email, password);
         }
-        // No need to redirect here, the `useEffect` above will handle it when `user` state changes.
+        // Redirection is handled by the `useEffect` watching the `user` state.
     } catch (error: any) {
         let description = "An unexpected error occurred. Please try again.";
         switch (error.code) {
@@ -105,18 +153,18 @@ export default function WelcomePage() {
             title: isSignUp ? "Sign Up Failed" : "Sign In Failed",
             description: description,
         });
-    } finally {
-        setIsProcessing(false);
+        setIsLoading(false); // Stop loading on error
     }
+    // No need to set isLoading to false here, the redirection effect will handle it.
 };
 
-  if (isUserLoading || user) {
+  if (isLoading) {
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
-            background: 'linear-gradient(to top right, #ffc0cb, #87ceeb)'
+            background: 'linear-gradient(to top right, var(--primary), var(--secondary), var(--accent)'
           }}>
-              <div className="flex justify-center mb-8">
-                  <Lottie animationData={webflowAnimation} loop={true} className="h-48 w-48" />
+              <div className="w-64 h-64">
+                  <Lottie animationData={webflowAnimation} loop={true} />
               </div>
           </div>
     );
@@ -159,8 +207,8 @@ export default function WelcomePage() {
                         required
                     />
                 </div>
-                <Button onClick={handleEmailAuth} size="lg" disabled={isProcessing} className="w-full">
-                  {isProcessing ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Sign In')}
+                <Button onClick={handleEmailAuth} size="lg" disabled={isLoading} className="w-full">
+                  {isLoading ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Sign In')}
                 </Button>
                  <p className="mt-6 text-center text-sm text-muted-foreground">
                     {isSignUp ? "Already have an account?" : "Don't have an account?"}{' '}
@@ -174,11 +222,11 @@ export default function WelcomePage() {
             </div>
           ) : (
             <div className="space-y-4">
-                <Button onClick={handleGoogleLogin} size="lg" variant="outline" disabled={isProcessing} className="w-full">
+                <Button onClick={handleGoogleLogin} size="lg" variant="outline" disabled={isLoading} className="w-full">
                     <Icons.google className="mr-2 h-4 w-4"/>
                     Continue with Google
                 </Button>
-                <Button onClick={() => setShowEmailForm(true)} size="lg" disabled={isProcessing} className="w-full bg-muted text-muted-foreground hover:bg-muted/90">
+                <Button onClick={() => setShowEmailForm(true)} size="lg" disabled={isLoading} className="w-full bg-muted text-muted-foreground hover:bg-muted/90">
                     <Icons.mail className="mr-2 h-4 w-4"/>
                     Continue with Email
                 </Button>

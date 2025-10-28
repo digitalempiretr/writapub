@@ -9,14 +9,7 @@ const firebaseConfig = {
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
-function initializeFirebaseApp(): FirebaseApp {
-    if (getApps().length > 0) {
-        return getApp();
-    }
-    return initializeApp(firebaseConfig);
-}
-
-const app = initializeFirebaseApp();
+// Initialize Firebase only once
+const app: FirebaseApp = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 export { app, firebaseConfig };
