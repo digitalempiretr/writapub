@@ -27,15 +27,12 @@ export default function WelcomePage() {
   useEffect(() => {
     const { auth, firestore } = initializeFirebase();
 
-    // This handles both direct page loads and redirects from Google
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // User is signed in. Check if they are a new user from a redirect.
         const userRef = doc(firestore, 'users', user.uid);
         const userSnap = await getDoc(userRef);
 
         if (!userSnap.exists()) {
-          // This is a new user, save their data
           const { uid, displayName, email, photoURL } = user;
           await setDoc(userRef, {
             id: uid,
@@ -47,7 +44,6 @@ export default function WelcomePage() {
         }
         router.push('/home');
       } else {
-        // No user is signed in.
         setIsLoading(false);
       }
     });
@@ -96,12 +92,11 @@ export default function WelcomePage() {
                 displayName: user.displayName || email.split('@')[0],
                 email,
                 profileImageUrl: user.photoURL || `https://i.pravatar.cc/150?u=${uid}`,
-                googleId: null, 
+                googleId: null,
             }, { merge: true });
         } else {
             userCredential = await signInWithEmailAndPassword(auth, email, password);
         }
-        // onAuthStateChanged will handle the redirect
     } catch (error: any) {
         let description = "An unexpected error occurred. Please try again.";
         switch (error.code) {
@@ -161,24 +156,24 @@ export default function WelcomePage() {
             <div className="space-y-4 text-left">
                 <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input 
-                        id="email" 
-                        type="email" 
-                        placeholder="name@example.com" 
+                    <Input
+                        id="email"
+                        type="email"
+                        placeholder="name@example.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        required 
+                        required
                     />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="password">Password</Label>
-                    <Input 
-                        id="password" 
-                        type="password" 
+                    <Input
+                        id="password"
+                        type="password"
                         placeholder="********"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        required 
+                        required
                     />
                 </div>
                 <Button onClick={handleEmailAuth} size="lg" disabled={isLoading} className="w-full">
@@ -200,7 +195,7 @@ export default function WelcomePage() {
                     <Icons.google className="mr-2 h-4 w-4"/>
                     Continue with Google
                 </Button>
-                <Button onClick={() => setShowEmailForm(true)} size="lg" disabled={isLoading} className="w-full">
+                <Button onClick={() => setShowEmailForm(true)} size="lg" disabled={isLoading} className="w-full bg-muted text-muted-foreground hover:bg-muted/90">
                     <Icons.mail className="mr-2 h-4 w-4"/>
                     Continue with Email
                 </Button>
