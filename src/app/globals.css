@@ -1765,6 +1765,19 @@ body {
     --shadow-2xl: 0px 6px 12px -3px hsl(0 0% 0% / 0.22);
   }
 }
+.draw{
+  font: 700 120px/1 Lora, serif;   /* örnek yazı tipi */
+  fill: transparent;                  /* içi boş */
+  stroke: orange;                     /* kontur rengi */
+  stroke-width: 3;
+  stroke-dasharray: 1000;             /* toplam yol uzunluğundan büyük bir değer */
+  stroke-dashoffset: 1000;            /* başta tamamen gizli */
+  animation: textDraw 5s ease forwards;
+}
+
+@keyframes textDraw{
+  to { stroke-dashoffset: 0 }         /* çizgi “yazılarak” görünür */
+}
 
 @layer base {
   * {

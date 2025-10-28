@@ -13,6 +13,7 @@ import { Icons } from '@/components/ui/icons';
 export default function WelcomePage() {
   const { user, isUserLoading: isAuthLoading } = useUser();
   const [isLoginInProgress, setIsLoginInProgress] = useState(false);
+  const [showSplashScreen, setShowSplashScreen] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -20,6 +21,19 @@ export default function WelcomePage() {
       router.push('/home');
     }
   }, [user, isAuthLoading, router]);
+
+  const isLoading = isAuthLoading || isLoginInProgress;
+
+  useEffect(() => {
+    if (!isLoading) {
+      const timer = setTimeout(() => {
+        setShowSplashScreen(false);
+      }, 1000); // Wait for 1 extra second after loading is finished
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading]);
+
 
   const handleGoogleLogin = () => {
     setIsLoginInProgress(true);
@@ -35,20 +49,23 @@ export default function WelcomePage() {
     console.log("Email login not implemented");
   }
 
-  const isLoading = isAuthLoading || isLoginInProgress;
-
-  if (isLoading || (!isAuthLoading && user)) {
+  // Splash screen
+  if (showSplashScreen) {
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
         background: 
-        'linear-gradient(to top right, var(--primary), var(--secondary), var(--accent)'
+        'linear-gradient(to top right, var(--primary), var(--primary), var(--primary)'
       }}>
-          <div className="w-64 h-64">
-              <Lottie animationData={webflowAnimation} loop={true} />
+          <div className="flex justify-center mb-8">
+              <Logo className="h-30 w-auto text-muted text-4xl text-center" />
+              
           </div>
+          
+          
       </div>
     );
   }
+  // End of splash screen
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 text-center bg-background text-foreground">
