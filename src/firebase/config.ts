@@ -1,8 +1,22 @@
-export const firebaseConfig = {
-  "projectId": "studio-1313662981-49088",
-  "appId": "1:349660001329:web:5d1d34232cffd79304d110",
-  "apiKey": "AIzaSyCCK1WL8TuktxLh-1ekeALYYtVOn74jbiw",
-  "authDomain": "studio-1313662981-49088.firebaseapp.com",
-  "measurementId": "",
-  "messagingSenderId": "349660001329"
+import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
+
+const firebaseConfig = {
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
+
+// Initialize Firebase
+function initializeFirebaseApp(): FirebaseApp {
+    if (getApps().length > 0) {
+        return getApp();
+    }
+    return initializeApp(firebaseConfig);
+}
+
+const app = initializeFirebaseApp();
+
+export { app, firebaseConfig };

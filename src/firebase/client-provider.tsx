@@ -2,17 +2,24 @@
 
 import React, { useMemo, type ReactNode } from 'react';
 import { FirebaseProvider } from '@/firebase/provider';
-import { initializeFirebase } from '@/firebase';
+import { app } from '@/firebase/config'; // Import the singleton app instance
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 interface FirebaseClientProviderProps {
   children: ReactNode;
 }
 
 export function FirebaseClientProvider({ children }: FirebaseClientProviderProps) {
+  // Services are derived from the single app instance.
+  // useMemo ensures they are only created once per component lifecycle.
   const firebaseServices = useMemo(() => {
-    // Initialize Firebase on the client side, once per component mount.
-    return initializeFirebase();
-  }, []); // Empty dependency array ensures this runs only once on mount
+    return {
+      firebaseApp: app,
+      auth: getAuth(app),
+      firestore: getFirestore(app),
+    };
+  }, []);
 
   return (
     <FirebaseProvider
