@@ -2,52 +2,56 @@
 
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
-import { useUser } from '@/firebase';
-import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithRedirect, onAuthStateChanged, User } from 'firebase/auth';
+import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
 import { Icons } from '@/components/ui/icons';
+import { initializeFirebase } from '@/firebase';
 
 export default function WelcomePage() {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    const auth = getAuth();
+    const { auth, firestore } = initializeFirebase();
 
-    const checkAuthStatus = async () => {
-      try {
-        const result = await getRedirectResult(auth);
-        if (result && result.user) {
-          router.push('/home');
-          return; 
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // User is signed in. Check if they are a new user.
+        const userRef = doc(firestore, 'users', user.uid);
+        const userDoc = await getDoc(userRef);
+
+        if (!userDoc.exists()) {
+          // New user: Save their profile information to Firestore.
+          const { displayName, email, photoURL, uid } = user;
+          await setDoc(userRef, {
+            id: uid,
+            displayName,
+            email,
+            profileImageUrl: photoURL,
+            googleId: uid,
+          }, { merge: true }); // Use merge:true to avoid overwriting existing data if any
         }
-      } catch (error) {
-        console.error("Error getting redirect result:", error);
+        
+        // Redirect to the home page for both new and existing users.
+        router.push('/home');
+      } else {
+        // No user is signed in, show the login page.
+        setIsLoading(false);
       }
-      
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user) {
-          router.push('/home');
-        } else {
-          setIsLoading(false);
-        }
-        unsubscribe();
-      }, (error) => {
-         console.error("onAuthStateChanged error:", error);
-         setIsLoading(false);
-         unsubscribe();
-      });
-    };
+    }, (error) => {
+      console.error("onAuthStateChanged error:", error);
+      setIsLoading(false);
+    });
 
-    checkAuthStatus();
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
   }, [router]);
 
-
   const handleGoogleLogin = () => {
-    setIsLoading(true); 
     const auth = getAuth();
     const provider = new GoogleAuthProvider();
     signInWithRedirect(auth, provider).catch(error => {
@@ -63,7 +67,7 @@ export default function WelcomePage() {
   if (isLoading) {
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
-        background: 'linear-gradient(to top right, var(--primary), var(--secondary), var(--accent))'
+        background: 'linear-gradient(to top right, #FFC0CB, #87CEEB)'
       }}>
           <div className="flex justify-center mb-8">
               <Lottie animationData={webflowAnimation} loop={true} className="h-48 w-48" />

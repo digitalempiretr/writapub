@@ -17,15 +17,15 @@ body {
 
 @layer base {
   :root {
-    --background: hsl(210 20% 98%);
+    --background: hsl(0 0% 100%);
     --foreground: hsl(221 52% 25%);
     --card: hsl(200 100% 98%);
     --card-foreground: hsl(221 52% 25%);
     --popover: hsl(200 100% 98%);
     --popover-foreground: hsl(221 52% 25%);
-    --primary: hsl(33 99% 68%);
+    --primary: hsl(330 80% 50%);
     --primary-foreground: hsl(0 0% 98%);
-    --secondary: hsl(181.6901 43.5583% 68.0392%);
+    --secondary: hsl(210 16% 90%);
     --secondary-foreground: hsl(0 0% 20%);
     --muted: hsl(210 16% 90%);
     --muted-foreground: hsl(215.4 16.3% 46.9%);
