@@ -78,6 +78,8 @@ export default function DesignPage() {
   const firestore = useFirestore();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const [text, setText] = useState("");
   const [designs, setDesigns] = useState<Design[]>([]);
@@ -100,6 +102,10 @@ export default function DesignPage() {
     return collection(firestore, 'users', user.uid, 'designs');
   }, [firestore, user]);
   const { data: myDesigns } = useCollection<DesignTemplate>(myDesignsQuery);
+  
+  const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
+  const designsRef = useRef<HTMLDivElement>(null);
+  const mobilePanelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsClient(true)
@@ -240,12 +246,6 @@ export default function DesignPage() {
   const [isPanning, setIsPanning] = useState(false);
   const [panStart, setPanStart] = useState({ x: 0, y: 0 });
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
-
-  const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
-  const designsRef = useRef<HTMLDivElement>(null);
-  const mobilePanelRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
-  const isMobile = useIsMobile();
 
    const closePanel = useCallback(() => {
     setIsMobilePanelOpen(false);
@@ -1199,6 +1199,8 @@ export default function DesignPage() {
     </div>
   );
 }
+
+    
 
     
 
