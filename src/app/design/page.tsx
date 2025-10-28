@@ -52,6 +52,7 @@ import { collection, doc, serverTimestamp } from "firebase/firestore";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Header } from "@/components/header";
 import { CreativeMagicPanel } from "@/components/0_creative-magic-panel";
+import Link from "next/link";
 
 
 type Design = {
@@ -107,16 +108,6 @@ export default function DesignPage() {
   const designsRef = useRef<HTMLDivElement>(null);
   const mobilePanelRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
-  useEffect(() => {
-    if (!isUserLoading && !user) {
-      router.push('/');
-    }
-  }, [user, isUserLoading, router]);
-
   const handleGenerate = useCallback(() => {
     if (!text) {
       toast({
@@ -165,6 +156,17 @@ export default function DesignPage() {
         }
     }, 1618);
   }, [text, toast]);
+
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.push('/');
+    }
+  }, [user, isUserLoading, router]);
 
   useEffect(() => {
     const urlText = searchParams.get('text');
@@ -1199,6 +1201,8 @@ export default function DesignPage() {
     </div>
   );
 }
+
+    
 
     
 
