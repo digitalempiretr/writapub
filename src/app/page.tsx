@@ -39,10 +39,13 @@ export default function WelcomePage() {
 
   if (isLoading || (!isAuthLoading && user)) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen bg-background">
-        <div className="w-64 h-64">
-          <Lottie animationData={webflowAnimation} loop={true} />
-        </div>
+      <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
+        background: 
+        'linear-gradient(to top right, var(--primary), var(--secondary), var(--accent)'
+      }}>
+          <div className="w-64 h-64">
+              <Lottie animationData={webflowAnimation} loop={true} />
+          </div>
       </div>
     );
   }
