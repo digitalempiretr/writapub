@@ -10,7 +10,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
-import { TextColorChooseIcon, TextBgBoxIcon, TextBoxOpacity, TextStrokeIcon, RefreshIcon, FontSizeIcon, TextShadowIcon } from "@/components/ui/icons";
+import { Icons } from "@/components/ui/icons";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FontOption } from "@/lib/font-options";
 import { Button } from "@/components/ui/button";
@@ -253,7 +253,7 @@ export function TextSettings({
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <RefreshIcon />
+                <Icons.RefreshIcon />
               )}
               <span className="sr-only">Regenerate</span>
             </Button>
@@ -291,7 +291,7 @@ export function TextSettings({
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
                         <Button variant="outline" size="icon" className="h-10 w-10 flex-shrink-0">
-                          <FontSizeIcon />
+                          <Icons.FontSizeIcon />
                         </Button>
                       </PopoverTrigger>
                     </TooltipTrigger>
@@ -319,7 +319,7 @@ export function TextSettings({
                   <TooltipTrigger asChild>
                     <div className="relative h-10 w-10 flex-shrink-0">
                       <Label htmlFor={`${baseId}-text-color-picker`} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
-                        <TextColorChooseIcon color={textColor} className="h-5 w-5" />
+                        <Icons.TextColorChooseIcon color={textColor} className="h-5 w-5" />
                       </Label>
                       <Input
                         id={`${baseId}-text-color-picker`}
@@ -371,7 +371,7 @@ export function TextSettings({
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
                         <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
-                          <TextBoxOpacity />
+                          <Icons.TextBoxOpacity />
                         </Button>
                       </PopoverTrigger>
                     </TooltipTrigger>
@@ -423,7 +423,7 @@ export function TextSettings({
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
                         <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10" data-active={textShadowEnabled} >
-                           <TextShadowIcon />
+                           <Icons.TextShadowIcon />
                         </Button>
                       </PopoverTrigger>
                     </TooltipTrigger>
@@ -504,7 +504,7 @@ export function TextSettings({
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
                         <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
-                          <TextStrokeIcon />
+                          <Icons.TextStrokeIcon />
                         </Button>
                       </PopoverTrigger>
                     </TooltipTrigger>
@@ -539,7 +539,7 @@ export function TextSettings({
                     <TooltipTrigger asChild>
                         <PopoverTrigger asChild>
                         <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
-                            <TextBgBoxIcon color={isTextBoxEnabled ? rectBgColor : '#999'} />
+                            <Icons.TextBgBoxIcon color={isTextBoxEnabled ? rectBgColor : '#999'} />
                         </Button>
                         </PopoverTrigger>
                     </TooltipTrigger>
@@ -665,3 +665,5 @@ export function TextSettings({
     </TooltipProvider>
   );
 }
+
+    

@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { findImages } from "@/ai/flows/find-images-flow";
@@ -38,7 +37,7 @@ import { imageTemplates, ImageTemplate } from "@/lib/image-templates";
 import { fontOptions } from "@/lib/font-options";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/components/ui/tooltip";
 import { defaultText } from "@/lib/default-text";
-import { DesignTemplate } from "@/lib/design-templates";
+import { DesignTemplate, designTemplates } from "@/lib/design-templates";
 import { TextSettings, type Shadow } from "@/components/3_text-settings";
 import { BackgroundSettings } from "@/components/2_background-settings";
 import { DesignsPanel } from "@/components/1_templates";
@@ -50,8 +49,8 @@ import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { HeartIconG  } from "@/components/ui/icons";
-import { useUser, useFirestore, useMemoFirebase, useCollection, addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from "@/firebase";
+import { Icons } from "@/components/ui/icons";
+import { useUser, useFirestore, useMemoFirebase, useCollection, addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase';
 import { collection, doc, serverTimestamp } from "firebase/firestore";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Header } from "@/components/header";
@@ -1088,7 +1087,7 @@ export default function DesignPage() {
                                           size="icon"
                                           className="h-14 w-14 flex items-center justify-center rounded-full bg-gray/20 backdrop-blur-sm text-white hover:bg-red/50 hover:text-red-400 [&_svg]:size-8"
                                         >
-                                          <HeartIconG className="h-12 w-12" />
+                                          <Icons.HeartIconG className="h-12 w-12" />
                                         </Button>
                                       </AlertDialogTrigger>
                                     </TooltipTrigger>
@@ -1183,5 +1182,7 @@ export default function DesignPage() {
     </div>
   );
 }
+
+    
 
     
