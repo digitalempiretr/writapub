@@ -29,6 +29,29 @@ export const seedData: Omit<DesignTemplate, 'id'>[] = [
       id: 'none',
     }
   },
+  {
+    name: "Milky",
+    category: 'Authors Templates',
+    previewImage: "https://i.ibb.co/zhYZ5H5V/milky-1.jpg",
+    canvasSize: 'Post',
+    background: {
+      type: 'image',
+      value: 'https://i.ibb.co/kVJS28vc/6.jpg',
+    },
+    font: {
+      value: 'style-script',
+      color: '#3f5b4d',
+      fontSize: 58,
+    },
+    textBox: {
+      color: '#e5e5ff',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+  },
   // Special Effects
   {
     name: 'Retro',
