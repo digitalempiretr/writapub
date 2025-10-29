@@ -1,58 +1,90 @@
+/**
+ * @fileoverview Firestore Security Rules for Post Weaver application.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a user-ownership model for user profiles and designs,
+ * while allowing public read access to design templates.
+ *
+ * Data Structure:
+ * - /users/{userId}: Stores user profiles. 'userId' must match the Firebase Auth UID.
+ * - /users/{userId}/designs/{designId}: Stores designs created by each user. Each design has a `userId` field that must match the parent `userId`.
+ * - /design-templates/{templateId}: Stores publicly readable design templates.
+ *
+ * Key Security Decisions:
+ * - Users can only read and write their own profile data.
+ * - Users can only create, read, update, and delete their own designs.
+ * - Design templates are publicly readable.
+ * - Listing of design templates is allowed for all users.
+ *
+ * Denormalization for Authorization:
+ * The `Design` entity includes a `userId` field, which is used to match designs to their owners, avoiding the need for complex `get()` calls.
+ */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Protects user profiles. Only the user can read and write their own profile.
+     * @description Secure user profiles. Users can only access their own profile.
      * @path /users/{userId}
-     * @allow (get, update, delete) User 'BHdPOtZLFTUdD8p0qy7MBPHehNP2' can access their own profile.
-     * @allow (create) User 'BHdPOtZLFTUdD8p0qy7MBPHehNP2' can create their profile.
-     * @deny (get, update, delete) User 'OtherUserId' cannot access User 'BHdPOtZLFTUdD8p0qy7MBPHehNP2' profile.
-     * @principle Enforces user-ownership for user profiles.
+     * @allow (create) User with id 'user123' can create their profile if authenticated as 'user123'.
+     * @allow (get) User with id 'user123' can read their profile if authenticated as 'user123'.
+     * @allow (update) User with id 'user123' can update their profile if authenticated as 'user123'.
+     * @allow (delete) User with id 'user123' can delete their profile if authenticated as 'user123'.
+     * @deny (create) User with id 'user456' cannot create a profile with id 'user123'.
+     * @deny (get) User with id 'user456' cannot read the profile of 'user123'.
+     * @principle Enforces document ownership for writes, restricts access to a user's own data tree.
      */
     match /users/{userId} {
       function isOwner(userId) {
         return request.auth != null && request.auth.uid == userId;
       }
+
       allow get: if isOwner(userId);
       allow list: if false;
-      allow create: if request.auth != null && request.auth.uid == userId;
-      allow update: if isOwner(userId);
-      allow delete: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isOwner(userId) && resource.data.id == request.resource.data.id;
+      allow delete: if isOwner(userId) && resource != null;
     }
 
     /**
-     * @description Protects designs created by users. Only the owner can read, write, and delete their own designs.
+     * @description Secure designs under a user's profile. Users can only access their own designs.
      * @path /users/{userId}/designs/{designId}
-     * @allow (create, get, update, delete, list) User 'BHdPOtZLFTUdD8p0qy7MBPHehNP2' can create, read, update, delete and list their own designs.
-     * @deny (create, get, update, delete) User 'OtherUserId' cannot access User 'BHdPOtZLFTUdD8p0qy7MBPHehNP2' designs.
-     * @principle Enforces document ownership for writes, allows owner-only reads.
+     * @allow (create) User with id 'user123' can create a design under their profile if authenticated as 'user123'.
+     * @allow (get) User with id 'user123' can read a design under their profile if authenticated as 'user123'.
+     * @allow (update) User with id 'user123' can update a design under their profile if authenticated as 'user123'.
+     * @allow (delete) User with id 'user123' can delete a design under their profile if authenticated as 'user123'.
+     * @deny (create) User with id 'user456' cannot create a design under the profile of 'user123'.
+     * @deny (get) User with id 'user456' cannot read a design under the profile of 'user123'.
+     * @principle Enforces document ownership for writes, restricts access to a user's own data tree.
      */
     match /users/{userId}/designs/{designId} {
       function isOwner(userId) {
         return request.auth != null && request.auth.uid == userId;
       }
+
       allow get: if isOwner(userId);
       allow list: if isOwner(userId);
-      allow create: if request.auth != null && request.auth.uid == userId;
-      allow update: if isOwner(userId);
-      allow delete: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isOwner(userId) && resource != null && resource.data.userId == request.resource.data.userId;
+      allow delete: if isOwner(userId) && resource != null;
     }
 
-    /**
-     * @description Makes templates publicly readable. Only admins can create, update and delete them (backend only).
-     * @path /templates/{templateId}
-     * @allow (get, list) Any user can read templates.
-     * @deny (create, update, delete) No client-side creation, updates, or deletes of templates.
-     * @principle Allows public read access to templates, restricts writes to backend.
-     */
-    match /templates/{templateId} {
-      allow get, list: if true;
-      allow create, update, delete: if false;
+     /**
+      * @description Design templates are publicly accessible for reading.
+      * @path /design-templates/{templateId}
+      * @allow (get) Any user can read a design template.
+      * @allow (list) Any user can list design templates.
+      * @deny (create) No user can create a design template.  Creation should happen via the admin SDK.
+      * @deny (update) No user can update a design template.  Updates should happen via the admin SDK.
+      * @deny (delete) No user can delete a design template. Deletion should happen via the admin SDK.
+      * @principle Allows public read access for design templates, restricts write access.
+      */
+    match /design-templates/{templateId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
-  }
-
-  function isSignedIn() {
-    return request.auth != null;
   }
 }
