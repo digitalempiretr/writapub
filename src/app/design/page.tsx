@@ -3,6 +3,7 @@
 
 import { ImageCanvas } from "@/components/image-canvas";
 import type { FontOption } from "@/lib/font-options";
+import type { DesignTemplate } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -35,7 +36,6 @@ import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
 import { imageTemplates, ImageTemplate } from "@/lib/image-templates";
 import { fontOptions } from "@/lib/font-options";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/components/ui/tooltip";
-import { DesignTemplate, designTemplates } from "@/lib/design-templates";
 import { TextSettings, type Shadow } from "@/components/3_text-settings";
 import { BackgroundSettings } from "@/components/2_background-settings";
 import { findImages } from "@/ai/flows/find-images-flow";
@@ -104,6 +104,12 @@ export default function DesignPage() {
     return collection(firestore, 'users', user.uid, 'designs');
   }, [firestore, user]);
   const { data: myDesigns } = useCollection<DesignTemplate>(myDesignsQuery);
+
+  const designTemplatesQuery = useMemoFirebase(() => {
+    if(!firestore) return null;
+    return collection(firestore, 'design-templates');
+  }, [firestore]);
+  const { data: designTemplates } = useCollection<DesignTemplate>(designTemplatesQuery);
   
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const designsRef = useRef<HTMLDivElement>(null);
@@ -482,19 +488,15 @@ export default function DesignPage() {
     const templateId = searchParams.get('templateId');
     if (templateId) {
       let template: DesignTemplate | undefined;
-      // First, check the main design templates
-      template = designTemplates.find(t => t.id === templateId);
       
-      // If not found, check the user's saved designs
-      if (!template && myDesigns) {
-        template = myDesigns.find(t => t.id === templateId);
-      }
+      const allTemplates = [...(designTemplates || []), ...(myDesigns || [])];
+      template = allTemplates.find(t => t.id === templateId);
       
       if (template) {
         handleApplyTemplate(template);
       }
     }
-  }, [searchParams, myDesigns, handleApplyTemplate]);
+  }, [searchParams, myDesigns, designTemplates, handleApplyTemplate]);
 
   const handleSaveDesign = useCallback(() => {
     if (!user || !firestore) {
@@ -879,7 +881,7 @@ export default function DesignPage() {
         handleDownload, fileName, setFileName, handleApplyTemplate, myDesigns: myDesigns || [],
         handleSaveDesign, handleDeleteDesign, handleUpdateDesign, editingDesignId,
         handleEditClick, handleCancelEdit, editingName, setEditingName, designToDelete,
-        setDesignToDelete, handleLogDesign,
+        setDesignToDelete, handleLogDesign, designTemplates: designTemplates || []
     };
 
     switch (activeSettingsTab) {
@@ -1212,3 +1214,4 @@ export default function DesignPage() {
     </div>
   );
 }
+

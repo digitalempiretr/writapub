@@ -4,7 +4,7 @@ import { Header } from '@/components/header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCollection, useUser, useFirestore, useMemoFirebase } from '@/firebase';
-import { designTemplates, DesignTemplate } from '@/lib/design-templates';
+import type { DesignTemplate } from '@/lib/types';
 import { collection } from 'firebase/firestore';
 import { PlusCircle } from 'lucide-react';
 import Image from 'next/image';
@@ -24,7 +24,14 @@ export default function DashboardPage() {
     return collection(firestore, 'users', user.uid, 'designs');
   }, [firestore, user]);
 
-  const { data: myDesigns, isLoading: areDesignsLoading } = useCollection<DesignTemplate>(myDesignsQuery);
+  const { data: myDesigns, isLoading: areMyDesignsLoading } = useCollection<DesignTemplate>(myDesignsQuery);
+
+  const designTemplatesQuery = useMemoFirebase(() => {
+    if(!firestore) return null;
+    return collection(firestore, 'design-templates');
+  }, [firestore]);
+
+  const { data: designTemplates, isLoading: areTemplatesLoading } = useCollection<DesignTemplate>(designTemplatesQuery);
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -32,7 +39,7 @@ export default function DashboardPage() {
     }
   }, [user, isUserLoading, router]);
 
-  if (isUserLoading || areDesignsLoading || !user) {
+  if (isUserLoading || areMyDesignsLoading || areTemplatesLoading || !user) {
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
         background: 'linear-gradient(to top right, var(--primary), var(--secondary), var(--accent))'
@@ -99,20 +106,26 @@ export default function DashboardPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {designTemplates.map(template => (
-                <Link href={`/design?templateId=${template.id}`} key={template.id}>
-                  <Card className="overflow-hidden group cursor-pointer">
-                    <CardContent className="p-0 aspect-[4/5] w-full">
-                       <Image src={template.previewImage || 'https://placehold.co/200x250'} alt={template.name} width={200} height={250} className="object-cover h-full w-full transition-transform duration-300 group-hover:scale-105" />
-                    </CardContent>
-                     <CardFooter className="p-2 justify-center">
-                        <p className="text-xs font-semibold truncate">{template.name}</p>
-                     </CardFooter>
-                  </Card>
-                </Link>
-              ))}
-            </div>
+             {designTemplates && designTemplates.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                {designTemplates.map(template => (
+                  <Link href={`/design?templateId=${template.id}`} key={template.id}>
+                    <Card className="overflow-hidden group cursor-pointer">
+                      <CardContent className="p-0 aspect-[4/5] w-full">
+                         <Image src={template.previewImage || 'https://placehold.co/200x250'} alt={template.name} width={200} height={250} className="object-cover h-full w-full transition-transform duration-300 group-hover:scale-105" />
+                      </CardContent>
+                       <CardFooter className="p-2 justify-center">
+                          <p className="text-xs font-semibold truncate">{template.name}</p>
+                       </CardFooter>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+                 <div className="text-center py-12 border-2 border-dashed rounded-lg">
+                    <p className="text-muted-foreground">No design templates available at the moment.</p>
+                 </div>
+            )}
           </CardContent>
         </Card>
       </div>

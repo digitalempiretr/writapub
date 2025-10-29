@@ -81,37 +81,131 @@
         "createdAt"
       ]
     },
-    "Template": {
+    "DesignTemplate": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Template",
+      "title": "DesignTemplate",
       "type": "object",
-      "description": "Represents a design template with background color, gradient, or other visual properties.",
+      "description": "Represents a reusable design template for creating social media posts.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the Template entity."
+          "description": "Unique identifier for the DesignTemplate entity."
         },
         "name": {
           "type": "string",
-          "description": "Name of the template (e.g., Flat, Gradient)."
+          "description": "The name of the template."
         },
-        "type": {
+        "category": {
           "type": "string",
-          "description": "Type of template (e.g., Flat, Gradient)."
+          "description": "The category of the template.",
+          "enum": [
+            "Special Effects",
+            "Color Styles",
+            "Authors Templates",
+            "Gradient Styles",
+            "Favorites"
+          ]
         },
-        "backgroundColor": {
+        "previewImage": {
           "type": "string",
-          "description": "Background color of the template (if applicable)."
+          "description": "URL for the template's preview image."
         },
-        "gradient": {
+        "background": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "flat",
+                "gradient",
+                "image"
+              ]
+            },
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "value"
+          ]
+        },
+        "font": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            },
+            "color": {
+              "type": "string"
+            },
+            "fontSize": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "value",
+            "color",
+            "fontSize"
+          ]
+        },
+        "textBox": {
+          "type": "object",
+          "properties": {
+            "color": {
+              "type": "string"
+            },
+            "opacity": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "color",
+            "opacity"
+          ]
+        },
+        "overlay": {
+          "type": "object",
+          "properties": {
+            "color": {
+              "type": "string"
+            },
+            "opacity": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "color",
+            "opacity"
+          ]
+        },
+        "canvasSize": {
           "type": "string",
-          "description": "Gradient information (if applicable)."
+          "enum": [
+            "Post",
+            "Story",
+            "Square"
+          ]
+        },
+        "effect": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          }
         }
       },
       "required": [
         "id",
         "name",
-        "type"
+        "category",
+        "previewImage",
+        "background",
+        "font",
+        "textBox",
+        "overlay",
+        "canvasSize"
       ]
     }
   },
@@ -174,8 +268,25 @@
             }
           ]
         }
+      },
+       {
+        "path": "/design-templates/{templateId}",
+        "definition": {
+          "entityName": "DesignTemplate",
+          "schema": {
+            "$ref": "#/backend/entities/DesignTemplate"
+          },
+          "description": "Stores reusable design templates for creating social media posts.",
+          "params": [
+            {
+              "name": "templateId",
+              "description": "The unique identifier of the design template."
+            }
+          ]
+        }
       }
     ],
     "reasoning": "The Firestore structure is designed to securely manage user data, designs, and templates for the Post Weaver application, focusing on authorization independence and scalability. The structure adheres to the principle of Authorization Independence by storing user-specific data under their respective user ID paths, avoiding hierarchical dependencies and enabling atomic operations. Designs are stored as subcollections of users, ensuring clear ownership and simplifying security rules. No 'get()' calls are necessary for validating a user's ownership of design data. Templates are stored as global data. This structure also facilitates listing operations as the rules can easily validate the user id against the requested userId. The design data also includes the `userId` which serves as the basis of our security rules. By associating designs with their owners at the document level, authorization rules need only compare the request authentication ID to the `userId`."
   }
 }
+

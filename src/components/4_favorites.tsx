@@ -24,7 +24,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Copy, FilePenLine, Check, X, Trash2 } from "lucide-react";
-import { DesignTemplate } from "@/lib/design-templates";
+import type { DesignTemplate } from "@/lib/types";
 import Image from 'next/image';
 import { fontOptions } from "@/lib/font-options";
 import { textEffects } from "@/lib/text-effects";
@@ -306,10 +306,11 @@ export function MyDesignsPanel({
         </AlertDialog>
       ) : (
         <div className="text-center text-muted-foreground py-8">
-          <p>You haven't saved any favorites yet.</p>
+          <p>You haven&apos;t saved any favorites yet.</p>
           <p className="text-xs">Click "Save Current" to add a design.</p>
         </div>
       )}
     </div>
   );
 }
+

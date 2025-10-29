@@ -10,13 +10,14 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { designTemplates, DesignTemplate } from "@/lib/design-templates";
 import { fontOptions } from "@/lib/font-options";
 import Image from "next/image";
 import { textEffects } from "@/lib/text-effects";
+import type { DesignTemplate } from "@/lib/types";
 
 type DesignsPanelProps = {
   handleApplyTemplate: (template: DesignTemplate) => void;
+  designTemplates: DesignTemplate[];
 };
 
 const renderPreview = (template: DesignTemplate) => {
@@ -76,6 +77,8 @@ const TemplateCarousel = ({ templates, handleApplyTemplate }: { templates: Desig
   }, [api]);
   
   const renderBulletNavigation = () => {
+    if (!api) return null;
+
     const totalSlides = templates.length;
     if (totalSlides <= 1) return null;
 
@@ -162,7 +165,7 @@ const TemplateCarousel = ({ templates, handleApplyTemplate }: { templates: Desig
 };
 
 
-export function DesignsPanel({ handleApplyTemplate }: DesignsPanelProps) {
+export function DesignsPanel({ handleApplyTemplate, designTemplates }: DesignsPanelProps) {
   const groupedTemplates = designTemplates.reduce((acc, template) => {
     const category = template.category || 'Uncategorized';
     if (!acc[category]) {
