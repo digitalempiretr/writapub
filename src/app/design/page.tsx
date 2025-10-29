@@ -38,7 +38,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/com
 import { DesignTemplate, designTemplates } from "@/lib/design-templates";
 import { TextSettings, type Shadow } from "@/components/3_text-settings";
 import { BackgroundSettings } from "@/components/2_background-settings";
-import { findImages } from "@/lib/unsplash-api";
+import { findImages } from "@/ai/flows/find-images-flow";
 import { DesignsPanel } from "@/components/1_templates";
 import { MyDesignsPanel } from "@/components/4_favorites";
 import { DownloadPanel } from "@/components/5_download-panel";
