@@ -3,9 +3,9 @@
 import { Header } from '@/components/header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { useCollection, useUser, useFirestore, useMemoFirebase, addDocumentNonBlocking } from '@/firebase';
+import { useCollection, useUser, useFirestore, useMemoFirebase } from '@/firebase';
 import type { DesignTemplate } from '@/lib/types';
-import { collection, query, where, writeBatch, getDocs } from 'firebase/firestore';
+import { collection, query, where, writeBatch, getDocs, doc } from 'firebase/firestore';
 import { PlusCircle, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -44,11 +44,17 @@ export default function DashboardPage() {
     }
     setIsSeeding(true);
     try {
-        const templatesCollection = collection(firestore, 'design-templates');
-        const batch = writeBatch(firestore);
+        const templatesCollectionRef = collection(firestore, 'design-templates');
+        const existingTemplates = await getDocs(templatesCollectionRef);
+        if(!existingTemplates.empty){
+             toast({ title: 'Database Already Seeded', description: 'Design templates already exist in the database.' });
+             setIsSeeding(false);
+             return;
+        }
 
+        const batch = writeBatch(firestore);
         seedData.forEach((templateData) => {
-            const docRef = doc(templatesCollection); // Automatically generate ID
+            const docRef = doc(templatesCollectionRef); 
             batch.set(docRef, templateData);
         });
 
@@ -69,6 +75,16 @@ export default function DashboardPage() {
       router.push('/');
     }
   }, [user, isUserLoading, router]);
+
+  useEffect(() => {
+    if (firestore && !areTemplatesLoading && designTemplates?.length === 0) {
+      // Automatically seed if the collection is empty.
+      // This can be adapted based on whether you want this to run every time
+      // or only under specific conditions.
+      // handleSeedDatabase();
+    }
+  }, [firestore, designTemplates, areTemplatesLoading]);
+
 
   if (isUserLoading || areMyDesignsLoading || areTemplatesLoading || !user) {
     return (
