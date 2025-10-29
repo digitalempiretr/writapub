@@ -2,7 +2,7 @@
 
 import { useUser } from '@/firebase';
 import { getAuth, GoogleAuthProvider, signInWithRedirect, signOut } from 'firebase/auth';
-import { Loader2, LogIn, LogOut, LayoutDashboard, ZoomIn, ZoomOut, RotateCcw, Minus, Plus, Instagram, Image, ShieldCheck } from 'lucide-react';
+import { Loader2, LogIn, LogOut, LayoutDashboard, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
@@ -18,34 +18,26 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { Logo } from './logo';
 import React from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { Slider } from './ui/slider';
-
 
 type CanvasSize = { name: 'Post' | 'Story' | 'Square'; width: number; height: number };
 
-interface HeaderProps {
-    canvasSize?: CanvasSize;
-    handleCanvasSizeChange?: (size: CanvasSize) => void;
-    canvasSizes?: CanvasSize[];
-    zoomLevel?: number;
-    handleZoom?: (direction: 'in' | 'out') => void;
-    resetPanAndZoom?: () => void;
-    MIN_ZOOM?: number;
-    MAX_ZOOM?: number;
-}
+type HeaderProps = {
+  canvasSize?: CanvasSize;
+  handleCanvasSizeChange?: (size: CanvasSize) => void;
+  canvasSizes?: CanvasSize[];
+  zoomLevel?: number;
+  handleZoom?: (direction: 'in' | 'out') => void;
+  resetPanAndZoom?: () => void;
+  MIN_ZOOM?: number;
+  MAX_ZOOM?: number;
+};
 
 export function Header({ 
-    canvasSize, 
-    handleCanvasSizeChange, 
-    canvasSizes, 
-    zoomLevel, 
-    handleZoom, 
-    resetPanAndZoom,
-    MIN_ZOOM,
-    MAX_ZOOM
+  canvasSize, handleCanvasSizeChange, canvasSizes, 
+  zoomLevel, handleZoom, resetPanAndZoom, 
+  MIN_ZOOM, MAX_ZOOM 
 }: HeaderProps) {
-  const { user, claims, isUserLoading } = useUser();
+  const { user, isUserLoading, claims } = useUser();
   const pathname = usePathname();
 
   const handleLogin = () => {
@@ -58,80 +50,14 @@ export function Header({
     const auth = getAuth();
     signOut(auth);
   };
+  
+  const isAdmin = claims?.role === 'admin';
 
   return (
     <header className="w-full text-left p-4 md:px-8 flex items-center justify-between z-20 bg-background/80 backdrop-blur-sm sticky top-0 border-b">
-      <Link href={user ? "/design" : "/"} aria-label="Go to homepage">
+      <Link href={user ? "/dashboard" : "/"} aria-label="Go to homepage">
         <Logo className="text-[1.5rem] text-primary" />
       </Link>
-
-      {pathname.startsWith("/design") && canvasSize && handleCanvasSizeChange && canvasSizes && zoomLevel !== undefined && handleZoom && resetPanAndZoom && MIN_ZOOM !== undefined && MAX_ZOOM !== undefined && (
-        <div className="hidden md:flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" className="w-32">
-                {canvasSize.name}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-48 p-2">
-              {canvasSizes.map((size) => (
-                <Button
-                  key={size.name}
-                  variant={canvasSize.name === size.name ? "secondary" : "ghost"}
-                  className="w-full justify-start"
-                  onClick={() => handleCanvasSizeChange(size)}
-                >
-                  {size.name === 'Post' && <Instagram className="w-4 h-4 mr-2" />}
-                  {size.name === 'Story' && <Image className="w-4 h-4 mr-2" />}
-                  {size.name === 'Square' && <div className="w-4 h-4 mr-2" />}
-                  {size.name}
-                </Button>
-              ))}
-            </PopoverContent>
-          </Popover>
-
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" onClick={() => handleZoom('out')} disabled={zoomLevel <= MIN_ZOOM}>
-                  <ZoomOut className="h-5 w-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Zoom Out</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          
-          <div className="w-24 text-center text-sm font-medium">{(zoomLevel * 100).toFixed(0)}%</div>
-
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" onClick={() => handleZoom('in')} disabled={zoomLevel >= MAX_ZOOM}>
-                  <ZoomIn className="h-5 w-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Zoom In</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                 <Button variant="ghost" size="icon" onClick={resetPanAndZoom}>
-                    <RotateCcw className="h-5 w-5" />
-                  </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Reset View</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-      )}
-
       <div className="flex items-center gap-4">
         {isUserLoading ? (
           <Button variant="outline" size="sm" disabled>
@@ -171,10 +97,10 @@ export function Header({
                     <span>Dashboard</span>
                   </Link>
               </DropdownMenuItem>
-               {claims?.role === 'admin' && (
+              {isAdmin && (
                 <DropdownMenuItem asChild>
                   <Link href="/admin">
-                    <ShieldCheck className="mr-2 h-4 w-4" />
+                    <Settings className="mr-2 h-4 w-4" />
                     <span>Admin Panel</span>
                   </Link>
                 </DropdownMenuItem>

@@ -14,25 +14,6 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 
 ---
 
-## Version V1.31
-
-#### ENGLISH
-### 1. New User Registration and Login Flow
-- **Robust Authentication Logic:** Overhauled the entire authentication flow in `src/app/page.tsx` to be more robust and reliable.
-  - The system now uses `onAuthStateChanged` as the single source of truth for the user's authentication state, resolving race conditions between `getRedirectResult` and other checks.
-  - **New User Data Sync:** When a new user signs in for the first time via Google, their profile information (name, email, photo URL) is now automatically saved to a `users` collection in Firestore.
-  - **Efficient Data Writes:** This user data is only written once upon their initial registration. The code checks if a user document already exists and only writes the new document if it's missing, preventing unnecessary database operations on subsequent logins.
-- **Splash Screen Polish:** The gradient background of the splash screen has been updated to a softer, more on-brand `pink-to-skyblue` gradient.
-
-#### TURKCE
-### 1. Yeni Kullanıcı Kaydı ve Giriş Akışı
-- **Sağlam Kimlik Doğrulama Mantığı:** `src/app/page.tsx` içindeki tüm kimlik doğrulama akışı, daha sağlam ve güvenilir olacak şekilde tamamen elden geçirildi.
-  - Sistem artık kullanıcının kimlik doğrulama durumu için tek doğru kaynak olarak `onAuthStateChanged`'i kullanıyor, bu da `getRedirectResult` ve diğer kontroller arasındaki yarış durumlarını çözüyor.
-  - **Yeni Kullanıcı Veri Senkronizasyonu:** Yeni bir kullanıcı Google aracılığıyla ilk kez oturum açtığında, profil bilgileri (isim, e-posta, fotoğraf URL'si) artık otomatik olarak Firestore'daki bir `users` koleksiyonuna kaydediliyor.
-  - **Verimli Veri Yazma İşlemleri:** Bu kullanıcı verileri, yalnızca ilk kayıtlarında bir kez yazılır. Kod, bir kullanıcı belgesinin zaten var olup olmadığını kontrol eder ve yalnızca eksikse yeni belgeyi yazar, bu da sonraki girişlerde gereksiz veritabanı işlemlerini önler.
-- **Açılış Ekranı İyileştirmesi:** Açılış ekranının gradyan arka planı, daha yumuşak ve marka kimliğine daha uygun bir `pembeden-gök mavisine` gradyan ile güncellendi.
-
-
 ## Version V1.30
 
 #### ENGLISH
@@ -563,6 +544,22 @@ _Yeni sürümler bu bölümün en üstüne eklenecektir._
 #### TURKCE
 ### 1. Dokümantasyon ve Süreç
 -   **Sürüm Kontrolü Kuralı:** Değiştirilemez çekerek kurallara yeni bir kural eklendi. Bu kural, her değişiklikten sonra `app-rules.md` dosyasındaki sürüm numarasının artırılmasını ve tamamlanan görevlerin `plans.md`'den kaldırılmasını zorunlu kılar.
+
+---
+
+## Version V1.01
+
+#### ENGLISH
+### 1. UI & Branding Updates
+-   **Logo:** The application logo has been changed. It now uses the "Libertinus Keyboard" font from Google Fonts. The logo text is uppercase and has a fixed size of `2rem` on all screen sizes.
+-   **Header:** The "Are You Writa?" slogan has been removed. The logo is now left-aligned.
+-   **Control Panel Title:** The title of the left control panel has been changed from "İçerik & Tasarım" to a cleaner "Creative Magic".
+
+#### TURKCE
+### 1. Arayüz ve Marka Güncellemeleri
+-   **Logo:** Uygulama logosu değiştirildi. Artık Google Fonts'tan "Libertinus Keyboard" yazı tipini kullanıyor. Logo metni büyük harfle yazılmıştır ve tüm ekran boyutlarında `2rem` sabit boyutuna sahiptir.
+-   **Başlık Alanı:** "Are You Writa?" sloganı kaldırıldı. Logo artık sola hizalanmış durumda.
+-   **Kontrol Paneli Başlığı:** Sol kontrol panelinin başlığı "İçerik & Tasarım" yerine daha temiz bir ifade olan "Creative Magic" olarak değiştirildi.
 
 ---
 

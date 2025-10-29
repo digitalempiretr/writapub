@@ -2,222 +2,103 @@
 
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
-import { GoogleAuthProvider, signInWithRedirect, createUserWithEmailAndPassword, signInWithEmailAndPassword, getRedirectResult } from 'firebase/auth';
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
+import { useUser } from '@/firebase';
+import { getAuth, GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
 import { Icons } from '@/components/ui/icons';
-import { useUser, useAuth, useFirestore } from '@/firebase';
-import { app } from '@/firebase/config';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
 
 export default function WelcomePage() {
-  const { user, isUserLoading } = useUser();
-  const auth = useAuth();
-  const firestore = useFirestore();
+  const { user, isUserLoading: isAuthLoading } = useUser();
+  const [isLoginInProgress, setIsLoginInProgress] = useState(false);
+  const [showSplashScreen, setShowSplashScreen] = useState(true);
   const router = useRouter();
-  const { toast } = useToast();
-
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [showEmailForm, setShowEmailForm] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleRedirectResult = useCallback(async () => {
-    if (auth && !user) {
-        try {
-            const result = await getRedirectResult(auth);
-            if (result && result.user) {
-                const userDocRef = doc(firestore, "users", result.user.uid);
-                const userDoc = await getDoc(userDocRef);
-
-                if (!userDoc.exists()) {
-                    await setDoc(userDocRef, {
-                        id: result.user.uid,
-                        displayName: result.user.displayName || result.user.email?.split('@')[0],
-                        email: result.user.email,
-                        profileImageUrl: result.user.photoURL,
-                        googleId: result.user.providerData.find(p => p.providerId === 'google.com')?.uid || null,
-                        role: 'user', // Assign default role
-                    }, { merge: true });
-                }
-            }
-        } catch (error: any) {
-            console.error("Error processing redirect result:", error);
-            toast({
-                variant: 'destructive',
-                title: 'Login Failed',
-                description: error.message || 'An error occurred during sign-in.',
-            });
-        } finally {
-            if (!user) {
-              setIsLoading(false);
-            }
-        }
-    } else {
-      setIsLoading(isUserLoading);
-    }
-  }, [auth, user, isUserLoading, firestore, toast]);
 
   useEffect(() => {
-    if (user) {
-        router.push('/design');
-    } else {
-        handleRedirectResult();
+    if (!isAuthLoading && user) {
+      router.push('/dashboard');
     }
-  }, [user, router, handleRedirectResult]);
+  }, [user, isAuthLoading, router]);
+
+  const isLoading = isAuthLoading || isLoginInProgress;
+
+  useEffect(() => {
+    if (!isLoading) {
+      const timer = setTimeout(() => {
+        setShowSplashScreen(false);
+      }, 1000); // Wait for 1 extra second after loading is finished
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading]);
+
 
   const handleGoogleLogin = () => {
-    setIsLoading(true);
+    setIsLoginInProgress(true);
+    const auth = getAuth();
     const provider = new GoogleAuthProvider();
     signInWithRedirect(auth, provider).catch(error => {
-      console.error("Google sign-in error:", error);
-      toast({
-        variant: 'destructive',
-        title: 'Login Error',
-        description: error.message,
-      });
-      setIsLoading(false);
+        console.error("Google sign-in error:", error);
+        setIsLoginInProgress(false);
     });
   };
+  
+  const handleEmailLogin = () => {
+    console.log("Email login not implemented");
+  }
 
-  const handleEmailAuth = async () => {
-    if (!email || !password) {
-        toast({
-            variant: "destructive",
-            title: "Missing Information",
-            description: "Please enter both email and password.",
-        });
-        return;
-    }
-
-    setIsLoading(true);
-
-    try {
-        if (isSignUp) {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-            const userRef = doc(firestore, 'users', user.uid);
-            await setDoc(userRef, {
-                id: user.uid,
-                displayName: user.displayName || email.split('@')[0],
-                email: user.email,
-                profileImageUrl: user.photoURL || `https://i.pravatar.cc/150?u=${user.uid}`,
-                googleId: null,
-                role: 'user', // Assign default role
-            }, { merge: true });
-        } else {
-            await signInWithEmailAndPassword(auth, email, password);
-        }
-    } catch (error: any) {
-        let description = "An unexpected error occurred. Please try again.";
-        switch (error.code) {
-            case 'auth/user-not-found':
-                description = "No user found with this email address.";
-                break;
-            case 'auth/wrong-password':
-                description = "Incorrect password. Please try again.";
-                break;
-            case 'auth/email-already-in-use':
-                description = "This email address is already in use.";
-                break;
-            case 'auth/weak-password':
-                description = "Password should be at least 6 characters long.";
-                break;
-             case 'auth/invalid-email':
-                description = "Invalid email address format.";
-                break;
-            default:
-                description = error.message;
-        }
-        toast({
-            variant: "destructive",
-            title: isSignUp ? "Sign Up Failed" : "Sign In Failed",
-            description: description,
-        });
-        setIsLoading(false); // Stop loading on error
-    }
-};
-
-  if (isLoading) {
+  // Splash screen
+  if (showSplashScreen) {
     return (
-        <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
-            background: 'linear-gradient(to top right, var(--primary), var(--secondary), var(--accent)'
-          }}>
-              <div className="w-64 h-64">
-                  <Lottie animationData={webflowAnimation} loop={true} />
-              </div>
+      <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
+        background: 
+        'linear-gradient(to top right, var(--primary), var(--primary), var(--primary)'
+      }}>
+          <div className="flex justify-center mb-8">
+              <Logo className="h-30 w-auto text-muted text-4xl text-center" />
+              
           </div>
+          
+          
+      </div>
     );
   }
+  // End of splash screen
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 text-center bg-background text-foreground">
-      <div className="w-full max-w-sm">
+      <div className="w-full max-w-xs">
           <div className="flex justify-center mb-8">
               <Logo className="h-12 w-auto text-primary" />
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">
-            {showEmailForm ? (isSignUp ? "Create an Account" : "Welcome Back") : "Welcome to Writa"}
+            Welcome to Writa
           </h2>
           <p className="text-muted-foreground mb-8">
-            {showEmailForm ? (isSignUp ? "Enter your details to start." : "Sign in to access all features.") : "Sign in or create an account to continue."}
+            Unlock all features by logging in
           </p>
-          
-          {showEmailForm ? (
-            <div className="space-y-4 text-left">
-                <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                        id="email"
-                        type="email"
-                        placeholder="name@example.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input
-                        id="password"
-                        type="password"
-                        placeholder="********"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <Button onClick={handleEmailAuth} size="lg" disabled={isLoading} className="w-full">
-                  {isLoading ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Sign In')}
-                </Button>
-                 <p className="mt-6 text-center text-sm text-muted-foreground">
-                    {isSignUp ? "Already have an account?" : "Don't have an account?"}{' '}
-                    <button onClick={() => setIsSignUp(!isSignUp)} className="underline font-semibold hover:text-primary">
-                      {isSignUp ? "Sign In" : "Sign Up"}
-                    </button>
-                </p>
-                <Button variant="link" onClick={() => setShowEmailForm(false)} className="w-full text-muted-foreground">
-                    &larr; Back to all options
-                </Button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-                <Button onClick={handleGoogleLogin} size="lg" variant="outline" disabled={isLoading} className="w-full">
-                    <Icons.google className="mr-2 h-4 w-4"/>
-                    Continue with Google
-                </Button>
-                <Button onClick={() => setShowEmailForm(true)} size="lg" disabled={isLoading} className="w-full bg-muted text-muted-foreground hover:bg-muted/90">
-                    <Icons.mail className="mr-2 h-4 w-4"/>
-                    Continue with Email
-                </Button>
-            </div>
-          )}
+          <div className="space-y-3">
+              <Button onClick={handleGoogleLogin} size="lg" disabled={isLoading} className="w-full bg-muted text-muted-foreground hover:bg-muted/90">
+                <Icons.google className="mr-2 h-4 w-4"/>
+                Continue with Google
+              </Button>
+              <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">
+                      or
+                      </span>
+                  </div>
+              </div>
+              <Button onClick={handleEmailLogin} size="lg" disabled={isLoading} className="w-full bg-muted text-muted-foreground hover:bg-muted/90">
+                <Icons.mail className="mr-2 h-4 w-4"/>
+                Continue with Email
+              </Button>
+          </div>
       </div>
       <footer className="fixed bottom-0 w-full p-6 text-center text-xs text-muted-foreground">
         <p>By logging in, you agree to our <a href="/terms" className="underline">Terms of Service</a> and <a href="/privacy" className="underline">Privacy Policy</a></p>

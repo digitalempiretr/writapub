@@ -10,10 +10,13 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { DesignTemplate } from "@/lib/types";
 import { fontOptions } from "@/lib/font-options";
 import Image from "next/image";
 import { textEffects } from "@/lib/text-effects";
-import type { DesignTemplate } from "@/lib/types";
+import { useCollection, useMemoFirebase, useFirestore } from "@/firebase";
+import { Skeleton } from "@/components/ui/skeleton";
+import { collection } from "firebase/firestore";
 
 type DesignsPanelProps = {
   handleApplyTemplate: (template: DesignTemplate) => void;
@@ -77,8 +80,6 @@ const TemplateCarousel = ({ templates, handleApplyTemplate }: { templates: Desig
   }, [api]);
   
   const renderBulletNavigation = () => {
-    if (!api) return null;
-
     const totalSlides = templates.length;
     if (totalSlides <= 1) return null;
 
@@ -166,7 +167,25 @@ const TemplateCarousel = ({ templates, handleApplyTemplate }: { templates: Desig
 
 
 export function DesignsPanel({ handleApplyTemplate, designTemplates }: DesignsPanelProps) {
-  const groupedTemplates = (designTemplates || []).reduce((acc, template) => {
+  const loading = !designTemplates;
+
+  if (loading) {
+    return (
+      <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-6">
+        <div className="space-y-3">
+          <Skeleton className="h-6 w-1/4" />
+          <div className="flex space-x-2">
+            <Skeleton className="h-32 w-1/4" />
+            <Skeleton className="h-32 w-1/4" />
+            <Skeleton className="h-32 w-1/4" />
+            <Skeleton className="h-32 w-1/4" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const groupedTemplates = designTemplates.reduce((acc, template) => {
     const category = template.category || 'Uncategorized';
     if (!acc[category]) {
       acc[category] = [];
@@ -186,5 +205,3 @@ export function DesignsPanel({ handleApplyTemplate, designTemplates }: DesignsPa
     </div>
   );
 }
-
-    

@@ -4,15 +4,15 @@ import { Header } from '@/components/header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCollection, useUser, useFirestore, useMemoFirebase } from '@/firebase';
-import type { DesignTemplate } from '@/lib/types';
-import { collection, query, where } from 'firebase/firestore';
+import { DesignTemplate } from '@/lib/types';
+import { collection, writeBatch, getDocs, doc } from 'firebase/firestore';
 import { PlusCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import Lottie from 'lottie-react';
-import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
+import { Skeleton } from '@/components/ui/skeleton';
+import { designTemplates as seedData } from '@/lib/seed-data';
 
 export default function DashboardPage() {
   const { user, isUserLoading } = useUser();
@@ -21,17 +21,40 @@ export default function DashboardPage() {
 
   const myDesignsQuery = useMemoFirebase(() => {
     if (!user || !firestore) return null;
-    return query(collection(firestore, 'users', user.uid, 'designs'), where('userId', '==', user.uid));
+    return collection(firestore, 'users', user.uid, 'designs');
   }, [firestore, user]);
 
-  const { data: myDesigns, isLoading: areMyDesignsLoading } = useCollection<DesignTemplate>(myDesignsQuery);
-
   const designTemplatesQuery = useMemoFirebase(() => {
-    if(!firestore) return null;
+    if (!firestore) return null;
     return collection(firestore, 'design-templates');
   }, [firestore]);
 
+
+  const { data: myDesigns, isLoading: areDesignsLoading } = useCollection<DesignTemplate>(myDesignsQuery);
   const { data: designTemplates, isLoading: areTemplatesLoading } = useCollection<DesignTemplate>(designTemplatesQuery);
+
+  useEffect(() => {
+    const seedDatabase = async () => {
+        if (!firestore) return;
+        const templatesCollection = collection(firestore, 'design-templates');
+        const snapshot = await getDocs(templatesCollection);
+        if (snapshot.empty) {
+            console.log('Database is empty, seeding...');
+            const batch = writeBatch(firestore);
+            seedData.forEach((template) => {
+                const docRef = doc(templatesCollection, template.id);
+                batch.set(docRef, template);
+            });
+            await batch.commit();
+            console.log('Database seeded!');
+        } else {
+            console.log('Database already contains data, skipping seed.');
+        }
+    };
+
+    seedDatabase().catch(console.error);
+  }, [firestore]);
+
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -39,16 +62,41 @@ export default function DashboardPage() {
     }
   }, [user, isUserLoading, router]);
 
-
-  if (isUserLoading || areMyDesignsLoading || areTemplatesLoading || !user) {
+  if (isUserLoading || areDesignsLoading || areTemplatesLoading) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
-        background: 'linear-gradient(to top right, var(--primary), var(--secondary), var(--accent))'
-      }}>
-          <div className="w-64 h-64">
-              <Lottie animationData={webflowAnimation} loop={true} />
-          </div>
-      </div>
+        <>
+            <Header />
+            <div className="container mx-auto p-4 md:p-8 space-y-12">
+                <div className="flex justify-between items-center">
+                    <Skeleton className="h-12 w-1/4" />
+                    <Skeleton className="h-10 w-48" />
+                </div>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>My Saved Designs</CardTitle>
+                        <CardDescription>Here are your favorite templates. Click on one to start a new design with it.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                            {[...Array(5)].map((_, i) => <Skeleton key={i} className="w-full h-48" />)}
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Design Templates</CardTitle>
+                        <CardDescription>Get started with one of our pre-made templates.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                            {[...Array(10)].map((_, i) => <Skeleton key={i} className="w-full h-48" />)}
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        </>
     );
   }
 
@@ -107,27 +155,20 @@ export default function DashboardPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-             {designTemplates && designTemplates.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                {designTemplates.map(template => (
-                  <Link href={`/design?templateId=${template.id}`} key={template.id}>
-                    <Card className="overflow-hidden group cursor-pointer">
-                      <CardContent className="p-0 aspect-[4/5] w-full">
-                         <Image src={template.previewImage || 'https://placehold.co/200x250'} alt={template.name} width={200} height={250} className="object-cover h-full w-full transition-transform duration-300 group-hover:scale-105" />
-                      </CardContent>
-                       <CardFooter className="p-2 justify-center">
-                          <p className="text-xs font-semibold truncate">{template.name}</p>
-                       </CardFooter>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-                 <div className="text-center py-12 border-2 border-dashed rounded-lg">
-                    <p className="text-muted-foreground">No design templates found.</p>
-                    <p className="text-xs text-muted-foreground mt-2">You can add templates to the 'design-templates' collection in Firestore.</p>
-                 </div>
-            )}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              {designTemplates && designTemplates.map(template => (
+                <Link href={`/design?templateId=${template.id}`} key={template.id}>
+                  <Card className="overflow-hidden group cursor-pointer">
+                    <CardContent className="p-0 aspect-[4/5] w-full">
+                       <Image src={template.previewImage || 'https://placehold.co/200x250'} alt={template.name} width={200} height={250} className="object-cover h-full w-full transition-transform duration-300 group-hover:scale-105" />
+                    </CardContent>
+                     <CardFooter className="p-2 justify-center">
+                        <p className="text-xs font-semibold truncate">{template.name}</p>
+                     </CardFooter>
+                  </Card>
+                </Link>
+              ))}
+            </div>
           </CardContent>
         </Card>
       </div>

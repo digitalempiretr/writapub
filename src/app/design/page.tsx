@@ -1,9 +1,9 @@
 
 "use client";
 
+import { findImages } from "@/ai/flows/find-images-flow";
 import { ImageCanvas } from "@/components/image-canvas";
 import type { FontOption } from "@/lib/font-options";
-import type { DesignTemplate } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -36,25 +36,24 @@ import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
 import { imageTemplates, ImageTemplate } from "@/lib/image-templates";
 import { fontOptions } from "@/lib/font-options";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/components/ui/tooltip";
+import { defaultText } from "@/lib/default-text";
+import { DesignTemplate } from "@/lib/types";
 import { TextSettings, type Shadow } from "@/components/3_text-settings";
 import { BackgroundSettings } from "@/components/2_background-settings";
-import { findImages } from "@/ai/flows/find-images-flow";
 import { DesignsPanel } from "@/components/1_templates";
 import { MyDesignsPanel } from "@/components/4_favorites";
 import { DownloadPanel } from "@/components/5_download-panel";
 import { pageInitialColors } from "@/lib/colors";
+import { CreativeMagicPanel } from "@/components/0_creative-magic-panel";
 import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Icons } from "@/components/ui/icons";
 import { useUser, useFirestore, useMemoFirebase, useCollection, addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase';
-import { collection, doc, serverTimestamp, query, where } from "firebase/firestore";
+import { collection, doc, serverTimestamp } from "firebase/firestore";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Header } from "@/components/header";
-import { CreativeMagicPanel } from "@/components/0_creative-magic-panel";
-import Link from 'next/link';
-
 
 type Design = {
   text: string;
@@ -80,12 +79,10 @@ export default function DesignPage() {
   const firestore = useFirestore();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { toast } = useToast();
-  const isMobile = useIsMobile();
 
-  const [text, setText] = useState("");
+  const [text, setText] = useState(defaultText);
   const [designs, setDesigns] = useState<Design[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [isGeneratingAnimation, setIsGeneratingAnimation] = useState(false);
   const [carouselApi, setCarouselApi] = useState<CarouselApi | undefined>();
@@ -101,69 +98,15 @@ export default function DesignPage() {
   
   const myDesignsQuery = useMemoFirebase(() => {
     if (!user || !firestore) return null;
-    return query(collection(firestore, 'users', user.uid, 'designs'), where('userId', '==', user.uid));
+    return collection(firestore, 'users', user.uid, 'designs');
   }, [firestore, user]);
   const { data: myDesigns } = useCollection<DesignTemplate>(myDesignsQuery);
 
   const designTemplatesQuery = useMemoFirebase(() => {
-    if(!firestore) return null;
+    if (!firestore) return null;
     return collection(firestore, 'design-templates');
   }, [firestore]);
   const { data: designTemplates } = useCollection<DesignTemplate>(designTemplatesQuery);
-  
-  const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
-  const designsRef = useRef<HTMLDivElement>(null);
-  const mobilePanelRef = useRef<HTMLDivElement>(null);
-
-  const handleGenerate = useCallback(() => {
-    if (!text) {
-      toast({
-        title: "No Text Entered",
-        description: "Please enter a title or body text.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    setIsLoading(true);
-    setIsGeneratingAnimation(true);
-    setDesigns([]);
-    setIsMobilePanelOpen(false);
-    
-    let finalTitle = "";
-    let finalBody = text;
-
-    const sentenceEndMarkers = /[.!?]/;
-    const firstSentenceMatch = finalBody.match(sentenceEndMarkers);
-    
-    if (firstSentenceMatch && firstSentenceMatch.index !== undefined) {
-        const firstSentenceEnd = firstSentenceMatch.index + 1;
-        finalTitle = finalBody.substring(0, firstSentenceEnd).trim();
-        finalBody = finalBody.substring(firstSentenceEnd).trim();
-    } else {
-        finalTitle = finalBody;
-        finalBody = "";
-    }
-    
-
-    const newDesigns: Design[] = [];
-    if (finalTitle) {
-      newDesigns.push({ text: finalTitle, isTitle: true });
-    }
-    if (finalBody) {
-      newDesigns.push({ text: finalBody, isTitle: false });
-    }
-    setDesigns(newDesigns);
-    
-    setTimeout(() => {
-        setIsGeneratingAnimation(false);
-        setIsLoading(false);
-        if(designsRef.current) {
-            designsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    }, 1618);
-  }, [text, toast]);
-
 
   useEffect(() => {
     setIsClient(true)
@@ -174,21 +117,6 @@ export default function DesignPage() {
       router.push('/');
     }
   }, [user, isUserLoading, router]);
-
-  useEffect(() => {
-    const urlText = searchParams.get('text');
-    if(urlText) {
-        setText(decodeURIComponent(urlText));
-    } else {
-        setIsLoading(false);
-    }
-  }, [searchParams]);
-
-  useEffect(() => {
-    if (text) {
-      handleGenerate();
-    }
-  }, [text, handleGenerate]);
   
   const handleSelectCarousel = useCallback(() => {
     if (!carouselApi) {
@@ -256,6 +184,12 @@ export default function DesignPage() {
   const [panStart, setPanStart] = useState({ x: 0, y: 0 });
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
 
+  const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
+  const designsRef = useRef<HTMLDivElement>(null);
+  const mobilePanelRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
+  const isMobile = useIsMobile();
+
    const closePanel = useCallback(() => {
     setIsMobilePanelOpen(false);
     setActiveSettingsTab('');
@@ -307,6 +241,55 @@ export default function DesignPage() {
         return prevDesigns;
     });
 }, []);
+
+  const handleGenerate = useCallback(async () => {
+    if (!text) {
+      toast({
+        title: "No Text Entered",
+        description: "Please enter a title or body text.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsLoading(true);
+    setIsGeneratingAnimation(true);
+    setDesigns([]);
+    setIsMobilePanelOpen(false);
+    
+    let finalTitle = "";
+    let finalBody = text;
+
+    const sentenceEndMarkers = /[.!?]/;
+    const firstSentenceMatch = finalBody.match(sentenceEndMarkers);
+    
+    if (firstSentenceMatch && firstSentenceMatch.index !== undefined) {
+        const firstSentenceEnd = firstSentenceMatch.index + 1;
+        finalTitle = finalBody.substring(0, firstSentenceEnd).trim();
+        finalBody = finalBody.substring(firstSentenceEnd).trim();
+    } else {
+        finalTitle = finalBody;
+        finalBody = "";
+    }
+    
+
+    const newDesigns: Design[] = [];
+    if (finalTitle) {
+      newDesigns.push({ text: finalTitle, isTitle: true });
+    }
+    if (finalBody) {
+      newDesigns.push({ text: finalBody, isTitle: false });
+    }
+    setDesigns(newDesigns);
+    
+    setTimeout(() => {
+        setIsGeneratingAnimation(false);
+        setIsLoading(false);
+        if(designsRef.current) {
+            designsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, 1618);
+  }, [text, toast]);
   
   const handleDownload = useCallback((index: number) => {
     const canvas = canvasRefs.current[index];
@@ -488,9 +471,15 @@ export default function DesignPage() {
     const templateId = searchParams.get('templateId');
     if (templateId) {
       let template: DesignTemplate | undefined;
+      // First, check the main design templates
+      if(designTemplates){
+        template = designTemplates.find(t => t.id === templateId);
+      }
       
-      const allTemplates = [...(designTemplates || []), ...(myDesigns || [])];
-      template = allTemplates.find(t => t.id === templateId);
+      // If not found, check the user's saved designs
+      if (!template && myDesigns) {
+        template = myDesigns.find(t => t.id === templateId);
+      }
       
       if (template) {
         handleApplyTemplate(template);
@@ -531,7 +520,6 @@ export default function DesignPage() {
       category: 'Favorites',
       previewImage: previewImage,
       canvasSize: canvasSize.name,
-      userId: user.uid,
       background: {
         type: backgroundType,
         value: bgValue,
@@ -554,7 +542,7 @@ export default function DesignPage() {
       },
     };
     if (myDesignsQuery) {
-        addDocumentNonBlocking(collection(firestore, 'users', user.uid, 'designs'), {...newDesign, createdAt: serverTimestamp()});
+        addDocumentNonBlocking(myDesignsQuery, {...newDesign, createdAt: serverTimestamp()});
     }
 
     toast({
@@ -879,10 +867,10 @@ export default function DesignPage() {
         strokeColor, setStrokeColor, strokeWidth, setStrokeWidth, isTextBoxEnabled,
         setIsTextBoxEnabled: handleTextBoxEnable, rectBgColor, setRectBgColor, rectOpacity,
         setRectOpacity, activeEffect, setActiveEffect: handleEffectChange, designs, handleDownloadAll, currentSlide,
-        handleDownload, fileName, setFileName, handleApplyTemplate, myDesigns: myDesigns || [],
+        handleDownload, fileName, setFileName, handleApplyTemplate, myDesigns: myDesigns || [], designTemplates: designTemplates || [],
         handleSaveDesign, handleDeleteDesign, handleUpdateDesign, editingDesignId,
         handleEditClick, handleCancelEdit, editingName, setEditingName, designToDelete,
-        setDesignToDelete, handleLogDesign, designTemplates: designTemplates || []
+        setDesignToDelete, handleLogDesign,
     };
 
     switch (activeSettingsTab) {
@@ -1052,27 +1040,14 @@ export default function DesignPage() {
         *
         *******************************************************/}
         <main className={cn("flex-1 flex flex-col items-center justify-center overflow-hidden h-full p-4 relative")}>
-          {isLoading ? (
-             <div className="flex flex-col items-center justify-center p-4 h-full">
-                <div className="w-full max-w-2xl">
-                    <CreativeMagicPanel
-                        text={text}
-                        setText={setText}
-                        handleGenerate={handleGenerate}
-                        isLoading={isLoading}
-                    />
-                </div>
-            </div>
-          ) : designs.length === 0 ? (
-            <div className="flex flex-col items-center justify-center p-4 h-full">
-                <div className="w-full max-w-2xl">
-                    <CreativeMagicPanel
-                        text={text}
-                        setText={setText}
-                        handleGenerate={handleGenerate}
-                        isLoading={isLoading}
-                    />
-                </div>
+          {designs.length === 0 ? (
+            <div className="w-full max-w-2xl">
+              <CreativeMagicPanel 
+                  text={text}
+                  setText={setText}
+                  handleGenerate={handleGenerate}
+                  isLoading={isLoading}
+              />
             </div>
           ) : (
             <>
@@ -1215,3 +1190,7 @@ export default function DesignPage() {
     </div>
   );
 }
+
+    
+
+    
