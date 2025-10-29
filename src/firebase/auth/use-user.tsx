@@ -32,7 +32,13 @@ export function useUser(auth: Auth): UserHookResult {
         if (user) {
           try {
             const idTokenResult: IdTokenResult = await user.getIdTokenResult(true); // Force refresh
-            const claims: CustomClaims = (idTokenResult.claims as CustomClaims) || {};
+            let claims: CustomClaims = (idTokenResult.claims as CustomClaims) || {};
+            
+            // Temporary hard-coded admin role for specific user
+            if (user.email === 'digitalartsale@gmail.com') {
+              claims = { ...claims, role: 'admin' };
+            }
+
             setUserState({
               user,
               isUserLoading: false,
@@ -42,11 +48,16 @@ export function useUser(auth: Auth): UserHookResult {
             });
           } catch (error) {
             console.error("Error getting user token/claims:", error);
+            // Even if token fails, check for hard-coded admin
+            let claims: CustomClaims = {};
+            if (user.email === 'digitalartsale@gmail.com') {
+              claims = { role: 'admin' };
+            }
             setUserState({
               user,
               isUserLoading: false,
               userError: error instanceof Error ? error : new Error('Failed to get token'),
-              claims: null,
+              claims, // Apply hard-coded claims even on error
               idToken: null,
             });
           }

@@ -13,10 +13,8 @@ export default function AdminPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!isUserLoading) {
-      if (!user || claims?.role !== 'admin') {
-        router.push('/design');
-      }
+    if (!isUserLoading && (!user || claims?.role !== 'admin')) {
+      router.push('/design');
     }
   }, [user, claims, isUserLoading, router]);
 
@@ -45,7 +43,7 @@ export default function AdminPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p>You have special privileges. Use them wisely!</p>
+            <p>Welcome, {user.email}. You have special privileges.</p>
           </CardContent>
         </Card>
       </div>

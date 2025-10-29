@@ -5,23 +5,19 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCollection, useUser, useFirestore, useMemoFirebase } from '@/firebase';
 import type { DesignTemplate } from '@/lib/types';
-import { collection, query, where, writeBatch, getDocs, doc } from 'firebase/firestore';
+import { collection, query, where } from 'firebase/firestore';
 import { PlusCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect } from 'react';
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
-import { useToast } from '@/hooks/use-toast';
-import { seedData } from '@/lib/seed-data';
 
 export default function DashboardPage() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
-  const { toast } = useToast();
-  const seedingRef = useRef(false);
 
   const myDesignsQuery = useMemoFirebase(() => {
     if (!user || !firestore) return null;
@@ -37,40 +33,11 @@ export default function DashboardPage() {
 
   const { data: designTemplates, isLoading: areTemplatesLoading } = useCollection<DesignTemplate>(designTemplatesQuery);
 
-  const handleSeedDatabase = useCallback(async () => {
-    if (!firestore || seedingRef.current) {
-        return;
-    }
-    seedingRef.current = true;
-    
-    try {
-        const batch = writeBatch(firestore);
-        seedData.forEach((templateData) => {
-            const docRef = doc(collection(firestore, 'design-templates'));
-            batch.set(docRef, templateData);
-        });
-        await batch.commit();
-        toast({ title: 'Success', description: 'Default design templates have been loaded.' });
-    } catch (error: any) {
-        console.error("Error seeding database:", error);
-        toast({ title: 'Error', description: 'Could not load default templates.', variant: 'destructive' });
-    } finally {
-        seedingRef.current = false; // Allow re-seeding if it fails and is triggered again.
-    }
-  }, [firestore, toast]);
-
-
   useEffect(() => {
     if (!isUserLoading && !user) {
       router.push('/');
     }
   }, [user, isUserLoading, router]);
-
-  useEffect(() => {
-    if (firestore && !areTemplatesLoading && designTemplates?.length === 0 && !seedingRef.current) {
-      handleSeedDatabase();
-    }
-  }, [firestore, designTemplates, areTemplatesLoading, handleSeedDatabase]);
 
 
   if (isUserLoading || areMyDesignsLoading || areTemplatesLoading || !user) {
@@ -157,7 +124,8 @@ export default function DashboardPage() {
               </div>
             ) : (
                  <div className="text-center py-12 border-2 border-dashed rounded-lg">
-                    <p className="text-muted-foreground">Loading default templates...</p>
+                    <p className="text-muted-foreground">No design templates found.</p>
+                    <p className="text-xs text-muted-foreground mt-2">You can add templates to the 'design-templates' collection in Firestore.</p>
                  </div>
             )}
           </CardContent>
