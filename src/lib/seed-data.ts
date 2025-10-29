@@ -51,6 +51,9 @@ export const seedData: Omit<DesignTemplate, 'id' | 'userId'>[] = [
       color: '#7585A3',
       opacity: 0,
     },
+    effect: {
+      id: 'none',
+    }
   },
   // Special Effects
   {

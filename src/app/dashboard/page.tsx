@@ -54,6 +54,8 @@ export default function DashboardPage() {
     } catch (error: any) {
         console.error("Error seeding database:", error);
         toast({ title: 'Error', description: 'Could not load default templates.', variant: 'destructive' });
+    } finally {
+        seedingRef.current = false; // Allow re-seeding if it fails and is triggered again.
     }
   }, [firestore, toast]);
 
