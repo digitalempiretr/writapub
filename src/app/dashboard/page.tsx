@@ -3,21 +3,25 @@
 import { Header } from '@/components/header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { useCollection, useUser, useFirestore, useMemoFirebase } from '@/firebase';
+import { useCollection, useUser, useFirestore, useMemoFirebase, addDocumentNonBlocking } from '@/firebase';
 import type { DesignTemplate } from '@/lib/types';
-import { collection, query, where } from 'firebase/firestore';
-import { PlusCircle } from 'lucide-react';
+import { collection, query, where, writeBatch, getDocs } from 'firebase/firestore';
+import { PlusCircle, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
+import { useToast } from '@/hooks/use-toast';
+import { seedData } from '@/lib/seed-data';
 
 export default function DashboardPage() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
+  const { toast } = useToast();
+  const [isSeeding, setIsSeeding] = useState(false);
 
   const myDesignsQuery = useMemoFirebase(() => {
     if (!user || !firestore) return null;
@@ -32,6 +36,33 @@ export default function DashboardPage() {
   }, [firestore]);
 
   const { data: designTemplates, isLoading: areTemplatesLoading } = useCollection<DesignTemplate>(designTemplatesQuery);
+
+  const handleSeedDatabase = useCallback(async () => {
+    if (!firestore) {
+        toast({ title: 'Firestore is not available', variant: 'destructive' });
+        return;
+    }
+    setIsSeeding(true);
+    try {
+        const templatesCollection = collection(firestore, 'design-templates');
+        const batch = writeBatch(firestore);
+
+        seedData.forEach((templateData) => {
+            const docRef = doc(templatesCollection); // Automatically generate ID
+            batch.set(docRef, templateData);
+        });
+
+        await batch.commit();
+        toast({ title: 'Success', description: 'Design templates have been seeded to the database.' });
+
+    } catch (error: any) {
+        console.error("Error seeding database:", error);
+        toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    } finally {
+        setIsSeeding(false);
+    }
+  }, [firestore, toast]);
+
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -58,6 +89,10 @@ export default function DashboardPage() {
         <div className="flex justify-between items-center">
           <h1 className="text-3xl md:text-4xl font-bold">Dashboard</h1>
           <div className="flex items-center gap-2">
+            <Button onClick={handleSeedDatabase} disabled={isSeeding}>
+                {isSeeding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                Seed Database
+            </Button>
             <Button asChild>
               <Link href="/design">
                 <PlusCircle className="mr-2 h-4 w-4" /> Create New Design
@@ -125,7 +160,7 @@ export default function DashboardPage() {
               </div>
             ) : (
                  <div className="text-center py-12 border-2 border-dashed rounded-lg">
-                    <p className="text-muted-foreground">No design templates available. An admin needs to seed the database.</p>
+                    <p className="text-muted-foreground">No design templates available. Click "Seed Database" to load them.</p>
                  </div>
             )}
           </CardContent>
