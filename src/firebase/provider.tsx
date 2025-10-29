@@ -32,7 +32,8 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
   firestore,
   auth,
 }) => {
-  const { user, isUserLoading, userError, claims } = useUserFromHook(auth); // Use the dedicated hook
+  // Pass firestore directly to the hook to break the circular dependency
+  const { user, isUserLoading, userError, claims } = useUserFromHook(auth, firestore);
 
   const contextValue = useMemo((): FirebaseContextState => {
     return {
