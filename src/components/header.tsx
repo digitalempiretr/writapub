@@ -61,7 +61,7 @@ export function Header({
 
   return (
     <header className="w-full text-left p-4 md:px-8 flex items-center justify-between z-20 bg-background/80 backdrop-blur-sm sticky top-0 border-b">
-      <Link href={user ? "/home" : "/"} aria-label="Go to homepage">
+      <Link href={user ? "/design" : "/"} aria-label="Go to homepage">
         <Logo className="text-[1.5rem] text-primary" />
       </Link>
 
@@ -166,9 +166,9 @@ export function Header({
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
                <DropdownMenuItem asChild>
-                  <Link href="/home">
+                  <Link href="/dashboard">
                     <LayoutDashboard className="mr-2 h-4 w-4" />
-                    <span>Home</span>
+                    <span>Dashboard</span>
                   </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />

@@ -45,7 +45,6 @@ export default function WelcomePage() {
                         googleId: result.user.providerData.find(p => p.providerId === 'google.com')?.uid || null,
                     }, { merge: true });
                 }
-                // The onAuthStateChanged listener in useUser will handle the user state update and trigger redirection.
             }
         } catch (error: any) {
             console.error("Error processing redirect result:", error);
@@ -66,7 +65,7 @@ export default function WelcomePage() {
 
   useEffect(() => {
     if (user) {
-        router.push('/home');
+        router.push('/design');
     } else {
         handleRedirectResult();
     }
@@ -113,7 +112,6 @@ export default function WelcomePage() {
         } else {
             await signInWithEmailAndPassword(auth, email, password);
         }
-        // Redirection is handled by the useEffect watching the `user` state.
     } catch (error: any) {
         let description = "An unexpected error occurred. Please try again.";
         switch (error.code) {

@@ -38,6 +38,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/com
 import { DesignTemplate, designTemplates } from "@/lib/design-templates";
 import { TextSettings, type Shadow } from "@/components/3_text-settings";
 import { BackgroundSettings } from "@/components/2_background-settings";
+import { findImages } from "@/lib/unsplash-api";
 import { DesignsPanel } from "@/components/1_templates";
 import { MyDesignsPanel } from "@/components/4_favorites";
 import { DownloadPanel } from "@/components/5_download-panel";
@@ -52,7 +53,7 @@ import { collection, doc, serverTimestamp } from "firebase/firestore";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Header } from "@/components/header";
 import { CreativeMagicPanel } from "@/components/0_creative-magic-panel";
-import Link from "next/link";
+import Link from 'next/link';
 
 
 type Design = {
@@ -1049,16 +1050,26 @@ export default function DesignPage() {
         *******************************************************/}
         <main className={cn("flex-1 flex flex-col items-center justify-center overflow-hidden h-full p-4 relative")}>
           {isLoading ? (
-             <div className="w-64 h-64">
-                <Lottie animationData={webflowAnimation} loop={true} />
-             </div>
+             <div className="flex flex-col items-center justify-center p-4 h-full">
+                <div className="w-full max-w-2xl">
+                    <CreativeMagicPanel
+                        text={text}
+                        setText={setText}
+                        handleGenerate={handleGenerate}
+                        isLoading={isLoading}
+                    />
+                </div>
+            </div>
           ) : designs.length === 0 ? (
-            <div className="text-center text-muted-foreground">
-                <p>No text found to generate designs.</p>
-                <p>Please go back and enter some text.</p>
-                <Button variant="link" asChild className="mt-4">
-                    <Link href="/enter-text">Go to Text Input</Link>
-                </Button>
+            <div className="flex flex-col items-center justify-center p-4 h-full">
+                <div className="w-full max-w-2xl">
+                    <CreativeMagicPanel
+                        text={text}
+                        setText={setText}
+                        handleGenerate={handleGenerate}
+                        isLoading={isLoading}
+                    />
+                </div>
             </div>
           ) : (
             <>
@@ -1201,11 +1212,3 @@ export default function DesignPage() {
     </div>
   );
 }
-
-    
-
-    
-
-    
-
-    
