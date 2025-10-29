@@ -5,19 +5,24 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCollection, useUser, useFirestore, useMemoFirebase } from '@/firebase';
 import type { DesignTemplate } from '@/lib/types';
-import { collection } from 'firebase/firestore';
-import { PlusCircle } from 'lucide-react';
+import { collection, writeBatch, doc } from 'firebase/firestore';
+import { PlusCircle, Upload } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
+import { useToast } from '@/hooks/use-toast';
+import { designTemplatesSeed } from '@/lib/seed-data';
+
 
 export default function DashboardPage() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
+  const { toast } = useToast();
+  const [isSeeding, setIsSeeding] = useState(false);
 
   const myDesignsQuery = useMemoFirebase(() => {
     if (!user || !firestore) return null;
@@ -39,6 +44,43 @@ export default function DashboardPage() {
     }
   }, [user, isUserLoading, router]);
 
+  const handleSeedDatabase = async () => {
+    if (!firestore) return;
+    setIsSeeding(true);
+    toast({
+      title: "Seeding Database...",
+      description: "Please wait while we populate the design templates.",
+    });
+
+    try {
+      const batch = writeBatch(firestore);
+      const templatesCollectionRef = collection(firestore, 'design-templates');
+
+      designTemplatesSeed.forEach((template) => {
+        const docRef = doc(templatesCollectionRef, template.id);
+        batch.set(docRef, template);
+      });
+
+      await batch.commit();
+
+      toast({
+        title: "Success!",
+        description: "Design templates have been successfully added to the database.",
+      });
+
+    } catch (error) {
+      console.error("Error seeding database:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to seed the database. Check the console for details.",
+      });
+    } finally {
+      setIsSeeding(false);
+    }
+  };
+
+
   if (isUserLoading || areMyDesignsLoading || areTemplatesLoading || !user) {
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
@@ -57,11 +99,17 @@ export default function DashboardPage() {
       <div className="container mx-auto p-4 md:p-8 space-y-12">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl md:text-4xl font-bold">Dashboard</h1>
-          <Button asChild>
-            <Link href="/design">
-              <PlusCircle className="mr-2 h-4 w-4" /> Create New Design
-            </Link>
-          </Button>
+          <div className="flex items-center gap-2">
+             <Button onClick={handleSeedDatabase} disabled={isSeeding}>
+              <Upload className="mr-2 h-4 w-4" />
+              {isSeeding ? 'Seeding...' : 'Seed Database'}
+            </Button>
+            <Button asChild>
+              <Link href="/design">
+                <PlusCircle className="mr-2 h-4 w-4" /> Create New Design
+              </Link>
+            </Button>
+          </div>
         </div>
 
         <Card>
@@ -123,7 +171,7 @@ export default function DashboardPage() {
               </div>
             ) : (
                  <div className="text-center py-12 border-2 border-dashed rounded-lg">
-                    <p className="text-muted-foreground">No design templates available at the moment.</p>
+                    <p className="text-muted-foreground">No design templates available. Click "Seed Database" to populate them.</p>
                  </div>
             )}
           </CardContent>
