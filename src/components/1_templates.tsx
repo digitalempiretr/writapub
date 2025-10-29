@@ -166,7 +166,7 @@ const TemplateCarousel = ({ templates, handleApplyTemplate }: { templates: Desig
 
 
 export function DesignsPanel({ handleApplyTemplate, designTemplates }: DesignsPanelProps) {
-  const groupedTemplates = designTemplates.reduce((acc, template) => {
+  const groupedTemplates = (designTemplates || []).reduce((acc, template) => {
     const category = template.category || 'Uncategorized';
     if (!acc[category]) {
       acc[category] = [];
@@ -186,5 +186,3 @@ export function DesignsPanel({ handleApplyTemplate, designTemplates }: DesignsPa
     </div>
   );
 }
-
-    
