@@ -110,12 +110,16 @@ export default function DesignPage() {
     // Background
     let backgroundValue: string | Gradient = bgColor;
     if (backgroundTab === 'image' && imageBgUrl) {
-        canvas.setBackgroundColor('', canvas.renderAll.bind(canvas));
-        canvas.setBackgroundImage(imageBgUrl, canvas.renderAll.bind(canvas), { crossOrigin: 'anonymous' });
+      canvas.setBackgroundColor('', canvas.renderAll.bind(canvas));
+      canvas.setBackgroundImage(imageBgUrl, canvas.renderAll.bind(canvas), { crossOrigin: 'anonymous' });
     } else {
-        canvas.backgroundImage = null;
-        if (backgroundTab === 'gradient') backgroundValue = new Gradient({ ...(gradientBg as any) });
-        canvas.setBackgroundColor(backgroundValue, canvas.renderAll.bind(canvas));
+      canvas.backgroundImage = null; // Clear background image first
+      if (backgroundTab === 'gradient') {
+        backgroundValue = new Gradient({ ...(gradientBg as any) });
+      }
+      // Direct property assignment instead of function call
+      canvas.backgroundColor = backgroundValue;
+      canvas.renderAll();
     }
     
     // Overlay
