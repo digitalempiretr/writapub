@@ -23,7 +23,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Copy, FilePenLine, Check, X, Trash2 } from "lucide-react";
+import { Plus, FilePenLine, Check, X, Trash2 } from "lucide-react";
 import { DesignTemplate } from "@/lib/types";
 import Image from 'next/image';
 import { fontOptions } from "@/lib/font-options";
@@ -41,7 +41,6 @@ type MyDesignsPanelProps = {
   setEditingName: (name: string) => void;
   designToDelete: string | null;
   setDesignToDelete: (id: string | null) => void;
-  handleLogDesign: () => void;
   handleApplyTemplate: (template: DesignTemplate) => void;
 };
 
@@ -57,7 +56,6 @@ export function MyDesignsPanel({
   setEditingName,
   designToDelete,
   setDesignToDelete,
-  handleLogDesign,
   handleApplyTemplate,
 }: MyDesignsPanelProps) {
   const [api, setApi] = useState<CarouselApi>();
@@ -177,16 +175,6 @@ export function MyDesignsPanel({
         
         <div className="flex gap-2">
           <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button onClick={handleLogDesign} size="sm" variant="outline">
-                <Copy className="mr-2 h-4 w-4" /> Log
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Log current design to console for development.</p>
-            </TooltipContent>
-          </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button onClick={handleSaveDesign} size="sm">
