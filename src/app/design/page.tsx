@@ -76,7 +76,10 @@ export default function DesignPage() {
   const myDesignsQuery = useMemoFirebase(() => user && firestore ? collection(firestore, 'users', user.uid, 'designs') : null, [user, firestore]);
   const { data: myDesigns, isLoading: areMyDesignsLoading } = useCollection<DesignTemplate>(myDesignsQuery);
 
-  const designTemplatesQuery = useMemoFirebase(() => firestore ? collection(firestore, 'design-templates') : null, [firestore]);
+  const designTemplatesQuery = useMemoFirebase(() => {
+      if (!firestore) return null;
+      return collection(firestore, 'design-templates');
+  }, [firestore]);
   const { data: designTemplates, isLoading: areTemplatesLoading } = useCollection<DesignTemplate>(designTemplatesQuery);
 
   const templateDocRef = useMemoFirebase(() => {
@@ -247,3 +250,5 @@ export default function DesignPage() {
     </>
   );
 }
+
+    
