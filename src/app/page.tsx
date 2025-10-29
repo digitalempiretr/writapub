@@ -43,6 +43,7 @@ export default function WelcomePage() {
                         email: result.user.email,
                         profileImageUrl: result.user.photoURL,
                         googleId: result.user.providerData.find(p => p.providerId === 'google.com')?.uid || null,
+                        role: 'user', // Assign default role
                     }, { merge: true });
                 }
             }
@@ -108,6 +109,7 @@ export default function WelcomePage() {
                 email: user.email,
                 profileImageUrl: user.photoURL || `https://i.pravatar.cc/150?u=${user.uid}`,
                 googleId: null,
+                role: 'user', // Assign default role
             }, { merge: true });
         } else {
             await signInWithEmailAndPassword(auth, email, password);

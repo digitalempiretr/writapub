@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Auth, User, onAuthStateChanged, IdTokenResult } from 'firebase/auth';
+import { Auth, User, onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { useFirestore } from '..'; // Import useFirestore
 
 export interface CustomClaims {
   role?: 'admin' | 'user';
@@ -13,10 +15,11 @@ export interface UserHookResult {
   isUserLoading: boolean;
   userError: Error | null;
   claims: CustomClaims | null;
-  idToken: string | null;
+  idToken: string | null; // Kept for type consistency, but will be null
 }
 
 export function useUser(auth: Auth): UserHookResult {
+  const firestore = useFirestore(); // Get firestore instance from context
   const [userState, setUserState] = useState<UserHookResult>({
     user: auth.currentUser,
     isUserLoading: true,
@@ -26,42 +29,54 @@ export function useUser(auth: Auth): UserHookResult {
   });
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
+    const authUnsubscribe = onAuthStateChanged(
       auth,
       async (user) => {
         if (user) {
-          try {
-            const idTokenResult: IdTokenResult = await user.getIdTokenResult(true); // Force refresh
-            let claims: CustomClaims = (idTokenResult.claims as CustomClaims) || {};
-            
-            // Temporary hard-coded admin role for specific user
-            if (user.email === 'digitalartsale@gmail.com') {
-              claims = { ...claims, role: 'admin' };
+          // If a user is authenticated, listen for changes to their document in Firestore
+          const userDocRef = doc(firestore, 'users', user.uid);
+          
+          const docUnsubscribe = onSnapshot(userDocRef, 
+            (docSnap) => {
+              if (docSnap.exists()) {
+                const userData = docSnap.data();
+                const claims: CustomClaims = { role: userData.role || 'user' };
+                setUserState({
+                  user,
+                  isUserLoading: false,
+                  userError: null,
+                  claims,
+                  idToken: null, // We are not handling ID token directly here anymore
+                });
+              } else {
+                // This case might happen briefly if the user doc hasn't been created yet.
+                // We'll set a default 'user' role.
+                 setUserState({
+                  user,
+                  isUserLoading: false,
+                  userError: null,
+                  claims: { role: 'user' },
+                  idToken: null,
+                });
+              }
+            }, 
+            (error) => {
+              console.error("Error fetching user document for claims:", error);
+              setUserState({
+                user,
+                isUserLoading: false,
+                userError: error,
+                claims: null, // Could set to a default/error state
+                idToken: null,
+              });
             }
+          );
+          
+          // Return the cleanup function for the document listener
+          return () => docUnsubscribe();
 
-            setUserState({
-              user,
-              isUserLoading: false,
-              userError: null,
-              claims,
-              idToken: idTokenResult.token,
-            });
-          } catch (error) {
-            console.error("Error getting user token/claims:", error);
-            // Even if token fails, check for hard-coded admin
-            let claims: CustomClaims = {};
-            if (user.email === 'digitalartsale@gmail.com') {
-              claims = { role: 'admin' };
-            }
-            setUserState({
-              user,
-              isUserLoading: false,
-              userError: error instanceof Error ? error : new Error('Failed to get token'),
-              claims, // Apply hard-coded claims even on error
-              idToken: null,
-            });
-          }
         } else {
+          // No user is signed in
           setUserState({
             user: null,
             isUserLoading: false,
@@ -72,6 +87,7 @@ export function useUser(auth: Auth): UserHookResult {
         }
       },
       (error) => {
+        // Error with the auth listener itself
         console.error("useUser hook onAuthStateChanged error:", error);
         setUserState({
           user: null,
@@ -83,8 +99,9 @@ export function useUser(auth: Auth): UserHookResult {
       }
     );
 
-    return () => unsubscribe();
-  }, [auth]);
+    // Return the cleanup function for the auth state listener
+    return () => authUnsubscribe();
+  }, [auth, firestore]); // Add firestore to dependency array
 
   return userState;
 }
