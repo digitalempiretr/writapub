@@ -186,3 +186,5 @@ export function DesignsPanel({ handleApplyTemplate, designTemplates }: DesignsPa
     </div>
   );
 }
+
+    
