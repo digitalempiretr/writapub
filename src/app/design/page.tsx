@@ -48,7 +48,7 @@ export default function DesignPage() {
   const [activeEffect, setActiveEffect] = useState<TextEffect>(textEffects[0]);
 
   // Background state
-  const [backgroundTab, setBackgroundTab] = useState('flat');
+  const [backgroundTab, setBackgroundTab] = useState('templates');
   const [bgColor, setBgColor] = useState('#000000');
   const [gradientBg, setGradientBg] = useState('');
   const [imageBgUrl, setImageBgUrl] = useState('');
@@ -109,7 +109,7 @@ export default function DesignPage() {
         canvas.setBackgroundColor('', canvas.renderAll.bind(canvas));
         canvas.setBackgroundImage(imageBgUrl, canvas.renderAll.bind(canvas), { crossOrigin: 'anonymous' });
     } else {
-        canvas.setBackgroundImage(undefined, canvas.renderAll.bind(canvas));
+        canvas.backgroundImage = null;
         if (backgroundTab === 'gradient') backgroundValue = new Gradient({ ...(gradientBg as any) });
         canvas.setBackgroundColor(backgroundValue, canvas.renderAll.bind(canvas));
     }
