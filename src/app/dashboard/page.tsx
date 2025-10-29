@@ -6,11 +6,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useCollection, useUser, useFirestore, useMemoFirebase } from '@/firebase';
 import type { DesignTemplate } from '@/lib/types';
 import { collection, query, where, writeBatch, getDocs, doc } from 'firebase/firestore';
-import { PlusCircle, Loader2 } from 'lucide-react';
+import { PlusCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
 import { useToast } from '@/hooks/use-toast';
@@ -21,7 +21,7 @@ export default function DashboardPage() {
   const firestore = useFirestore();
   const router = useRouter();
   const { toast } = useToast();
-  const [isSeeding, setIsSeeding] = useState(false);
+  const seedingRef = useRef(false);
 
   const myDesignsQuery = useMemoFirebase(() => {
     if (!user || !firestore) return null;
@@ -38,34 +38,22 @@ export default function DashboardPage() {
   const { data: designTemplates, isLoading: areTemplatesLoading } = useCollection<DesignTemplate>(designTemplatesQuery);
 
   const handleSeedDatabase = useCallback(async () => {
-    if (!firestore) {
-        toast({ title: 'Firestore is not available', variant: 'destructive' });
+    if (!firestore || seedingRef.current) {
         return;
     }
-    setIsSeeding(true);
+    seedingRef.current = true;
+    
     try {
-        const templatesCollectionRef = collection(firestore, 'design-templates');
-        const existingTemplates = await getDocs(templatesCollectionRef);
-        if(!existingTemplates.empty){
-             toast({ title: 'Database Already Seeded', description: 'Design templates already exist in the database.' });
-             setIsSeeding(false);
-             return;
-        }
-
         const batch = writeBatch(firestore);
         seedData.forEach((templateData) => {
-            const docRef = doc(templatesCollectionRef); 
+            const docRef = doc(collection(firestore, 'design-templates'));
             batch.set(docRef, templateData);
         });
-
         await batch.commit();
-        toast({ title: 'Success', description: 'Design templates have been seeded to the database.' });
-
+        toast({ title: 'Success', description: 'Default design templates have been loaded.' });
     } catch (error: any) {
         console.error("Error seeding database:", error);
-        toast({ title: 'Error', description: error.message, variant: 'destructive' });
-    } finally {
-        setIsSeeding(false);
+        toast({ title: 'Error', description: 'Could not load default templates.', variant: 'destructive' });
     }
   }, [firestore, toast]);
 
@@ -77,13 +65,10 @@ export default function DashboardPage() {
   }, [user, isUserLoading, router]);
 
   useEffect(() => {
-    if (firestore && !areTemplatesLoading && designTemplates?.length === 0) {
-      // Automatically seed if the collection is empty.
-      // This can be adapted based on whether you want this to run every time
-      // or only under specific conditions.
-      // handleSeedDatabase();
+    if (firestore && !areTemplatesLoading && designTemplates?.length === 0 && !seedingRef.current) {
+      handleSeedDatabase();
     }
-  }, [firestore, designTemplates, areTemplatesLoading]);
+  }, [firestore, designTemplates, areTemplatesLoading, handleSeedDatabase]);
 
 
   if (isUserLoading || areMyDesignsLoading || areTemplatesLoading || !user) {
@@ -104,17 +89,11 @@ export default function DashboardPage() {
       <div className="container mx-auto p-4 md:p-8 space-y-12">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl md:text-4xl font-bold">Dashboard</h1>
-          <div className="flex items-center gap-2">
-            <Button onClick={handleSeedDatabase} disabled={isSeeding}>
-                {isSeeding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                Seed Database
-            </Button>
-            <Button asChild>
-              <Link href="/design">
-                <PlusCircle className="mr-2 h-4 w-4" /> Create New Design
-              </Link>
-            </Button>
-          </div>
+          <Button asChild>
+            <Link href="/design">
+              <PlusCircle className="mr-2 h-4 w-4" /> Create New Design
+            </Link>
+          </Button>
         </div>
 
         <Card>
@@ -176,7 +155,7 @@ export default function DashboardPage() {
               </div>
             ) : (
                  <div className="text-center py-12 border-2 border-dashed rounded-lg">
-                    <p className="text-muted-foreground">No design templates available. Click "Seed Database" to load them.</p>
+                    <p className="text-muted-foreground">Loading default templates...</p>
                  </div>
             )}
           </CardContent>

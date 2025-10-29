@@ -1,7 +1,7 @@
 import type { DesignTemplate } from './types';
 
 // Omit 'id' as Firestore will generate it automatically.
-export const seedData: Omit<DesignTemplate, 'id'>[] = [
+export const seedData: Omit<DesignTemplate, 'id' | 'userId'>[] = [
   // Authors Templates
   {
     name: "Daktilo",
