@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Header } from '@/components/header';
@@ -5,14 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCollection, useUser, useFirestore, useMemoFirebase } from '@/firebase';
 import { DesignTemplate } from '@/lib/types';
-import { collection, writeBatch, getDocs, doc } from 'firebase/firestore';
+import { collection } from 'firebase/firestore';
 import { PlusCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { designTemplates as seedData } from '@/lib/seed-data';
 
 export default function DashboardPage() {
   const { user, isUserLoading } = useUser();
@@ -32,29 +32,6 @@ export default function DashboardPage() {
 
   const { data: myDesigns, isLoading: areDesignsLoading } = useCollection<DesignTemplate>(myDesignsQuery);
   const { data: designTemplates, isLoading: areTemplatesLoading } = useCollection<DesignTemplate>(designTemplatesQuery);
-
-  useEffect(() => {
-    const seedDatabase = async () => {
-        if (!firestore) return;
-        const templatesCollection = collection(firestore, 'design-templates');
-        const snapshot = await getDocs(templatesCollection);
-        if (snapshot.empty) {
-            console.log('Database is empty, seeding...');
-            const batch = writeBatch(firestore);
-            seedData.forEach((template) => {
-                const docRef = doc(templatesCollection, template.id);
-                batch.set(docRef, template);
-            });
-            await batch.commit();
-            console.log('Database seeded!');
-        } else {
-            console.log('Database already contains data, skipping seed.');
-        }
-    };
-
-    seedDatabase().catch(console.error);
-  }, [firestore]);
-
 
   useEffect(() => {
     if (!isUserLoading && !user) {
