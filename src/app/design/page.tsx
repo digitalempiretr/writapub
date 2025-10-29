@@ -247,7 +247,3 @@ export default function DesignPage() {
     </>
   );
 }
-
-    
-
-    
