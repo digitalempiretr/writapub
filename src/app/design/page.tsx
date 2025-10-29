@@ -49,7 +49,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Icons } from "@/components/ui/icons";
 import { useUser, useFirestore, useMemoFirebase, useCollection, addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase';
-import { collection, doc, serverTimestamp } from "firebase/firestore";
+import { collection, doc, serverTimestamp, query, where } from "firebase/firestore";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Header } from "@/components/header";
 import { CreativeMagicPanel } from "@/components/0_creative-magic-panel";
@@ -101,7 +101,7 @@ export default function DesignPage() {
   
   const myDesignsQuery = useMemoFirebase(() => {
     if (!user || !firestore) return null;
-    return collection(firestore, 'users', user.uid, 'designs');
+    return query(collection(firestore, 'users', user.uid, 'designs'), where('userId', '==', user.uid));
   }, [firestore, user]);
   const { data: myDesigns } = useCollection<DesignTemplate>(myDesignsQuery);
 
@@ -531,6 +531,7 @@ export default function DesignPage() {
       category: 'Favorites',
       previewImage: previewImage,
       canvasSize: canvasSize.name,
+      userId: user.uid,
       background: {
         type: backgroundType,
         value: bgValue,
@@ -553,7 +554,7 @@ export default function DesignPage() {
       },
     };
     if (myDesignsQuery) {
-        addDocumentNonBlocking(myDesignsQuery, {...newDesign, createdAt: serverTimestamp()});
+        addDocumentNonBlocking(collection(firestore, 'users', user.uid, 'designs'), {...newDesign, createdAt: serverTimestamp()});
     }
 
     toast({

@@ -3,6 +3,7 @@ export type DesignTemplate = {
     name: string;
     category: 'Special Effects' | 'Color Styles' | 'Authors Templates' | 'Gradient Styles' | 'Favorites';
     previewImage: string;
+    userId?: string;
     background: {
       type: 'flat' | 'gradient' | 'image';
       value: string;

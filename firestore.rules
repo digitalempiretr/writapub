@@ -1,122 +1,116 @@
 /**
- * @file Firebase Security Rules for Post Weaver Application
- *
- * @core_philosophy This ruleset enforces a strict user-ownership model for designs,
- * ensuring that only authenticated users can access and modify their own design data.
- * Design templates are publicly readable but not writable.
- *
- * @data_structure
- * - /users/{userId}: Stores user profile data, with 'userId' matching the Firebase auth UID.
- * - /users/{userId}/designs/{designId}: Stores design data, with 'userId' mirroring the parent user's ID.
- * - /design-templates/{templateId}: Stores publicly readable design templates.
- *
- * @key_security_decisions
- * - Users can only read and write their own data under /users/{userId}.
- * - Designs are owned by the user under /users/{userId}/designs/{designId}
- * - Listing of design templates is public.
- * - User listing is disallowed for privacy.
- *
- * @denormalization_for_authorization
- * - The 'Design' entity includes a 'userId' field to simplify ownership checks and avoid costly `get()` calls.
- *   This denormalization allows for direct comparison with `request.auth.uid` in the rules.
- *
- * @structural_segregation
- * - Design templates are stored in a separate, top-level collection (/design-templates) to allow public read access
- *   without exposing user-specific data.
+ * @description This ruleset enforces a strict user-ownership model for designs and a public-read, owner-write model for design templates.
+ * @dataStructure
+ *   - All user data and designs are nested under /users/{userId}.
+ *   - Designs are stored in a subcollection /users/{userId}/designs/{designId}.
+ *   - Design templates are stored in the top-level collection /design-templates/{templateId}.
+ * @keySecurityDecisions
+ *   - Users can only access their own user document.
+ *   - Users can only access designs they own.
+ *   - Design templates are publicly readable but only writable by the owner (not implemented in this version).
+ * @denormalizationForAuthorization
+ *   - Each design document has a `userId` field that is used to enforce ownership.
+ * @structuralSegregation
+ *   - Private user data and public template data are stored in separate collections to avoid complex read rules.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Prevents listing of all users. This is a privacy best practice.
-     * @path /users
-     * @allow (list) N/A - Listing is denied.
-     * @deny (list) An unauthenticated user attempts to list all users.
-     * @principle Prevents information disclosure by disallowing user enumeration.
-     */
-    match /users {
-      allow list: if false;
-    }
-
-    /**
-     * @description Controls access to user profiles. Users can only read and write their own profile.
+     * @description Controls access to user profile documents.
      * @path /users/{userId}
-     * @allow (get) An authenticated user reads their own profile.
-     * @allow (create) An authenticated user creates their own profile if the userId matches their auth.uid.
-     * @allow (update) An authenticated user updates their own profile if the userId matches their auth.uid.
-     * @allow (delete) An authenticated user deletes their own profile if the userId matches their auth.uid and the document exists.
-     * @deny (get) An unauthenticated user attempts to read a profile.
-     * @deny (create) An authenticated user attempts to create a profile with a userId that doesn't match their auth.uid.
-     * @deny (update) An unauthenticated user attempts to update a profile.
-     * @deny (delete) An unauthenticated user attempts to delete a profile that does not exist.
-     * @principle Enforces user-ownership for profile data.
+     * @allow (create) User with UID 'user123' can create their own document.
+     * @allow (get) User with UID 'user123' can read their own document.
+     * @allow (update) User with UID 'user123' can update their own document.
+     * @allow (delete) User with UID 'user123' can delete their own document.
+     * @deny (get) User with UID 'user456' cannot read user document with ID 'user123'.
+     * @deny (create) User with UID 'user456' cannot create a user document with ID 'user123'.
+     * @principle Enforces document ownership for all operations.
      */
     match /users/{userId} {
+      // Function to check if the user is signed in
       function isSignedIn() {
         return request.auth != null;
       }
 
+      // Function to check if the requested user ID matches the authenticated user ID
       function isOwner(userId) {
         return request.auth.uid == userId;
       }
 
-      function isExistingOwner(userId) {
-          return isOwner(userId) && resource != null;
-      }
-
-      allow get: if isSignedIn() && isOwner(userId);
+      // Allow a user to create their own document if the UID matches
       allow create: if isSignedIn() && isOwner(userId) && request.resource.data.id == userId;
-      allow update: if isSignedIn() && isExistingOwner(userId) && request.resource.data.id == resource.data.id;
-      allow delete: if isSignedIn() && isExistingOwner(userId);
+
+      // Allow a user to get their own document if signed in and the UID matches
+      allow get: if isSignedIn() && isOwner(userId);
+
+      // Allow a user to update their own document if signed in and the UID matches
+      allow update: if isSignedIn() && isOwner(userId) && request.resource.data.id == resource.data.id;
+
+      // Allow a user to delete their own document if signed in and the UID matches
+      allow delete: if isSignedIn() && isOwner(userId) && resource != null;
+
+      // List operation
       allow list: if false;
     }
 
     /**
-     * @description Controls access to user designs.  Users can only read and write their own designs.
+     * @description Controls access to design documents nested under a user.
      * @path /users/{userId}/designs/{designId}
-     * @allow (get) An authenticated user reads their own design.
-     * @allow (create) An authenticated user creates a design under their own user ID.
-     * @allow (update) An authenticated user updates their own design.
-     * @allow (delete) An authenticated user deletes their own design.
-     * @deny (get) An unauthenticated user attempts to read a design.
-     * @deny (create) An authenticated user attempts to create a design under another user's ID.
-     * @deny (update) An unauthenticated user attempts to update a design they don't own.
-     * @deny (delete) An unauthenticated user attempts to delete a design they don't own or does not exist.
-     * @principle Enforces user-ownership for design data.
+     * @allow (create) User with UID 'user123' can create a design under their ID.
+     * @allow (get) User with UID 'user123' can read a design under their ID.
+     * @allow (update) User with UID 'user123' can update a design under their ID.
+     * @allow (delete) User with UID 'user123' can delete a design under their ID.
+     * @deny (create) User with UID 'user456' cannot create a design under user 'user123'.
+     * @deny (get) User with UID 'user456' cannot read a design under user 'user123'.
+     * @principle Enforces document ownership for all operations.
      */
     match /users/{userId}/designs/{designId} {
+      // Function to check if the user is signed in
       function isSignedIn() {
         return request.auth != null;
       }
 
+      // Function to check if the requested user ID matches the authenticated user ID
       function isOwner(userId) {
         return request.auth.uid == userId;
       }
+      
+       function isExistingOwner(userId) {
+            return isSignedIn() && isOwner(userId) && resource != null;
+        }
 
-      function isExistingOwner(userId) {
-        return isOwner(userId) && resource != null;
-      }
-
-      allow get: if isSignedIn() && isOwner(userId);
+      // Allow a user to create a design under their own user ID
       allow create: if isSignedIn() && isOwner(userId) && request.resource.data.userId == userId;
-      allow update: if isSignedIn() && isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
-      allow delete: if isSignedIn() && isExistingOwner(userId);
+
+      // Allow a user to get a design under their own user ID
+      allow get: if isSignedIn() && isOwner(userId);
+
+      // Allow a user to update a design under their own user ID
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+
+      // Allow a user to delete a design under their own user ID
+      allow delete: if isExistingOwner(userId);
+
+      // List operation
       allow list: if isSignedIn() && isOwner(userId);
     }
 
     /**
-     * @description Allows public read access to design templates, but prevents any writes.
+     * @description Controls access to design template documents.
      * @path /design-templates/{templateId}
-     * @allow (get) Any user can read a design template.
-     * @allow (list) Any user can list design templates.
-     * @deny (create) Any user attempts to create a design template.
-     * @deny (update) Any user attempts to update a design template.
-     * @deny (delete) Any user attempts to delete a design template.
-     * @principle Provides public read access while restricting write access to maintain data integrity.
+     * @allow (get) Any user can read design templates.
+     * @deny (create) No user can create design templates without specific authorization (TODO).
+     * @deny (update) No user can update design templates without specific authorization (TODO).
+     * @deny (delete) No user can delete design templates without specific authorization (TODO).
+     * @principle Allows public read access but restricts write access to authorized users.
      */
     match /design-templates/{templateId} {
+      // Allow anyone to read design templates
       allow get, list: if true;
+
+      // Deny all write operations.  Templates would need an 'ownerId' field to implement secure ownership.
       allow create, update, delete: if false;
     }
   }
