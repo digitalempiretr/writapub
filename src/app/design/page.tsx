@@ -113,13 +113,10 @@ export default function DesignPage() {
       canvas.setBackgroundColor('', canvas.renderAll.bind(canvas));
       canvas.setBackgroundImage(imageBgUrl, canvas.renderAll.bind(canvas), { crossOrigin: 'anonymous' });
     } else {
-      canvas.backgroundImage = null; // Clear background image first
-      if (backgroundTab === 'gradient') {
-        backgroundValue = new Gradient({ ...(gradientBg as any) });
-      }
-      // Direct property assignment instead of function call
-      canvas.backgroundColor = backgroundValue;
-      canvas.renderAll();
+        canvas.backgroundImage = null; // Clear background image first
+        if (backgroundTab === 'gradient') backgroundValue = new Gradient({ ...(gradientBg as any) });
+        canvas.backgroundColor = backgroundValue;
+        canvas.renderAll();
     }
     
     // Overlay
@@ -151,7 +148,8 @@ export default function DesignPage() {
     canvasInstance.clear();
     const textObject = new Textbox(textValue, { left: canvasInstance.width! / 2, top: canvasInstance.height! / 2, originX: 'center', originY: 'center', fontFamily: fontValue.fontFamily, fill: colorValue, fontSize: Number(fontValue.size) || 64, textAlign: textAlign, width: canvasInstance.width! * 0.9 });
     if (effectValue) applyEffect(textObject, effectValue, colorValue);
-    canvasInstance.add(textObject).setActiveObject(textObject);
+    canvasInstance.add(textObject);
+    canvasInstance.setActiveObject(textObject);
     canvasInstance.renderAll();
   };
 
