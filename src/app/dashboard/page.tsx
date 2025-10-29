@@ -5,21 +5,19 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCollection, useUser, useFirestore, useMemoFirebase } from '@/firebase';
 import type { DesignTemplate } from '@/lib/types';
-import { collection, writeBatch, doc, query, where, serverTimestamp } from 'firebase/firestore';
+import { collection, query, where } from 'firebase/firestore';
 import { PlusCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
-import { seedData } from '@/lib/seed-data';
 
 export default function DashboardPage() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
-  const [isSeeding, setIsSeeding] = useState(false);
 
   const myDesignsQuery = useMemoFirebase(() => {
     if (!user || !firestore) return null;
@@ -34,32 +32,6 @@ export default function DashboardPage() {
   }, [firestore]);
 
   const { data: designTemplates, isLoading: areTemplatesLoading } = useCollection<DesignTemplate>(designTemplatesQuery);
-
-  const handleSeedDatabase = async () => {
-    if (!firestore) return;
-    setIsSeeding(true);
-    try {
-      const batch = writeBatch(firestore);
-      seedData.forEach(template => {
-        const docRef = doc(collection(firestore, 'design-templates'));
-        batch.set(docRef, {...template, createdAt: serverTimestamp()});
-      });
-      await batch.commit();
-      console.log('Database seeded successfully!');
-    } catch (error) {
-      console.error('Error seeding database:', error);
-    } finally {
-      setIsSeeding(false);
-    }
-  };
-
-  useEffect(() => {
-    if (!areTemplatesLoading && designTemplates?.length === 0) {
-      handleSeedDatabase();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areTemplatesLoading, designTemplates]);
-
 
   useEffect(() => {
     if (!isUserLoading && !user) {
