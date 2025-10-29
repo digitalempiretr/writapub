@@ -2,7 +2,7 @@
 
 import { useUser } from '@/firebase';
 import { getAuth, GoogleAuthProvider, signInWithRedirect, signOut } from 'firebase/auth';
-import { Loader2, LogIn, LogOut, LayoutDashboard, ZoomIn, ZoomOut, RotateCcw, Minus, Plus, Instagram, Image } from 'lucide-react';
+import { Loader2, LogIn, LogOut, LayoutDashboard, ZoomIn, ZoomOut, RotateCcw, Minus, Plus, Instagram, Image, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
@@ -25,14 +25,14 @@ import { Slider } from './ui/slider';
 type CanvasSize = { name: 'Post' | 'Story' | 'Square'; width: number; height: number };
 
 interface HeaderProps {
-    canvasSize: CanvasSize;
-    handleCanvasSizeChange: (size: CanvasSize) => void;
-    canvasSizes: CanvasSize[];
-    zoomLevel: number;
-    handleZoom: (direction: 'in' | 'out') => void;
-    resetPanAndZoom: () => void;
-    MIN_ZOOM: number;
-    MAX_ZOOM: number;
+    canvasSize?: CanvasSize;
+    handleCanvasSizeChange?: (size: CanvasSize) => void;
+    canvasSizes?: CanvasSize[];
+    zoomLevel?: number;
+    handleZoom?: (direction: 'in' | 'out') => void;
+    resetPanAndZoom?: () => void;
+    MIN_ZOOM?: number;
+    MAX_ZOOM?: number;
 }
 
 export function Header({ 
@@ -45,7 +45,7 @@ export function Header({
     MIN_ZOOM,
     MAX_ZOOM
 }: HeaderProps) {
-  const { user, isUserLoading } = useUser();
+  const { user, claims, isUserLoading } = useUser();
   const pathname = usePathname();
 
   const handleLogin = () => {
@@ -65,7 +65,7 @@ export function Header({
         <Logo className="text-[1.5rem] text-primary" />
       </Link>
 
-      {pathname.startsWith("/design") && (
+      {pathname.startsWith("/design") && canvasSize && handleCanvasSizeChange && canvasSizes && zoomLevel !== undefined && handleZoom && resetPanAndZoom && MIN_ZOOM !== undefined && MAX_ZOOM !== undefined && (
         <div className="hidden md:flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
           <Popover>
             <PopoverTrigger asChild>
@@ -171,6 +171,14 @@ export function Header({
                     <span>Dashboard</span>
                   </Link>
               </DropdownMenuItem>
+               {claims?.role === 'admin' && (
+                <DropdownMenuItem asChild>
+                  <Link href="/admin">
+                    <ShieldCheck className="mr-2 h-4 w-4" />
+                    <span>Admin Panel</span>
+                  </Link>
+                </DropdownMenuItem>
+              )}
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />

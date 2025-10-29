@@ -5,7 +5,7 @@ import { FirebaseApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
 import { Auth, User } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
-import { useUser as useUserFromHook, UserHookResult } from './auth/use-user'; // Renamed import
+import { useUser as useUserFromHook, UserHookResult, CustomClaims } from './auth/use-user'; // Renamed import
 
 interface FirebaseProviderProps {
   children: ReactNode;
@@ -21,6 +21,7 @@ export interface FirebaseContextState {
   user: User | null;
   isUserLoading: boolean;
   userError: Error | null;
+  claims: CustomClaims | null;
 }
 
 export const FirebaseContext = createContext<FirebaseContextState | undefined>(undefined);
@@ -31,7 +32,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
   firestore,
   auth,
 }) => {
-  const { user, isUserLoading, userError } = useUserFromHook(auth); // Use the dedicated hook
+  const { user, isUserLoading, userError, claims } = useUserFromHook(auth); // Use the dedicated hook
 
   const contextValue = useMemo((): FirebaseContextState => {
     return {
@@ -41,8 +42,9 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
       user,
       isUserLoading,
       userError,
+      claims,
     };
-  }, [firebaseApp, firestore, auth, user, isUserLoading, userError]);
+  }, [firebaseApp, firestore, auth, user, isUserLoading, userError, claims]);
 
   return (
     <FirebaseContext.Provider value={contextValue}>
@@ -64,6 +66,8 @@ export const useAuth = (): Auth => useFirebaseInternal().auth;
 export const useFirestore = (): Firestore => useFirebaseInternal().firestore;
 export const useFirebaseApp = (): FirebaseApp => useFirebaseInternal().firebaseApp;
 export const useUser = (): UserHookResult => {
-    const { user, isUserLoading, userError } = useFirebaseInternal();
-    return { user, isUserLoading, userError };
+    const { user, isUserLoading, userError, claims } = useFirebaseInternal();
+    // Note: idToken is not passed through context to minimize exposure.
+    // If needed directly in a component, it should be handled with care.
+    return { user, isUserLoading, userError, claims, idToken: null };
 };
