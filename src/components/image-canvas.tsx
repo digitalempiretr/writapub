@@ -3,6 +3,7 @@
 
 import React, { useEffect, useRef } from "react";
 import type { Shadow } from "@/components/3_text-settings";
+import { fabric } from 'fabric';
 
 export type FontOption = {
   value: string;
@@ -25,7 +26,7 @@ export type ImageCanvasProps = {
   textOpacity: number;
   width: number;
   height: number;
-  onCanvasReady: (canvas: HTMLCanvasElement) => void;
+  onCanvasReady: (canvas: HTMLCanvasElement, fabricInstance: fabric.Canvas) => void;
   backgroundImageUrl?: string;
   onTextRemaining: (remainingText: string, fromIndex: number) => void;
   rectColor: string;
@@ -282,6 +283,7 @@ const ImageCanvasComponent = ({
   fontSmoothing,
 }: ImageCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
   const indexRef = useRef<number | null>(null);
   const [viewportHeight, setViewportHeight] = React.useState(1080); // Default, updated on client
 
@@ -290,21 +292,30 @@ const ImageCanvasComponent = ({
   }, []);
 
   useEffect(() => {
-    if (canvasRef.current && indexRef.current === null) {
-      const parentElement = canvasRef.current.closest('[data-index]');
-      if (parentElement) {
-        const idx = parseInt(parentElement.getAttribute('data-index') || '0', 10);
-        indexRef.current = idx;
-      } else {
-        indexRef.current = 0; // fallback
-      }
-    }
+    if (canvasRef.current && !fabricCanvasRef.current) {
+        const fabricInstance = new fabric.Canvas(canvasRef.current, {
+            width,
+            height,
+            selection: false,
+        });
+        fabricCanvasRef.current = fabricInstance;
 
+        const parentElement = canvasRef.current.closest('[data-index]');
+        if (parentElement) {
+            const idx = parseInt(parentElement.getAttribute('data-index') || '0', 10);
+            indexRef.current = idx;
+        } else {
+            indexRef.current = 0; // fallback
+        }
+        onCanvasReady(canvasRef.current, fabricInstance);
+    }
+}, [width, height, onCanvasReady]);
+
+
+  useEffect(() => {
     const draw = async () => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
+      const fabricCanvas = fabricCanvasRef.current;
+      if (!fabricCanvas) return;
       
       const finalFontWeight = isBold ? Math.min(Number(fontWeight) + 300, 900) : fontWeight;
       
@@ -316,137 +327,161 @@ const ImageCanvasComponent = ({
       }
       
       const finalFontSize = baseFontSize * scalingFactor;
-      const finalLineHeight = finalFontSize * (typeof propLineHeight === 'number' ? propLineHeight : parseFloat(propLineHeight));
-
-
+      const finalLineHeight = (typeof propLineHeight === 'number' ? propLineHeight : parseFloat(propLineHeight));
       const processedText = isUppercase ? text.toUpperCase() : text;
 
       await document.fonts.load(`${finalFontWeight} ${finalFontSize}px "${fontFamily}"`);
       
-      ctx.clearRect(0, 0, width, height);
+      fabricCanvas.clear();
       
       const rectWidth = 830 * (width / 1080);
-      const rectHeight = 1100 * (height / 1350);
-      const rectX = (width - rectWidth) / 2;
-      const rectY = (height - rectHeight) / 2;
       const textPadding = 50 * (width / 1080);
       const textMaxWidth = rectWidth - (textPadding * 2);
 
-      ctx.font = `${finalFontWeight} ${finalFontSize}px "${fontFamily}"`;
+      const textBox = new fabric.Textbox(processedText, {
+        left: width / 2,
+        top: height / 2,
+        width: textMaxWidth,
+        fontSize: finalFontSize,
+        fontFamily: fontFamily,
+        fontWeight: finalFontWeight.toString(),
+        lineHeight: finalLineHeight,
+        fill: hexToRgba(textColor, textOpacity),
+        textAlign: textAlign,
+        originX: 'center',
+        originY: 'center',
+        selectable: false,
+        evented: false,
+        ...fontSmoothing,
+      });
 
-      let remainingText = '';
-      let linesToDraw: string[] = [];
-
-      if (!isTitle) {
-        const maxLineHeight = 2.5;
-        const minLineHeight = 1.2;
-        const maxLinesForMinHeight = 14;
-        const maxLinesForMaxHeight = 8;
-        
-        const slope = (maxLinesForMaxHeight - maxLinesForMinHeight) / (maxLineHeight - minLineHeight);
-        const currentLineHeight = typeof propLineHeight === 'number' ? propLineHeight : parseFloat(propLineHeight);
-        let dynamicMaxLines = Math.floor(maxLinesForMinHeight + slope * (currentLineHeight - minLineHeight));
-        dynamicMaxLines = Math.max(maxLinesForMaxHeight, Math.min(maxLinesForMinHeight, dynamicMaxLines)); 
-
-        const result = measureAndSplitText(ctx, processedText, textMaxWidth, dynamicMaxLines, dynamicMaxLines + 2);
-        linesToDraw = result.lines;
-        remainingText = result.remainingText;
+      if (textShadowEnabled && shadows.length > 0) {
+        textBox.shadow = shadows.map(s => {
+          const getPixelValue = (value: number, unit: 'px' | 'em' | 'rem' = 'px') => {
+            if (unit === 'em' || unit === 'rem') return value * finalFontSize;
+            return value;
+          };
+          return new fabric.Shadow({
+            color: s.color,
+            blur: getPixelValue(s.blur, s.blurUnit),
+            offsetX: getPixelValue(s.offsetX, s.offsetXUnit),
+            offsetY: getPixelValue(s.offsetY, s.offsetYUnit),
+          });
+        }).join(', ');
       } else {
-        linesToDraw = wrapText(ctx, processedText, textMaxWidth);
+        textBox.shadow = undefined;
       }
 
+      if (textStroke) {
+        textBox.stroke = strokeColor;
+        textBox.strokeWidth = strokeWidth;
+      } else {
+        textBox.stroke = undefined;
+        textBox.strokeWidth = 0;
+      }
+
+
+      let textForThisCanvas = processedText;
+      let remainingText = '';
+      
+      if (!isTitle) {
+        const maxLines = 12; // Adjust based on your logic
+        if (textBox.isTruncated) {
+          const lines = textBox.getLines();
+          textForThisCanvas = lines.slice(0, maxLines).join('\n');
+          remainingText = lines.slice(maxLines).join('\n');
+          textBox.set('text', textForThisCanvas);
+        }
+      }
+      
+      const textHeight = textBox.height || 0;
+      
       const drawLayout = () => {
-        if (backgroundImageUrl && overlayColor && (overlayOpacity || overlayOpacity === 0)) {
-          ctx.fillStyle = hexToRgba(overlayColor, overlayOpacity);
-          ctx.fillRect(0, 0, width, height);
+        if (rectOpacity > 0) {
+          const rect = new fabric.Rect({
+            left: (width - rectWidth) / 2,
+            top: (height - textHeight) / 2 - textPadding,
+            width: rectWidth,
+            height: textHeight + (textPadding * 2),
+            fill: hexToRgba(rectColor, rectOpacity),
+            selectable: false,
+            evented: false,
+          });
+          fabricCanvas.add(rect);
         }
 
-        ctx.fillStyle = hexToRgba(rectColor, rectOpacity);
-        ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
+        fabricCanvas.add(textBox);
+        fabricCanvas.centerObject(textBox);
 
-        const finalTextColor = hexToRgba(textColor, textOpacity);
-        ctx.textAlign = textAlign;
-        ctx.textBaseline = 'top'; 
-        ctx.font = `${finalFontWeight} ${finalFontSize}px "${fontFamily}"`;
-        
-        let textX;
-        if (textAlign === 'left') {
-            textX = rectX + textPadding;
-        } else if (textAlign === 'right') {
-            textX = rectX + rectWidth - textPadding;
-        } else { // center
-            textX = rectX + rectWidth / 2;
+        if (overlayOpacity && overlayOpacity > 0 && overlayColor) {
+            const overlay = new fabric.Rect({
+                left: 0,
+                top: 0,
+                width: width,
+                height: height,
+                fill: hexToRgba(overlayColor, overlayOpacity),
+                selectable: false,
+                evented: false,
+            });
+            fabricCanvas.add(overlay);
+            overlay.moveTo(-1); // Send to back but above background
         }
         
-        wrapAndDrawText(ctx, linesToDraw, textX, rectY, finalLineHeight, rectHeight, 
-            textStroke, strokeColor, strokeWidth,
-            textShadowEnabled, shadows, finalTextColor, finalFontSize
-        );
-        
+        fabricCanvas.renderAll();
         if (!isTitle && indexRef.current !== null) {
           onTextRemaining(remainingText, indexRef.current);
         }
-        
-        onCanvasReady(canvas);
       };
 
+      const setGradientBackground = (colors: string[]) => {
+        fabricCanvas.setBackgroundColor({
+          source: new fabric.Gradient({
+            type: 'linear',
+            gradientUnits: 'pixels',
+            coords: { x1: 0, y1: 0, x2: 0, y2: height },
+            colorStops: [
+              { offset: 0, color: colors[0] },
+              { offset: 0.5, color: colors[1] },
+              { offset: 1, color: colors[2] || colors[1] },
+            ]
+          }),
+        }, () => {
+          fabricCanvas.renderAll();
+          drawLayout();
+        });
+      };
+      
       if (backgroundImageUrl) {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.src = backgroundImageUrl;
-        img.onload = () => {
-          const canvasAspect = width / height;
-          const imageAspect = img.width / img.height;
-          let sx, sy, sWidth, sHeight;
+          fabric.Image.fromURL(backgroundImageUrl, (img) => {
+              fabricCanvas.setBackgroundImage(img, fabricCanvas.renderAll.bind(fabricCanvas), {
+                  scaleX: width / (img.width || 1),
+                  scaleY: height / (img.height || 1),
+              });
+              drawLayout();
+          }, { crossOrigin: 'anonymous' });
 
-          if (imageAspect > canvasAspect) {
-            sHeight = img.height;
-            sWidth = img.height * canvasAspect;
-            sx = (img.width - sWidth) / 2;
-            sy = 0;
-          } else {
-            sWidth = img.width;
-            sHeight = img.width / canvasAspect;
-            sx = 0;
-            sy = (img.height - sHeight) / 2;
-          }
-          
-          ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, width, height);
-          drawLayout();
-        };
-        img.onerror = () => {
-          ctx.fillStyle = "#ccc";
-          ctx.fillRect(0,0,width,height);
-          drawLayout();
-        }
       } else if (backgroundColor && backgroundColor.startsWith("linear-gradient")) {
         const colors = backgroundColor.match(/#([0-9a-fA-F]{3,8})/g);
-        if (colors && colors.length >= 2) {
-          const gradient = ctx.createLinearGradient(0, 0, 0, height);
-          gradient.addColorStop(0, colors[0]);
-          gradient.addColorStop(0.5, colors[1]);
-          gradient.addColorStop(1, colors[2] || colors[1]);
-          ctx.fillStyle = gradient;
+        if(colors && colors.length >= 2){
+          setGradientBackground(colors);
         } else {
-           ctx.fillStyle = "#ffffff";
+          fabricCanvas.backgroundColor = backgroundColor;
+          fabricCanvas.renderAll();
+          drawLayout();
         }
-        ctx.fillRect(0, 0, width, height);
-        drawLayout();
       } else {
-        ctx.fillStyle = backgroundColor || '#ffffff';
-        ctx.fillRect(0, 0, width, height);
+        fabricCanvas.backgroundImage = null;
+        fabricCanvas.backgroundColor = backgroundColor || '#ffffff';
         drawLayout();
       }
     };
 
     draw();
-  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, viewportHeight, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing]);
+  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, viewportHeight, backgroundColor, textColor, textOpacity, width, height, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing]);
 
   return (
     <canvas
       ref={canvasRef}
-      width={width}
-      height={height}
       className="w-full h-full"
       style={fontSmoothing}
     />

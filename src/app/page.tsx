@@ -30,7 +30,7 @@ import {
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw, Layers } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -52,6 +52,9 @@ import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { BookmarkStarIcon, HeartIconG  } from "@/components/ui/icons";
+import { fabric } from 'fabric';
+import { LayersPanel } from "@/components/layers-panel";
+
 
 type Design = {
   text: string;
@@ -89,6 +92,9 @@ export default function Home() {
   const [backgroundType, setBackgroundType] = useState<BackgroundType>('image');
   const [currentTemplate, setCurrentTemplate] = useState<ImageTemplate | null>(imageTemplates[1]);
   
+  const [fabricInstances, setFabricInstances] = useState<fabric.Canvas[]>([]);
+  const [uploadedImages, setUploadedImages] = useLocalStorage<string[]>('writa-uploads', []);
+
   useEffect(() => {
     setIsClient(true)
   }, [])
@@ -267,17 +273,20 @@ export default function Home() {
   }, [text, toast]);
   
   const handleDownload = useCallback((index: number) => {
-    const canvas = canvasRefs.current[index];
-    if (canvas) {
-      const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
-      const link = document.createElement("a");
-      link.href = dataUrl;
-      link.download = `${fileName || 'writa'}-${index + 1}.jpg`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    const fabricInstance = fabricInstances[index];
+    if (fabricInstance) {
+        const dataUrl = fabricInstance.toDataURL({
+            format: 'jpeg',
+            quality: 0.9,
+        });
+        const link = document.createElement("a");
+        link.href = dataUrl;
+        link.download = `${fileName || 'writa'}-${index + 1}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
-  }, [fileName]);
+}, [fabricInstances, fileName]);
 
   const handleDownloadAll = useCallback(() => {
     if (designs.length === 0) return;
@@ -443,18 +452,18 @@ export default function Home() {
   };
 
   const handleSaveDesign = useCallback(() => {
-    const canvas = canvasRefs.current[currentSlide];
-    if (!canvas) {
-      toast({
-        variant: "destructive",
-        title: "Cannot save favorite",
-        description: "The design preview is not ready yet.",
-        duration: 2000,
-      });
-      return;
+    const canvasInstance = fabricInstances[currentSlide];
+    if (!canvasInstance) {
+        toast({
+            variant: "destructive",
+            title: "Cannot save favorite",
+            description: "The design preview is not ready yet.",
+            duration: 2000,
+        });
+        return;
     }
 
-    const previewImage = canvas.toDataURL("image/jpeg", 0.5);
+    const previewImage = canvasInstance.toDataURL({ format: 'jpeg', quality: 0.5 });
 
     let bgValue = '';
     if (backgroundType === 'flat') bgValue = bgColor;
@@ -497,7 +506,7 @@ export default function Home() {
       duration: 2000,
     });
 
-  }, [currentSlide, backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, myDesigns.length, setMyDesigns, toast, activeEffect, canvasSize]);
+  }, [fabricInstances, currentSlide, backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, myDesigns.length, setMyDesigns, toast, activeEffect, canvasSize]);
 
   const handleDeleteDesign = (id: string) => {
     setMyDesigns(prev => prev.filter(d => d.id !== id));
@@ -685,8 +694,13 @@ export default function Home() {
           backgroundImageUrl={finalImageUrl}
           width={canvasSize.width}
           height={canvasSize.height}
-          onCanvasReady={(canvas) => {
+          onCanvasReady={(canvas, fabricInstance) => {
             canvasRefs.current[index] = canvas;
+            setFabricInstances(prev => {
+              const newInstances = [...prev];
+              newInstances[index] = fabricInstance;
+              return newInstances;
+            });
           }}
           onTextRemaining={(remaining) => handleTextRemaining(remaining, index)}
           rectColor={rectBgColor}
@@ -821,6 +835,46 @@ export default function Home() {
     }
   }
 
+  const handleCustomImageUpload = (dataUrl: string) => {
+    if (!uploadedImages.includes(dataUrl)) {
+      setUploadedImages(prev => [dataUrl, ...prev]);
+    }
+    const currentCanvas = fabricInstances[currentSlide];
+    if (currentCanvas) {
+      fabric.Image.fromURL(dataUrl, (img) => {
+        img.scaleToWidth(currentCanvas.width! * 0.5);
+        currentCanvas.add(img);
+        currentCanvas.centerObject(img);
+        currentCanvas.renderAll();
+      }, { crossOrigin: 'anonymous' });
+    }
+  };
+
+  const addImageToCanvas = (imageUrl: string) => {
+    const currentCanvas = fabricInstances[currentSlide];
+    if (currentCanvas) {
+      fabric.Image.fromURL(imageUrl, (img) => {
+        img.scaleToWidth(currentCanvas.width! * 0.5);
+        currentCanvas.add(img);
+        currentCanvas.centerObject(img);
+        currentCanvas.renderAll();
+      }, { crossOrigin: 'anonymous' });
+    }
+  };
+
+  const handleUploadedImageAsBackground = (imageUrl: string) => {
+    const customTemplate: ImageTemplate = {
+      name: 'Custom Upload',
+      imageUrls: {
+        post: imageUrl,
+        story: imageUrl,
+        square: imageUrl,
+      },
+    };
+    handleImageBgUrlSelect(customTemplate);
+  };
+
+
   const renderActiveTabContent = () => {
     const props = {
         text, setText, handleGenerate, isLoading,
@@ -840,6 +894,7 @@ export default function Home() {
         handleSaveDesign, handleDeleteDesign, handleUpdateDesign, editingDesignId,
         handleEditClick, handleCancelEdit, editingName, setEditingName, designToDelete,
         setDesignToDelete, handleLogDesign,
+        uploadedImages, handleCustomImageUpload, addImageToCanvas, handleUploadedImageAsBackground
     };
 
     switch (activeSettingsTab) {
@@ -847,6 +902,7 @@ export default function Home() {
       case 'favorites': return <MyDesignsPanel {...props} />;
       case 'background': return <BackgroundSettings {...props} />;
       case 'text': return <TextSettings {...props} />;
+      case 'layers': return <LayersPanel {...props} />;
       case 'download': return <DownloadPanel {...props} />;
       default: return null;
     }
@@ -856,6 +912,7 @@ export default function Home() {
     { value: "designs", icon: <LayoutTemplate className="h-5 w-5"/>, label: "Templates" },
     { value: "background", icon: <ImageIcon className="h-5 w-5"/>, label: "Background" },
     { value: "text", icon: <Type className="h-5 w-5"/>, label: "Text" },
+    { value: "layers", icon: <Layers className="h-5 w-5"/>, label: "Layers" },
     { value: "favorites", icon: <HeartIcon className="h-5 w-5"/>, label: "Favorites" },
     { value: "download", icon: <Download className="h-5 w-5"/>, label: "Download" },
   ];
@@ -1197,7 +1254,7 @@ export default function Home() {
 
               <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-background border-t", isMobilePanelOpen ? "hidden" : "block")}>
                   <Tabs value={activeSettingsTab ?? ''} className="w-full">
-                      <TabsList className="grid w-full grid-cols-5 h-14 rounded-none bg-background">
+                      <TabsList className="grid w-full grid-cols-6 h-14 rounded-none bg-background">
                           {settingsTabs.map(tab => (
                               <TabsTrigger key={tab.value} value={tab.value} onClick={() => handleMobileTabClick(tab.value)}>
                                   {tab.icon}
@@ -1216,5 +1273,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
