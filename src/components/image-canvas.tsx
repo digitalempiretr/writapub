@@ -350,8 +350,8 @@ const ImageCanvasComponent = ({
         textAlign: textAlign,
         originX: 'center',
         originY: 'center',
-        selectable: false,
-        evented: false,
+        selectable: true,
+        evented: true,
         ...fontSmoothing,
       });
 
