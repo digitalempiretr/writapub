@@ -3,7 +3,7 @@
 
 import React, { useEffect, useRef } from "react";
 import type { Shadow } from "@/components/3_text-settings";
-import { fabric } from 'fabric';
+import * as fabric from 'fabric';
 
 export type FontOption = {
   value: string;
