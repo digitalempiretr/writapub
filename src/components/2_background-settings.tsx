@@ -51,7 +51,7 @@ type BackgroundSettingsProps = {
 };
 
 
-export function BackgroundSettings({ 
+export function BackgroundSettings({
   backgroundTab,
   setBackgroundTab,
   handleFeelLucky,

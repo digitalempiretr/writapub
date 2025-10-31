@@ -21,14 +21,25 @@ import { Slider } from "@/components/ui/slider";
 import { Carousel, CarouselContent, CarouselItem, CarouselApi } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { defaultSolidColors } from "@/lib/colors";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "./ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { textEffects, TextEffect } from "@/lib/text-effects";
 import { cn } from "@/lib/utils";
 import { useCarouselSync } from "@/hooks/use-carousel-sync";
-import type { Shadow, TextAlign } from "@/lib/types";
+
 
 type Unit = 'px' | 'em' | 'rem';
+
+export type Shadow = {
+  id: number;
+  color: string;
+  offsetX: number;
+  offsetY: number;
+  blur: number;
+  offsetXUnit: Unit;
+  offsetYUnit: Unit;
+  blurUnit: Unit;
+};
 
 type TextSettingsProps = {
   text: string;
@@ -46,8 +57,8 @@ type TextSettingsProps = {
   setIsBold: (value: boolean) => void;
   isUppercase: boolean;
   setIsUppercase: (value: boolean) => void;
-  textAlign: TextAlign;
-  setTextAlign: (align: TextAlign) => void;
+  textAlign: 'left' | 'center' | 'right';
+  setTextAlign: (align: 'left' | 'center' | 'right') => void;
   textShadowEnabled: boolean;
   setTextShadowEnabled: (value: boolean) => void;
   shadows: Shadow[];
@@ -68,7 +79,7 @@ type TextSettingsProps = {
   setActiveEffect: (effect: TextEffect) => void;
 };
 
-export function TextSettings({ 
+export function TextSettings({
   text,
   setText,
   handleGenerate,
@@ -444,10 +455,10 @@ export function TextSettings({
                               <div className="flex items-center gap-2">
                                 <Slider id={`${baseId}-shadow-blur-${index}`} max={40} min={0} step={1} value={[shadow.blur]} onValueChange={(v) => updateShadow(shadow.id, { blur: v[0] })} />
                                 <Input type="number" value={shadow.blur} onChange={e => updateShadow(shadow.id, {blur: Number(e.target.value)})} className="h-7 w-20 text-xs" />
-                                <Select value={shadow.blurUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { blurUnit: v })}> 
+                                <Select value={shadow.blurUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { blurUnit: v })}>
                                   <SelectTrigger className="w-20 h-7 text-xs"><SelectValue /></SelectTrigger>
                                   <SelectContent>
-                                    {unitOptions.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)} 
+                                    {unitOptions.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
                                   </SelectContent>
                                 </Select>
                               </div>
@@ -457,10 +468,10 @@ export function TextSettings({
                                <div className="flex items-center gap-2">
                                 <Slider id={`${baseId}-shadow-offset-x-${index}`} max={20} min={-20} step={1} value={[shadow.offsetX]} onValueChange={(v) => updateShadow(shadow.id, { offsetX: v[0] })} />
                                 <Input type="number" value={shadow.offsetX} onChange={e => updateShadow(shadow.id, {offsetX: Number(e.target.value)})} className="h-7 w-20 text-xs" />
-                                 <Select value={shadow.offsetXUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { offsetXUnit: v })}> 
+                                 <Select value={shadow.offsetXUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { offsetXUnit: v })}>
                                     <SelectTrigger className="w-20 h-7 text-xs"><SelectValue /></SelectTrigger>
                                     <SelectContent>
-                                      {unitOptions.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)} 
+                                      {unitOptions.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
                                     </SelectContent>
                                   </Select>
                                </div>
@@ -470,10 +481,10 @@ export function TextSettings({
                               <div className="flex items-center gap-2">
                                 <Slider id={`${baseId}-shadow-offset-y-${index}`} max={20} min={-20} step={1} value={[shadow.offsetY]} onValueChange={(v) => updateShadow(shadow.id, { offsetY: v[0] })} />
                                 <Input type="number" value={shadow.offsetY} onChange={e => updateShadow(shadow.id, {offsetY: Number(e.target.value)})} className="h-7 w-20 text-xs" />
-                                <Select value={shadow.offsetYUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { offsetYUnit: v })}> 
+                                <Select value={shadow.offsetYUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { offsetYUnit: v })}>
                                   <SelectTrigger className="w-20 h-7 text-xs"><SelectValue /></SelectTrigger>
                                   <SelectContent>
-                                    {unitOptions.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)} 
+                                    {unitOptions.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
                                   </SelectContent>
                                 </Select>
                               </div>
