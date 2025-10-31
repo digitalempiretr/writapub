@@ -694,8 +694,7 @@ export default function Home() {
           backgroundImageUrl={finalImageUrl}
           width={canvasSize.width}
           height={canvasSize.height}
-          onCanvasReady={(canvas, fabricInstance) => {
-            canvasRefs.current[index] = canvas;
+          onCanvasReady={(fabricInstance) => {
             setFabricInstances(prev => {
               const newInstances = [...prev];
               newInstances[index] = fabricInstance;

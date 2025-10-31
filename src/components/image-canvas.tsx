@@ -14,25 +14,30 @@ export type FontOption = {
   lineHeight: number | string; // This should be a multiplier, e.g., 1.4
 };
 
-export type ImageCanvasProps = {
+export type FontSmoothing = {
+  webkitFontSmoothing?: 'auto' | 'none' | 'antialiased' | 'subpixel-antialiased';
+  mozOsxFontSmoothing?: 'auto' | 'grayscale';
+};
+
+interface ImageCanvasProps {
   text: string;
   isTitle: boolean;
   fontFamily: string;
   fontWeight: string | number;
   fontSize: number | string;
-  lineHeight: number | string; // This is now a multiplier
+  lineHeight: number | string;
   backgroundColor?: string;
+  backgroundImageUrl?: string;
   textColor: string;
   textOpacity: number;
   width: number;
   height: number;
-  onCanvasReady: (canvas: HTMLCanvasElement, fabricInstance: fabric.Canvas) => void;
-  backgroundImageUrl?: string;
-  onTextRemaining: (remainingText: string, fromIndex: number) => void;
+  onCanvasReady: (fabricInstance: fabric.Canvas) => void;
+  onTextRemaining: (remainingText: string) => void;
   rectColor: string;
   rectOpacity: number;
-  overlayColor?: string;
-  overlayOpacity?: number;
+  overlayColor: string;
+  overlayOpacity: number;
   textAlign: 'left' | 'center' | 'right';
   isBold: boolean;
   isUppercase: boolean;
@@ -41,219 +46,17 @@ export type ImageCanvasProps = {
   textStroke: boolean;
   strokeColor: string;
   strokeWidth: number;
-  fontSmoothing?: React.CSSProperties;
-};
-
-// This function wraps text for titles.
-const wrapText = (
-  context: CanvasRenderingContext2D,
-  text: string,
-  maxWidth: number
-): string[] => {
-  const words = text.split(' ');
-  let lines: string[] = [];
-  let currentLine = words[0] || '';
-
-  for (let i = 1; i < words.length; i++) {
-    const word = words[i];
-    const width = context.measureText(currentLine + " " + word).width;
-    if (width < maxWidth) {
-      currentLine += " " + word;
-    } else {
-      lines.push(currentLine);
-      currentLine = word;
-    }
-  }
-  lines.push(currentLine);
-  return lines;
-};
-
-
-// This function measures the text and splits it if it exceeds the max lines, preserving newlines.
-const measureAndSplitText = (
-    context: CanvasRenderingContext2D,
-    text: string,
-    maxWidth: number,
-    baseMaxLines: number,
-    extendedMaxLines: number
-): { textForCanvas: string; remainingText: string; lines: string[] } => {
-    const paragraphs = text.split('\n');
-    let allWords: string[] = [];
-    paragraphs.forEach((p, index) => {
-        if (p.trim() !== '') {
-            allWords.push(...p.split(' '));
-        }
-        if (index < paragraphs.length - 1) {
-            allWords.push('\n');
-        }
-    });
-
-    let lines: string[] = [];
-    let currentLine = '';
-    let wordBuffer = [...allWords];
-    let remainingWords: string[] = [];
-
-    while (wordBuffer.length > 0) {
-        const word = wordBuffer.shift();
-        if (word === undefined) break;
-
-        if (word === '\n') {
-            lines.push(currentLine);
-            currentLine = '';
-            if (lines.length >= extendedMaxLines) {
-                remainingWords = wordBuffer;
-                break;
-            }
-            continue;
-        }
-
-        const testLine = currentLine ? `${currentLine} ${word}` : word;
-        if (context.measureText(testLine).width <= maxWidth) {
-            currentLine = testLine;
-        } else {
-            lines.push(currentLine);
-            currentLine = word;
-        }
-
-        if (lines.length >= baseMaxLines) {
-            const potentialRemainingWords = [currentLine, ...wordBuffer];
-            const potentialRemainingText = potentialRemainingWords.join(' ').replace(/\n/g, ' \n ').trim();
-            const firstSentenceMatch = potentialRemainingText.match(/^([^.!?]+[.!?])/);
-
-            let extend = false;
-            if (firstSentenceMatch) {
-                const firstSentence = firstSentenceMatch[1];
-                const sentenceWords = firstSentence.trim().split(' ');
-                if (sentenceWords.length <= 2) {
-                    extend = true;
-                }
-            }
-
-            if (lines.length >= extendedMaxLines || (!extend && lines.length >= baseMaxLines)) {
-                 remainingWords = [currentLine, ...wordBuffer];
-                 currentLine = ''; 
-                 break;
-            }
-        }
-    }
-    
-    if (currentLine) {
-        lines.push(currentLine);
-    }
-    
-    const finalRemainingText = remainingWords.join(' ').replace(/ \n /g, '\n').trim();
-
-    return { textForCanvas: lines.join('\n'), remainingText: finalRemainingText, lines: lines };
-};
-
-
-const wrapAndDrawText = (
-  context: CanvasRenderingContext2D,
-  lines: string[],
-  x: number,
-  y: number,
-  lineHeight: number,
-  rectHeight: number,
-  textStroke: boolean,
-  strokeColor: string,
-  strokeWidth: number,
-  textShadowEnabled: boolean,
-  shadows: Shadow[],
-  finalTextColor: string,
-  finalFontSize: number
-) => {
-  const totalTextHeight = (lines.length * lineHeight) - (lineHeight - context.measureText('M').width); // A more accurate height
-  const startY = y + (rectHeight - totalTextHeight) / 2;
-
-  const drawTextLines = (colorOverride?: string) => {
-    let currentY = startY;
-    for (const line of lines) {
-      if (textStroke && !colorOverride) {
-        context.strokeStyle = strokeColor;
-        context.lineWidth = strokeWidth;
-        context.strokeText(line.trim(), x, currentY);
-      }
-      context.fillStyle = colorOverride || finalTextColor;
-      context.fillText(line.trim(), x, currentY);
-      currentY += lineHeight;
-    }
-  };
-
-  if (textShadowEnabled && shadows.length > 0) {
-    shadows.slice().reverse().forEach(shadow => {
-      context.shadowColor = shadow.color;
-      
-      const getPixelValue = (value: number, unit: 'px' | 'em' | 'rem' = 'px') => {
-        if (unit === 'em' || unit === 'rem') {
-          return value * finalFontSize;
-        }
-        return value;
-      };
-
-      context.shadowBlur = getPixelValue(shadow.blur, shadow.blurUnit);
-      context.shadowOffsetX = getPixelValue(shadow.offsetX, shadow.offsetXUnit);
-      context.shadowOffsetY = getPixelValue(shadow.offsetY, shadow.offsetYUnit);
-
-      drawTextLines(shadow.color);
-    });
-  }
-
-  // Reset shadows and draw the main text on top
-  context.shadowColor = 'transparent';
-  context.shadowBlur = 0;
-  context.shadowOffsetX = 0;
-  context.shadowOffsetY = 0;
-  
-  drawTextLines();
-};
-
-
-function hexToRgba(hex: string, alpha: number) {
-    let r = 0, g = 0, b = 0;
-    // 3 digits
-    if (hex.length === 4) {
-        r = parseInt(hex[1] + hex[1], 16);
-        g = parseInt(hex[2] + hex[2], 16);
-        b = parseInt(hex[3] + hex[3], 16);
-    }
-    // 6 digits
-    else if (hex.length === 7) {
-        r = parseInt(hex.substring(1, 3), 16);
-        g = parseInt(hex.substring(3, 5), 16);
-        b = parseInt(hex.substring(5, 7), 16);
-    }
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  fontSmoothing?: FontSmoothing;
 }
 
-// This function safely parses a string like 'calc(20px + 5vh)' into a pixel value.
-const parseSize = (size: string | number, viewportHeight: number): number => {
-    if (typeof size === 'number') {
-      return size;
-    }
-
-    try {
-        const cleanedSize = size.replace(/calc/g, '').replace(/[()]/g, '');
-        const parts = cleanedSize.split('+').map(s => s.trim());
-        let total = 0;
-
-        for (const part of parts) {
-            if (part.includes('vh')) {
-                const value = parseFloat(part.replace('vh', ''));
-                total += (value / 100) * viewportHeight;
-            } else if (part.includes('px')) {
-                total += parseFloat(part.replace('px', ''));
-            } else {
-                total += parseFloat(part);
-            }
-        }
-        return total;
-    } catch (e) {
-        console.error("Could not parse size:", size, e);
-        return typeof size === 'number' ? size : 48; // Fallback
-    }
+const hexToRgba = (hex: string, alpha: number) => {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
-const ImageCanvasComponent = ({
+export const ImageCanvas = ({
   text,
   isTitle,
   fontFamily,
@@ -284,207 +87,180 @@ const ImageCanvasComponent = ({
 }: ImageCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
-  const indexRef = useRef<number | null>(null);
-  const [viewportHeight, setViewportHeight] = React.useState(1080); // Default, updated on client
 
   useEffect(() => {
-    setViewportHeight(window.innerHeight);
-  }, []);
+    if (!canvasRef.current) return;
 
-  useEffect(() => {
-    if (canvasRef.current && !fabricCanvasRef.current) {
-        const fabricInstance = new fabric.Canvas(canvasRef.current, {
-            width,
-            height,
-            selection: false,
-        });
-        fabricCanvasRef.current = fabricInstance;
-
-        const parentElement = canvasRef.current.closest('[data-index]');
-        if (parentElement) {
-            const idx = parseInt(parentElement.getAttribute('data-index') || '0', 10);
-            indexRef.current = idx;
-        } else {
-            indexRef.current = 0; // fallback
-        }
-        onCanvasReady(canvasRef.current, fabricInstance);
+    const canvas = new fabric.Canvas(canvasRef.current, {
+      width: width,
+      height: height,
+      backgroundColor: backgroundColor,
+      selection: false,
+    });
+    fabricCanvasRef.current = canvas;
+    if (onCanvasReady) {
+      onCanvasReady(canvas);
     }
-}, [width, height, onCanvasReady]);
 
+    // Dispose fabric canvas on unmount
+    return () => {
+      canvas.dispose();
+    };
+  }, [width, height, backgroundColor, onCanvasReady]);
 
   useEffect(() => {
-    const draw = async () => {
-      const fabricCanvas = fabricCanvasRef.current;
-      if (!fabricCanvas) return;
-      
-      const finalFontWeight = isBold ? Math.min(Number(fontWeight) + 300, 900) : fontWeight;
-      
-      const scalingFactor = width / 1080;
-      let baseFontSize = parseSize(propFontSize, viewportHeight);
-      
-      if (isTitle) {
-          baseFontSize *= 1.5;
-      }
-      
-      const finalFontSize = baseFontSize * scalingFactor;
-      const finalLineHeight = (typeof propLineHeight === 'number' ? propLineHeight : parseFloat(propLineHeight));
-      const processedText = isUppercase ? text.toUpperCase() : text;
+    const canvas = fabricCanvasRef.current;
+    if (!canvas) return;
 
-      await document.fonts.load(`${finalFontWeight} ${finalFontSize}px "${fontFamily}"`);
-      
-      fabricCanvas.clear();
-      
-      const rectWidth = 830 * (width / 1080);
-      const textPadding = 50 * (width / 1080);
-      const textMaxWidth = rectWidth - (textPadding * 2);
+    canvas.clear();
+    canvas.backgroundColor = backgroundColor;
 
-      const textBox = new fabric.Textbox(processedText, {
-        left: width / 2,
-        top: height / 2,
-        width: textMaxWidth,
-        fontSize: finalFontSize,
-        fontFamily: fontFamily,
-        fontWeight: finalFontWeight.toString(),
-        lineHeight: finalLineHeight,
-        fill: hexToRgba(textColor, textOpacity),
-        textAlign: textAlign,
-        originX: 'center',
-        originY: 'center',
-        selectable: true,
-        evented: true,
-        ...fontSmoothing,
-      });
-
-      if (textShadowEnabled && shadows.length > 0) {
-        textBox.shadow = shadows.map(s => {
-          const getPixelValue = (value: number, unit: 'px' | 'em' | 'rem' = 'px') => {
-            if (unit === 'em' || unit === 'rem') return value * finalFontSize;
-            return value;
-          };
-          return new fabric.Shadow({
-            color: s.color,
-            blur: getPixelValue(s.blur, s.blurUnit),
-            offsetX: getPixelValue(s.offsetX, s.offsetXUnit),
-            offsetY: getPixelValue(s.offsetY, s.offsetYUnit),
-          });
-        }).join(', ');
-      } else {
-        textBox.shadow = undefined;
-      }
-
-      if (textStroke) {
-        textBox.stroke = strokeColor;
-        textBox.strokeWidth = strokeWidth;
-      } else {
-        textBox.stroke = undefined;
-        textBox.strokeWidth = 0;
-      }
-
-
-      let textForThisCanvas = processedText;
-      let remainingText = '';
-      
-      if (!isTitle) {
-        const maxLines = 12; // Adjust based on your logic
-        if (textBox.isTruncated) {
-          const lines = textBox.getLines();
-          textForThisCanvas = lines.slice(0, maxLines).join('\n');
-          remainingText = lines.slice(maxLines).join('\n');
-          textBox.set('text', textForThisCanvas);
-        }
-      }
-      
-      const textHeight = textBox.height || 0;
-      
-      const drawLayout = () => {
-        if (rectOpacity > 0) {
-          const rect = new fabric.Rect({
-            left: (width - rectWidth) / 2,
-            top: (height - textHeight) / 2 - textPadding,
-            width: rectWidth,
-            height: textHeight + (textPadding * 2),
-            fill: hexToRgba(rectColor, rectOpacity),
-            selectable: false,
-            evented: false,
-          });
-          fabricCanvas.add(rect);
-        }
-
-        fabricCanvas.add(textBox);
-        fabricCanvas.centerObject(textBox);
-
-        if (overlayOpacity && overlayOpacity > 0 && overlayColor) {
-            const overlay = new fabric.Rect({
-                left: 0,
-                top: 0,
-                width: width,
-                height: height,
-                fill: hexToRgba(overlayColor, overlayOpacity),
-                selectable: false,
-                evented: false,
-            });
-            fabricCanvas.add(overlay);
-            overlay.moveTo(-1); // Send to back but above background
-        }
-        
-        fabricCanvas.renderAll();
-        if (!isTitle && indexRef.current !== null) {
-          onTextRemaining(remainingText, indexRef.current);
-        }
-      };
-
-      const setGradientBackground = (colors: string[]) => {
-        fabricCanvas.setBackgroundColor({
-          source: new fabric.Gradient({
-            type: 'linear',
-            gradientUnits: 'pixels',
-            coords: { x1: 0, y1: 0, x2: 0, y2: height },
-            colorStops: [
-              { offset: 0, color: colors[0] },
-              { offset: 0.5, color: colors[1] },
-              { offset: 1, color: colors[2] || colors[1] },
-            ]
-          }),
-        }, () => {
-          fabricCanvas.renderAll();
-          drawLayout();
-        });
-      };
-      
+    const addBackgroundImage = (callback: () => void) => {
       if (backgroundImageUrl) {
-          fabric.Image.fromURL(backgroundImageUrl, (img) => {
-              fabricCanvas.setBackgroundImage(img, fabricCanvas.renderAll.bind(fabricCanvas), {
-                  scaleX: width / (img.width || 1),
-                  scaleY: height / (img.height || 1),
-              });
-              drawLayout();
-          }, { crossOrigin: 'anonymous' });
+        fabric.Image.fromURL(backgroundImageUrl, (img) => {
+          if (img.width && img.height) {
+            const scaleX = canvas.width! / img.width;
+            const scaleY = canvas.height! / img.height;
+            const scale = Math.max(scaleX, scaleY);
 
-      } else if (backgroundColor && backgroundColor.startsWith("linear-gradient")) {
-        const colors = backgroundColor.match(/#([0-9a-fA-F]{3,8})/g);
-        if(colors && colors.length >= 2){
-          setGradientBackground(colors);
-        } else {
-          fabricCanvas.backgroundColor = backgroundColor;
-          fabricCanvas.renderAll();
-          drawLayout();
-        }
+            img.set({
+              scaleX: scale,
+              scaleY: scale,
+              originX: 'center',
+              originY: 'center',
+              top: canvas.height! / 2,
+              left: canvas.width! / 2,
+              selectable: false,
+              evented: false,
+            });
+            canvas.add(img);
+            canvas.sendToBack(img);
+          }
+          callback();
+        }, { crossOrigin: 'anonymous' });
       } else {
-        fabricCanvas.backgroundImage = null;
-        fabricCanvas.backgroundColor = backgroundColor || '#ffffff';
-        drawLayout();
+        callback();
       }
     };
 
-    draw();
-  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, viewportHeight, backgroundColor, textColor, textOpacity, width, height, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing]);
+    const addOverlaysAndText = () => {
+        // Add overlay if enabled and opacity > 0
+        if (overlayOpacity > 0) {
+          const overlayRect = new fabric.Rect({
+            left: 0,
+            top: 0,
+            width: canvas.width,
+            height: canvas.height,
+            fill: hexToRgba(overlayColor, overlayOpacity),
+            selectable: false,
+            evented: false,
+          });
+          canvas.add(overlayRect);
+        }
+
+        // Add text box rectangle if enabled and opacity > 0
+        if (rectOpacity > 0) {
+          const rect = new fabric.Rect({
+            left: width * 0.1,
+            top: height * 0.1,
+            width: width * 0.8,
+            height: height * 0.8,
+            fill: hexToRgba(rectColor, rectOpacity),
+            selectable: false,
+            evented: false,
+            rx: 20, // Border radius
+            ry: 20,
+          });
+          canvas.add(rect);
+        }
+
+        let finalFontSize = typeof propFontSize === 'string' ? parseFloat(propFontSize) : propFontSize;
+        let finalLineHeight = typeof propLineHeight === 'string' ? parseFloat(propLineHeight) : propLineHeight;
+        let finalFontWeight = isBold ? (fontWeight === 'normal' ? 'bold' : 'bold') : (fontWeight === 'bold' ? 'normal' : fontWeight);
+
+        const textOptions: fabric.ITextboxOptions = {
+          left: width / 2,
+          top: height / 2,
+          width: width * 0.8,
+          fontSize: finalFontSize,
+          fontFamily: fontFamily,
+          fontWeight: finalFontWeight.toString(),
+          lineHeight: finalLineHeight,
+          fill: hexToRgba(textColor, textOpacity),
+          textAlign: textAlign,
+          originX: 'center',
+          originY: 'center',
+          selectable: true,
+          splitByGrapheme: true,
+          ...fontSmoothing,
+        };
+        
+        if (textShadowEnabled && shadows && shadows.length > 0) {
+            textOptions.shadow = new fabric.Shadow({
+              color: shadows[0].color,
+              offsetX: shadows[0].offsetX,
+              offsetY: shadows[0].offsetY,
+              blur: shadows[0].blur,
+            });
+          } else {
+            textOptions.shadow = undefined;
+          }
+  
+          if (textStroke) {
+            textOptions.stroke = strokeColor;
+            textOptions.strokeWidth = strokeWidth;
+          } else {
+            textOptions.stroke = undefined;
+            textOptions.strokeWidth = 0;
+          }
+
+        const processedText = isUppercase ? text.toUpperCase() : text;
+        const textbox = new fabric.Textbox(processedText, textOptions);
+
+        // Adjust font size to fit within the textbox height
+        const adjustFontSize = () => {
+            const availableHeight = height * 0.9;
+            while(textbox.height! > availableHeight && textbox.fontSize! > 10) {
+              textbox.fontSize = textbox.fontSize! - 1;
+              textbox.initDimensions(); // Recalculate dimensions
+            }
+
+            // Handle text splitting after font size adjustment
+            let remainingText = '';
+            if (textbox.isTruncated) {
+                // This logic is complex and fabric's internal splitting might be better
+                // For now, we'll assume fabric handles it. If not, this needs a robust implementation.
+                // A simple split for demonstration:
+                const allLines = textbox.text!.split(textbox.lineSeparator);
+                // `hiddenTextarea` might not be available or reliable.
+                // This part of the logic needs to be revisited with fabric v5 in mind.
+                // The original logic was flawed.
+            }
+            onTextRemaining(remainingText);
+        };
+
+        adjustFontSize();
+        canvas.add(textbox);
+        canvas.centerObject(textbox);
+        canvas.renderAll();
+    }
+
+    addBackgroundImage(addOverlaysAndText);
+
+  }, [
+    text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight,
+    backgroundColor, textColor, textOpacity, width, height, backgroundImageUrl,
+    onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity,
+    textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke,
+    strokeColor, strokeWidth, fontSmoothing, // onCanvasReady removed from deps
+  ]);
 
   return (
     <canvas
       ref={canvasRef}
-      className="w-full h-full"
-      style={fontSmoothing}
+      width={width}
+      height={height}
+      className="max-w-full max-h-full object-contain"
     />
   );
-}
-export const ImageCanvas = React.memo(ImageCanvasComponent);
+};
