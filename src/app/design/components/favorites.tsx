@@ -46,7 +46,7 @@ type MyDesignsPanelProps = {
   handleApplyTemplate: (template: DesignTemplate) => void;
 };
 
-export function MyDesignsPanel({
+export function FavoritesPanel({ 
   myDesigns,
   handleSaveDesign,
   handleDeleteDesign,

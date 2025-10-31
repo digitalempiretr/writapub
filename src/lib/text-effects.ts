@@ -1,6 +1,21 @@
 
 import type { CSSProperties } from 'react';
-import { TextEffect } from './types';
+
+export type TextEffect = {
+  name: string;
+  id: string;
+  style: {
+    color?: string;
+    textShadow?: string;
+    glowColor?: string; // Add this for effects like Neon
+    fontFamily?: string;
+    fontWeight?: string | number;
+    fontSmoothing?: CSSProperties;
+    fontSize?: number | string; // Base size for this effect
+  };
+  fontValue?: string; // Add this to link to a FontOption
+  previewBg?: string;
+};
 
 export const textEffects: TextEffect[] = [
   {
@@ -82,7 +97,7 @@ export const textEffects: TextEffect[] = [
           0.188em 0.188em 0em #c11a2b 
       `,
     },
-    previewBg: '#121212',
+    previewBg: '#121221',
   },
   {
     name: 'Neon',
@@ -98,7 +113,7 @@ export const textEffects: TextEffect[] = [
         0 0 70px  {{glow}}, 0 0 80px  {{glow}}, 0 0 100px {{glow}}, 0 0 150px {{glow}}   
       `,
     },
-    previewBg: '#121212',
+    previewBg: '#121221',
   },
   {
     name: 'Neon 2',
@@ -119,7 +134,7 @@ export const textEffects: TextEffect[] = [
           0 0 0.98em #ff0000   
       `,
     },
-    previewBg: '#121212',
+    previewBg: '#121221',
   },
   
   {

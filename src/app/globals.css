@@ -50,36 +50,1719 @@ body {
     --sidebar-accent-foreground: hsl(240 5.9% 10%);
     --sidebar-border: hsl(220 13% 91%);
     --sidebar-ring: hsl(217.2 91.2% 59.8%);
+    --neon-text-color: #ff4400;
+    --shadow-x: 3px;
+    --shadow-y: 3px;
+    --shadow-blur: 0px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 1.0;
+    --shadow-color: hsl(325.78 58.18% 56.86% / 0.5);
+    --shadow-2xs: 3px 3px 0px 0px hsl(325.7800 58.1800% 56.8600% / 0.50);
+    --shadow-xs: 3px 3px 0px 0px hsl(325.7800 58.1800% 56.8600% / 0.50);
+    --shadow-sm: 3px 3px 0px 0px hsl(325.7800 58.1800% 56.8600% / 1.00), 3px 1px 2px -1px hsl(325.7800 58.1800% 56.8600% / 1.00);
+    --shadow: 3px 3px 0px 0px hsl(325.7800 58.1800% 56.8600% / 1.00), 3px 1px 2px -1px hsl(325.7800 58.1800% 56.8600% / 1.00);
+    --shadow-md: 3px 3px 0px 0px hsl(325.7800 58.1800% 56.8600% / 1.00), 3px 2px 4px -1px hsl(325.7800 58.1800% 56.8600% / 1.00);
+    --shadow-lg: 3em 3em 0px 0px hsl(325.7800 58.1800% 56.8600% / 1.00), 3px 4px 6px -1px hsl(325.7800 58.1800% 56.8600% / 1.00);
+    --shadow-xl: 3px 3px 0px 0px hsl(325.7800 58.1800% 56.8600% / 1.00), 3px 8px 10px -1px hsl(325.7800 58.1800% 56.8600% / 1.00);
+    --shadow-2xl: 3px 3px 0px 0px hsl(325.7800 58.1800% 56.8600% / 2.50);
+    --tracking-normal: 0em;
+    --spacing: 0.25rem;
   }
   
   .dark {
-    --background: hsl(221 52% 15%);
-    --foreground: hsl(220 22% 95%);
-    --card: hsl(221 52% 15%);
-    --card-foreground: hsl(220 22% 95%);
-    --popover: hsl(221 52% 15%);
-    --popover-foreground: hsl(220 22% 95%);
-    --primary: hsl(208 100% 47%);
-    --primary-foreground: hsl(0 0% 98%);
-    --secondary: hsl(221 52% 25%);
-    --secondary-foreground: hsl(0 0% 98%);
-    --muted: hsl(221 52% 25%);
-    --muted-foreground: hsl(215 20.2% 65.1%);
-    --accent: hsl(204 77% 62%);
-    --accent-foreground: hsl(0 0% 98%);
-    --destructive: hsl(0 62.8% 30.6%);
-    --destructive-foreground: hsl(0 0% 98%);
-    --border: hsl(24 12% 40%);
-    --input: hsl(24 12% 40%);
-    --ring: hsl(208 100% 47%);
-    --sidebar: hsl(240 5.9% 10%);
-    --sidebar-foreground: hsl(240 4.8% 95.9%);
-    --sidebar-primary: hsl(224.3 76.3% 48%);
+    --background: hsl(80.0000 50.0000% 7.0588%);
+    --foreground: hsl(81.6000 51.0204% 90.3922%);
+    --card: hsl(205.7143 6.9307% 19.8039%);
+    --card-foreground: hsl(81.6000 51.0204% 90.3922%);
+    --popover: hsl(205.7143 6.9307% 19.8039%);
+    --popover-foreground: hsl(81.6000 51.0204% 90.3922%);
+    --primary: hsl(70.1176 100% 50%);
+    --primary-foreground: hsl(0 0% 0%);
+    --secondary: hsl(242.6667 51.7241% 34.1176%);
+    --secondary-foreground: hsl(81.6000 51.0204% 90.3922%);
+    --muted: hsl(0 0% 26.6667%);
+    --muted-foreground: hsl(0 0% 63.9216%);
+    --accent: hsl(181.7476 50.2439% 59.8039%);
+    --accent-foreground: hsl(80.0000 50.0000% 7.0588%);
+    --destructive: hsl(9.8246 84.2365% 60.1961%);
+    --destructive-foreground: hsl(81.6000 51.0204% 90.3922%);
+    --border: hsl(0 0% 26.6667%);
+    --input: hsl(0 0% 26.6667%);
+    --ring: hsl(70.1176 100% 50%);
+    --chart-1: hsl(340 100.0000% 80%);
+    --chart-2: hsl(242.6667 51.7241% 34.1176%);
+    --chart-3: hsl(181.7476 50.2439% 59.8039%);
+    --chart-4: hsl(70.1176 100% 50%);
+    --chart-5: hsl(58.1176 100% 50%);
+    --sidebar: hsl(80.0000 50.0000% 7.0588%);
+    --sidebar-foreground: hsl(81.6000 51.0204% 90.3922%);
+    --sidebar-primary: hsl(340 100.0000% 80%);
+    --sidebar-primary-foreground: hsl(80.0000 50.0000% 7.0588%);
+    --sidebar-accent: hsl(181.7476 50.2439% 59.8039%);
+    --sidebar-accent-foreground: hsl(80.0000 50.0000% 7.0588%);
+    --sidebar-border: hsl(0 0% 26.6667%);
+    --sidebar-ring: hsl(340 100.0000% 80%);
+    --font-sans: Arsenal, ui-sans-serif, sans-serif, system-ui;
+    --font-serif: Instrument Serif, ui-serif, serif;
+    --font-mono: Google Sans Code, ui-monospace, monospace;
+    --radius: 0.5rem;
+    --shadow-x: 0;
+    --shadow-y: 1px;
+    --shadow-blur: 3px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 0.1;
+    --shadow-color: oklch(0 0 0);
+    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
+    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 4px 6px -1px hsl(0 0% 0% / 0.10);
+    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 8px 10px -1px hsl(0 0% 0% / 0.10);
+    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+  }
+  .pastel-dreams {
+    --background: hsl(280.0000 33.3333% 96.4706%);
+    --foreground: hsl(216.9231 19.1176% 26.6667%);
+    --card: hsl(0 0% 100%);
+    --card-foreground: hsl(216.9231 19.1176% 26.6667%);
+    --popover: hsl(0 0% 100%);
+    --popover-foreground: hsl(216.9231 19.1176% 26.6667%);
+    --primary: hsl(255.1351 91.7355% 76.2745%);
+    --primary-foreground: hsl(0 0% 100%);
+    --secondary: hsl(267.5676 90.2439% 91.9608%);
+    --secondary-foreground: hsl(215 13.7931% 34.1176%);
+    --muted: hsl(268.6957 100.0000% 95.4902%);
+    --muted-foreground: hsl(220 8.9362% 46.0784%);
+    --accent: hsl(292.5000 44.4444% 92.9412%);
+    --accent-foreground: hsl(216.9231 19.1176% 26.6667%);
+    --destructive: hsl(0 93.5484% 81.7647%);
+    --destructive-foreground: hsl(0 0% 100%);
+    --border: hsl(267.5676 90.2439% 91.9608%);
+    --input: hsl(267.5676 90.2439% 91.9608%);
+    --ring: hsl(255.1351 91.7355% 76.2745%);
+    --chart-1: hsl(255.1351 91.7355% 76.2745%);
+    --chart-2: hsl(258.3117 89.5349% 66.2745%);
+    --chart-3: hsl(262.1229 83.2558% 57.8431%);
+    --chart-4: hsl(263.3898 69.9605% 50.3922%);
+    --chart-5: hsl(263.3557 69.3023% 42.1569%);
+    --sidebar: hsl(267.5676 90.2439% 91.9608%);
+    --sidebar-foreground: hsl(216.9231 19.1176% 26.6667%);
+    --sidebar-primary: hsl(255.1351 91.7355% 76.2745%);
     --sidebar-primary-foreground: hsl(0 0% 100%);
-    --sidebar-accent: hsl(240 3.7% 15.9%);
-    --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-    --sidebar-border: hsl(240 3.7% 15.9%);
-    --sidebar-ring: hsl(217.2 91.2% 59.8%);
+    --sidebar-accent: hsl(292.5000 44.4444% 92.9412%);
+    --sidebar-accent-foreground: hsl(216.9231 19.1176% 26.6667%);
+    --sidebar-border: hsl(267.5676 90.2439% 91.9608%);
+    --sidebar-ring: hsl(255.1351 91.7355% 76.2745%);
+    --font-sans: Open Sans, sans-serif;
+    --font-serif: Source Serif 4, serif;
+    --font-mono: IBM Plex Mono, monospace;
+    --radius: 1.5rem;
+    --shadow-x: 0px;
+    --shadow-y: 8px;
+    --shadow-blur: 16px;
+    --shadow-spread: -4px;
+    --shadow-opacity: 0.08;
+    --shadow-color: hsl(0 0% 0%);
+    --shadow-2xs: 0px 8px 16px -4px hsl(0 0% 0% / 0.04);
+    --shadow-xs: 0px 8px 16px -4px hsl(0 0% 0% / 0.04);
+    --shadow-sm: 0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 1px 2px -5px hsl(0 0% 0% / 0.08);
+    --shadow: 0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 1px 2px -5px hsl(0 0% 0% / 0.08);
+    --shadow-md: 0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 2px 4px -5px hsl(0 0% 0% / 0.08);
+    --shadow-lg: 0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 4px 6px -5px hsl(0 0% 0% / 0.08);
+    --shadow-xl: 0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 8px 10px -5px hsl(0 0% 0% / 0.08);
+    --shadow-2xl: 0px 8px 16px -4px hsl(0 0% 0% / 0.20);
+    --tracking-normal: 0em;
+    --spacing: 0.25rem;
+  }
+  
+  .pastel-dreams-dark {
+    --background: hsl(24 9.8039% 10%);
+    --foreground: hsl(226.4516 100% 93.9216%);
+    --card: hsl(270 17.7778% 17.6471%);
+    --card-foreground: hsl(226.4516 100% 93.9216%);
+    --popover: hsl(270 17.7778% 17.6471%);
+    --popover-foreground: hsl(226.4516 100% 93.9216%);
+    --primary: hsl(255.9036 95.4023% 82.9412%);
+    --primary-foreground: hsl(24 9.8039% 10%);
+    --secondary: hsl(272.5000 19.3548% 24.3137%);
+    --secondary-foreground: hsl(216.0000 12.1951% 83.9216%);
+    --muted: hsl(265.2632 28.3582% 13.1373%);
+    --muted-foreground: hsl(217.8947 10.6145% 64.9020%);
+    --accent: hsl(266.8966 19.2053% 29.6078%);
+    --accent-foreground: hsl(216.0000 12.1951% 83.9216%);
+    --destructive: hsl(0 93.5484% 81.7647%);
+    --destructive-foreground: hsl(24 9.8039% 10%);
+    --border: hsl(272.5000 19.3548% 24.3137%);
+    --input: hsl(272.5000 19.3548% 24.3137%);
+    --ring: hsl(255.9036 95.4023% 82.9412%);
+    --chart-1: hsl(255.9036 95.4023% 82.9412%);
+    --chart-2: hsl(255.1351 91.7355% 76.2745%);
+    --chart-3: hsl(258.3117 89.5349% 66.2745%);
+    --chart-4: hsl(262.1229 83.2558% 57.8431%);
+    --chart-5: hsl(263.3898 69.9605% 50.3922%);
+    --sidebar: hsl(272.5000 19.3548% 24.3137%);
+    --sidebar-foreground: hsl(226.4516 100% 93.9216%);
+    --sidebar-primary: hsl(255.9036 95.4023% 82.9412%);
+    --sidebar-primary-foreground: hsl(24 9.8039% 10%);
+    --sidebar-accent: hsl(266.8966 19.2053% 29.6078%);
+    --sidebar-accent-foreground: hsl(216.0000 12.1951% 83.9216%);
+    --sidebar-border: hsl(272.5000 19.3548% 24.3137%);
+    --sidebar-ring: hsl(255.9036 95.4023% 82.9412%);
+    --font-sans: Open Sans, sans-serif;
+    --font-serif: Source Serif 4, serif;
+    --font-mono: IBM Plex Mono, monospace;
+    --radius: 1.5rem;
+    --shadow-x: 0px;
+    --shadow-y: 8px;
+    --shadow-blur: 16px;
+    --shadow-spread: -4px;
+    --shadow-opacity: 0.08;
+    --shadow-color: hsl(0 0% 0%);
+    --shadow-2xs: 0px 8px 16px -4px hsl(0 0% 0% / 0.04);
+    --shadow-xs: 0px 8px 16px -4px hsl(0 0% 0% / 0.04);
+    --shadow-sm: 0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 1px 2px -5px hsl(0 0% 0% / 0.08);
+    --shadow: 0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 1px 2px -5px hsl(0 0% 0% / 0.08);
+    --shadow-md: 0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 2px 4px -5px hsl(0 0% 0% / 0.08);
+    --shadow-lg: 0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 4px 6px -5px hsl(0 0% 0% / 0.08);
+    --shadow-xl: 0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 8px 10px -5px hsl(0 0% 0% / 0.08);
+    --shadow-2xl: 0px 8px 16px -4px hsl(0 0% 0% / 0.20);
+  }
+  .retro-arcade {
+    --background: hsl(43.8462 86.6667% 94.1176%);
+    --foreground: hsl(192.2034 80.8219% 14.3137%);
+    --card: hsl(45.6000 42.3729% 88.4314%);
+    --card-foreground: hsl(192.2034 80.8219% 14.3137%);
+    --popover: hsl(45.6000 42.3729% 88.4314%);
+    --popover-foreground: hsl(192.2034 80.8219% 14.3137%);
+    --primary: hsl(330.9554 64.0816% 51.9608%);
+    --primary-foreground: hsl(0 0% 100%);
+    --secondary: hsl(175.4622 58.6207% 39.8039%);
+    --secondary-foreground: hsl(0 0% 100%);
+    --muted: hsl(180 6.9307% 60.3922%);
+    --muted-foreground: hsl(192.2034 80.8219% 14.3137%);
+    --accent: hsl(17.5691 80.4444% 44.1176%);
+    --accent-foreground: hsl(0 0% 100%);
+    --destructive: hsl(1.0405 71.1934% 52.3529%);
+    --destructive-foreground: hsl(0 0% 100%);
+    --border: hsl(186.3158 8.2969% 55.0980%);
+    --input: hsl(186.3158 8.2969% 55.0980%);
+    --ring: hsl(330.9554 64.0816% 51.9608%);
+    --chart-1: hsl(204.7674 69.3548% 48.6275%);
+    --chart-2: hsl(175.4622 58.6207% 39.8039%);
+    --chart-3: hsl(330.9554 64.0816% 51.9608%);
+    --chart-4: hsl(17.5691 80.4444% 44.1176%);
+    --chart-5: hsl(1.0405 71.1934% 52.3529%);
+    --sidebar: hsl(43.8462 86.6667% 94.1176%);
+    --sidebar-foreground: hsl(192.2034 80.8219% 14.3137%);
+    --sidebar-primary: hsl(330.9554 64.0816% 51.9608%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(175.4622 58.6207% 39.8039%);
+    --sidebar-accent-foreground: hsl(0 0% 100%);
+    --sidebar-border: hsl(186.3158 8.2969% 55.0980%);
+    --sidebar-ring: hsl(330.9554 64.0816% 51.9608%);
+    --font-sans: Open Sans, Outfit, sans-serif;
+    --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-mono: Space Mono, monospace;
+    --radius: 0.25rem;
+    --shadow-x: 2px;
+    --shadow-y: 2px;
+    --shadow-blur: 4px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 0.15;
+    --shadow-color: hsl(196 83% 10%);
+    --shadow-2xs: 2px 2px 4px 0px hsl(196 83% 10% / 0.07);
+    --shadow-xs: 2px 2px 4px 0px hsl(196 83% 10% / 0.07);
+    --shadow-sm: 2px 2px 4px 0px hsl(196 83% 10% / 0.15), 2px 1px 2px -1px hsl(196 83% 10% / 0.15);
+    --shadow: 2px 2px 4px 0px hsl(196 83% 10% / 0.15), 2px 1px 2px -1px hsl(196 83% 10% / 0.15);
+    --shadow-md: 2px 2px 4px 0px hsl(196 83% 10% / 0.15), 2px 2px 4px -1px hsl(196 83% 10% / 0.15);
+    --shadow-lg: 2px 2px 4px 0px hsl(196 83% 10% / 0.15), 2px 4px 6px -1px hsl(196 83% 10% / 0.15);
+    --shadow-xl: 2px 2px 4px 0px hsl(196 83% 10% / 0.15), 2px 8px 10px -1px hsl(196 83% 10% / 0.15);
+    --shadow-2xl: 2px 2px 4px 0px hsl(196 83% 10% / 0.38);
+    --tracking-normal: 0em;
+    --spacing: 0.25rem;
+  }
+  
+  .retro-arcade-dark {
+    --background: hsl(192.2222 100.0000% 10.5882%);
+    --foreground: hsl(180 6.9307% 60.3922%);
+    --card: hsl(192.2034 80.8219% 14.3137%);
+    --card-foreground: hsl(180 6.9307% 60.3922%);
+    --popover: hsl(192.2034 80.8219% 14.3137%);
+    --popover-foreground: hsl(180 6.9307% 60.3922%);
+    --primary: hsl(330.9554 64.0816% 51.9608%);
+    --primary-foreground: hsl(0 0% 100%);
+    --secondary: hsl(175.4622 58.6207% 39.8039%);
+    --secondary-foreground: hsl(0 0% 100%);
+    --muted: hsl(194.4828 14.1463% 40.1961%);
+    --muted-foreground: hsl(180 6.9307% 60.3922%);
+    --accent: hsl(17.5691 80.4444% 44.1176%);
+    --accent-foreground: hsl(0 0% 100%);
+    --destructive: hsl(1.0405 71.1934% 52.3529%);
+    --destructive-foreground: hsl(0 0% 100%);
+    --border: hsl(194.4828 14.1463% 40.1961%);
+    --input: hsl(194.4828 14.1463% 40.1961%);
+    --ring: hsl(330.9554 64.0816% 51.9608%);
+    --chart-1: hsl(204.7674 69.3548% 48.6275%);
+    --chart-2: hsl(175.4622 58.6207% 39.8039%);
+    --chart-3: hsl(330.9554 64.0816% 51.9608%);
+    --chart-4: hsl(17.5691 80.4444% 44.1176%);
+    --chart-5: hsl(1.0405 71.1934% 52.3529%);
+    --sidebar: hsl(192.2222 100.0000% 10.5882%);
+    --sidebar-foreground: hsl(180 6.9307% 60.3922%);
+    --sidebar-primary: hsl(330.9554 64.0816% 51.9608%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(175.4622 58.6207% 39.8039%);
+    --sidebar-accent-foreground: hsl(0 0% 100%);
+    --sidebar-border: hsl(194.4828 14.1463% 40.1961%);
+    --sidebar-ring: hsl(330.9554 64.0816% 51.9608%);
+    --font-sans: Open Sans,Outfit, sans-serif;
+    --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-mono: Space Mono, monospace;
+    --radius: 0.25rem;
+    --shadow-x: 2px;
+    --shadow-y: 2px;
+    --shadow-blur: 4px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 0.15;
+    --shadow-color: hsl(196 83% 10%);
+    --shadow-2xs: 2px 2px 4px 0px hsl(196 83% 10% / 0.07);
+    --shadow-xs: 2px 2px 4px 0px hsl(196 83% 10% / 0.07);
+    --shadow-sm: 2px 2px 4px 0px hsl(196 83% 10% / 0.15), 2px 1px 2px -1px hsl(196 83% 10% / 0.15);
+    --shadow: 2px 2px 4px 0px hsl(196 83% 10% / 0.15), 2px 1px 2px -1px hsl(196 83% 10% / 0.15);
+    --shadow-md: 2px 2px 4px 0px hsl(196 83% 10% / 0.15), 2px 2px 4px -1px hsl(196 83% 10% / 0.15);
+    --shadow-lg: 2px 2px 4px 0px hsl(196 83% 10% / 0.15), 2px 4px 6px -1px hsl(196 83% 10% / 0.15);
+    --shadow-xl: 2px 2px 4px 0px hsl(196 83% 10% / 0.15), 2px 8px 10px -1px hsl(196 83% 10% / 0.15);
+    --shadow-2xl: 2px 2px 4px 0px hsl(196 83% 10% / 0.38);
+  }
+  .writa {
+    --background: hsl(0 0% 99.2157%);
+    --foreground: hsl(0 0% 0%);
+    --card: hsl(0 0% 99.2157%);
+    --card-foreground: hsl(0 0% 0%);
+    --popover: hsl(0 0% 98.8235%);
+    --popover-foreground: hsl(0 0% 0%);
+    --primary: hsl(77.9412 100% 60%);
+    --primary-foreground: hsl(0 0% 100%);
+    --secondary: hsl(34.2857 24.1379% 94.3137%);
+    --secondary-foreground: hsl(0 0% 3.1373%);
+    --muted: hsl(0 0% 96.0784%);
+    --muted-foreground: hsl(0 0% 32.1569%);
+    --accent: hsl(41.3793 100% 94.3137%);
+    --accent-foreground: hsl(36.3158 76% 49.0196%);
+    --destructive: hsl(178.4416 74.7573% 59.6078%);
+    --destructive-foreground: hsl(0 0% 100%);
+    --border: hsl(60 17.0732% 91.9608%);
+    --input: hsl(0 0% 92.1569%);
+    --ring: hsl(0 0% 0%);
+    --chart-1: hsl(328.0952 53.3898% 53.7255%);
+    --chart-2: hsl(77.9412 100% 60%);
+    --chart-3: hsl(204.8571 98.1308% 58.0392%);
+    --chart-4: hsl(37.0787 76.7241% 54.5098%);
+    --chart-5: hsl(0 0% 45.4902%);
+    --sidebar: hsl(30 42.8571% 97.2549%);
+    --sidebar-foreground: hsl(0 0% 0%);
+    --sidebar-primary: hsl(0 0% 0%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(0 0% 92.1569%);
+    --sidebar-accent-foreground: hsl(0 0% 0%);
+    --sidebar-border: hsl(0 0% 92.1569%);
+    --sidebar-ring: hsl(0 0% 0%);
+    --font-sans: Ubuntu, ui-sans-serif, sans-serif, system-ui;
+    --font-serif: 'Instrument Serif',  ui-serif, serif;
+    --font-mono: IBM Plex Mono, monospace;
+    --radius: 1.4rem;
+    --shadow-x: 0px;
+    --shadow-y: 2px;
+    --shadow-blur: 3px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 0.16;
+    --shadow-color: #1a1a1a;
+    --shadow-2xs: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.08);
+    --shadow-xs: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.08);
+    --shadow-sm: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 1px 2px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 1px 2px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow-md: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 2px 4px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow-lg: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 4px 6px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow-xl: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 8px 10px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow-2xl: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.40);
+    --tracking-normal: -0.025em;
+    --spacing: 0.27rem;
+  }
+  
+  .writadark {
+    --background: hsl(45 7.1429% 10.9804%);
+    --foreground: hsl(0 0% 94.1176%);
+    --card: hsl(48.0000 6.8493% 14.3137%);
+    --card-foreground: hsl(0 0% 94.1176%);
+    --popover: hsl(48.0000 6.8493% 14.3137%);
+    --popover-foreground: hsl(0 0% 94.1176%);
+    --primary: hsl(77.6687 100% 68.0392%);
+    --primary-foreground: hsl(0 0% 100%);
+    --secondary: hsl(46.6667 9.6774% 18.2353%);
+    --secondary-foreground: hsl(0 0% 94.1176%);
+    --muted: hsl(46.6667 9.6774% 18.2353%);
+    --muted-foreground: hsl(0 0% 62.7451%);
+    --accent: hsl(37.2414 32.5843% 17.4510%);
+    --accent-foreground: hsl(28.2090 100.0000% 73.7255%);
+    --destructive: hsl(180 90.6040% 70.7843%);
+    --destructive-foreground: hsl(0 0% 100%);
+    --border: hsl(42.8571 6.4220% 21.3725%);
+    --input: hsl(42.8571 6.4220% 21.3725%);
+    --ring: hsl(77.6687 100% 68.0392%);
+    --chart-1: hsl(321.8919 69.1589% 58.0392%);
+    --chart-2: hsl(77.6687 100% 68.0392%);
+    --chart-3: hsl(180 93.5484% 81.7647%);
+    --chart-4: hsl(37.5484 87.5706% 65.2941%);
+    --chart-5: hsl(0 0% 62.7451%);
+    --sidebar: hsl(60 5.8824% 10%);
+    --sidebar-foreground: hsl(0 0% 94.1176%);
+    --sidebar-primary: hsl(77.6687 100% 68.0392%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(46.6667 9.6774% 18.2353%);
+    --sidebar-accent-foreground: hsl(77.6687 100% 68.0392%);
+    --sidebar-border: hsl(42.8571 6.4220% 21.3725%);
+    --sidebar-ring: hsl(77.6687 100% 68.0392%);
+    --font-sans: Ubuntu, ui-sans-serif, sans-serif, system-ui;
+    --font-serif: 'Instrument Serif',  ui-serif, serif;
+    --font-mono: IBM Plex Mono, monospace;
+    --radius: 1.4rem;
+    --shadow-x: 0px;
+    --shadow-y: 2px;
+    --shadow-blur: 3px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 0.16;
+    --shadow-color: #1a1a1a;
+    --shadow-2xs: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.08);
+    --shadow-xs: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.08);
+    --shadow-sm: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 1px 2px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 1px 2px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow-md: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 2px 4px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow-lg: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 4px 6px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow-xl: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.16), 0px 8px 10px -1px hsl(0 0% 10.1961% / 0.16);
+    --shadow-2xl: 0px 2px 3px 0px hsl(0 0% 10.1961% / 0.40);
+  }
+  .bubblegum{
+    --background: hsl(330 47.0588% 93.3333%);
+    --foreground: hsl(0 0% 35.6863%);
+    --card: hsl(41.5385 92.8571% 89.0196%);
+    --card-foreground: hsl(0 0% 35.6863%);
+    --popover: hsl(0 0% 100%);
+    --popover-foreground: hsl(0 0% 35.6863%);
+    --primary: hsl(325.5814 57.8475% 56.2745%);
+    --primary-foreground: hsl(0 0% 100%);
+    --secondary: hsl(181.6901 43.5583% 68.0392%);
+    --secondary-foreground: hsl(0 0% 20%);
+    --muted: hsl(190.5263 58.7629% 80.9804%);
+    --muted-foreground: hsl(0 0% 47.8431%);
+    --accent: hsl(42.1429 91.3043% 81.9608%);
+    --accent-foreground: hsl(0 0% 20%);
+    --destructive: hsl(359.5652 92.0000% 70.5882%);
+    --destructive-foreground: hsl(0 0% 100%);
+    --border: hsl(325.5814 57.8475% 56.2745%);
+    --input: hsl(0 0% 89.4118%);
+    --ring: hsl(330 70.2381% 67.0588%);
+    --chart-1: hsl(330 70.2381% 67.0588%);
+    --chart-2: hsl(190.2128 61.8421% 70.1961%);
+    --chart-3: hsl(42.1429 91.3043% 81.9608%);
+    --chart-4: hsl(329.6386 77.5701% 79.0196%);
+    --chart-5: hsl(330.6294 64.1256% 56.2745%);
+    --sidebar: hsl(326.2500 69.5652% 90.9804%);
+    --sidebar-foreground: hsl(0 0% 20%);
+    --sidebar-primary: hsl(330.3659 81.1881% 60.3922%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(327.4074 87.0968% 81.7647%);
+    --sidebar-accent-foreground: hsl(0 0% 20%);
+    --sidebar-border: hsl(268.6957 100.0000% 95.4902%);
+    --sidebar-ring: hsl(330.3659 81.1881% 60.3922%);
+    --font-sans: Poppins, sans-serif;
+    --font-serif: 'Instrument Serif',  ui-serif, serif;
+    --font-mono: Fira Code, monospace;
+    --radius: 0.4rem;
+    --shadow-x: 3px;
+    --shadow-y: 3px;
+    --shadow-blur: 0px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 1.0;
+    --shadow-color: hsl(325.78 58.18% 56.86% / 0.5);
+    --shadow-2xs: 3px 3px 0px 0px hsl(325.7800 58.1800% 56.8600% / 0.50);
+    --shadow-xs: 3px 3px 0px 0px hsl(325.7800 58.1800% 56.8600% / 0.50);
+    --shadow-sm: 3px 3px 0px 0px hsl(325.7800 58.1800% 56.8600% / 1.00), 3px 1px 2px -1px hsl(325.7800 58.1800% 56.8600% / 1.00);
+    --shadow: 0.3em 0.3em 0px 0px hsl(325.7800 58.1800% 56.8600% / 1.00), 3px 1px 2px -1px hsl(325.7800 58.1800% 56.8600% / 1.00);
+    --shadow-md: 3px 3px 0px 0px hsl(325.7800 58.1800% 56.8600% / 1.00), 3px 2px 4px -1px hsl(325.7800 58.1800% 56.8600% / 1.00);
+    --shadow-lg: 3px 3px 0px 0px hsl(325.7800 58.1800% 56.8600% / 1.00), 3px 4px 6px -1px hsl(325.7800 58.1800% 56.8600% / 1.00);
+    --shadow-xl: 3px 3px 0px 0px hsl(325.7800 58.1800% 56.8600% / 1.00), 3px 8px 10px -1px hsl(325.7800 58.1800% 56.8600% / 1.00);
+    --shadow-2xl: 3px 3px 0px 0px hsl(325.7800 58.1800% 56.8600% / 2.50);
+    --tracking-normal: 0em;
+    --spacing: 0.25rem;
+  }
+  .bubblegum-dark {
+    --background: hsl(201.4286 43.7500% 12.5490%);
+    --foreground: hsl(333.7500 40.0000% 92.1569%);
+    --card: hsl(201.4286 33.3333% 16.4706%);
+    --card-foreground: hsl(333.7500 40.0000% 92.1569%);
+    --popover: hsl(201.4286 33.3333% 16.4706%);
+    --popover-foreground: hsl(333.7500 40.0000% 92.1569%);
+    --primary: hsl(42.1429 91.3043% 81.9608%);
+    --primary-foreground: hsl(201.4286 43.7500% 12.5490%);
+    --secondary: hsl(346.3636 55.0000% 76.4706%);
+    --secondary-foreground: hsl(201.4286 43.7500% 12.5490%);
+    --muted: hsl(214.2857 8.8608% 15.4902%);
+    --muted-foreground: hsl(346.3636 55.0000% 76.4706%);
+    --accent: hsl(338.4000 39.6825% 62.9412%);
+    --accent-foreground: hsl(333.7500 40.0000% 92.1569%);
+    --destructive: hsl(328.4211 70.3704% 62.9412%);
+    --destructive-foreground: hsl(201.4286 43.7500% 12.5490%);
+    --border: hsl(206.1538 28.0576% 27.2549%);
+    --input: hsl(200.6897 31.1828% 18.2353%);
+    --ring: hsl(184.1176 41.1290% 51.3725%);
+    --chart-1: hsl(184.1176 41.1290% 51.3725%);
+    --chart-2: hsl(346.3636 55.0000% 76.4706%);
+    --chart-3: hsl(338.4000 39.6825% 62.9412%);
+    --chart-4: hsl(191.2941 64.8855% 25.6863%);
+    --chart-5: hsl(214.2857 8.8608% 15.4902%);
+    --sidebar: hsl(202.5000 42.8571% 10.9804%);
+    --sidebar-foreground: hsl(220.0000 14.2857% 95.8824%);
+    --sidebar-primary: hsl(330.3659 81.1881% 60.3922%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(327.4074 87.0968% 81.7647%);
+    --sidebar-accent-foreground: hsl(215.0000 27.9070% 16.8627%);
+    --sidebar-border: hsl(216.9231 19.1176% 26.6667%);
+    --sidebar-ring: hsl(330.3659 81.1881% 60.3922%);
+    --font-sans: Poppins, sans-serif;
+    --font-serif: 'Instrument Serif',  ui-serif, serif;
+    --font-mono: Fira Code, monospace;
+    --radius: 0.4rem;
+    --shadow-x: 3px;
+    --shadow-y: 3px;
+    --shadow-blur: 0px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 1.0;
+    --shadow-color: #324859;
+    --shadow-2xs: 3px 3px 0px 0px hsl(206.1538 28.0576% 27.2549% / 0.50);
+    --shadow-xs: 3px 3px 0px 0px hsl(206.1538 28.0576% 27.2549% / 0.50);
+    --shadow-sm: 3px 3px 0px 0px hsl(206.1538 28.0576% 27.2549% / 1.00), 3px 1px 2px -1px hsl(206.1538 28.0576% 27.2549% / 1.00);
+    --shadow: 3px 3px 0px 0px hsl(206.1538 28.0576% 27.2549% / 1.00), 3px 1px 2px -1px hsl(206.1538 28.0576% 27.2549% / 1.00);
+    --shadow-md: 3px 3px 0px 0px hsl(206.1538 28.0576% 27.2549% / 1.00), 3px 2px 4px -1px hsl(206.1538 28.0576% 27.2549% / 1.00);
+    --shadow-lg: 3px 3px 0px 0px hsl(206.1538 28.0576% 27.2549% / 1.00), 3px 4px 6px -1px hsl(206.1538 28.0576% 27.2549% / 1.00);
+    --shadow-xl: 3px 3px 0px 0px hsl(206.1538 28.0576% 27.2549% / 1.00), 3px 8px 10px -1px hsl(206.1538 28.0576% 27.2549% / 1.00);
+    --shadow-2xl: 3px 3px 0px 0px hsl(206.1538 28.0576% 27.2549% / 2.50);
+  }
+  .nature{
+    --background: hsl(37.5000 36.3636% 95.6863%);
+    --foreground: hsl(8.8889 27.8351% 19.0196%);
+    --card: hsl(37.5000 36.3636% 95.6863%);
+    --card-foreground: hsl(8.8889 27.8351% 19.0196%);
+    --popover: hsl(37.5000 36.3636% 95.6863%);
+    --popover-foreground: hsl(8.8889 27.8351% 19.0196%);
+    --primary: hsl(123.0380 46.1988% 33.5294%);
+    --primary-foreground: hsl(0 0% 100%);
+    --secondary: hsl(124.6154 39.3939% 93.5294%);
+    --secondary-foreground: hsl(124.4776 55.3719% 23.7255%);
+    --muted: hsl(33.7500 34.7826% 90.9804%);
+    --muted-foreground: hsl(15.0000 25.2874% 34.1176%);
+    --accent: hsl(122 37.5000% 84.3137%);
+    --accent-foreground: hsl(124.4776 55.3719% 23.7255%);
+    --destructive: hsl(0 66.3866% 46.6667%);
+    --destructive-foreground: hsl(0 0% 100%);
+    --border: hsl(33.9130 27.0588% 83.3333%);
+    --input: hsl(33.9130 27.0588% 83.3333%);
+    --ring: hsl(123.0380 46.1988% 33.5294%);
+    --chart-1: hsl(122.4242 39.4422% 49.2157%);
+    --chart-2: hsl(122.7907 43.4343% 38.8235%);
+    --chart-3: hsl(123.0380 46.1988% 33.5294%);
+    --chart-4: hsl(124.4776 55.3719% 23.7255%);
+    --chart-5: hsl(125.7143 51.2195% 8.0392%);
+    --sidebar: hsl(34 35% 91%);
+    --sidebar-foreground: hsl(8.8889 27.8351% 19.0196%);
+    --sidebar-primary: hsl(123.0380 46.1988% 33.5294%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(122 37.5000% 84.3137%);
+    --sidebar-accent-foreground: hsl(124.4776 55.3719% 23.7255%);
+    --sidebar-border: hsl(33.9130 27.0588% 83.3333%);
+    --sidebar-ring: hsl(123.0380 46.1988% 33.5294%);
+    --font-sans: Montserrat, sans-serif;
+    --font-serif: 'Instrument Serif', Merriweather, serif;
+    --font-mono: 'Source Code Pro', monospace;
+    --radius: 0.5rem;
+    --shadow-x: 0;
+    --shadow-y: 1px;
+    --shadow-blur: 3px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 0.1;
+    --shadow-color: oklch(0 0 0);
+    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
+    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 4px 6px -1px hsl(0 0% 0% / 0.10);
+    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 8px 10px -1px hsl(0 0% 0% / 0.10);
+    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+
+  }
+  .nature-dark {
+    --background: hsl(132.8571 20% 13.7255%);
+    --foreground: hsl(32.7273 26.8293% 91.9608%);
+    --card: hsl(124.6154 12.6214% 20.1961%);
+    --card-foreground: hsl(32.7273 26.8293% 91.9608%);
+    --popover: hsl(124.6154 12.6214% 20.1961%);
+    --popover-foreground: hsl(32.7273 26.8293% 91.9608%);
+    --primary: hsl(122.4242 39.4422% 49.2157%);
+    --primary-foreground: hsl(125.7143 51.2195% 8.0392%);
+    --secondary: hsl(115.3846 9.6296% 26.4706%);
+    --secondary-foreground: hsl(114.0000 13.8889% 85.8824%);
+    --muted: hsl(126.0000 11.9048% 16.4706%);
+    --muted-foreground: hsl(34.7368 19.1919% 80.5882%);
+    --accent: hsl(122.7907 43.4343% 38.8235%);
+    --accent-foreground: hsl(32.7273 26.8293% 91.9608%);
+    --destructive: hsl(0 66.3866% 46.6667%);
+    --destructive-foreground: hsl(32.7273 26.8293% 91.9608%);
+    --border: hsl(115.3846 9.6296% 26.4706%);
+    --input: hsl(115.3846 9.6296% 26.4706%);
+    --ring: hsl(122.4242 39.4422% 49.2157%);
+    --chart-1: hsl(122.5714 38.4615% 64.3137%);
+    --chart-2: hsl(122.8235 38.4615% 56.6667%);
+    --chart-3: hsl(122.4242 39.4422% 49.2157%);
+    --chart-4: hsl(122.5806 40.9692% 44.5098%);
+    --chart-5: hsl(122.7907 43.4343% 38.8235%);
+    --sidebar: hsl(132.8571 20% 13.7255%);
+    --sidebar-foreground: hsl(32.7273 26.8293% 91.9608%);
+    --sidebar-primary: hsl(122.4242 39.4422% 49.2157%);
+    --sidebar-primary-foreground: hsl(125.7143 51.2195% 8.0392%);
+    --sidebar-accent: hsl(122.7907 43.4343% 38.8235%);
+    --sidebar-accent-foreground: hsl(32.7273 26.8293% 91.9608%);
+    --sidebar-border: hsl(115.3846 9.6296% 26.4706%);
+    --sidebar-ring: hsl(122.4242 39.4422% 49.2157%);
+    --font-sans: Montserrat, sans-serif;
+    --font-serif: 'Instrument Serif', Merriweather, serif;
+    --font-mono: Source Code Pro, monospace;
+    --radius: 0.5rem;
+    --shadow-x: 0;
+    --shadow-y: 1px;
+    --shadow-blur: 3px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 0.1;
+    --shadow-color: oklch(0 0 0);
+    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
+    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 4px 6px -1px hsl(0 0% 0% / 0.10);
+    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 8px 10px -1px hsl(0 0% 0% / 0.10);
+    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+  }
+  .dark-supabase {
+    --background: hsl(0 0% 7.0588%);
+    --foreground: hsl(214.2857 31.8182% 91.3725%);
+    --card: hsl(0 0% 9.0196%);
+    --card-foreground: hsl(214.2857 31.8182% 91.3725%);
+    --popover: hsl(0 0% 14.1176%);
+    --popover-foreground: hsl(0 0% 66.2745%);
+    --primary: hsl(154.8980 100.0000% 19.2157%);
+    --primary-foreground: hsl(152.7273 19.2982% 88.8235%);
+    --secondary: hsl(0 0% 14.1176%);
+    --secondary-foreground: hsl(0 0% 98.0392%);
+    --muted: hsl(0 0% 12.1569%);
+    --muted-foreground: hsl(0 0% 63.5294%);
+    --accent: hsl(0 0% 19.2157%);
+    --accent-foreground: hsl(0 0% 98.0392%);
+    --destructive: hsl(6.6667 60.0000% 20.5882%);
+    --destructive-foreground: hsl(12.0000 12.1951% 91.9608%);
+    --border: hsl(0 0% 16.0784%);
+    --input: hsl(0 0% 14.1176%);
+    --ring: hsl(141.8919 69.1589% 58.0392%);
+    --chart-1: hsl(141.8919 69.1589% 58.0392%);
+    --chart-2: hsl(213.1169 93.9024% 67.8431%);
+    --chart-3: hsl(255.1351 91.7355% 76.2745%);
+    --chart-4: hsl(43.2558 96.4126% 56.2745%);
+    --chart-5: hsl(172.4551 66.0079% 50.3922%);
+    --sidebar: hsl(0 0% 7.0588%);
+    --sidebar-foreground: hsl(0 0% 53.7255%);
+    --sidebar-primary: hsl(154.8980 100.0000% 19.2157%);
+    --sidebar-primary-foreground: hsl(152.7273 19.2982% 88.8235%);
+    --sidebar-accent: hsl(0 0% 19.2157%);
+    --sidebar-accent-foreground: hsl(0 0% 98.0392%);
+    --sidebar-border: hsl(0 0% 16.0784%);
+    --sidebar-ring: hsl(141.8919 69.1589% 58.0392%);
+    --font-sans: Outfit, sans-serif;
+    --font-serif: 'Instrument Serif', ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-mono: monospace;
+    --radius: 0.5rem;
+    --shadow-x: 0px;
+    --shadow-y: 1px;
+    --shadow-blur: 3px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 0.17;
+    --shadow-color: #000000;
+    --shadow-2xs: 0px 1px 3px 0px hsl(0 0% 0% / 0.09);
+    --shadow-xs: 0px 1px 3px 0px hsl(0 0% 0% / 0.09);
+    --shadow-sm: 0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 1px 2px -1px hsl(0 0% 0% / 0.17);
+    --shadow: 0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 1px 2px -1px hsl(0 0% 0% / 0.17);
+    --shadow-md: 0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 2px 4px -1px hsl(0 0% 0% / 0.17);
+    --shadow-lg: 0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 4px 6px -1px hsl(0 0% 0% / 0.17);
+    --shadow-xl: 0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 8px 10px -1px hsl(0 0% 0% / 0.17);
+    --shadow-2xl: 0px 1px 3px 0px hsl(0 0% 0% / 0.43);
+  }
+  .candyland{
+    --background: hsl(200 23.0769% 97.4510%);
+    --foreground: hsl(0 0% 20%);
+    --card: hsl(0 0% 100%);
+    --card-foreground: hsl(0 0% 20%);
+    --popover: hsl(0 0% 100%);
+    --popover-foreground: hsl(0 0% 20%);
+    --primary: hsl(349.5238 100% 87.6471%);
+    --primary-foreground: hsl(0 0% 0%);
+    --secondary: hsl(197.4000 71.4286% 72.5490%);
+    --secondary-foreground: hsl(0 0% 0%);
+    --muted: hsl(50.4000 26.8817% 81.7647%);
+    --muted-foreground: hsl(0 0% 43.1373%);
+    --accent: hsl(60 100% 50%);
+    --accent-foreground: hsl(0 0% 0%);
+    --destructive: hsl(0 84.2365% 60.1961%);
+    --destructive-foreground: hsl(0 0% 100%);
+    --border: hsl(0 0% 83.1373%);
+    --input: hsl(0 0% 83.1373%);
+    --ring: hsl(349.5238 100% 87.6471%);
+    --chart-1: hsl(349.5238 100% 87.6471%);
+    --chart-2: hsl(197.4000 71.4286% 72.5490%);
+    --chart-3: hsl(60 100% 50%);
+    --chart-4: hsl(330 100.0000% 80%);
+    --chart-5: hsl(120 60.0000% 50%);
+    --sidebar: hsl(200 23.0769% 97.4510%);
+    --sidebar-foreground: hsl(0 0% 20%);
+    --sidebar-primary: hsl(349.5238 100% 87.6471%);
+    --sidebar-primary-foreground: hsl(0 0% 0%);
+    --sidebar-accent: hsl(60 100% 50%);
+    --sidebar-accent-foreground: hsl(0 0% 0%);
+    --sidebar-border: hsl(0 0% 83.1373%);
+    --sidebar-ring: hsl(349.5238 100% 87.6471%);
+    --font-sans: 'Poppins', sans-serif;
+    --font-serif: 'Instrument Serif', ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-mono: 'Roboto Mono', monospace;
+    --radius: 0.5rem;
+    --shadow-x: 0;
+    --shadow-y: 1px;
+    --shadow-blur: 3px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 0.1;
+    --shadow-color: oklch(0 0 0);
+    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
+    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 4px 6px -1px hsl(0 0% 0% / 0.10);
+    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 8px 10px -1px hsl(0 0% 0% / 0.10);
+    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+
+  }
+  .neo-brutalism {
+    --background: hsl(0 0% 100%);
+    --foreground: hsl(0 0% 0%);
+    --card: hsl(0 0% 100%);
+    --card-foreground: hsl(0 0% 0%);
+    --popover: hsl(0 0% 100%);
+    --popover-foreground: hsl(0 0% 0%);
+    --primary: hsl(0 100% 60%);
+    --primary-foreground: hsl(0 0% 100%);
+    --secondary: hsl(60 100% 50%);
+    --secondary-foreground: hsl(0 0% 0%);
+    --muted: hsl(0 0% 94.1176%);
+    --muted-foreground: hsl(0 0% 20%);
+    --accent: hsl(216 100% 50%);
+    --accent-foreground: hsl(0 0% 100%);
+    --destructive: hsl(0 0% 0%);
+    --destructive-foreground: hsl(0 0% 100%);
+    --border: hsl(0 0% 0%);
+    --input: hsl(0 0% 0%);
+    --ring: hsl(0 100% 60%);
+    --chart-1: hsl(0 100% 60%);
+    --chart-2: hsl(60 100% 50%);
+    --chart-3: hsl(216 100% 50%);
+    --chart-4: hsl(120 100% 40%);
+    --chart-5: hsl(300 100% 40%);
+    --sidebar: hsl(0 0% 94.1176%);
+    --sidebar-foreground: hsl(0 0% 0%);
+    --sidebar-primary: hsl(0 100% 60%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(216 100% 50%);
+    --sidebar-accent-foreground: hsl(0 0% 100%);
+    --sidebar-border: hsl(0 0% 0%);
+    --sidebar-ring: hsl(0 100% 60%);
+    --font-sans: DM Sans, sans-serif;
+    --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-mono: Space Mono, monospace;
+    --radius: 0px;
+    --shadow-x: 4px;
+    --shadow-y: 4px;
+    --shadow-blur: 0px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 1;
+    --shadow-color: hsl(0 0% 0%);
+    --shadow-2xs: 4px 4px 0px 0px hsl(0 0% 0% / 0.50);
+    --shadow-xs: 4px 4px 0px 0px hsl(0 0% 0% / 0.50);
+    --shadow-sm: 4px 4px 0px 0px hsl(0 0% 0% / 1.00), 4px 1px 2px -1px hsl(0 0% 0% / 1.00);
+    --shadow: 4px 4px 0px 0px hsl(0 0% 0% / 1.00), 4px 1px 2px -1px hsl(0 0% 0% / 1.00);
+    --shadow-md: 4px 4px 0px 0px hsl(0 0% 0% / 1.00), 4px 2px 4px -1px hsl(0 0% 0% / 1.00);
+    --shadow-lg: 4px 4px 0px 0px hsl(0 0% 0% / 1.00), 4px 4px 6px -1px hsl(0 0% 0% / 1.00);
+    --shadow-xl: 4px 4px 0px 0px hsl(0 0% 0% / 1.00), 4px 8px 10px -1px hsl(0 0% 0% / 1.00);
+    --shadow-2xl: 4px 4px 0px 0px hsl(0 0% 0% / 2.50);
+    --tracking-normal: 0em;
+    --spacing: 0.25rem;
+  }
+  .neo-brutalism-dark {
+    --background: hsl(0 0% 0%);
+    --foreground: hsl(0 0% 100%);
+    --card: hsl(0 0% 20%);
+    --card-foreground: hsl(0 0% 100%);
+    --popover: hsl(0 0% 20%);
+    --popover-foreground: hsl(0 0% 100%);
+    --primary: hsl(0 100.0000% 70%);
+    --primary-foreground: hsl(0 0% 0%);
+    --secondary: hsl(60 100% 60%);
+    --secondary-foreground: hsl(0 0% 0%);
+    --muted: hsl(0 0% 10.1961%);
+    --muted-foreground: hsl(0 0% 80%);
+    --accent: hsl(210 100% 60%);
+    --accent-foreground: hsl(0 0% 0%);
+    --destructive: hsl(0 0% 100%);
+    --destructive-foreground: hsl(0 0% 0%);
+    --border: hsl(0 0% 100%);
+    --input: hsl(0 0% 100%);
+    --ring: hsl(0 100.0000% 70%);
+    --chart-1: hsl(0 100.0000% 70%);
+    --chart-2: hsl(60 100% 60%);
+    --chart-3: hsl(210 100% 60%);
+    --chart-4: hsl(120 60.0000% 50%);
+    --chart-5: hsl(300 60.0000% 50%);
+    --sidebar: hsl(0 0% 0%);
+    --sidebar-foreground: hsl(0 0% 100%);
+    --sidebar-primary: hsl(0 100.0000% 70%);
+    --sidebar-primary-foreground: hsl(0 0% 0%);
+    --sidebar-accent: hsl(210 100% 60%);
+    --sidebar-accent-foreground: hsl(0 0% 0%);
+    --sidebar-border: hsl(0 0% 100%);
+    --sidebar-ring: hsl(0 100.0000% 70%);
+    --font-sans: DM Sans, sans-serif;
+    --font-serif: 'Instrument Serif', ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-mono: Space Mono, monospace;
+    --radius: 0px;
+    --shadow-x: 4px;
+    --shadow-y: 4px;
+    --shadow-blur: 0px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 1;
+    --shadow-color: hsl(0 0% 0%);
+    --shadow-2xs: 4px 4px 0px 0px hsl(0 0% 0% / 0.50);
+    --shadow-xs: 4px 4px 0px 0px hsl(0 0% 0% / 0.50);
+    --shadow-sm: 4px 4px 0px 0px hsl(0 0% 0% / 1.00), 4px 1px 2px -1px hsl(0 0% 0% / 1.00);
+    --shadow: 4px 4px 0px 0px hsl(0 0% 0% / 1.00), 4px 1px 2px -1px hsl(0 0% 0% / 1.00);
+    --shadow-md: 4px 4px 0px 0px hsl(0 0% 0% / 1.00), 4px 2px 4px -1px hsl(0 0% 0% / 1.00);
+    --shadow-lg: 4px 4px 0px 0px hsl(0 0% 0% / 1.00), 4px 4px 6px -1px hsl(0 0% 0% / 1.00);
+    --shadow-xl: 4px 4px 0px 0px hsl(0 0% 0% / 1.00), 4px 8px 10px -1px hsl(0 0% 0% / 1.00);
+    --shadow-2xl: 4px 4px 0px 0px hsl(0 0% 0% / 2.50);
+  }
+  .violet-bloom{
+    --background: hsl(0 0% 99.2157%);
+    --foreground: hsl(0 0% 0%);
+    --card: hsl(0 0% 99.2157%);
+    --card-foreground: hsl(0 0% 0%);
+    --popover: hsl(0 0% 98.8235%);
+    --popover-foreground: hsl(0 0% 0%);
+    --primary: hsl(257.9412 100% 60%);
+    --primary-foreground: hsl(0 0% 100%);
+    --secondary: hsl(214.2857 24.1379% 94.3137%);
+    --secondary-foreground: hsl(0 0% 3.1373%);
+    --muted: hsl(0 0% 96.0784%);
+    --muted-foreground: hsl(0 0% 32.1569%);
+    --accent: hsl(221.3793 100% 94.3137%);
+    --accent-foreground: hsl(216.3158 76% 49.0196%);
+    --destructive: hsl(358.4416 74.7573% 59.6078%);
+    --destructive-foreground: hsl(0 0% 100%);
+    --border: hsl(240 17.0732% 91.9608%);
+    --input: hsl(0 0% 92.1569%);
+    --ring: hsl(0 0% 0%);
+    --chart-1: hsl(148.0952 53.3898% 53.7255%);
+    --chart-2: hsl(257.9412 100% 60%);
+    --chart-3: hsl(24.8571 98.1308% 58.0392%);
+    --chart-4: hsl(217.0787 76.7241% 54.5098%);
+    --chart-5: hsl(0 0% 45.4902%);
+    --sidebar: hsl(210 42.8571% 97.2549%);
+    --sidebar-foreground: hsl(0 0% 0%);
+    --sidebar-primary: hsl(0 0% 0%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(0 0% 92.1569%);
+    --sidebar-accent-foreground: hsl(0 0% 0%);
+    --sidebar-border: hsl(0 0% 92.1569%);
+    --sidebar-ring: hsl(0 0% 0%);
+    --font-sans: 'Plus Jakarta Sans', sans-serif;
+    --font-serif: 'Instrument Serif', Lora, serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --radius: 1.4rem;
+    --shadow-x: 0px;
+    --shadow-y: 2px;
+    --shadow-blur: 3px;
+    --shadow-spread: 0px;
+    --shadow-opacity: 0.16;
+    --shadow-color: hsl(0 0% 0%);
+    --shadow-2xs: 0px 2px 3px 0px hsl(0 0% 0% / 0.08);
+    --shadow-xs: 0px 2px 3px 0px hsl(0 0% 0% / 0.08);
+    --shadow-sm: 0px 2px 3px 0px hsl(0 0% 0% / 0.16), 0px 1px 2px -1px hsl(0 0% 0% / 0.16);
+    --shadow: 0px 2px 3px 0px hsl(0 0% 0% / 0.16), 0px 1px 2px -1px hsl(0 0% 0% / 0.16);
+    --shadow-md: 0px 2px 3px 0px hsl(0 0% 0% / 0.16), 0px 2px 4px -1px hsl(0 0% 0% / 0.16);
+    --shadow-lg: 0px 2px 3px 0px hsl(0 0% 0% / 0.16), 0px 4px 6px -1px hsl(0 0% 0% / 0.16);
+    --shadow-xl: 0px 2px 3px 0px hsl(0 0% 0% / 0.16), 0px 8px 10px -1px hsl(0 0% 0% / 0.16);
+    --shadow-2xl: 0px 2px 3px 0px hsl(0 0% 0% / 0.40);
+    --tracking-normal: -0.025em;
+    --spacing: 0.27rem;
+
+  }
+  .ocean-breeze {
+    --background: hsl(208 100% 97.0588%);
+    --foreground: hsl(216.9231 19.1176% 26.6667%);
+    --card: hsl(0 0% 100%);
+    --card-foreground: hsl(216.9231 19.1176% 26.6667%);
+    --popover: hsl(0 0% 100%);
+    --popover-foreground: hsl(216.9231 19.1176% 26.6667%);
+    --primary: hsl(142.0859 70.5628% 45.2941%);
+    --primary-foreground: hsl(0 0% 100%);
+    --secondary: hsl(204.0000 93.7500% 93.7255%);
+    --secondary-foreground: hsl(215 13.7931% 34.1176%);
+    --muted: hsl(220.0000 14.2857% 95.8824%);
+    --muted-foreground: hsl(220 8.9362% 46.0784%);
+    --accent: hsl(149.2683 80.3922% 90.0000%);
+    --accent-foreground: hsl(216.9231 19.1176% 26.6667%);
+    --destructive: hsl(0 84.2365% 60.1961%);
+    --destructive-foreground: hsl(0 0% 100%);
+    --border: hsl(220 13.0435% 90.9804%);
+    --input: hsl(220 13.0435% 90.9804%);
+    --ring: hsl(142.0859 70.5628% 45.2941%);
+    --chart-1: hsl(142.0859 70.5628% 45.2941%);
+    --chart-2: hsl(160.1183 84.0796% 39.4118%);
+    --chart-3: hsl(161.3793 93.5484% 30.3922%);
+    --chart-4: hsl(162.9310 93.5484% 24.3137%);
+    --chart-5: hsl(163.1461 88.1188% 19.8039%);
+    --sidebar: hsl(204.0000 93.7500% 93.7255%);
+    --sidebar-foreground: hsl(216.9231 19.1176% 26.6667%);
+    --sidebar-primary: hsl(142.0859 70.5628% 45.2941%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(149.2683 80.3922% 90.0000%);
+    --sidebar-accent-foreground: hsl(216.9231 19.1176% 26.6667%);
+    --sidebar-border: hsl(220 13.0435% 90.9804%);
+    --sidebar-ring: hsl(142.0859 70.5628% 45.2941%);
+    --font-sans: DM Sans, sans-serif;
+    --font-serif: 'Instrument Serif',  serif;
+    --font-mono: IBM Plex Mono, monospace;
+    --radius: 0.5rem;
+    --shadow-x: 0px;
+    --shadow-y: 4px;
+    --shadow-blur: 8px;
+    --shadow-spread: -1px;
+    --shadow-opacity: 0.1;
+    --shadow-color: hsl(142.0859 70.5628% 45.2941% /0.5);
+    --shadow-2xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
+    --shadow-xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
+    --shadow-sm: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
+    --shadow: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
+    --shadow-md: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 2px 4px -2px hsl(0 0% 0% / 0.10);
+    --shadow-lg: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 4px 6px -2px hsl(0 0% 0% / 0.10);
+    --shadow-xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 8px 10px -2px hsl(0 0% 0% / 0.10);
+    --shadow-2xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.25);
+    --tracking-normal: 0em;
+    --spacing: 0.25rem;
+  }
+  .ocean-breeze-dark {
+    --background: hsl(222.2222 47.3684% 11.1765%);
+    --foreground: hsl(216.0000 12.1951% 83.9216%);
+    --card: hsl(217.2414 32.5843% 17.4510%);
+    --card-foreground: hsl(216.0000 12.1951% 83.9216%);
+    --popover: hsl(217.2414 32.5843% 17.4510%);
+    --popover-foreground: hsl(216.0000 12.1951% 83.9216%);
+    --primary: hsl(158.1132 64.3725% 51.5686%);
+    --primary-foreground: hsl(222.2222 47.3684% 11.1765%);
+    --secondary: hsl(217.7778 23.0769% 22.9412%);
+    --secondary-foreground: hsl(240 5.0279% 64.9020%);
+    --muted: hsl(217.1429 29.5775% 13.9216%);
+    --muted-foreground: hsl(220 8.9362% 46.0784%);
+    --accent: hsl(216.9231 19.1176% 26.6667%);
+    --accent-foreground: hsl(240 5.0279% 64.9020%);
+    --destructive: hsl(0 84.2365% 60.1961%);
+    --destructive-foreground: hsl(222.2222 47.3684% 11.1765%);
+    --border: hsl(215 13.7931% 34.1176%);
+    --input: hsl(215 13.7931% 34.1176%);
+    --ring: hsl(158.1132 64.3725% 51.5686%);
+    --chart-1: hsl(158.1132 64.3725% 51.5686%);
+    --chart-2: hsl(172.4551 66.0079% 50.3922%);
+    --chart-3: hsl(142.0859 70.5628% 45.2941%);
+    --chart-4: hsl(160.1183 84.0796% 39.4118%);
+    --chart-5: hsl(161.3793 93.5484% 30.3922%);
+    --sidebar: hsl(217.2414 32.5843% 17.4510%);
+    --sidebar-foreground: hsl(216.0000 12.1951% 83.9216%);
+    --sidebar-primary: hsl(158.1132 64.3725% 51.5686%);
+    --sidebar-primary-foreground: hsl(222.2222 47.3684% 11.1765%);
+    --sidebar-accent: hsl(216.9231 19.1176% 26.6667%);
+    --sidebar-accent-foreground: hsl(240 5.0279% 64.9020%);
+    --sidebar-border: hsl(215 13.7931% 34.1176%);
+    --sidebar-ring: hsl(158.1132 64.3725% 51.5686%);
+    --font-sans: DM Sans, sans-serif;
+    --font-serif: 'Instrument Serif',  serif;
+    --font-mono: IBM Plex Mono, monospace;
+    --radius: 0.5rem;
+    --shadow-x: 0px;
+    --shadow-y: 4px;
+    --shadow-blur: 8px;
+    --shadow-spread: -1px;
+    --shadow-opacity: 0.1;
+    --shadow-color: hsl(158.1132 64.3725% 51.5686% /0.5);
+    --shadow-2xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
+    --shadow-xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
+    --shadow-sm: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
+    --shadow: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
+    --shadow-md: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 2px 4px -2px hsl(0 0% 0% / 0.10);
+    --shadow-lg: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 4px 6px -2px hsl(0 0% 0% / 0.10);
+    --shadow-xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 8px 10px -2px hsl(0 0% 0% / 0.10);
+    --shadow-2xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.25);
+  }
+  /* Editor (Light) */
+  .editor {
+  /* Temel yüzeyler ve metin */
+  --background: hsl(210 20% 98%);
+  --foreground: hsl(222 22% 15%);
+
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(222 22% 15%);
+
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(222 22% 15%);
+
+  /* Aksiyon renkleri */
+  --primary: hsl(200 88% 46%);
+  --primary-foreground: hsl(0 0% 100%);
+
+  --secondary: hsl(260 60% 60%);
+  --secondary-foreground: hsl(0 0% 15%);
+
+  --muted: hsl(210 28% 94%);
+  --muted-foreground: hsl(215 15% 45%);
+
+  --accent: hsl(28 95% 67%);
+  --accent-foreground: hsl(0 0% 15%);
+
+  --destructive: hsl(0 75% 55%);
+  --destructive-foreground: hsl(0 0% 100%);
+
+  /* Kenarlık, alan ve vurgu */
+  --border: hsl(210 16% 86%);
+  --input: hsl(210 16% 86%);
+  --ring: hsl(200 100% 40%);
+
+  /* Grafik paleti (uyumlu 5’li) */
+  --chart-1: hsl(200 88% 46%);
+  --chart-2: hsl(160 65% 40%);
+  --chart-3: hsl(28 95% 55%);
+  --chart-4: hsl(260 60% 60%);
+  --chart-5: hsl(340 70% 52%);
+
+  /* Sidebar */
+  --sidebar: hsl(210 30% 97%);
+  --sidebar-foreground: hsl(222 22% 15%);
+  --sidebar-primary: hsl(200 88% 46%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(210 24% 92%);
+  --sidebar-accent-foreground: hsl(222 22% 20%);
+  --sidebar-border: hsl(210 16% 86%);
+  --sidebar-ring: hsl(200 100% 40%);
+
+  /* Tipografi ve ölçüler */
+  --font-sans: Poppins, system-ui, sans-serif;
+  --font-serif: 'Instrument Serif',  ui-serif, serif;
+  --font-mono: Fira Code, ui-monospace, monospace;
+  --radius: 0.5rem;
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  /* Gölge sistemi (yumuşak) */
+  --shadow-x: 0;
+  --shadow-y: 8px;
+  --shadow-blur: 24px;
+  --shadow-spread: -8px;
+  --shadow-opacity: 0.18;
+  --shadow-color: hsl(210 10% 20% / 0.18);
+  --shadow-2xs: 0 1px 2px 0 hsl(210 10% 20% / 0.06);
+  --shadow-xs: 0 2px 4px 0 hsl(210 10% 20% / 0.08);
+  --shadow-sm: 0 4px 12px -2px hsl(210 10% 20% / 0.10);
+  --shadow: 0 8px 24px -6px hsl(210 10% 20% / 0.14);
+  --shadow-md: 0 12px 32px -8px hsl(210 10% 20% / 0.16);
+  --shadow-lg: 0 16px 40px -10px hsl(210 10% 20% / 0.18);
+  --shadow-xl: 0 24px 64px -16px hsl(210 10% 20% / 0.22);
+  --shadow-2xl: 0 32px 80px -20px hsl(210 10% 20% / 0.28);
+
+  /* Kanvas & içerik özel tokenları */
+  --canvas: var(--card);
+  --canvas-foreground: var(--card-foreground);
+  --canvas-grid: hsl(210 16% 90% / 0.6);
+
+  /* Oran önayarları (var() ile tüketilir) */
+  --aspect-square: 1 / 1;
+  --aspect-post: 4 / 5;
+  --aspect-story: 9 / 16;
+
+  /* Güvenli alan önayarları (piksel bazlı) */
+  --safe-square-inset: 72px;
+  --safe-post-top: 80px;
+  --safe-post-bottom: 120px;
+  --safe-story-top: 250px;
+  --safe-story-bottom: 340px;
+
+  /* Tipografik boyut önerileri (var() ile bileşenler tüketir) */
+  --title-size: clamp(28px, 6vmin, 64px);
+  --lead-size: clamp(16px, 3vmin, 28px);
+  --quote-size: clamp(18px, 3.25vmin, 32px);
+  --meta-size: clamp(12px, 2vmin, 16px);
+  }
+
+/* Editor (Dark) */
+  .editor-dark {
+  --background: hsl(220 15% 10%);
+  --foreground: hsl(0 0% 96%);
+
+  --card: hsl(220 15% 13%);
+  --card-foreground: hsl(0 0% 96%);
+
+  --popover: hsl(220 15% 13%);
+  --popover-foreground: hsl(0 0% 96%);
+
+  --primary: hsl(200 88% 65%);
+  --primary-foreground: hsl(220 15% 10%);
+
+  --secondary: hsl(260 55% 72%);
+  --secondary-foreground: hsl(220 15% 10%);
+
+  --muted: hsl(220 10% 20%);
+  --muted-foreground: hsl(260 30% 80%);
+
+  --accent: hsl(28 95% 70%);
+  --accent-foreground: hsl(220 15% 10%);
+
+  --destructive: hsl(0 70% 62%);
+  --destructive-foreground: hsl(220 15% 10%);
+
+  --border: hsl(220 12% 26%);
+  --input: hsl(220 12% 18%);
+  --ring: hsl(190 100% 55%);
+
+  --chart-1: hsl(200 88% 65%);
+  --chart-2: hsl(160 55% 52%);
+  --chart-3: hsl(28 95% 60%);
+  --chart-4: hsl(260 55% 72%);
+  --chart-5: hsl(340 70% 62%);
+
+  --sidebar: hsl(220 18% 9%);
+  --sidebar-foreground: hsl(0 0% 96%);
+  --sidebar-primary: hsl(200 88% 65%);
+  --sidebar-primary-foreground: hsl(220 15% 10%);
+  --sidebar-accent: hsl(220 16% 16%);
+  --sidebar-accent-foreground: hsl(0 0% 96%);
+  --sidebar-border: hsl(220 12% 26%);
+  --sidebar-ring: hsl(190 100% 55%);
+
+  --font-sans: Poppins, system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', ui-serif, serif;
+  --font-mono: Fira Code, ui-monospace, monospace;
+  --radius: 0.5rem;
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  --shadow-x: 0;
+  --shadow-y: 10px;
+  --shadow-blur: 28px;
+  --shadow-spread: -10px;
+  --shadow-opacity: 0.28;
+  --shadow-color: hsl(210 10% 2% / 0.28);
+  --shadow-2xs: 0 1px 2px 0 hsl(210 10% 2% / 0.10);
+  --shadow-xs: 0 2px 6px 0 hsl(210 10% 2% / 0.12);
+  --shadow-sm: 0 6px 16px -2px hsl(210 10% 2% / 0.16);
+  --shadow: 0 10px 28px -8px hsl(210 10% 2% / 0.20);
+  --shadow-md: 0 14px 36px -10px hsl(210 10% 2% / 0.24);
+  --shadow-lg: 0 20px 48px -12px hsl(210 10% 2% / 0.28);
+  --shadow-xl: 0 28px 72px -16px hsl(210 10% 2% / 0.32);
+  --shadow-2xl: 0 36px 96px -20px hsl(210 10% 2% / 0.40);
+
+  --canvas: var(--card);
+  --canvas-foreground: var(--card-foreground);
+  --canvas-grid: hsl(220 12% 26% / 0.6);
+
+  --aspect-square: 1 / 1;
+  --aspect-post: 4 / 5;
+  --aspect-story: 9 / 16;
+
+  --safe-square-inset: 72px;
+  --safe-post-top: 80px;
+  --safe-post-bottom: 120px;
+  --safe-story-top: 250px;
+  --safe-story-bottom: 340px;
+
+  --title-size: clamp(28px, 6vmin, 64px);
+  --lead-size: clamp(16px, 3vmin, 28px);
+  --quote-size: clamp(18px, 3.25vmin, 32px);
+  --meta-size: clamp(12px, 2vmin, 16px);
+  }
+/* Classic Elegance — Light */
+  .classic-elegance{
+  /* Yüzeyler ve metin */
+  --background: hsl(30 24% 87%);
+  --foreground: hsl(188 37% 19%);
+
+  --card: hsl(30 22% 92%);
+  --card-foreground: hsl(188 37% 19%);
+
+  --popover: hsl(30 22% 92%);
+  --popover-foreground: hsl(188 37% 19%);
+
+  /* Aksiyon paleti (image: #1F3E43, #B38C6A, #5B2C36) */
+  --primary: hsl(188 37% 24%);
+  --primary-foreground: hsl(30 24% 96%);
+
+  --secondary: hsl(28 32% 56%);
+  --secondary-foreground: hsl(188 40% 14%);
+
+  --muted: hsl(30 20% 93%);
+  --muted-foreground: hsl(188 12% 38%);
+
+  --accent: hsl(346 35% 27%);
+  --accent-foreground: hsl(30 24% 96%);
+
+  --destructive: hsl(346 45% 35%);
+  --destructive-foreground: hsl(0 0% 100%);
+
+  /* Çizgiler ve odak */
+  --border: hsl(30 18% 80%);
+  --input: hsl(30 18% 80%);
+  --ring: hsl(188 40% 40%);
+
+  /* Grafik renkleri */
+  --chart-1: hsl(188 37% 24%);
+  --chart-2: hsl(346 35% 27%);
+  --chart-3: hsl(28 32% 56%);
+  --chart-4: hsl(30 24% 87%);
+  --chart-5: hsl(188 37% 19%);
+
+  /* Sidebar */
+  --sidebar: hsl(30 26% 94%);
+  --sidebar-foreground: hsl(188 37% 19%);
+  --sidebar-primary: hsl(188 37% 28%);
+  --sidebar-primary-foreground: hsl(30 24% 96%);
+  --sidebar-accent: hsl(28 24% 72%);
+  --sidebar-accent-foreground: hsl(188 40% 14%);
+  --sidebar-border: hsl(30 18% 80%);
+  --sidebar-ring: hsl(188 40% 40%);
+
+  /* Yazı tipleri ve ölçüler */
+  --font-sans: Montserrat, Poppins, sans-serif;
+  --font-serif: 'Instrument Serif',  ui-serif, serif;
+  --font-mono: "Fira Code", monospace;
+  --radius: 0.5rem;
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  /* Gölge sistemi (teal tabanlı yumuşak) */
+  --shadow-x: 0;
+  --shadow-y: 10px;
+  --shadow-blur: 28px;
+  --shadow-spread: -10px;
+  --shadow-opacity: 0.22;
+  --shadow-color: hsl(188 37% 19% / 0.22);
+  --shadow-2xs: 0 1px 2px 0 hsl(188 20% 20% / 0.06);
+  --shadow-xs: 0 2px 6px 0 hsl(188 20% 20% / 0.10);
+  --shadow-sm: 0 6px 16px -2px hsl(188 20% 20% / 0.12);
+  --shadow: 0 10px 28px -8px hsl(188 20% 20% / 0.16);
+  --shadow-md: 0 14px 36px -10px hsl(188 20% 20% / 0.18);
+  --shadow-lg: 0 20px 48px -12px hsl(188 20% 20% / 0.20);
+  --shadow-xl: 0 28px 72px -16px hsl(188 20% 20% / 0.24);
+  --shadow-2xl: 0 36px 96px -20px hsl(188 20% 20% / 0.30);
+  }
+
+/* Classic Elegance — Dark */
+  .classic-elegance-dark{
+  /* Yüzeyler ve metin (gece modu) */
+  --background: hsl(188 37% 11%);
+  --foreground: hsl(30 24% 92%);
+
+  --card: hsl(188 37% 14%);
+  --card-foreground: hsl(30 24% 92%);
+
+  --popover: hsl(188 37% 14%);
+  --popover-foreground: hsl(30 24% 92%);
+
+  /* Aksiyon paleti tersine uyum */
+  --primary: hsl(28 32% 62%);
+  --primary-foreground: hsl(188 37% 11%);
+
+  --secondary: hsl(346 35% 32%);
+  --secondary-foreground: hsl(30 24% 92%);
+
+  --muted: hsl(188 22% 20%);
+  --muted-foreground: hsl(30 20% 80%);
+
+  --accent: hsl(30 24% 80%);
+  --accent-foreground: hsl(188 37% 11%);
+
+  --destructive: hsl(346 45% 38%);
+  --destructive-foreground: hsl(30 24% 92%);
+
+  /* Çizgiler ve odak */
+  --border: hsl(188 18% 26%);
+  --input: hsl(188 18% 20%);
+  --ring: hsl(28 32% 62%);
+
+  /* Grafik renkleri */
+  --chart-1: hsl(28 32% 62%);
+  --chart-2: hsl(346 35% 32%);
+  --chart-3: hsl(30 24% 80%);
+  --chart-4: hsl(188 37% 24%);
+  --chart-5: hsl(188 37% 11%);
+
+  /* Sidebar */
+  --sidebar: hsl(188 37% 11%);
+  --sidebar-foreground: hsl(30 24% 92%);
+  --sidebar-primary: hsl(28 32% 62%);
+  --sidebar-primary-foreground: hsl(188 37% 11%);
+  --sidebar-accent: hsl(188 28% 18%);
+  --sidebar-accent-foreground: hsl(30 24% 92%);
+  --sidebar-border: hsl(188 18% 26%);
+  --sidebar-ring: hsl(28 32% 62%);
+
+  /* Yazı tipleri ve ölçüler */
+  --font-sans: Montserrat, Poppins, sans-serif;
+  --font-serif: 'Instrument Serif',  ui-serif, serif;
+  --font-mono: "Fira Code", monospace;
+  --radius: 0.5rem;
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  /* Gölge sistemi (daha yoğun) */
+  --shadow-x: 0;
+  --shadow-y: 12px;
+  --shadow-blur: 32px;
+  --shadow-spread: -12px;
+  --shadow-opacity: 0.28;
+  --shadow-color: hsl(188 37% 4% / 0.28);
+  --shadow-2xs: 0 1px 2px 0 hsl(188 20% 6% / 0.12);
+  --shadow-xs: 0 2px 8px 0 hsl(188 20% 6% / 0.14);
+  --shadow-sm: 0 6px 18px -2px hsl(188 20% 6% / 0.18);
+  --shadow: 0 12px 32px -8px hsl(188 20% 6% / 0.22);
+  --shadow-md: 0 16px 44px -10px hsl(188 20% 6% / 0.26);
+  --shadow-lg: 0 24px 56px -12px hsl(188 20% 6% / 0.30);
+  --shadow-xl: 0 32px 80px -16px hsl(188 20% 6% / 0.34);
+  --shadow-2xl: 0 40px 110px -20px hsl(188 20% 6% / 0.40);
+  }  
+/* GONO JO — Light */
+  .gonojo{
+  /* Kaynak renkler (HEX → HSL)
+     Teal Tide  #85D6C9 → hsl(170.3704 49.6933% 68.0392%)
+     Sunburst   #FFEE46 → hsl(54.4865 100.0000% 63.7255%)
+     PurpleHaze #DBB8F0 → hsl(277.5000 65.1163% 83.1373%)
+     Midnight   #1A1A1A → hsl(0 0% 10.1961%)
+  */
+
+  /* Yüzeyler ve metin */
+  --background: hsl(54.4865 100% 96%);          /* Sunburst’ten açık zemin */
+  --foreground: hsl(0 0% 12%);                  /* Midnight yakın */
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(0 0% 12%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(0 0% 12%);
+
+  /* Aksiyon paleti */
+  --primary: hsl(170.3704 49.6933% 38%);        /* Teal koyu */
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(54.4865 100% 63.7255%);      /* Sunburst */
+  --secondary-foreground: hsl(0 0% 12%);
+  --muted: hsl(170.3704 30% 92%);               /* Teal yumuşatılmış */
+  --muted-foreground: hsl(0 0% 35%);
+  --accent: hsl(277.5000 65.1163% 83.1373%);    /* Purple Haze */
+  --accent-foreground: hsl(0 0% 14%);
+
+  /* Durum renkleri */
+  --destructive: hsl(359.5652 92% 60%);         /* Kırmızı (fonksiyonel) */
+  --destructive-foreground: hsl(0 0% 100%);
+
+  /* Çizgiler ve odak */
+  --border: hsl(0 0% 86%);
+  --input: hsl(0 0% 86%);
+  --ring: hsl(170.3704 49.6933% 38%);           /* Teal koyu */
+
+  /* Grafik renkleri */
+  --chart-1: hsl(170.3704 49.6933% 38%);        /* Teal koyu */
+  --chart-2: hsl(54.4865 100% 63.7255%);        /* Sunburst */
+  --chart-3: hsl(277.5000 65.1163% 83.1373%);   /* Purple Haze */
+  --chart-4: hsl(170.3704 49.6933% 68.0392%);   /* Teal Tide orijinal */
+  --chart-5: hsl(0 0% 10.1961%);                /* Midnight Pulse */
+
+  /* Sidebar */
+  --sidebar: hsl(54.4865 100% 97%);             /* Sunburst çok açık */
+  --sidebar-foreground: hsl(0 0% 12%);
+  --sidebar-primary: hsl(170.3704 49.6933% 38%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(277.5000 50% 90%);
+  --sidebar-accent-foreground: hsl(0 0% 12%);
+  --sidebar-border: hsl(0 0% 86%);
+  --sidebar-ring: hsl(170.3704 49.6933% 38%);
+
+  /* Tipografi ve ölçüler */
+  --font-sans: Poppins, Montserrat, sans-serif;
+  --font-serif: 'Instrument Serif', "Cormorant Garamond", Lora, serif;
+  --font-mono: Fira Code, monospace;
+  --radius: 0.5rem;
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  /* Gölge sistemi (yumuşak) */
+  --shadow-x: 0;
+  --shadow-y: 10px;
+  --shadow-blur: 28px;
+  --shadow-spread: -10px;
+  --shadow-opacity: 0.18;
+  --shadow-color: hsl(170.3704 30% 20% / 0.18);
+  --shadow-2xs: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
+  --shadow-xs: 0 2px 6px 0 hsl(0 0% 0% / 0.06);
+  --shadow-sm: 0 6px 16px -2px hsl(0 0% 0% / 0.10);
+  --shadow: 0 10px 28px -8px hsl(0 0% 0% / 0.14);
+  --shadow-md: 0 14px 36px -10px hsl(0 0% 0% / 0.16);
+  --shadow-lg: 0 20px 48px -12px hsl(0 0% 0% / 0.18);
+  --shadow-xl: 0 28px 72px -16px hsl(0 0% 0% / 0.22);
+  --shadow-2xl: 0 36px 96px -20px hsl(0 0% 0% / 0.28);
+  }
+
+/* GONO JO — Dark */
+  .gonojo-dark{
+  /* Yüzeyler ve metin */
+  --background: hsl(0 0% 10.1961%);            /* Midnight Pulse */
+  --foreground: hsl(0 0% 96%);
+  --card: hsl(0 0% 12%);
+  --card-foreground: hsl(0 0% 96%);
+  --popover: hsl(0 0% 12%);
+  --popover-foreground: hsl(0 0% 96%);
+
+  /* Aksiyon paleti */
+  --primary: hsl(170.3704 49.6933% 68.0392%);  /* Teal Tide */
+  --primary-foreground: hsl(0 0% 10%);
+  --secondary: hsl(54.4865 100% 63.7255%);     /* Sunburst */
+  --secondary-foreground: hsl(0 0% 10%);
+  --muted: hsl(0 0% 20%);
+  --muted-foreground: hsl(0 0% 80%);
+  --accent: hsl(277.5000 65.1163% 83.1373%);   /* Purple Haze */
+  --accent-foreground: hsl(0 0% 12%);
+
+  /* Durum renkleri */
+  --destructive: hsl(359.5652 92% 62%);
+  --destructive-foreground: hsl(0 0% 10%);
+
+  /* Çizgiler ve odak */
+  --border: hsl(0 0% 26%);
+  --input: hsl(0 0% 18%);
+  --ring: hsl(54.4865 100% 63.7255%);          /* Sunburst */
+
+  /* Grafik renkleri */
+  --chart-1: hsl(54.4865 100% 63.7255%);       /* Sunburst */
+  --chart-2: hsl(170.3704 49.6933% 68.0392%);  /* Teal Tide */
+  --chart-3: hsl(277.5000 65.1163% 83.1373%);  /* Purple Haze */
+  --chart-4: hsl(0 0% 42%);                    /* Nötr koyu */
+  --chart-5: hsl(0 0% 96%);                    /* Nötr açık */
+
+  /* Sidebar */
+  --sidebar: hsl(0 0% 9%);
+  --sidebar-foreground: hsl(0 0% 96%);
+  --sidebar-primary: hsl(170.3704 49.6933% 68.0392%);
+  --sidebar-primary-foreground: hsl(0 0% 10%);
+  --sidebar-accent: hsl(0 0% 16%);
+  --sidebar-accent-foreground: hsl(0 0% 96%);
+  --sidebar-border: hsl(0 0% 26%);
+  --sidebar-ring: hsl(54.4865 100% 63.7255%);
+
+  /* Tipografi ve ölçüler */
+  --font-sans: Poppins, Montserrat, sans-serif;
+  --font-serif: 'Instrument Serif', "Cormorant Garamond", Lora, serif;
+  --font-mono: Fira Code, monospace;
+  --radius: 0.5rem;
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  /* Gölge sistemi (daha yoğun) */
+  --shadow-x: 0;
+  --shadow-y: 12px;
+  --shadow-blur: 32px;
+  --shadow-spread: -12px;
+  --shadow-opacity: 0.28;
+  --shadow-color: hsl(0 0% 0% / 0.40);
+  --shadow-2xs: 0 1px 2px 0 hsl(0 0% 0% / 0.12);
+  --shadow-xs: 0 2px 8px 0 hsl(0 0% 0% / 0.14);
+  --shadow-sm: 0 6px 18px -2px hsl(0 0% 0% / 0.18);
+  --shadow: 0 12px 32px -8px hsl(0 0% 0% / 0.22);
+  --shadow-md: 0 16px 44px -10px hsl(0 0% 0% / 0.26);
+  --shadow-lg: 0 24px 56px -12px hsl(0 0% 0% / 0.30);
+  --shadow-xl: 0 32px 80px -16px hsl(0 0% 0% / 0.34);
+  --shadow-2xl: 0 40px 110px -20px hsl(0 0% 0% / 0.40);
+  }
+  /* Canva — Light */
+  .canva {
+  /* Yüzeyler ve metin */
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+
+  /* Marka renkleri (BrandColors & BrandColorCode) */
+  --primary: #00C4CC;              /* Canva Turquoise */
+  --primary-foreground: #ffffff;
+
+  --secondary: #6A3BE4;            /* Canva Purple */
+  --secondary-foreground: #ffffff;
+
+  --accent: #3969E7;               /* Canva Blue (tamamlayıcı) */
+  --accent-foreground: #ffffff;
+
+  --muted: #f3f5f7;
+  --muted-foreground: #50545a;
+
+  --destructive: #e5484d;
+  --destructive-foreground: #ffffff;
+
+  /* Çizgiler ve odak */
+  --border: #e3e7ee;
+  --input: #e3e7ee;
+  --ring: #00C4CC;
+
+  /* Grafik paleti */
+  --chart-1: #00C4CC;
+  --chart-2: #3969E7;
+  --chart-3: #6A3BE4;
+  --chart-4: #8fdfe3;              /* turkuaz açık tonu */
+  --chart-5: #1a1a1a;
+
+  /* Sidebar */
+  --sidebar: #fbfdff;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #00C4CC;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ede8ff;        /* morun çok açık tonu */
+  --sidebar-accent-foreground: #1a1a1a;
+  --sidebar-border: #e3e7ee;
+  --sidebar-ring: #00C4CC;
+
+  /* Tipografi ve ölçüler */
+  --font-sans: Poppins, Montserrat, system-ui, sans-serif;
+  --font-serif: Instrument, Lora, ui-serif, serif;
+  --font-mono: Fira Code, ui-monospace, monospace;
+  --radius: 0.5rem;
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  /* Gölge sistemi */
+  --shadow-x: 0px;
+  --shadow-y: 10px;
+  --shadow-blur: 28px;
+  --shadow-spread: -10px;
+  --shadow-opacity: 0.18;
+  --shadow-color: rgba(0, 0, 0, 0.18);
+  --shadow-2xs: 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-xs: 0 2px 6px 0 rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 6px 16px -2px rgba(0, 0, 0, 0.10);
+  --shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.14);
+  --shadow-md: 0 14px 36px -10px rgba(0, 0, 0, 0.16);
+  --shadow-lg: 0 20px 48px -12px rgba(0, 0, 0, 0.18);
+  --shadow-xl: 0 28px 72px -16px rgba(0, 0, 0, 0.22);
+  --shadow-2xl: 0 36px 96px -20px rgba(0, 0, 0, 0.28);
+
+  /* Takvim/kanvas önerileri (opsiyonel) */
+  --aspect-square: 1 / 1;
+  --aspect-post: 4 / 5;
+  --aspect-story: 9 / 16;
+  }
+
+/* Canva — Dark */
+  .canva-dark {
+  --background: #0f1115;
+  --foreground: #eef1f5;
+
+  --card: #151821;
+  --card-foreground: #eef1f5;
+
+  --popover: #151821;
+  --popover-foreground: #eef1f5;
+
+  --primary: #00C4CC;
+  --primary-foreground: #0f1115;
+
+  --secondary: #6A3BE4;
+  --secondary-foreground: #0f1115;
+
+  --accent: #3969E7;
+  --accent-foreground: #0f1115;
+
+  --muted: #1e2430;
+  --muted-foreground: #b9c0cb;
+
+  --destructive: #e5484d;
+  --destructive-foreground: #0f1115;
+
+  --border: #2a3140;
+  --input: #1e2430;
+  --ring: #00C4CC;
+
+  --chart-1: #00C4CC;
+  --chart-2: #6A3BE4;
+  --chart-3: #3969E7;
+  --chart-4: #26aab1;   /* turkuaz koyu tonu */
+  --chart-5: #eef1f5;
+
+  --sidebar: #0c0e12;
+  --sidebar-foreground: #eef1f5;
+  --sidebar-primary: #00C4CC;
+  --sidebar-primary-foreground: #0f1115;
+  --sidebar-accent: #241f39;  /* mor bazlı koyu */
+  --sidebar-accent-foreground: #eef1f5;
+  --sidebar-border: #2a3140;
+  --sidebar-ring: #00C4CC;
+
+  --font-sans: Poppins, Montserrat, system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', Lora, ui-serif, serif;
+  --font-mono: Fira Code, ui-monospace, monospace;
+  --radius: 0.5rem;
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  --shadow-x: 0px;
+  --shadow-y: 12px;
+  --shadow-blur: 32px;
+  --shadow-spread: -12px;
+  --shadow-opacity: 0.28;
+  --shadow-color: rgba(0, 0, 0, 0.40);
+  --shadow-2xs: 0 1px 2px 0 rgba(0, 0, 0, 0.12);
+  --shadow-xs: 0 2px 8px 0 rgba(0, 0, 0, 0.14);
+  --shadow-sm: 0 6px 18px -2px rgba(0, 0, 0, 0.18);
+  --shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.22);
+  --shadow-md: 0 16px 44px -10px rgba(0, 0, 0, 0.26);
+  --shadow-lg: 0 24px 56px -12px rgba(0, 0, 0, 0.30);
+  --shadow-xl: 0 32px 80px -16px rgba(0, 0, 0, 0.34);
+  --shadow-2xl: 0 40px 110px -20px rgba(0, 0, 0, 0.40);
+
+  --aspect-square: 1 / 1;
+  --aspect-post: 4 / 5;
+  --aspect-story: 9 / 16;
+  }
+  .sunset-horizon {
+    --background: hsl(24.0000 100.0000% 98.0392%);
+    --foreground: hsl(346.6667 7.9646% 22.1569%);
+    --card: hsl(0 0% 100%);
+    --card-foreground: hsl(346.6667 7.9646% 22.1569%);
+    --popover: hsl(0 0% 100%);
+    --popover-foreground: hsl(346.6667 7.9646% 22.1569%);
+    --primary: hsl(11.6250 100% 68.6275%);
+    --primary-foreground: hsl(0 0% 100%);
+    --secondary: hsl(8.5714 100.0000% 95.8824%);
+    --secondary-foreground: hsl(9.9130 47.3251% 47.6471%);
+    --muted: hsl(15.0000 100.0000% 96.0784%);
+    --muted-foreground: hsl(25.0000 5.2632% 44.7059%);
+    --accent: hsl(26.1069 98.4962% 73.9216%);
+    --accent-foreground: hsl(346.6667 7.9646% 22.1569%);
+    --destructive: hsl(355.4913 77.5785% 56.2745%);
+    --destructive-foreground: hsl(0 0% 100%);
+    --border: hsl(14.6341 100.0000% 91.9608%);
+    --input: hsl(14.6341 100.0000% 91.9608%);
+    --ring: hsl(11.6250 100% 68.6275%);
+    --chart-1: hsl(11.6250 100% 68.6275%);
+    --chart-2: hsl(26.1069 98.4962% 73.9216%);
+    --chart-3: hsl(23.8636 100.0000% 82.7451%);
+    --chart-4: hsl(16.0714 100% 78.0392%);
+    --chart-5: hsl(9.5798 54.8387% 57.4510%);
+    --sidebar: hsl(15.0000 100.0000% 96.0784%);
+    --sidebar-foreground: hsl(346.6667 7.9646% 22.1569%);
+    --sidebar-primary: hsl(11.6250 100% 68.6275%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(26.1069 98.4962% 73.9216%);
+    --sidebar-accent-foreground: hsl(346.6667 7.9646% 22.1569%);
+    --sidebar-border: hsl(14.6341 100.0000% 91.9608%);
+    --sidebar-ring: hsl(11.6250 100% 68.6275%);
+    --font-sans: Arsenal, ui-sans-serif, sans-serif, system-ui;
+    --font-serif: Instrument Serif, ui-serif, serif;
+    --font-mono: Ubuntu Mono, monospace;
+    --radius: 0.625rem;
+    --shadow-x: 0px;
+    --shadow-y: 6px;
+    --shadow-blur: 12px;
+    --shadow-spread: -3px;
+    --shadow-opacity: 0.09;
+    --shadow-color: hsl(0 0% 0%);
+    --shadow-2xs: 0px 6px 12px -3px hsl(0 0% 0% / 0.04);
+    --shadow-xs: 0px 6px 12px -3px hsl(0 0% 0% / 0.04);
+    --shadow-sm: 0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 1px 2px -4px hsl(0 0% 0% / 0.09);
+    --shadow: 0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 1px 2px -4px hsl(0 0% 0% / 0.09);
+    --shadow-md: 0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 2px 4px -4px hsl(0 0% 0% / 0.09);
+    --shadow-lg: 0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 4px 6px -4px hsl(0 0% 0% / 0.09);
+    --shadow-xl: 0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 8px 10px -4px hsl(0 0% 0% / 0.09);
+    --shadow-2xl: 0px 6px 12px -3px hsl(0 0% 0% / 0.22);
+    --tracking-normal: 0em;
+    --spacing: 0.25rem;
+  }
+  
+  .sunset-horizon-dark {
+    --background: hsl(336 13.5135% 14.5098%);
+    --foreground: hsl(21.4286 35.0000% 92.1569%);
+    --card: hsl(324 9.6154% 20.3922%);
+    --card-foreground: hsl(21.4286 35.0000% 92.1569%);
+    --popover: hsl(324 9.6154% 20.3922%);
+    --popover-foreground: hsl(21.4286 35.0000% 92.1569%);
+    --primary: hsl(11.6250 100% 68.6275%);
+    --primary-foreground: hsl(0 0% 100%);
+    --secondary: hsl(325 9.3750% 25.0980%);
+    --secondary-foreground: hsl(21.4286 35.0000% 92.1569%);
+    --muted: hsl(326.6667 10.3448% 17.0588%);
+    --muted-foreground: hsl(22.2222 25.2336% 79.0196%);
+    --accent: hsl(26.1069 98.4962% 73.9216%);
+    --accent-foreground: hsl(336 13.5135% 14.5098%);
+    --destructive: hsl(355.4913 77.5785% 56.2745%);
+    --destructive-foreground: hsl(0 0% 100%);
+    --border: hsl(325 9.3750% 25.0980%);
+    --input: hsl(325 9.3750% 25.0980%);
+    --ring: hsl(11.6250 100% 68.6275%);
+    --chart-1: hsl(11.6250 100% 68.6275%);
+    --chart-2: hsl(26.1069 98.4962% 73.9216%);
+    --chart-3: hsl(23.8636 100.0000% 82.7451%);
+    --chart-4: hsl(16.0714 100% 78.0392%);
+    --chart-5: hsl(9.5798 54.8387% 57.4510%);
+    --sidebar: hsl(336 13.5135% 14.5098%);
+    --sidebar-foreground: hsl(21.4286 35.0000% 92.1569%);
+    --sidebar-primary: hsl(11.6250 100% 68.6275%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(26.1069 98.4962% 73.9216%);
+    --sidebar-accent-foreground: hsl(336 13.5135% 14.5098%);
+    --sidebar-border: hsl(325 9.3750% 25.0980%);
+    --sidebar-ring: hsl(11.6250 100% 68.6275%);
+    --font-sans: Arsenal, ui-sans-serif, sans-serif, system-ui;
+    --font-serif: Instrument Serif, ui-serif, serif;
+    --font-mono: Ubuntu Mono, monospace;
+    --radius: 0.625rem;
+    --shadow-x: 0px;
+    --shadow-y: 6px;
+    --shadow-blur: 12px;
+    --shadow-spread: -3px;
+    --shadow-opacity: 0.09;
+    --shadow-color: hsl(0 0% 0%);
+    --shadow-2xs: 0px 6px 12px -3px hsl(0 0% 0% / 0.04);
+    --shadow-xs: 0px 6px 12px -3px hsl(0 0% 0% / 0.04);
+    --shadow-sm: 0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 1px 2px -4px hsl(0 0% 0% / 0.09);
+    --shadow: 0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 1px 2px -4px hsl(0 0% 0% / 0.09);
+    --shadow-md: 0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 2px 4px -4px hsl(0 0% 0% / 0.09);
+    --shadow-lg: 0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 4px 6px -4px hsl(0 0% 0% / 0.09);
+    --shadow-xl: 0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 8px 10px -4px hsl(0 0% 0% / 0.09);
+    --shadow-2xl: 0px 6px 12px -3px hsl(0 0% 0% / 0.22);
   }
 }
 

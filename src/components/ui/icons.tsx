@@ -9,7 +9,7 @@ type IconProps = {
   className?: string;
 };
 
-const TextColorChooseIcon = ({ color = 'currentColor', className }: IconProps) => (
+export const TextColorChooseIcon = ({ color = 'currentColor', className }: IconProps) => (
   <svg xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 20 20" viewBox="0 0 20 20" fill={color} className={className}>
     <g><rect fill="none" height="15" width="15"/></g>
     <g><g>
@@ -19,110 +19,55 @@ const TextColorChooseIcon = ({ color = 'currentColor', className }: IconProps) =
   </svg>
 );
 
-const FontSizeIcon = ({ color = 'currentColor', className }: IconProps) => (
+export const FontSizeIcon = ({ color = 'currentColor', className }: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill={color} className={className}>
         <path d="M339.92-160q-22.25 0-37.75-15.56-15.5-15.55-15.5-37.77v-480H133.33q-22.22 0-37.77-15.58Q80-724.49 80-746.75 80-769 95.56-784.5q15.55-15.5 37.77-15.5h413.34q22.22 0 37.77 15.58Q600-768.84 600-746.59q0 22.26-15.56 37.76-15.55 15.5-37.77 15.5H393.33v480q0 22.22-15.58 37.77Q362.18-160 339.92-160Zm360 0q-22.25 0-37.75-15.56-15.5-15.55-15.5-37.77v-280h-73.34q-22.22 0-37.77-15.58Q520-524.49 520-546.75q0-22.25 15.56-37.75 15.55-15.5 37.77-15.5h253.34q22.22 0 37.77 15.58Q880-568.84 880-546.59q0 22.26-15.56 37.76-15.55 15.5-37.77 15.5h-73.34v280q0 22.22-15.58 37.77Q722.18-160 699.92-160Z"/>
     </svg>
 );
 
-const BgOverlayIcon = ({ color = 'currentColor', className }: IconProps) => (
+export const BgOverlayIcon = ({ color = 'currentColor', className }: IconProps) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={color} className={className}><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19.58 3.08L3.15 19.51c.09.34.27.65.51.9.25.24.56.42.9.51L21 4.49c-.19-.69-.73-1.23-1.42-1.41zM11.95 3l-8.88 8.88v2.83L14.78 3h-2.83zM5.07 3c-1.1 0-2 .9-2 2v2l4-4h-2zm14 18c.55 0 1.05-.22 1.41-.59.37-.36.59-.86.59-1.41v-2l-4 4h2zm-9.71 0h2.83l8.88-8.88V9.29L9.36 21z"/></svg>
 );
 
-const TextBgBoxIcon = ({ color = 'currentColor', className }: IconProps) => (
+export const TextBgBoxIcon = ({ color = 'currentColor', className }: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 20 20" viewBox="0 0 20 20" fill={color} className={className}><g><rect fill="none" height="20" width="20"/></g><g><g><path d="M16.5,2h-10C5.67,2,5,2.67,5,3.5v10C5,14.33,5.67,15,6.5,15h10c0.83,0,1.5-0.67,1.5-1.5v-10C18,2.67,17.33,2,16.5,2z M13.41,11.62l-0.49-1.41h-2.83l-0.5,1.41C9.51,11.85,9.3,12,9.06,12h0c-0.39,0-0.67-0.39-0.53-0.76l2.12-5.65 C10.79,5.23,11.12,5,11.5,5h0c0.38,0,0.71,0.23,0.85,0.59l2.12,5.65c0.14,0.37-0.13,0.76-0.53,0.76h0 C13.7,12,13.49,11.85,13.41,11.62z"/><path d="M2.75,5L2.75,5C2.34,5,2,5.34,2,5.75V16.5C2,17.33,2.67,18,3.5,18h10.75c0.41,0,0.75-0.34,0.75-0.75l0,0 c0-0.41-0.34-0.75-0.75-0.75H3.5V5.75C3.5,5.34,3.16,5,2.75,5z"/><polygon points="11.47,6.3 10.45,9.19 12.55,9.19 11.53,6.3"/></g></g></svg>
 );
 
-const TextBoxOpacity = ({className}: IconProps) => (
+
+export const TextBoxOpacity = ({className}: IconProps) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={className}><g fill="currentColor" fillRule="evenodd"><path d="M3 2h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm0 8h2a1 1-0 0 1 1 1v2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1zm0 8h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1z"></path><path d="M11 2h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm0 8h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1zm0 8h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1z" opacity=".45"></path><path d="M19 2h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm0 8h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1zm0 8h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1z" opacity=".15"></path><path d="M7 6h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zm0 8h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1z" opacity=".7"></path><path d="M15 6h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zm0 8h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1z" opacity=".3"></path></g></svg>
 );
 
-const TextStrokeIcon = ({className}: IconProps) => (
+export const TextStrokeIcon = ({className}: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 24 24" viewBox="0 0 24 24" fill="currentColor" className={className}><g><rect fill="none" height="24" width="24"/></g><g><path d="M20,24H4c-1.1,0-2-0.9-2-2v0c0-1.1,0.9-2,2-2h16c1.1,0,2,0.9,2,2v0C22,23.1,21.1,24,20,24z M13.06,5.19l3.75,3.75l-8.77,8.77C7.86,17.9,7.6,18,7.34,18H5c-0.55,0-1-0.45-1-1v-2.34c0-0.27,0.11-0.52,0.29-0.71L13.06,5.19z M17.88,7.87l-3.75-3.75l1.83-1.83c0.39-0.39,1.02-0.39,1.41,0l2.34,2.34c0.39,0.39,0.39,1.02,0,1.41L17.88,7.87z" /></g></svg>
 );
 
-const TextShadowIcon = ({ color = 'currentColor', className }: IconProps) => (
+export const TextShadowIcon = ({ color = 'currentColor', className }: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill={color} className={className}>
       <path d="M146.67-80q-27 0-46.84-19.83Q80-119.67 80-146.67v-498.66q0-27 19.83-46.84Q119.67-712 146.67-712H248v-101.33q0-27 19.83-46.84Q287.67-880 314.67-880h498.66q27 0 46.84 19.83Q880-840.33 880-813.33v498.66q0 27-19.83 46.84Q840.33-248 813.33-248H712v101.33q0 27-19.83 46.84Q672.33-80 645.33-80H146.67Zm168-234.67h498.66v-498.66H314.67v498.66Z"/>
     </svg>
 );
 
-const FeelLucky = ({className}: IconProps) => (
+export const FeelLucky = ({className}: IconProps) => (
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}><path d="M0 0h24v24H0z" fill="none"/><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6s1.5.67 1.5 1.5S17.33 9 16.5 9z"/></svg>
+
 );
 
-const RefreshIcon = ({ color = 'currentColor', className }: IconProps) => (
+export const RefreshIcon = ({ color = 'currentColor', className }: IconProps) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={color} className={className}>
     <path d="M0 0h24v24H0V0z" fill="none"/>
     <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
   </svg>
 );
 
-const HeartIconG = ({ color = 'currentColor', className }: IconProps) => (
+export const HeartIconG = ({ color = 'currentColor', className }: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill={color} className={className}>
         <path d="M480-142.33q-11.8 0-24.02-4.25-12.22-4.25-21.49-13.59l-58.16-53.5q-118-109-207.16-210.5Q80-525.67 80-640q0-91.44 61.33-152.72 61.34-61.28 152-61.28Q345-854 394-830.17q49 23.84 86 74.17 40.33-50.33 87.33-74.17 47-23.83 99.34-23.83 90.66 0 152 61.28Q880-731.44 880-640q0 114.33-89 216T583.33-213.33l-58 53.33q-9.16 9.25-21.25 13.46-12.08 4.21-24.08 4.21Zm-30-543q-27.67-46.34-68-74.17t-88.67-27.83q-64 0-105.33 41.66-41.33 41.67-41.33 105.96 0 55.71 38.25 117.65 38.25 61.93 91.5 120.16T386.5-293.33q56.83 50.33 93.5 84 36.67-33 93.5-83.67t110-109.33Q736.67-461 775-522.96q38.33-61.96 38.33-117.04 0-64-41.66-105.67-41.67-41.66-105-41.66-49 0-89 27.5t-69 74.5q-5.67 8.66-13 12.66-7.34 4-16.34 4t-16.66-4q-7.67-4-12.67-12.66Zm30 187Z"/>
     </svg>
 );
 
-const BookmarkStarIcon = ({ color = 'currentColor', className }: IconProps) => (
+export const BookmarkStarIcon = ({ color = 'currentColor', className }: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill={color} className={cn(className)}>
         <path d="m480-455 51 31q11 7 21.5-1t7.5-21l-13-58 44-38q10-9 6.5-21T580-577l-58-5-24-55q-5-12-18-12t-18 12l-24 55-58 5q-14 2-17.5 14t6.5 21l44 38-13 58q-3 13 7.5 21t21.5 1l51-31Zm0 215-168 72q-40 17-76-6.5T200-241v-519q0-33 23.5-56.5T280-840h400q33 0 56.5 23.5T760-760v519q0 43-36 66.5t-76 6.5l-168-72Zm0-88 200 86v-518H280v518l200-86Zm0-432H280h400-200Z"/>
     </svg>
 );
-
-const GoogleIcon = ({ className }: { className?: string }) => (
-  <svg
-    className={cn(className)}
-    viewBox="0 0 48 48"
-    width="48px"
-    height="48px"
-  >
-    <path
-      fill="#FFC107"
-      d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
-    />
-    <path
-      fill="#FF3D00"
-      d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
-    />
-    <path
-      fill="#4CAF50"
-      d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"
-    />
-    <path
-      fill="#1976D2"
-      d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
-    />
-  </svg>
-);
-
-const MailIcon = ({ className }: { className?: string }) => (
-    <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        viewBox="0 0 24 24" 
-        fill="currentColor" 
-        className={cn(className)}
-    >
-        <path d="M0 0h24v24H0z" fill="none"/>
-        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-    </svg>
-);
-
-
-export const Icons = {
-  TextColorChooseIcon,
-  FontSizeIcon,
-  BgOverlayIcon,
-  TextBgBoxIcon,
-  TextBoxOpacity,
-  TextStrokeIcon,
-  TextShadowIcon,
-  FeelLucky,
-  RefreshIcon,
-  HeartIconG,
-  BookmarkStarIcon,
-  google: GoogleIcon,
-  mail: MailIcon
-};
-
-    

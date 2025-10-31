@@ -10,17 +10,13 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { DesignTemplate } from "@/lib/types";
+import { designTemplates, DesignTemplate } from "@/lib/design-templates";
 import { fontOptions } from "@/lib/font-options";
 import Image from "next/image";
 import { textEffects } from "@/lib/text-effects";
-import { useCollection, useMemoFirebase, useFirestore } from "@/firebase";
-import { Skeleton } from "@/components/ui/skeleton";
-import { collection } from "firebase/firestore";
 
 type DesignsPanelProps = {
   handleApplyTemplate: (template: DesignTemplate) => void;
-  designTemplates: DesignTemplate[];
 };
 
 const renderPreview = (template: DesignTemplate) => {
@@ -166,25 +162,7 @@ const TemplateCarousel = ({ templates, handleApplyTemplate }: { templates: Desig
 };
 
 
-export function DesignsPanel({ handleApplyTemplate, designTemplates }: DesignsPanelProps) {
-  const loading = !designTemplates;
-
-  if (loading) {
-    return (
-      <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-6">
-        <div className="space-y-3">
-          <Skeleton className="h-6 w-1/4" />
-          <div className="flex space-x-2">
-            <Skeleton className="h-32 w-1/4" />
-            <Skeleton className="h-32 w-1/4" />
-            <Skeleton className="h-32 w-1/4" />
-            <Skeleton className="h-32 w-1/4" />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
+export function TemplatesPanel({ handleApplyTemplate }: DesignsPanelProps) {
   const groupedTemplates = designTemplates.reduce((acc, template) => {
     const category = template.category || 'Uncategorized';
     if (!acc[category]) {

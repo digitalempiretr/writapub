@@ -18,7 +18,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { defaultSolidColors, gradientTemplates } from "@/lib/colors";
 import { imageTemplates, ImageTemplate } from "@/lib/image-templates";
 import Image from "next/image";
-import { Icons } from "@/components/ui/icons";
+import { BgOverlayIcon, FeelLucky } from "@/components/ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 
@@ -51,7 +51,7 @@ type BackgroundSettingsProps = {
 };
 
 
-export function BackgroundSettings({
+export function BackgroundSettings({ 
   backgroundTab,
   setBackgroundTab,
   handleFeelLucky,
@@ -93,7 +93,7 @@ export function BackgroundSettings({
                 <TooltipTrigger asChild>
                   <PopoverTrigger asChild>
                     <Button variant="outline" size="icon">
-                       <Icons.BgOverlayIcon color={isOverlayEnabled ? overlayColor : '#999'} />
+                       <BgOverlayIcon color={isOverlayEnabled ? overlayColor : '#999'} />
                     </Button>
                   </PopoverTrigger>
                 </TooltipTrigger>
@@ -261,7 +261,7 @@ export function BackgroundSettings({
                 <Tooltip>
                     <TooltipTrigger asChild>
                     <Button onClick={handleFeelLucky} variant="outline" className="h-10 ml-2">
-                        <Icons.FeelLucky />
+                        <FeelLucky />
                         <span>Feel Lucky</span>
                     </Button>
                     </TooltipTrigger>
@@ -304,5 +304,3 @@ export function BackgroundSettings({
     </div>
   );
 }
-
-    

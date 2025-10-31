@@ -16,7 +16,7 @@ type DownloadPanelProps = {
   handleDownload: (index: number) => void;
 };
 
-export function DownloadPanel({
+export function DownloadPanel({ 
   fileName,
   setFileName,
   handleDownloadAll,
@@ -63,5 +63,3 @@ export function DownloadPanel({
     </div>
   );
 }
-
-    

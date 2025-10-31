@@ -10,7 +10,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
-import { Icons } from "@/components/ui/icons";
+import { TextColorChooseIcon, TextBgBoxIcon, TextBoxOpacity, TextStrokeIcon, RefreshIcon, FontSizeIcon, TextShadowIcon } from "@/components/ui/icons";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FontOption } from "@/lib/font-options";
 import { Button } from "@/components/ui/button";
@@ -21,25 +21,14 @@ import { Slider } from "@/components/ui/slider";
 import { Carousel, CarouselContent, CarouselItem, CarouselApi } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { defaultSolidColors } from "@/lib/colors";
-import { Separator } from "./ui/separator";
+import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { textEffects, TextEffect } from "@/lib/text-effects";
 import { cn } from "@/lib/utils";
 import { useCarouselSync } from "@/hooks/use-carousel-sync";
-
+import type { Shadow, TextAlign } from "@/lib/types";
 
 type Unit = 'px' | 'em' | 'rem';
-
-export type Shadow = {
-  id: number;
-  color: string;
-  offsetX: number;
-  offsetY: number;
-  blur: number;
-  offsetXUnit: Unit;
-  offsetYUnit: Unit;
-  blurUnit: Unit;
-};
 
 type TextSettingsProps = {
   text: string;
@@ -57,8 +46,8 @@ type TextSettingsProps = {
   setIsBold: (value: boolean) => void;
   isUppercase: boolean;
   setIsUppercase: (value: boolean) => void;
-  textAlign: 'left' | 'center' | 'right';
-  setTextAlign: (align: 'left' | 'center' | 'right') => void;
+  textAlign: TextAlign;
+  setTextAlign: (align: TextAlign) => void;
   textShadowEnabled: boolean;
   setTextShadowEnabled: (value: boolean) => void;
   shadows: Shadow[];
@@ -79,7 +68,7 @@ type TextSettingsProps = {
   setActiveEffect: (effect: TextEffect) => void;
 };
 
-export function TextSettings({
+export function TextSettings({ 
   text,
   setText,
   handleGenerate,
@@ -253,7 +242,7 @@ export function TextSettings({
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <Icons.RefreshIcon />
+                <RefreshIcon />
               )}
               <span className="sr-only">Regenerate</span>
             </Button>
@@ -291,7 +280,7 @@ export function TextSettings({
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
                         <Button variant="outline" size="icon" className="h-10 w-10 flex-shrink-0">
-                          <Icons.FontSizeIcon />
+                          <FontSizeIcon />
                         </Button>
                       </PopoverTrigger>
                     </TooltipTrigger>
@@ -319,7 +308,7 @@ export function TextSettings({
                   <TooltipTrigger asChild>
                     <div className="relative h-10 w-10 flex-shrink-0">
                       <Label htmlFor={`${baseId}-text-color-picker`} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10">
-                        <Icons.TextColorChooseIcon color={textColor} className="h-5 w-5" />
+                        <TextColorChooseIcon color={textColor} className="h-5 w-5" />
                       </Label>
                       <Input
                         id={`${baseId}-text-color-picker`}
@@ -371,7 +360,7 @@ export function TextSettings({
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
                         <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
-                          <Icons.TextBoxOpacity />
+                          <TextBoxOpacity />
                         </Button>
                       </PopoverTrigger>
                     </TooltipTrigger>
@@ -423,7 +412,7 @@ export function TextSettings({
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
                         <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10" data-active={textShadowEnabled} >
-                           <Icons.TextShadowIcon />
+                           <TextShadowIcon />
                         </Button>
                       </PopoverTrigger>
                     </TooltipTrigger>
@@ -455,10 +444,10 @@ export function TextSettings({
                               <div className="flex items-center gap-2">
                                 <Slider id={`${baseId}-shadow-blur-${index}`} max={40} min={0} step={1} value={[shadow.blur]} onValueChange={(v) => updateShadow(shadow.id, { blur: v[0] })} />
                                 <Input type="number" value={shadow.blur} onChange={e => updateShadow(shadow.id, {blur: Number(e.target.value)})} className="h-7 w-20 text-xs" />
-                                <Select value={shadow.blurUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { blurUnit: v })}>
+                                <Select value={shadow.blurUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { blurUnit: v })}> 
                                   <SelectTrigger className="w-20 h-7 text-xs"><SelectValue /></SelectTrigger>
                                   <SelectContent>
-                                    {unitOptions.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
+                                    {unitOptions.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)} 
                                   </SelectContent>
                                 </Select>
                               </div>
@@ -468,10 +457,10 @@ export function TextSettings({
                                <div className="flex items-center gap-2">
                                 <Slider id={`${baseId}-shadow-offset-x-${index}`} max={20} min={-20} step={1} value={[shadow.offsetX]} onValueChange={(v) => updateShadow(shadow.id, { offsetX: v[0] })} />
                                 <Input type="number" value={shadow.offsetX} onChange={e => updateShadow(shadow.id, {offsetX: Number(e.target.value)})} className="h-7 w-20 text-xs" />
-                                 <Select value={shadow.offsetXUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { offsetXUnit: v })}>
+                                 <Select value={shadow.offsetXUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { offsetXUnit: v })}> 
                                     <SelectTrigger className="w-20 h-7 text-xs"><SelectValue /></SelectTrigger>
                                     <SelectContent>
-                                      {unitOptions.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
+                                      {unitOptions.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)} 
                                     </SelectContent>
                                   </Select>
                                </div>
@@ -481,10 +470,10 @@ export function TextSettings({
                               <div className="flex items-center gap-2">
                                 <Slider id={`${baseId}-shadow-offset-y-${index}`} max={20} min={-20} step={1} value={[shadow.offsetY]} onValueChange={(v) => updateShadow(shadow.id, { offsetY: v[0] })} />
                                 <Input type="number" value={shadow.offsetY} onChange={e => updateShadow(shadow.id, {offsetY: Number(e.target.value)})} className="h-7 w-20 text-xs" />
-                                <Select value={shadow.offsetYUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { offsetYUnit: v })}>
+                                <Select value={shadow.offsetYUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { offsetYUnit: v })}> 
                                   <SelectTrigger className="w-20 h-7 text-xs"><SelectValue /></SelectTrigger>
                                   <SelectContent>
-                                    {unitOptions.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
+                                    {unitOptions.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)} 
                                   </SelectContent>
                                 </Select>
                               </div>
@@ -504,7 +493,7 @@ export function TextSettings({
                     <TooltipTrigger asChild>
                       <PopoverTrigger asChild>
                         <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
-                          <Icons.TextStrokeIcon />
+                          <TextStrokeIcon />
                         </Button>
                       </PopoverTrigger>
                     </TooltipTrigger>
@@ -539,7 +528,7 @@ export function TextSettings({
                     <TooltipTrigger asChild>
                         <PopoverTrigger asChild>
                         <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
-                            <Icons.TextBgBoxIcon color={isTextBoxEnabled ? rectBgColor : '#999'} />
+                            <TextBgBoxIcon color={isTextBoxEnabled ? rectBgColor : '#999'} />
                         </Button>
                         </PopoverTrigger>
                     </TooltipTrigger>
@@ -665,5 +654,3 @@ export function TextSettings({
     </TooltipProvider>
   );
 }
-
-    
