@@ -183,7 +183,3 @@ export function DesignsPanel({ handleApplyTemplate }: DesignsPanelProps) {
     </div>
   );
 }
-
-    
-
-    
