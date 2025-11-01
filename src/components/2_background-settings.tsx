@@ -22,8 +22,6 @@ import { BgOverlayIcon, FeelLucky } from "@/components/ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 
-const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "Art", "Minimal", "Abstract", "Dreamy", "Cinematic", "Surreal", "Vintage", "Futuristic", "Bohemian"];
-
 type BackgroundSettingsProps = {
   backgroundTab: string;
   setBackgroundTab: (value: string) => void;
@@ -211,7 +209,7 @@ export function BackgroundSettings({
         </TabsContent>
         <TabsContent value="image" className="pt-4 space-y-4">
             <div className="space-y-2">
-                <Button onClick={triggerFileSelect} className="w-full" variant="outline">
+                <Button onClick={() => triggerFileSelect()} className="w-full" variant="outline">
                     <Upload className="mr-2 h-4 w-4" /> Upload Custom Background
                 </Button>
                 <input
@@ -310,7 +308,7 @@ export function BackgroundSettings({
                 </Tooltip>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                    <Button onClick={handleFeelLucky} variant="outline" className="h-10 ml-2">
+                    <Button onClick={() => handleFeelLucky()} variant="outline" className="h-10 ml-2">
                         <FeelLucky />
                         <span>Feel Lucky</span>
                     </Button>

@@ -81,8 +81,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [isGeneratingAnimation, setIsGeneratingAnimation] = useState(false);
-  const [carouselApi, setCarouselApi] = useState<CarouselApi | undefined>();
-  const [searchCarouselApi, setSearchCarouselApi] = useState<CarouselApi | undefined>();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [myDesigns, setMyDesigns] = useLocalStorage<DesignTemplate[]>('writa-designs', []);
   const [editingDesignId, setEditingDesignId] = useState<string | null>(null);
@@ -95,29 +93,32 @@ export default function Home() {
   const [fabricInstances, setFabricInstances] = useState<fabric.Canvas[]>([]);
   const [uploadedImages, setUploadedImages] = useLocalStorage<string[]>('writa-uploads', []);
 
+  const carouselApi = useRef<CarouselApi>(null);
+  const searchCarouselApi = useRef<CarouselApi>(null);
+
   useEffect(() => {
     setIsClient(true)
   }, [])
   
   const handleSelectCarousel = useCallback(() => {
-    if (!carouselApi) {
+    if (!carouselApi.current) {
       return
     }
-    setCurrentSlide(carouselApi.selectedScrollSnap())
-  }, [carouselApi]);
+    setCurrentSlide(carouselApi.current.selectedScrollSnap())
+  }, []);
 
   useEffect(() => {
-    if (!carouselApi) {
+    if (!carouselApi.current) {
       return
     }
-
+    const api = carouselApi.current;
     handleSelectCarousel();
-    carouselApi.on("select", handleSelectCarousel)
+    api.on("select", handleSelectCarousel)
 
     return () => {
-      carouselApi.off("select", handleSelectCarousel)
+      api.off("select", handleSelectCarousel)
     }
-  }, [carouselApi, handleSelectCarousel]);
+  }, [handleSelectCarousel]);
 
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'duru-sans') || fontOptions[0]);
 
@@ -205,27 +206,21 @@ export default function Home() {
   const handleTextRemaining = useCallback((remaining: string, fromIndex: number) => {
     const nextDesignIndex = fromIndex + 1;
     setDesigns(prevDesigns => {
-      // If there's remaining text...
       if (remaining) {
-        // ...and there's already a slide after this one...
         if (prevDesigns[nextDesignIndex]) {
-          // ...check if the text is different. Only update if it is.
           if (prevDesigns[nextDesignIndex].text !== remaining) {
             const newDesigns = [...prevDesigns];
             newDesigns[nextDesignIndex] = { ...newDesigns[nextDesignIndex], text: remaining };
             return newDesigns;
           }
         } else {
-          // ...or if there's no slide after this one, create it.
           return [...prevDesigns, { text: remaining, isTitle: false }];
         }
       } else {
-        // If there's no remaining text but there are slides after this one, remove them.
         if (prevDesigns.length > nextDesignIndex) {
           return prevDesigns.slice(0, nextDesignIndex);
         }
       }
-      // If no changes are needed, return the previous state to avoid re-render.
       return prevDesigns;
     });
 }, []);
@@ -889,7 +884,7 @@ export default function Home() {
         searchQuery, setSearchQuery, handleSearchImages, isSearching, searchedImages,
         handleKeywordSearch, searchPage, isOverlayEnabled, setIsOverlayEnabled: handleOverlayEnable,
         overlayColor, setOverlayColor, overlayOpacity, setOverlayOpacity, gradientBg,
-        handleGradientBgSelect, setSearchCarouselApi, textColor, setTextColor: handleTextColorChange, textOpacity,
+        handleGradientBgSelect, setSearchCarouselApi: (api: CarouselApi | undefined) => { (searchCarouselApi.current as any) = api; }, textColor, setTextColor: handleTextColorChange, textOpacity,
         setTextOpacity, activeFont, setActiveFont, fontOptions, isBold, setIsBold,
         isUppercase, setIsUppercase, textAlign, setTextAlign, textShadowEnabled,
         setTextShadowEnabled, shadows, setShadows, textStroke, setTextStroke,
@@ -926,7 +921,7 @@ export default function Home() {
   const activeTabLabel = settingsTabs.find(tab => tab.value === activeSettingsTab)?.label;
 
   const renderBulletNavigation = () => {
-    if (!carouselApi) return null;
+    if (!carouselApi.current) return null;
     
     const totalSlides = designs.length;
     if (totalSlides <= 1) return null;
@@ -948,7 +943,7 @@ export default function Home() {
             <div
                 key={i}
                 data-active={i === currentSlide}
-                onClick={() => carouselApi?.scrollTo(i)}
+                onClick={() => carouselApi.current?.scrollTo(i)}
                 className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
             />
         );
@@ -960,7 +955,7 @@ export default function Home() {
           <>
             <div
               key={0}
-              onClick={() => carouselApi?.scrollTo(0)}
+              onClick={() => carouselApi.current?.scrollTo(0)}
               className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
             />
             {start > 1 && <span className="text-foreground -translate-y-1">...</span>}
@@ -972,7 +967,7 @@ export default function Home() {
             {end < totalSlides - 1 && <span className="text-foreground -translate-y-1">...</span>}
             <div
               key={totalSlides - 1}
-              onClick={() => carouselApi?.scrollTo(totalSlides - 1)}
+              onClick={() => carouselApi.current?.scrollTo(totalSlides - 1)}
               className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
             />
           </>
@@ -1162,7 +1157,7 @@ export default function Home() {
                   className="relative transition-transform duration-75" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
-                  <Carousel className="w-full" setApi={setCarouselApi}>
+                  <Carousel className="w-full" setApi={(api) => { (carouselApi.current as any) = api; }}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
