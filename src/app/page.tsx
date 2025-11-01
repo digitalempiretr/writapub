@@ -52,7 +52,7 @@ import { cn } from "@/lib/utils";
 import { textEffects, parseShadow } from "@/lib/text-effects";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { BookmarkStarIcon, HeartIconG  } from "@/components/ui/icons";
+import { HeartIconG  } from "@/components/ui/icons";
 
 type Design = {
   text: string;
@@ -164,6 +164,7 @@ export default function Home() {
   
   const [elements, setElements] = useState<CanvasElement[]>([]);
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
+  const [areElementsEnabled, setAreElementsEnabled] = useState(true);
 
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
@@ -739,6 +740,7 @@ export default function Home() {
           strokeWidth={strokeWidth}
           fontSmoothing={activeEffect.style.fontSmoothing}
           elements={elements}
+          areElementsEnabled={areElementsEnabled}
         />
     )
   }, [
@@ -746,7 +748,7 @@ export default function Home() {
     gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, 
     overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, 
     shadows, textStroke, strokeColor, strokeWidth, handleTextRemaining, 
-    isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize, elements
+    isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize, elements, areElementsEnabled
   ]);
   
   const handleMobileTabClick = (tab: string) => {
@@ -882,6 +884,7 @@ export default function Home() {
         handleEditClick, handleCancelEdit, editingName, setEditingName, designToDelete,
         setDesignToDelete, handleLogDesign, handleImageUpload,
         elements, setElements, selectedElement, setSelectedElement, updateElement,
+        areElementsEnabled, setAreElementsEnabled,
     };
 
     switch (activeSettingsTab) {
@@ -1143,7 +1146,7 @@ export default function Home() {
                   className="relative transition-transform duration-75" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
-                  <Carousel className="w-full" setApi={(api) => carouselApi.current = api}>
+                  <Carousel className="w-full" setApi={carouselApi}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
@@ -1183,7 +1186,7 @@ export default function Home() {
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={handleSaveDesign}>Save</AlertDialogAction>
+                                    <AlertDialogAction onClick={() => handleSaveDesign()}>Save</AlertDialogAction>
                                   </AlertDialogFooter>
                                 </AlertDialogContent>
                                 </TooltipProvider>

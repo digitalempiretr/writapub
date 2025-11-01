@@ -45,6 +45,7 @@ export type ImageCanvasProps = {
   strokeWidth: number;
   fontSmoothing?: React.CSSProperties;
   elements: CanvasElement[];
+  areElementsEnabled: boolean;
 };
 
 // This function wraps text for titles.
@@ -285,6 +286,7 @@ const ImageCanvasComponent = ({
   strokeWidth,
   fontSmoothing,
   elements,
+  areElementsEnabled,
 }: ImageCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const indexRef = useRef<number | null>(null);
@@ -390,38 +392,40 @@ const ImageCanvasComponent = ({
         ctx.fillStyle = hexToRgba(rectColor, rectOpacity);
         ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
 
-        for (const element of elements) {
-            if (element.type === 'image' && element.url) {
-                try {
-                    const img = await loadImage(element.url);
-                    ctx.save();
-                    ctx.globalAlpha = element.opacity;
+        if (areElementsEnabled) {
+            for (const element of elements) {
+                if (element.type === 'image' && element.url) {
+                    try {
+                        const img = await loadImage(element.url);
+                        ctx.save();
+                        ctx.globalAlpha = element.opacity;
 
-                    let drawX = element.x;
-                    const elWidth = element.width * scalingFactor;
-                    const elHeight = element.height * scalingFactor;
+                        let drawX = element.x;
+                        const elWidth = element.width * scalingFactor;
+                        const elHeight = element.height * scalingFactor;
 
-                    if (element.alignment === 'center') {
-                        drawX = (width - elWidth) / 2;
-                    } else if (element.alignment === 'right') {
-                        drawX = width - elWidth - element.x;
+                        if (element.alignment === 'center') {
+                            drawX = (width - elWidth) / 2;
+                        } else if (element.alignment === 'right') {
+                            drawX = width - elWidth - element.x;
+                        }
+
+                        ctx.translate(drawX + elWidth / 2, element.y + elHeight / 2);
+                        ctx.rotate(element.rotation * Math.PI / 180);
+                        ctx.translate(-(drawX + elWidth / 2), -(element.y + elHeight / 2));
+
+                        if (element.shape === 'circle') {
+                            ctx.beginPath();
+                            ctx.arc(drawX + elWidth / 2, element.y + elHeight / 2, Math.min(elWidth, elHeight) / 2, 0, Math.PI * 2, true);
+                            ctx.closePath();
+                            ctx.clip();
+                        }
+                        
+                        ctx.drawImage(img, drawX, element.y, elWidth, elHeight);
+                        ctx.restore();
+                    } catch (error) {
+                        console.error("Error drawing element image: ", error);
                     }
-
-                    ctx.translate(drawX + elWidth / 2, element.y + elHeight / 2);
-                    ctx.rotate(element.rotation * Math.PI / 180);
-                    ctx.translate(-(drawX + elWidth / 2), -(element.y + elHeight / 2));
-
-                    if (element.shape === 'circle') {
-                        ctx.beginPath();
-                        ctx.arc(drawX + elWidth / 2, element.y + elHeight / 2, Math.min(elWidth, elHeight) / 2, 0, Math.PI * 2, true);
-                        ctx.closePath();
-                        ctx.clip();
-                    }
-                    
-                    ctx.drawImage(img, drawX, element.y, elWidth, elHeight);
-                    ctx.restore();
-                } catch (error) {
-                    console.error("Error drawing element image: ", error);
                 }
             }
         }
@@ -499,7 +503,7 @@ const ImageCanvasComponent = ({
     };
 
     draw();
-  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, viewportHeight, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing, elements]);
+  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, viewportHeight, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing, elements, areElementsEnabled]);
 
   return (
     <canvas
