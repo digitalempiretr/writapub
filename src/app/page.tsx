@@ -76,7 +76,7 @@ const MAX_ZOOM = 3.0;
 const MIN_ZOOM = 0.25;
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "Art", "Minimal", "Abstract", "Dreamy", "Cinematic", "Surreal", "Vintage", "Futuristic", "Bohemian"];
 
-// These functions should be outside the component to be pure and reusable
+// This function should be outside the component to be pure and reusable
 const measureAndSplitText = (
   context: CanvasRenderingContext2D,
   text: string,
@@ -156,14 +156,16 @@ const measureAndSplitText = (
 
 
 export default function Home() {
+  const [title, setTitle] = useState('');
   const [text, setText] = useState(defaultText);
   const [designs, setDesigns] = useState<Design[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [isGeneratingAnimation, setIsGeneratingAnimation] = useState(false);
   
-  const carouselApi = useRef<CarouselApi>();
-  const searchCarouselApi = useRef<CarouselApi>();
+  const carouselApi = useRef<CarouselApi | null>(null);
+  const searchCarouselApi = useRef<CarouselApi | null>(null);
+
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [myDesigns, setMyDesigns] = useLocalStorage<DesignTemplate[]>('writa-designs', []);
@@ -256,73 +258,64 @@ export default function Home() {
   const isMobile = useIsMobile();
 
 
-  const handleGenerate = useCallback(async () => {
+  const handleGenerate = useCallback(() => {
     setIsLoading(true);
-    setDesigns([]);
-  
+    
     // Create a temporary canvas to measure text
     const tempCanvas = document.createElement('canvas');
     const ctx = tempCanvas.getContext('2d');
     if (!ctx) {
-      setIsLoading(false);
-      return;
+        setIsLoading(false);
+        return;
     }
-  
-    const textToProcess = text.trim();
-    let title = "";
-    let body = textToProcess;
-  
-    const firstSentenceMatch = textToProcess.match(/^[^.!?]+[.!?]/);
-    if (firstSentenceMatch) {
-      title = firstSentenceMatch[0];
-      body = textToProcess.substring(title.length).trim();
-    } else {
-      const paragraphs = textToProcess.split('\n').filter(p => p.trim() !== '');
-      title = paragraphs.shift() || '';
-      body = paragraphs.join('\n');
+
+    const newDesigns: Design[] = [];
+    let remainingText = text.trim();
+
+    // Handle optional title
+    if (title.trim() !== '') {
+        newDesigns.push({ text: title.trim(), isTitle: true });
     }
-  
-    const newDesigns: Design[] = [{ text: title, isTitle: true }];
-    let remainingText = body;
-  
+
     const scalingFactor = canvasSize.width / 1080;
-    let baseFontSize = typeof activeFont.size === 'number' ? activeFont.size : 48;
+    const baseFontSize = typeof activeFont.size === 'number' ? activeFont.size : 48;
     const finalFontSize = baseFontSize * scalingFactor;
     const finalFontWeight = isBold ? Math.min(Number(activeFont.weight) + 300, 900) : activeFont.weight;
-  
-    await document.fonts.load(`${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`);
-    ctx.font = `${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`;
-  
-    const rectWidth = 830 * (canvasSize.width / 1080);
-    const textMaxWidth = rectWidth - (100 * (canvasSize.width / 1080));
-    const currentLineHeight = typeof activeFont.lineHeight === 'number' ? activeFont.lineHeight : parseFloat(activeFont.lineHeight);
-  
-    while (remainingText.length > 0) {
-      const maxLineHeight = 2.5;
-      const minLineHeight = 1.2;
-      const maxLinesForMinHeight = 14;
-      const maxLinesForMaxHeight = 8;
-      const slope = (maxLinesForMaxHeight - maxLinesForMinHeight) / (maxLineHeight - minLineHeight);
-      let dynamicMaxLines = Math.floor(maxLinesForMinHeight + slope * (currentLineHeight - minLineHeight));
-      dynamicMaxLines = Math.max(maxLinesForMaxHeight, Math.min(maxLinesForMinHeight, dynamicMaxLines));
-  
-      const result = measureAndSplitText(ctx, remainingText, textMaxWidth, dynamicMaxLines, dynamicMaxLines + 2);
-      
-      newDesigns.push({ text: result.textForCanvas, isTitle: false });
-      remainingText = result.remainingText;
-  
-      if (newDesigns.length > 50) { // safety break
-          console.error("Exceeded 50 slides, breaking loop.");
-          break;
-      }
-    }
-  
-    setDesigns(newDesigns);
-    setIsLoading(false);
-  
-    // Scroll to the beginning of the carousel after generation
-    setTimeout(() => carouselApi.current?.scrollTo(0), 100);
-  }, [text, canvasSize, activeFont, isBold]);
+
+    document.fonts.load(`${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`).then(() => {
+        ctx.font = `${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`;
+
+        const rectWidth = 830 * (canvasSize.width / 1080);
+        const textMaxWidth = rectWidth - (100 * (canvasSize.width / 1080));
+        const currentLineHeight = typeof activeFont.lineHeight === 'number' ? activeFont.lineHeight : parseFloat(activeFont.lineHeight as string);
+
+        while (remainingText.length > 0) {
+            const maxLineHeight = 2.5;
+            const minLineHeight = 1.2;
+            const maxLinesForMinHeight = 14;
+            const maxLinesForMaxHeight = 8;
+            const slope = (maxLinesForMaxHeight - maxLinesForMinHeight) / (maxLineHeight - minLineHeight);
+            let dynamicMaxLines = Math.floor(maxLinesForMinHeight + slope * (currentLineHeight - minLineHeight));
+            dynamicMaxLines = Math.max(maxLinesForMaxHeight, Math.min(maxLinesForMinHeight, dynamicMaxLines));
+    
+            const result = measureAndSplitText(ctx, remainingText, textMaxWidth, dynamicMaxLines, dynamicMaxLines + 2);
+            
+            newDesigns.push({ text: result.textForCanvas, isTitle: false });
+            remainingText = result.remainingText;
+    
+            if (newDesigns.length > 50) { // safety break
+                console.error("Exceeded 50 slides, breaking loop.");
+                break;
+            }
+        }
+    
+        setDesigns(newDesigns);
+        setIsLoading(false);
+    
+        // Scroll to the beginning of the carousel after generation
+        setTimeout(() => carouselApi.current?.scrollTo(0), 100);
+    });
+}, [text, title, canvasSize, activeFont, isBold]);
   
    const closePanel = useCallback(() => {
     setIsMobilePanelOpen(false);
@@ -569,15 +562,19 @@ export default function Home() {
   ]);
   
   const handleMobileTabClick = (tab: string) => {
-    setActiveSettingsTab(tab);
-    setIsMobilePanelOpen(true);
-  };
-
- const handleDesktopTabClick = (tab: string) => {
-    setActiveSettingsTab(tab);
-    if (!isSidebarOpen) {
-      setIsSidebarOpen(true);
+    if (activeSettingsTab === tab && isMobilePanelOpen) {
+      // Don't close if it's already open and the same tab is clicked
+    } else {
+      setActiveSettingsTab(tab);
+      setIsMobilePanelOpen(true);
     }
+  };
+  
+  const handleDesktopTabClick = (tab: string) => {
+      setActiveSettingsTab(tab);
+      if (!isSidebarOpen) {
+          setIsSidebarOpen(true);
+      }
   };
 
   const handleZoom = (direction: 'in' | 'out') => {
@@ -861,25 +858,93 @@ export default function Home() {
 
   const renderActiveTabContent = () => {
     const props = {
-        text, setText, handleGenerate, isLoading,
-        backgroundTab, setBackgroundTab: setBackgroundTab as (value: string) => void, handleFeelLucky,
-        bgColor, handleBgColorSelect: handleBgColorSelect, imageBgUrl, handleImageBgUrlSelect: handleImageBgUrlSelect,
-        searchQuery, setSearchQuery, handleSearchImages: handleSearchImages, isSearching, searchedImages,
-        handleKeywordSearch: handleKeywordSearch, searchPage, isOverlayEnabled, setIsOverlayEnabled,
-        overlayColor, setOverlayColor, overlayOpacity, setOverlayOpacity, gradientBg,
-        handleGradientBgSelect: handleGradientBgSelect, setSearchCarouselApi: (api: CarouselApi | undefined) => { if (api) searchCarouselApi.current = api }, textColor, setTextColor: handleTextColorChange, textOpacity,
-        setTextOpacity, activeFont, setActiveFont, fontOptions, isBold, setIsBold,
-        isUppercase, setIsUppercase, textAlign, setTextAlign, textShadowEnabled,
-        setTextShadowEnabled, shadows, setShadows, textStroke, setTextStroke,
-        strokeColor, setStrokeColor, strokeWidth, setStrokeWidth, isTextBoxEnabled,
-        setIsTextBoxEnabled, rectBgColor, setRectBgColor, rectOpacity,
-        setRectOpacity, activeEffect, setActiveEffect: handleEffectChange, designs, handleDownloadAll: () => {}, currentSlide,
-        handleDownload: () => {}, fileName, setFileName, handleApplyTemplate: applyTemplate, myDesigns,
-        handleSaveDesign: handleSaveDesign, handleDeleteDesign: handleDeleteDesign, handleUpdateDesign: handleUpdateDesign, editingDesignId,
-        handleEditClick, handleCancelEdit: handleCancelEdit, editingName, setEditingName, designToDelete,
-        setDesignToDelete, handleLogDesign, handleImageUpload,
-        elements, setElements, selectedElement, setSelectedElement, updateElement,
-        areElementsEnabled, setAreElementsEnabled,
+        title,
+        setTitle,
+        text, 
+        setText, 
+        handleGenerate, 
+        isLoading,
+        backgroundTab, 
+        setBackgroundTab: setBackgroundTab as (value: string) => void, 
+        handleFeelLucky,
+        bgColor, 
+        handleBgColorSelect: handleBgColorSelect, 
+        imageBgUrl, 
+        handleImageBgUrlSelect: handleImageBgUrlSelect,
+        searchQuery, 
+        setSearchQuery, 
+        handleSearchImages: handleSearchImages, 
+        isSearching, 
+        searchedImages,
+        handleKeywordSearch: handleKeywordSearch, 
+        searchPage, 
+        isOverlayEnabled, 
+        setIsOverlayEnabled,
+        overlayColor, 
+        setOverlayColor, 
+        overlayOpacity, 
+        setOverlayOpacity, 
+        gradientBg,
+        handleGradientBgSelect: handleGradientBgSelect, 
+        setSearchCarouselApi: (api: CarouselApi | undefined) => { if (api) searchCarouselApi.current = api }, 
+        textColor, 
+        setTextColor: handleTextColorChange, 
+        textOpacity,
+        setTextOpacity, 
+        activeFont, 
+        setActiveFont, 
+        fontOptions, 
+        isBold, 
+        setIsBold,
+        isUppercase, 
+        setIsUppercase, 
+        textAlign, 
+        setTextAlign, 
+        textShadowEnabled,
+        setTextShadowEnabled, 
+        shadows, 
+        setShadows, 
+        textStroke, 
+        setTextStroke,
+        strokeColor, 
+        setStrokeColor, 
+        strokeWidth, 
+        setStrokeWidth, 
+        isTextBoxEnabled,
+        setIsTextBoxEnabled, 
+        rectBgColor, 
+        setRectBgColor, 
+        rectOpacity,
+        setRectOpacity, 
+        activeEffect, 
+        setActiveEffect: handleEffectChange, 
+        designs, 
+        handleDownloadAll: () => {}, 
+        currentSlide,
+        handleDownload: () => {}, 
+        fileName, 
+        setFileName, 
+        handleApplyTemplate: applyTemplate, 
+        myDesigns,
+        handleSaveDesign: handleSaveDesign, 
+        handleDeleteDesign: handleDeleteDesign, 
+        handleUpdateDesign: handleUpdateDesign, 
+        editingDesignId,
+        handleEditClick, 
+        handleCancelEdit: handleCancelEdit, 
+        editingName, 
+        setEditingName, 
+        designToDelete,
+        setDesignToDelete, 
+        handleLogDesign, 
+        handleImageUpload,
+        elements, 
+        setElements, 
+        selectedElement, 
+        setSelectedElement, 
+        updateElement,
+        areElementsEnabled, 
+        setAreElementsEnabled,
     };
 
     switch (activeSettingsTab) {
@@ -1052,7 +1117,7 @@ export default function Home() {
         *******************************************************/}
         <main className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative")}>
         {designs.length > 0 && (
-            <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
+          <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
             <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
                 {canvasSizes.map(size => (
                 <TooltipProvider key={size.name}>
@@ -1113,6 +1178,8 @@ export default function Home() {
           {designs.length === 0 ? (
             <div className="w-full max-w-2xl">
               <CreativeMagicPanel 
+                  title={title}
+                  setTitle={setTitle}
                   text={text}
                   setText={setText}
                   handleGenerate={handleGenerate}
@@ -1142,7 +1209,7 @@ export default function Home() {
                   className="relative transition-transform duration-75" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
-                  <Carousel className="w-full" setApi={(api) => { if (api) carouselApi.current = api; }}>
+                  <Carousel className="w-full" setApi={setApi => carouselApi.current = setApi}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
