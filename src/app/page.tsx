@@ -205,20 +205,27 @@ export default function Home() {
   const handleTextRemaining = useCallback((remaining: string, fromIndex: number) => {
     const nextDesignIndex = fromIndex + 1;
     setDesigns(prevDesigns => {
-        if (remaining && prevDesigns[nextDesignIndex]) {
-            const newDesigns = [...prevDesigns];
-            if (newDesigns[nextDesignIndex].text !== remaining) {
-                newDesigns[nextDesignIndex].text = remaining;
-                return newDesigns;
+        // If there's remaining text...
+        if (remaining) {
+            // ...and there's already a slide after this one...
+            if (prevDesigns[nextDesignIndex]) {
+                // ...check if the text is different. Only update if it is.
+                if (prevDesigns[nextDesignIndex].text !== remaining) {
+                    const newDesigns = [...prevDesigns];
+                    newDesigns[nextDesignIndex].text = remaining;
+                    return newDesigns;
+                }
+            } else {
+                // ...or if there's no slide after this one, create it.
+                return [...prevDesigns, { text: remaining, isTitle: false }];
+            }
+        } else {
+            // If there's no remaining text but there are slides after this one, remove them.
+            if (prevDesigns.length > nextDesignIndex) {
+                return prevDesigns.slice(0, nextDesignIndex);
             }
         }
-        else if (remaining && !prevDesigns[nextDesignIndex]) {
-             return [...prevDesigns, { text: remaining, isTitle: false }];
-        }
-        else if (!remaining && prevDesigns.length > nextDesignIndex) {
-            return prevDesigns.slice(0, nextDesignIndex);
-        }
-        
+        // If no changes are needed, return the previous state to avoid re-render.
         return prevDesigns;
     });
 }, []);
@@ -878,7 +885,7 @@ export default function Home() {
     const props = {
         text, setText, handleGenerate, isLoading,
         backgroundTab, setBackgroundTab: setBackgroundTab as (value: string) => void, handleFeelLucky,
-        bgColor, handleBgColorSelect, imageBgUrl, handleImageBgUrlSelect: (template: ImageTemplate) => handleImageBgUrlSelect(template),
+        bgColor, handleBgColorSelect, imageBgUrl, handleImageBgUrlSelect,
         searchQuery, setSearchQuery, handleSearchImages, isSearching, searchedImages,
         handleKeywordSearch, searchPage, isOverlayEnabled, setIsOverlayEnabled: handleOverlayEnable,
         overlayColor, setOverlayColor, overlayOpacity, setOverlayOpacity, gradientBg,
@@ -1116,7 +1123,7 @@ export default function Home() {
       *
       * END DESKTOP SIDEBAR
       *
-      *******************************************************/}
+      ***************************************/}
 
         {/******************************************************
         *
@@ -1277,3 +1284,6 @@ export default function Home() {
 
     
 
+
+
+    
