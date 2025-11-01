@@ -78,6 +78,17 @@ export function BackgroundSettings({
 }: BackgroundSettingsProps) {
   const baseId = useId();
 
+  const handleImageSelectFromSearch = (imageUrl: string) => {
+    handleImageBgUrlSelect({
+      name: `Search Result`,
+      imageUrls: {
+        post: imageUrl,
+        story: imageUrl,
+        square: imageUrl,
+      },
+    });
+  };
+
   return (
     <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-4 mobile-tab-content">
       <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
@@ -286,7 +297,7 @@ export function BackgroundSettings({
                 <CarouselContent className="-ml-2">
                   {searchedImages.map((imageUrl, index) => (
                     <CarouselItem key={index} className="basis-1/4">
-                      <div onClick={() => handleImageBgUrlSelect({name: `Search Result ${index}`, imageUrls: {post: imageUrl, story: imageUrl, square: imageUrl}})} className="cursor-pointer">
+                      <div onClick={() => handleImageSelectFromSearch(imageUrl)} className="cursor-pointer">
                         <Image src={imageUrl} alt={`Search Result ${index}`} width={200} height={250} className="object-cover aspect-[2/3] rounded-md" />
                       </div>
                     </CarouselItem>

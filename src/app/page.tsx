@@ -518,7 +518,9 @@ export default function Home() {
 
  const handleDesktopTabClick = (tab: string) => {
     setActiveSettingsTab(tab);
-    setIsSidebarOpen(true);
+    if (!isSidebarOpen) {
+      setIsSidebarOpen(true);
+    }
   };
 
   const handleZoom = (direction: 'in' | 'out') => {
@@ -716,20 +718,37 @@ export default function Home() {
     setEditingName('');
   };
 
+  const handleBgColorSelect = (color: string) => {
+    setBgColor(color);
+    setBackgroundType('flat');
+  };
+
+  const handleGradientBgSelect = (css: string) => {
+    setGradientBg(css);
+    setBackgroundType('gradient');
+  };
+
+  const handleImageBgUrlSelect = (template: ImageTemplate) => {
+    const sizeName = canvasSize.name.toLowerCase() as 'post' | 'story' | 'square';
+    setImageBgUrl(template.imageUrls[sizeName]);
+    setBackgroundType('image');
+  };
+
+
   const renderActiveTabContent = () => {
     const props = {
         text, setText, handleGenerate: handleGenerate, isLoading,
         backgroundTab, setBackgroundTab: setBackgroundTab as (value: string) => void, handleFeelLucky: () => {},
-        bgColor, handleBgColorSelect: () => {}, imageBgUrl, handleImageBgUrlSelect: () => {},
+        bgColor, handleBgColorSelect: handleBgColorSelect, imageBgUrl, handleImageBgUrlSelect: handleImageBgUrlSelect,
         searchQuery, setSearchQuery, handleSearchImages: () => {}, isSearching, searchedImages,
-        handleKeywordSearch: () => {}, searchPage, isOverlayEnabled, setIsOverlayEnabled: () => {},
+        handleKeywordSearch: () => {}, searchPage, isOverlayEnabled, setIsOverlayEnabled,
         overlayColor, setOverlayColor, overlayOpacity, setOverlayOpacity, gradientBg,
-        handleGradientBgSelect: () => {}, setSearchCarouselApi: (api: CarouselApi | undefined) => { if (api) searchCarouselApi.current = api }, textColor, setTextColor: handleTextColorChange, textOpacity,
+        handleGradientBgSelect: handleGradientBgSelect, setSearchCarouselApi: (api: CarouselApi | undefined) => { if (api) searchCarouselApi.current = api }, textColor, setTextColor: handleTextColorChange, textOpacity,
         setTextOpacity, activeFont, setActiveFont, fontOptions, isBold, setIsBold,
         isUppercase, setIsUppercase, textAlign, setTextAlign, textShadowEnabled,
         setTextShadowEnabled, shadows, setShadows, textStroke, setTextStroke,
         strokeColor, setStrokeColor, strokeWidth, setStrokeWidth, isTextBoxEnabled,
-        setIsTextBoxEnabled: () => {}, rectBgColor, setRectBgColor, rectOpacity,
+        setIsTextBoxEnabled, rectBgColor, setRectBgColor, rectOpacity,
         setRectOpacity, activeEffect, setActiveEffect: handleEffectChange, designs, handleDownloadAll: () => {}, currentSlide,
         handleDownload: () => {}, fileName, setFileName, handleApplyTemplate: () => {}, myDesigns,
         handleSaveDesign: handleSaveDesign, handleDeleteDesign: handleDeleteDesign, handleUpdateDesign: handleUpdateDesign, editingDesignId,
@@ -910,61 +929,61 @@ export default function Home() {
         <main className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative")}>
         {designs.length > 0 && (
           <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
-              <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
-                  {canvasSizes.map(size => (
-                  <TooltipProvider key={size.name}>
-                      <Tooltip>
-                      <TooltipTrigger asChild>
-                          <Button
-                          variant="ghost"
-                          size="icon"
-                          className={cn(
-                              "h-8 w-8 text-primary",
-                              canvasSize.name === size.name && "bg-primary-foreground/20"
-                          )}
-                          onClick={() => handleCanvasSizeChange(size)}
-                          >
-                          {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
-                          {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
-                          {size.name === 'Square' && <Square className="h-5 w-5" />}
-                          </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                          <p>{size.name} Format</p>
-                      </TooltipContent>
-                      </Tooltip>
-                  </TooltipProvider>
-                  ))}
-              </div>
-              <div className="bg-card/20 backdrop-blur-sm p-1 flex items-center gap-1 rounded-md">
-              <TooltipProvider>
-                  <Tooltip>
-                  <TooltipTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('out')} disabled={zoomLevel <= MIN_ZOOM}>
-                          <ZoomOut className="h-5 w-5" />
-                      </Button>
-                  </TooltipTrigger>
-                  <TooltipContent><p>Zoom Out (-)</p></TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                  <TooltipTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => resetPanAndZoom(canvasSize)}>
-                          <RotateCcw className="h-5 w-5" />
-                      </Button>
-                  </TooltipTrigger>
-                  <TooltipContent><p>Reset Zoom</p></TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                  <TooltipTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('in')} disabled={zoomLevel >= MAX_ZOOM}>
-                          <ZoomIn className="h-5 w-5" />
-                      </Button>
-                  </TooltipTrigger>
-                  <TooltipContent><p>Zoom In (+)</p></TooltipContent>
-                  </Tooltip>
-              </TooltipProvider>
-              </div>
-          </div>
+            <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
+                {canvasSizes.map(size => (
+                <TooltipProvider key={size.name}>
+                    <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                        variant="ghost"
+                        size="icon"
+                        className={cn(
+                            "h-8 w-8 text-primary",
+                            canvasSize.name === size.name && "bg-primary-foreground/20"
+                        )}
+                        onClick={() => handleCanvasSizeChange(size)}
+                        >
+                        {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
+                        {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
+                        {size.name === 'Square' && <Square className="h-5 w-5" />}
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>{size.name} Format</p>
+                    </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+                ))}
+            </div>
+            <div className="bg-card/20 backdrop-blur-sm p-1 flex items-center gap-1 rounded-md">
+            <TooltipProvider>
+                <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('out')} disabled={zoomLevel <= MIN_ZOOM}>
+                        <ZoomOut className="h-5 w-5" />
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent><p>Zoom Out (-)</p></TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => resetPanAndZoom(canvasSize)}>
+                        <RotateCcw className="h-5 w-5" />
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent><p>Reset Zoom</p></TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('in')} disabled={zoomLevel >= MAX_ZOOM}>
+                        <ZoomIn className="h-5 w-5" />
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent><p>Zoom In (+)</p></TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+            </div>
+        </div>
         )}
 
           {designs.length === 0 ? (
@@ -1115,7 +1134,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
-
-    
