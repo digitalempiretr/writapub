@@ -72,6 +72,8 @@ const canvasSizes: CanvasSize[] = [
 const ZOOM_STEP = 0.1;
 const MAX_ZOOM = 3.0;
 const MIN_ZOOM = 0.25;
+const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "Art", "Minimal", "Abstract", "Dreamy", "Cinematic", "Surreal", "Vintage", "Futuristic", "Bohemian"];
+
 
 export default function Home() {
   const [text, setText] = useState(defaultText);
@@ -292,7 +294,7 @@ export default function Home() {
     
     setDesigns(allSlides);
     setIsLoading(false);
-  }, [text, canvasSize.width, activeFont, isBold]);
+  }, [text, canvasSize.width, activeFont, isBold, toast]);
   
   const handleLogDesign = useCallback(() => {
     let bgValue = '';
@@ -511,8 +513,12 @@ export default function Home() {
   ]);
   
   const handleMobileTabClick = (tab: string) => {
-    setActiveSettingsTab(tab);
-    setIsMobilePanelOpen(true);
+    if (isMobilePanelOpen && activeSettingsTab === tab) {
+      // Don't close if clicking the same tab
+    } else {
+      setActiveSettingsTab(tab);
+      setIsMobilePanelOpen(true);
+    }
   };
   
 
@@ -734,14 +740,81 @@ export default function Home() {
     setBackgroundType('image');
   };
 
+  const handleSearchImages = useCallback(async (page = 1) => {
+    if (!searchQuery) {
+      toast({
+        title: "Search query is empty",
+        description: "Please enter a term to search for images.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setIsSearching(true);
+    setSearchPage(page);
+
+    try {
+      const results = await findImages({ query: searchQuery, page: page, per_page: 9 });
+      if (page === 1) {
+        setSearchedImages(results.imageUrls);
+      } else {
+        setSearchedImages(prev => [...prev, ...results.imageUrls]);
+      }
+      if (results.imageUrls.length === 0 && page === 1) {
+        toast({ title: "No images found." });
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast({
+        title: "Search Failed",
+        description: error.message || "Could not fetch images from Pexels.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSearching(false);
+    }
+  }, [searchQuery, toast]);
+
+  const handleKeywordSearch = (keyword: string) => {
+    setSearchQuery(keyword);
+    handleSearchImages(1);
+  };
+
+  const handleFeelLucky = useCallback(async () => {
+    const randomKeyword = searchKeywords[Math.floor(Math.random() * searchKeywords.length)];
+    setSearchQuery(randomKeyword);
+    setIsSearching(true);
+    try {
+      const results = await findImages({ query: randomKeyword, page: 1, per_page: 1 });
+      if (results.imageUrls.length > 0) {
+        const randomImage = results.imageUrls[0];
+        handleImageBgUrlSelect({ 
+            name: randomKeyword, 
+            imageUrls: { post: randomImage, story: randomImage, square: randomImage }
+        });
+        setBackgroundTab('image');
+        toast({ title: `Feelin' Lucky with "${randomKeyword}"!` });
+      } else {
+        toast({ title: "Lucky search came up empty, try again!" });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Search Failed",
+        description: error.message || "Could not fetch images.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSearching(false);
+    }
+  }, [toast]);
+
 
   const renderActiveTabContent = () => {
     const props = {
         text, setText, handleGenerate: handleGenerate, isLoading,
-        backgroundTab, setBackgroundTab: setBackgroundTab as (value: string) => void, handleFeelLucky: () => {},
+        backgroundTab, setBackgroundTab: setBackgroundTab as (value: string) => void, handleFeelLucky,
         bgColor, handleBgColorSelect: handleBgColorSelect, imageBgUrl, handleImageBgUrlSelect: handleImageBgUrlSelect,
-        searchQuery, setSearchQuery, handleSearchImages: () => {}, isSearching, searchedImages,
-        handleKeywordSearch: () => {}, searchPage, isOverlayEnabled, setIsOverlayEnabled,
+        searchQuery, setSearchQuery, handleSearchImages: handleSearchImages, isSearching, searchedImages,
+        handleKeywordSearch: handleKeywordSearch, searchPage, isOverlayEnabled, setIsOverlayEnabled,
         overlayColor, setOverlayColor, overlayOpacity, setOverlayOpacity, gradientBg,
         handleGradientBgSelect: handleGradientBgSelect, setSearchCarouselApi: (api: CarouselApi | undefined) => { if (api) searchCarouselApi.current = api }, textColor, setTextColor: handleTextColorChange, textOpacity,
         setTextOpacity, activeFont, setActiveFont, fontOptions, isBold, setIsBold,
@@ -1017,7 +1090,7 @@ export default function Home() {
                   className="relative transition-transform duration-75" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
-                  <Carousel className="w-full" setApi={(api) => { if(api) carouselApi.current = api; }}>
+                  <Carousel className="w-full" setApi={ (api) => { if (api) carouselApi.current = api; }}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
