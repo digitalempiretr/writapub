@@ -76,6 +76,84 @@ const MAX_ZOOM = 3.0;
 const MIN_ZOOM = 0.25;
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "Art", "Minimal", "Abstract", "Dreamy", "Cinematic", "Surreal", "Vintage", "Futuristic", "Bohemian"];
 
+// These functions should be outside the component to be pure and reusable
+const measureAndSplitText = (
+  context: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number,
+  baseMaxLines: number,
+  extendedMaxLines: number
+): { textForCanvas: string; remainingText: string } => {
+  const paragraphs = text.split('\n');
+  let allWords: string[] = [];
+  paragraphs.forEach((p, index) => {
+    if (p.trim() !== '') {
+      allWords.push(...p.split(' '));
+    }
+    if (index < paragraphs.length - 1) {
+      allWords.push('\n');
+    }
+  });
+
+  let lines: string[] = [];
+  let currentLine = '';
+  let wordBuffer = [...allWords];
+  let remainingWords: string[] = [];
+
+  while (wordBuffer.length > 0) {
+    const word = wordBuffer.shift();
+    if (word === undefined) break;
+
+    if (word === '\n') {
+      lines.push(currentLine);
+      currentLine = '';
+      if (lines.length >= extendedMaxLines) {
+        remainingWords = wordBuffer;
+        break;
+      }
+      continue;
+    }
+
+    const testLine = currentLine ? `${currentLine} ${word}` : word;
+    if (context.measureText(testLine).width <= maxWidth) {
+      currentLine = testLine;
+    } else {
+      lines.push(currentLine);
+      currentLine = word;
+    }
+
+    if (lines.length >= baseMaxLines) {
+      const potentialRemainingWords = [currentLine, ...wordBuffer];
+      const potentialRemainingText = potentialRemainingWords.join(' ').replace(/\n/g, ' \n ').trim();
+      const firstSentenceMatch = potentialRemainingText.match(/^([^.!?]+[.!?])/);
+
+      let extend = false;
+      if (firstSentenceMatch) {
+        const firstSentence = firstSentenceMatch[1];
+        const sentenceWords = firstSentence.trim().split(' ');
+        if (sentenceWords.length <= 2) {
+          extend = true;
+        }
+      }
+
+      if (lines.length >= extendedMaxLines || (!extend && lines.length >= baseMaxLines)) {
+           remainingWords = [currentLine, ...wordBuffer];
+           currentLine = ''; 
+           break;
+      }
+    }
+  }
+
+  if (currentLine) {
+    lines.push(currentLine);
+  }
+
+  const textForCanvas = lines.join('\n');
+  const finalRemainingText = remainingWords.join(' ').replace(/ \n /g, '\n').trim();
+
+  return { textForCanvas, remainingText: finalRemainingText };
+};
+
 
 export default function Home() {
   const [text, setText] = useState(defaultText);
@@ -86,9 +164,6 @@ export default function Home() {
   
   const carouselApi = useRef<CarouselApi>();
   const searchCarouselApi = useRef<CarouselApi>();
-  
-  const remainingTexts = useRef<string[]>([]);
-  const processingRef = useRef<boolean>(false);
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [myDesigns, setMyDesigns] = useLocalStorage<DesignTemplate[]>('writa-designs', []);
@@ -180,46 +255,24 @@ export default function Home() {
   const { toast } = useToast();
   const isMobile = useIsMobile();
 
-  const handleTextRemaining = useCallback((remainingText: string, fromIndex: number) => {
-    remainingTexts.current[fromIndex + 1] = remainingText;
 
-    if (!processingRef.current && remainingTexts.current.some(t => t)) {
-      processingRef.current = true;
-      const nextText = remainingTexts.current[designs.length];
-      if (nextText) {
-        setDesigns(prevDesigns => [...prevDesigns, { text: nextText, isTitle: false }]);
-      }
-      setTimeout(() => {
-        processingRef.current = false;
-        handleTextRemaining("", fromIndex); 
-      }, 50); 
-    }
-  }, [designs.length]);
-
-
-  useEffect(() => {
-    if (designs.length > 0 && !processingRef.current) {
-        const nextText = remainingTexts.current[designs.length];
-        if (nextText) {
-            processingRef.current = true;
-            setDesigns(prevDesigns => [...prevDesigns, { text: nextText, isTitle: false }]);
-            setTimeout(() => {
-                processingRef.current = false;
-            }, 50);
-        }
-    }
-  }, [designs, handleTextRemaining]);
-
-  const handleGenerate = useCallback(() => {
+  const handleGenerate = useCallback(async () => {
     setIsLoading(true);
-    setDesigns([]); 
-    remainingTexts.current = [];
-    
+    setDesigns([]);
+  
+    // Create a temporary canvas to measure text
+    const tempCanvas = document.createElement('canvas');
+    const ctx = tempCanvas.getContext('2d');
+    if (!ctx) {
+      setIsLoading(false);
+      return;
+    }
+  
     const textToProcess = text.trim();
-    const firstSentenceMatch = textToProcess.match(/^[^.!?]+[.!?]/);
     let title = "";
     let body = textToProcess;
-
+  
+    const firstSentenceMatch = textToProcess.match(/^[^.!?]+[.!?]/);
     if (firstSentenceMatch) {
       title = firstSentenceMatch[0];
       body = textToProcess.substring(title.length).trim();
@@ -228,11 +281,49 @@ export default function Home() {
       title = paragraphs.shift() || '';
       body = paragraphs.join('\n');
     }
-
-    setDesigns([{ text: title, isTitle: true }, { text: body, isTitle: false }]);
+  
+    const newDesigns: Design[] = [{ text: title, isTitle: true }];
+    let remainingText = body;
+  
+    const scalingFactor = canvasSize.width / 1080;
+    let baseFontSize = typeof activeFont.size === 'number' ? activeFont.size : 48;
+    const finalFontSize = baseFontSize * scalingFactor;
+    const finalFontWeight = isBold ? Math.min(Number(activeFont.weight) + 300, 900) : activeFont.weight;
+  
+    await document.fonts.load(`${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`);
+    ctx.font = `${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`;
+  
+    const rectWidth = 830 * (canvasSize.width / 1080);
+    const textMaxWidth = rectWidth - (100 * (canvasSize.width / 1080));
+    const currentLineHeight = typeof activeFont.lineHeight === 'number' ? activeFont.lineHeight : parseFloat(activeFont.lineHeight);
+  
+    while (remainingText.length > 0) {
+      const maxLineHeight = 2.5;
+      const minLineHeight = 1.2;
+      const maxLinesForMinHeight = 14;
+      const maxLinesForMaxHeight = 8;
+      const slope = (maxLinesForMaxHeight - maxLinesForMinHeight) / (maxLineHeight - minLineHeight);
+      let dynamicMaxLines = Math.floor(maxLinesForMinHeight + slope * (currentLineHeight - minLineHeight));
+      dynamicMaxLines = Math.max(maxLinesForMaxHeight, Math.min(maxLinesForMinHeight, dynamicMaxLines));
+  
+      const result = measureAndSplitText(ctx, remainingText, textMaxWidth, dynamicMaxLines, dynamicMaxLines + 2);
+      
+      newDesigns.push({ text: result.textForCanvas, isTitle: false });
+      remainingText = result.remainingText;
+  
+      if (newDesigns.length > 50) { // safety break
+          console.error("Exceeded 50 slides, breaking loop.");
+          break;
+      }
+    }
+  
+    setDesigns(newDesigns);
     setIsLoading(false);
-  }, [text]);
-
+  
+    // Scroll to the beginning of the carousel after generation
+    setTimeout(() => carouselApi.current?.scrollTo(0), 100);
+  }, [text, canvasSize, activeFont, isBold]);
+  
    const closePanel = useCallback(() => {
     setIsMobilePanelOpen(false);
   }, []);
@@ -452,7 +543,6 @@ export default function Home() {
           onCanvasReady={(canvas) => {
             canvasRefs.current[index] = canvas;
           }}
-          onTextRemaining={handleTextRemaining}
           rectColor={rectBgColor}
           rectOpacity={isTextBoxEnabled ? rectOpacity : 0}
           overlayColor={overlayColor}
@@ -475,7 +565,7 @@ export default function Home() {
     gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, 
     overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, 
     shadows, textStroke, strokeColor, strokeWidth, 
-    isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize, elements, areElementsEnabled, handleTextRemaining
+    isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize, elements, areElementsEnabled
   ]);
   
   const handleMobileTabClick = (tab: string) => {
@@ -962,7 +1052,7 @@ export default function Home() {
         *******************************************************/}
         <main className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative")}>
         {designs.length > 0 && (
-          <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
+            <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
             <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
                 {canvasSizes.map(size => (
                 <TooltipProvider key={size.name}>
@@ -1169,4 +1259,3 @@ export default function Home() {
     </div>
   );
 }
-

@@ -30,7 +30,6 @@ export type ImageCanvasProps = {
   height: number;
   onCanvasReady: (canvas: HTMLCanvasElement) => void;
   backgroundImageUrl?: string;
-  onTextRemaining: (remainingText: string, fromIndex: number) => void;
   rectColor: string;
   rectOpacity: number;
   overlayColor?: string;
@@ -70,84 +69,6 @@ const wrapText = (
   }
   lines.push(currentLine);
   return lines;
-};
-
-
-// This function measures the text and splits it if it exceeds the max lines, preserving newlines.
-const measureAndSplitText = (
-    context: CanvasRenderingContext2D,
-    text: string,
-    maxWidth: number,
-    baseMaxLines: number,
-    extendedMaxLines: number
-): { textForCanvas: string; remainingText: string; lines: string[] } => {
-    const paragraphs = text.split('\n');
-    let allWords: string[] = [];
-    paragraphs.forEach((p, index) => {
-        if (p.trim() !== '') {
-            allWords.push(...p.split(' '));
-        }
-        if (index < paragraphs.length - 1) {
-            allWords.push('\n');
-        }
-    });
-
-    let lines: string[] = [];
-    let currentLine = '';
-    let wordBuffer = [...allWords];
-    let remainingWords: string[] = [];
-
-    while (wordBuffer.length > 0) {
-        const word = wordBuffer.shift();
-        if (word === undefined) break;
-
-        if (word === '\n') {
-            lines.push(currentLine);
-            currentLine = '';
-            if (lines.length >= extendedMaxLines) {
-                remainingWords = wordBuffer;
-                break;
-            }
-            continue;
-        }
-
-        const testLine = currentLine ? `${currentLine} ${word}` : word;
-        if (context.measureText(testLine).width <= maxWidth) {
-            currentLine = testLine;
-        } else {
-            lines.push(currentLine);
-            currentLine = word;
-        }
-
-        if (lines.length >= baseMaxLines) {
-            const potentialRemainingWords = [currentLine, ...wordBuffer];
-            const potentialRemainingText = potentialRemainingWords.join(' ').replace(/\n/g, ' \n ').trim();
-            const firstSentenceMatch = potentialRemainingText.match(/^([^.!?]+[.!?])/);
-
-            let extend = false;
-            if (firstSentenceMatch) {
-                const firstSentence = firstSentenceMatch[1];
-                const sentenceWords = firstSentence.trim().split(' ');
-                if (sentenceWords.length <= 2) {
-                    extend = true;
-                }
-            }
-
-            if (lines.length >= extendedMaxLines || (!extend && lines.length >= baseMaxLines)) {
-                 remainingWords = [currentLine, ...wordBuffer];
-                 currentLine = ''; 
-                 break;
-            }
-        }
-    }
-    
-    if (currentLine) {
-        lines.push(currentLine);
-    }
-    
-    const finalRemainingText = remainingWords.join(' ').replace(/ \n /g, '\n').trim();
-
-    return { textForCanvas: lines.join('\n'), remainingText: finalRemainingText, lines: lines };
 };
 
 
@@ -271,7 +192,6 @@ const ImageCanvasComponent = ({
   height,
   onCanvasReady,
   backgroundImageUrl,
-  onTextRemaining,
   rectColor,
   rectOpacity,
   overlayColor,
@@ -289,7 +209,6 @@ const ImageCanvasComponent = ({
   areElementsEnabled,
 }: ImageCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const indexRef = useRef<number | null>(null);
   const [viewportHeight, setViewportHeight] = React.useState(1080); // Default, updated on client
   const imageCache = useRef<Map<string, HTMLImageElement>>(new Map());
 
@@ -300,8 +219,16 @@ const ImageCanvasComponent = ({
   const loadImage = (src: string): Promise<HTMLImageElement> => {
     return new Promise((resolve, reject) => {
       if (imageCache.current.has(src)) {
-        resolve(imageCache.current.get(src)!);
-        return;
+        const image = imageCache.current.get(src);
+        if (image && image.complete) {
+            resolve(image);
+            return;
+        } else if (image) {
+            // Image is loading, wait for it
+            image.onload = () => resolve(image);
+            image.onerror = (err) => reject(err);
+            return;
+        }
       }
       const img = new Image();
       img.crossOrigin = 'anonymous';
@@ -318,16 +245,6 @@ const ImageCanvasComponent = ({
   };
 
   useEffect(() => {
-    if (canvasRef.current && indexRef.current === null) {
-      const parentElement = canvasRef.current.closest('[data-index]');
-      if (parentElement) {
-        const idx = parseInt(parentElement.getAttribute('data-index') || '0', 10);
-        indexRef.current = idx;
-      } else {
-        indexRef.current = 0; // fallback
-      }
-    }
-
     const draw = async () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
@@ -346,7 +263,6 @@ const ImageCanvasComponent = ({
       const finalFontSize = baseFontSize * scalingFactor;
       const finalLineHeight = finalFontSize * (typeof propLineHeight === 'number' ? propLineHeight : parseFloat(propLineHeight as string));
 
-
       const processedText = isUppercase ? text.toUpperCase() : text;
 
       await document.fonts.load(`${finalFontWeight} ${finalFontSize}px "${fontFamily}"`);
@@ -361,27 +277,8 @@ const ImageCanvasComponent = ({
       const textMaxWidth = rectWidth - (textPadding * 2);
 
       ctx.font = `${finalFontWeight} ${finalFontSize}px "${fontFamily}"`;
-
-      let remainingText = '';
-      let linesToDraw: string[] = [];
-
-      if (!isTitle) {
-        const maxLineHeight = 2.5;
-        const minLineHeight = 1.2;
-        const maxLinesForMinHeight = 14;
-        const maxLinesForMaxHeight = 8;
-        
-        const slope = (maxLinesForMaxHeight - maxLinesForMinHeight) / (maxLineHeight - minLineHeight);
-        const currentLineHeight = typeof propLineHeight === 'number' ? propLineHeight : parseFloat(propLineHeight as string);
-        let dynamicMaxLines = Math.floor(maxLinesForMinHeight + slope * (currentLineHeight - minLineHeight));
-        dynamicMaxLines = Math.max(maxLinesForMaxHeight, Math.min(maxLinesForMinHeight, dynamicMaxLines)); 
-
-        const result = measureAndSplitText(ctx, processedText, textMaxWidth, dynamicMaxLines, dynamicMaxLines + 2);
-        linesToDraw = result.lines;
-        remainingText = result.remainingText;
-      } else {
-        linesToDraw = wrapText(ctx, processedText, textMaxWidth);
-      }
+      
+      const linesToDraw = processedText.split('\n');
 
       const drawLayout = async () => {
         if (backgroundImageUrl && overlayColor && (overlayOpacity || overlayOpacity === 0)) {
@@ -449,10 +346,6 @@ const ImageCanvasComponent = ({
             textShadowEnabled, shadows, finalTextColor, finalFontSize
         );
         
-        if (!isTitle && indexRef.current !== null) {
-          onTextRemaining(remainingText, indexRef.current);
-        }
-        
         onCanvasReady(canvas);
       };
 
@@ -503,7 +396,7 @@ const ImageCanvasComponent = ({
     };
 
     draw();
-  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, viewportHeight, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing, elements, areElementsEnabled]);
+  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, viewportHeight, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing, elements, areElementsEnabled]);
 
   return (
     <canvas
@@ -516,4 +409,3 @@ const ImageCanvasComponent = ({
   );
 }
 export const ImageCanvas = React.memo(ImageCanvasComponent);
-
