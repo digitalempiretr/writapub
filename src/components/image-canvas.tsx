@@ -344,7 +344,7 @@ const ImageCanvasComponent = ({
       }
       
       const finalFontSize = baseFontSize * scalingFactor;
-      const finalLineHeight = finalFontSize * (typeof propLineHeight === 'number' ? propLineHeight : parseFloat(propLineHeight));
+      const finalLineHeight = finalFontSize * (typeof propLineHeight === 'number' ? propLineHeight : parseFloat(propLineHeight as string));
 
 
       const processedText = isUppercase ? text.toUpperCase() : text;
@@ -372,7 +372,7 @@ const ImageCanvasComponent = ({
         const maxLinesForMaxHeight = 8;
         
         const slope = (maxLinesForMaxHeight - maxLinesForMinHeight) / (maxLineHeight - minLineHeight);
-        const currentLineHeight = typeof propLineHeight === 'number' ? propLineHeight : parseFloat(propLineHeight);
+        const currentLineHeight = typeof propLineHeight === 'number' ? propLineHeight : parseFloat(propLineHeight as string);
         let dynamicMaxLines = Math.floor(maxLinesForMinHeight + slope * (currentLineHeight - minLineHeight));
         dynamicMaxLines = Math.max(maxLinesForMaxHeight, Math.min(maxLinesForMinHeight, dynamicMaxLines)); 
 
@@ -517,4 +517,3 @@ const ImageCanvasComponent = ({
 }
 export const ImageCanvas = React.memo(ImageCanvasComponent);
 
-    

@@ -28,7 +28,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Download, ImageIcon, LayoutTemplate, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw, Shapes, RefreshCcw, RefreshCcwIcon } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -53,6 +53,8 @@ import { textEffects, parseShadow, TextEffect } from "@/lib/text-effects";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { HeartIconG, RefreshIcon  } from "@/components/ui/icons";
+import { TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 
 type Design = {
   text: string;
@@ -84,6 +86,9 @@ export default function Home() {
   
   const carouselApi = useRef<CarouselApi>();
   const searchCarouselApi = useRef<CarouselApi>();
+  
+  const remainingTexts = useRef<string[]>([]);
+  const processingRef = useRef<boolean>(false);
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [myDesigns, setMyDesigns] = useLocalStorage<DesignTemplate[]>('writa-designs', []);
@@ -175,9 +180,61 @@ export default function Home() {
   const { toast } = useToast();
   const isMobile = useIsMobile();
 
+  const handleTextRemaining = useCallback((remainingText: string, fromIndex: number) => {
+    remainingTexts.current[fromIndex + 1] = remainingText;
+
+    if (!processingRef.current && remainingTexts.current.some(t => t)) {
+      processingRef.current = true;
+      const nextText = remainingTexts.current[designs.length];
+      if (nextText) {
+        setDesigns(prevDesigns => [...prevDesigns, { text: nextText, isTitle: false }]);
+      }
+      setTimeout(() => {
+        processingRef.current = false;
+        handleTextRemaining("", fromIndex); 
+      }, 50); 
+    }
+  }, [designs.length]);
+
+
+  useEffect(() => {
+    if (designs.length > 0 && !processingRef.current) {
+        const nextText = remainingTexts.current[designs.length];
+        if (nextText) {
+            processingRef.current = true;
+            setDesigns(prevDesigns => [...prevDesigns, { text: nextText, isTitle: false }]);
+            setTimeout(() => {
+                processingRef.current = false;
+            }, 50);
+        }
+    }
+  }, [designs, handleTextRemaining]);
+
+  const handleGenerate = useCallback(() => {
+    setIsLoading(true);
+    setDesigns([]); 
+    remainingTexts.current = [];
+    
+    const textToProcess = text.trim();
+    const firstSentenceMatch = textToProcess.match(/^[^.!?]+[.!?]/);
+    let title = "";
+    let body = textToProcess;
+
+    if (firstSentenceMatch) {
+      title = firstSentenceMatch[0];
+      body = textToProcess.substring(title.length).trim();
+    } else {
+      const paragraphs = textToProcess.split('\n').filter(p => p.trim() !== '');
+      title = paragraphs.shift() || '';
+      body = paragraphs.join('\n');
+    }
+
+    setDesigns([{ text: title, isTitle: true }, { text: body, isTitle: false }]);
+    setIsLoading(false);
+  }, [text]);
+
    const closePanel = useCallback(() => {
     setIsMobilePanelOpen(false);
-    setActiveSettingsTab('');
   }, []);
 
    useEffect(() => {
@@ -205,96 +262,6 @@ export default function Home() {
     };
   }, [isMobilePanelOpen, closePanel]);
 
-  const handleGenerate = useCallback(() => {
-    setIsLoading(true);
-    setDesigns([]); // Clear previous designs
-
-    const tempCanvas = document.createElement('canvas');
-    const tempCtx = tempCanvas.getContext('2d');
-    
-    if (!tempCtx) {
-      toast({
-        title: "Error",
-        description: "Could not create a temporary canvas context.",
-        variant: "destructive",
-      });
-      setIsLoading(false);
-      return;
-    }
-
-    const scalingFactor = canvasSize.width / 1080;
-    const baseFontSize = typeof activeFont.size === 'number' ? activeFont.size : 48;
-    const finalFontSize = baseFontSize * scalingFactor;
-    const finalFontWeight = isBold ? 'bold' : 'normal';
-
-    tempCtx.font = `${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`;
-    
-    const textToProcess = text.trim();
-    const paragraphs = textToProcess.split('\n').filter(p => p.trim() !== '');
-
-    let allSlides: Design[] = [];
-    let title = "";
-    
-    const firstSentenceMatch = textToProcess.match(/^[^.!?]+[.!?]/);
-    if(firstSentenceMatch){
-      title = firstSentenceMatch[0];
-      allSlides.push({ text: title, isTitle: true });
-    } else {
-      title = paragraphs[0] || '';
-      allSlides.push({ text: title, isTitle: true });
-    }
-
-    const remainingText = textToProcess.substring(title.length).trim();
-    const bodyParagraphs = remainingText.split('\n').filter(p => p.trim() !== '');
-
-    const processParagraph = (paragraph: string) => {
-      let words = paragraph.split(' ');
-      let currentLine = '';
-      let lineCount = 0;
-      let slideText = '';
-      const MAX_LINES = 12;
-
-      while (words.length > 0) {
-        let lineFull = false;
-        while (!lineFull && words.length > 0) {
-          const word = words[0];
-          const testLine = currentLine ? `${currentLine} ${word}` : word;
-          const textMetrics = tempCtx.measureText(testLine);
-          
-          if (textMetrics.width > (canvasSize.width * 0.8) && currentLine) {
-            slideText += currentLine + '\n';
-            currentLine = '';
-            lineCount++;
-          } else {
-            currentLine = testLine;
-            words.shift();
-          }
-
-          if (lineCount >= MAX_LINES - 1) {
-            lineFull = true;
-          }
-        }
-        
-        if (currentLine) {
-          slideText += currentLine + '\n';
-          currentLine = '';
-          lineCount++;
-        }
-
-        if (lineCount >= MAX_LINES || words.length === 0) {
-          allSlides.push({ text: slideText.trim(), isTitle: false });
-          slideText = '';
-          lineCount = 0;
-        }
-      }
-    };
-
-    bodyParagraphs.forEach(processParagraph);
-    
-    setDesigns(allSlides);
-    setIsLoading(false);
-  }, [text, canvasSize.width, activeFont, isBold, toast]);
-  
   const handleLogDesign = useCallback(() => {
     let bgValue = '';
     if (backgroundType === 'flat') bgValue = bgColor;
@@ -485,7 +452,7 @@ export default function Home() {
           onCanvasReady={(canvas) => {
             canvasRefs.current[index] = canvas;
           }}
-          onTextRemaining={(remaining, index) => {}}
+          onTextRemaining={handleTextRemaining}
           rectColor={rectBgColor}
           rectOpacity={isTextBoxEnabled ? rectOpacity : 0}
           overlayColor={overlayColor}
@@ -508,14 +475,13 @@ export default function Home() {
     gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, 
     overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, 
     shadows, textStroke, strokeColor, strokeWidth, 
-    isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize, elements, areElementsEnabled
+    isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize, elements, areElementsEnabled, handleTextRemaining
   ]);
   
   const handleMobileTabClick = (tab: string) => {
     setActiveSettingsTab(tab);
     setIsMobilePanelOpen(true);
   };
-  
 
  const handleDesktopTabClick = (tab: string) => {
     setActiveSettingsTab(tab);
@@ -800,7 +766,7 @@ export default function Home() {
     } finally {
       setIsSearching(false);
     }
-  }, [toast]);
+  }, [toast, handleImageBgUrlSelect]);
 
 
   const renderActiveTabContent = () => {
@@ -1066,6 +1032,7 @@ export default function Home() {
           ) : (
             <div 
               ref={designsRef} 
+              id="designs-container"
               className="w-full h-full flex flex-col items-center justify-center cursor-grab"
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
@@ -1085,7 +1052,7 @@ export default function Home() {
                   className="relative transition-transform duration-75" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
-                  <Carousel className="w-full" setApi={ (api) => { if (api) carouselApi.current = api; }}>
+                  <Carousel className="w-full" setApi={(api) => { if (api) carouselApi.current = api; }}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
@@ -1125,7 +1092,7 @@ export default function Home() {
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => {}}>Save</AlertDialogAction>
+                                    <AlertDialogAction onClick={handleSaveDesign}>Save</AlertDialogAction>
                                   </AlertDialogFooter>
                                 </AlertDialogContent>
                                 </TooltipProvider>
@@ -1202,3 +1169,4 @@ export default function Home() {
     </div>
   );
 }
+
