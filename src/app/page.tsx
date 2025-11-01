@@ -757,12 +757,8 @@ export default function Home() {
   }
 
  const handleDesktopTabClick = (tab: string) => {
-    if (isSidebarOpen && activeSettingsTab === tab) {
-        setIsSidebarOpen(false);
-    } else {
-        setActiveSettingsTab(tab);
-        setIsSidebarOpen(true);
-    }
+    setActiveSettingsTab(tab);
+    setIsSidebarOpen(true);
   };
 
   const handleZoom = (direction: 'in' | 'out') => {
@@ -1142,7 +1138,7 @@ export default function Home() {
                   className="relative transition-transform duration-75" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
-                  <Carousel className="w-full" setApi={(api) => { carouselApi.current = api; }}>
+                  <Carousel className="w-full" setApi={api => { carouselApi.current = api; }}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
