@@ -30,7 +30,7 @@ import {
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw, Shapes } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw, Shapes, RefreshCcw, RefreshCcwIcon } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -38,7 +38,7 @@ import { imageTemplates, ImageTemplate } from "@/lib/image-templates";
 import { fontOptions } from "@/lib/font-options";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/components/ui/tooltip";
 import { defaultText } from "@/lib/default-text";
-import { DesignTemplate } from "@/lib/design-templates";
+import { DesignTemplate, designTemplates } from "@/lib/design-templates";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { TextSettings, type Shadow } from "@/components/3_text-settings";
 import { BackgroundSettings } from "@/components/2_background-settings";
@@ -52,7 +52,7 @@ import { cn } from "@/lib/utils";
 import { textEffects, parseShadow, TextEffect } from "@/lib/text-effects";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { HeartIconG  } from "@/components/ui/icons";
+import { HeartIconG, RefreshIcon  } from "@/components/ui/icons";
 
 type Design = {
   text: string;
@@ -203,9 +203,10 @@ export default function Home() {
     };
   }, [isMobilePanelOpen, closePanel]);
 
-  const handleGenerate = () => {
+  const handleGenerate = useCallback(() => {
     setIsLoading(true);
     setDesigns([]); // Clear previous designs
+
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext('2d');
     
@@ -291,8 +292,8 @@ export default function Home() {
     
     setDesigns(allSlides);
     setIsLoading(false);
-  };
-
+  }, [text, canvasSize.width, activeFont, isBold]);
+  
   const handleLogDesign = useCallback(() => {
     let bgValue = '';
     if (backgroundType === 'flat') bgValue = bgColor;
@@ -510,22 +511,14 @@ export default function Home() {
   ]);
   
   const handleMobileTabClick = (tab: string) => {
-    if (activeSettingsTab === tab && isMobilePanelOpen) {
-      // If the same tab is clicked again, do nothing (don't close).
-    } else {
-      setActiveSettingsTab(tab);
-      setIsMobilePanelOpen(true);
-    }
+    setActiveSettingsTab(tab);
+    setIsMobilePanelOpen(true);
   };
   
 
  const handleDesktopTabClick = (tab: string) => {
-    if (activeSettingsTab === tab && isSidebarOpen) {
-      // If the same tab is clicked again, do nothing (don't close).
-    } else {
-      setActiveSettingsTab(tab);
-      setIsSidebarOpen(true);
-    }
+    setActiveSettingsTab(tab);
+    setIsSidebarOpen(true);
   };
 
   const handleZoom = (direction: 'in' | 'out') => {
@@ -622,6 +615,106 @@ export default function Home() {
       setActiveFont(prevFont => ({...prevFont, size: 48}));
     }
   }
+  const applyTemplate = (template: DesignTemplate) => {
+    // Set background
+    setBackgroundType(template.background.type);
+    if (template.background.type === 'flat') {
+      setBgColor(template.background.value);
+    } else if (template.background.type === 'gradient') {
+      setGradientBg(template.background.value);
+    } else {
+      setImageBgUrl(template.background.value);
+    }
+  
+    // Set font
+    const newFont = fontOptions.find(f => f.value === template.font.value) || activeFont;
+    setActiveFont({ ...newFont, size: template.font.fontSize });
+    setTextColor(template.font.color);
+  
+    // Set textbox
+    setIsTextBoxEnabled(template.textBox.opacity > 0);
+    setRectBgColor(template.textBox.color);
+    setRectOpacity(template.textBox.opacity);
+  
+    // Set overlay
+    setIsOverlayEnabled(template.overlay.opacity > 0);
+    setOverlayColor(template.overlay.color);
+    setOverlayOpacity(template.overlay.opacity);
+  
+    // Set effect
+    if (template.effect) {
+      const effect = textEffects.find(e => e.id === template.effect!.id);
+      if (effect) {
+        handleEffectChange(effect);
+      }
+    } else {
+      handleEffectChange(textEffects[0]);
+    }
+
+    // Set Canvas Size
+    const newCanvasSize = canvasSizes.find(s => s.name === template.canvasSize) || canvasSize;
+    handleCanvasSizeChange(newCanvasSize);
+  
+    toast({
+      title: "Template Applied",
+      description: `The "${template.name}" template has been applied.`,
+    });
+  };
+
+  const handleSaveDesign = () => {
+    let bgValue = '';
+    if (backgroundType === 'flat') bgValue = bgColor;
+    else if (backgroundType === 'gradient') bgValue = gradientBg;
+    else if (backgroundType === 'image') bgValue = imageBgUrl;
+
+    const newDesign: DesignTemplate = {
+      id: `design-${Date.now()}`,
+      name: `Favorite ${myDesigns.length + 1}`,
+      category: 'Favorites',
+      previewImage: '', // Canvas preview will be generated later
+      background: { type: backgroundType, value: bgValue },
+      font: { 
+        value: activeFont.value, 
+        color: textColor,
+        fontSize: typeof activeFont.size === 'number' ? activeFont.size : 48,
+      },
+      textBox: { color: rectBgColor, opacity: rectOpacity },
+      overlay: { color: overlayColor, opacity: overlayOpacity },
+      canvasSize: canvasSize.name,
+      effect: { id: activeEffect.id },
+    };
+
+    setMyDesigns(prevDesigns => [newDesign, ...prevDesigns]);
+    toast({
+      title: "Favorite Saved!",
+      description: "Your current design has been saved to your favorites.",
+    });
+  };
+  
+  const handleDeleteDesign = (id: string) => {
+    setMyDesigns(prev => prev.filter(d => d.id !== id));
+    setDesignToDelete(null);
+    toast({
+      title: "Favorite Deleted",
+      variant: "destructive",
+    });
+  };
+
+  const handleEditClick = (id: string, name: string) => {
+    setEditingDesignId(id);
+    setEditingName(name);
+  };
+  
+  const handleUpdateDesign = (id: string) => {
+    setMyDesigns(prev => prev.map(d => d.id === id ? { ...d, name: editingName } : d));
+    setEditingDesignId(null);
+    setEditingName('');
+  };
+  
+  const handleCancelEdit = () => {
+    setEditingDesignId(null);
+    setEditingName('');
+  };
 
   const renderActiveTabContent = () => {
     const props = {
@@ -639,15 +732,15 @@ export default function Home() {
         setIsTextBoxEnabled: () => {}, rectBgColor, setRectBgColor, rectOpacity,
         setRectOpacity, activeEffect, setActiveEffect: handleEffectChange, designs, handleDownloadAll: () => {}, currentSlide,
         handleDownload: () => {}, fileName, setFileName, handleApplyTemplate: () => {}, myDesigns,
-        handleSaveDesign: () => {}, handleDeleteDesign: () => {}, handleUpdateDesign: () => {}, editingDesignId,
-        handleEditClick: () => {}, handleCancelEdit: () => {}, editingName, setEditingName, designToDelete,
+        handleSaveDesign: handleSaveDesign, handleDeleteDesign: handleDeleteDesign, handleUpdateDesign: handleUpdateDesign, editingDesignId,
+        handleEditClick, handleCancelEdit: handleCancelEdit, editingName, setEditingName, designToDelete,
         setDesignToDelete, handleLogDesign, handleImageUpload,
         elements, setElements, selectedElement, setSelectedElement, updateElement,
         areElementsEnabled, setAreElementsEnabled,
     };
 
     switch (activeSettingsTab) {
-      case 'designs': return <DesignsPanel handleApplyTemplate={() => {}} />;
+      case 'designs': return <DesignsPanel handleApplyTemplate={applyTemplate} />;
       case 'favorites': return <MyDesignsPanel {...props} />;
       case 'background': return <BackgroundSettings {...props} />;
       case 'text': return <TextSettings {...props} />;
@@ -815,62 +908,64 @@ export default function Home() {
         *
         *******************************************************/}
         <main className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative")}>
-        <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
-            <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
-                {canvasSizes.map(size => (
-                <TooltipProvider key={size.name}>
-                    <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button
-                        variant="ghost"
-                        size="icon"
-                        className={cn(
-                            "h-8 w-8 text-primary",
-                            canvasSize.name === size.name && "bg-primary-foreground/20"
-                        )}
-                        onClick={() => handleCanvasSizeChange(size)}
-                        >
-                        {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
-                        {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
-                        {size.name === 'Square' && <Square className="h-5 w-5" />}
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        <p>{size.name} Format</p>
-                    </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-                ))}
-            </div>
-            <div className="bg-card/20 backdrop-blur-sm p-1 flex items-center gap-1 rounded-md">
-            <TooltipProvider>
-                <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('out')} disabled={zoomLevel <= MIN_ZOOM}>
-                        <ZoomOut className="h-5 w-5" />
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent><p>Zoom Out (-)</p></TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => resetPanAndZoom(canvasSize)}>
-                        <RotateCcw className="h-5 w-5" />
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent><p>Reset Zoom</p></TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('in')} disabled={zoomLevel >= MAX_ZOOM}>
-                        <ZoomIn className="h-5 w-5" />
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent><p>Zoom In (+)</p></TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
-            </div>
-        </div>
+        {designs.length > 0 && (
+          <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
+              <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
+                  {canvasSizes.map(size => (
+                  <TooltipProvider key={size.name}>
+                      <Tooltip>
+                      <TooltipTrigger asChild>
+                          <Button
+                          variant="ghost"
+                          size="icon"
+                          className={cn(
+                              "h-8 w-8 text-primary",
+                              canvasSize.name === size.name && "bg-primary-foreground/20"
+                          )}
+                          onClick={() => handleCanvasSizeChange(size)}
+                          >
+                          {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
+                          {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
+                          {size.name === 'Square' && <Square className="h-5 w-5" />}
+                          </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                          <p>{size.name} Format</p>
+                      </TooltipContent>
+                      </Tooltip>
+                  </TooltipProvider>
+                  ))}
+              </div>
+              <div className="bg-card/20 backdrop-blur-sm p-1 flex items-center gap-1 rounded-md">
+              <TooltipProvider>
+                  <Tooltip>
+                  <TooltipTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('out')} disabled={zoomLevel <= MIN_ZOOM}>
+                          <ZoomOut className="h-5 w-5" />
+                      </Button>
+                  </TooltipTrigger>
+                  <TooltipContent><p>Zoom Out (-)</p></TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                  <TooltipTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => resetPanAndZoom(canvasSize)}>
+                          <RotateCcw className="h-5 w-5" />
+                      </Button>
+                  </TooltipTrigger>
+                  <TooltipContent><p>Reset Zoom</p></TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                  <TooltipTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('in')} disabled={zoomLevel >= MAX_ZOOM}>
+                          <ZoomIn className="h-5 w-5" />
+                      </Button>
+                  </TooltipTrigger>
+                  <TooltipContent><p>Zoom In (+)</p></TooltipContent>
+                  </Tooltip>
+              </TooltipProvider>
+              </div>
+          </div>
+        )}
 
           {designs.length === 0 ? (
             <div className="w-full max-w-2xl">
@@ -1020,5 +1115,7 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     
