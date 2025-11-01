@@ -114,7 +114,7 @@ export default function Home() {
     return () => {
       carouselApi.current?.off("select", handleSelectCarousel)
     }
-  }, [carouselApi.current, handleSelectCarousel]);
+  }, [carouselApi, handleSelectCarousel]);
 
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'duru-sans') || fontOptions[0]);
 
@@ -873,7 +873,7 @@ export default function Home() {
         searchQuery, setSearchQuery, handleSearchImages, isSearching, searchedImages,
         handleKeywordSearch, searchPage, isOverlayEnabled, setIsOverlayEnabled: handleOverlayEnable,
         overlayColor, setOverlayColor, overlayOpacity, setOverlayOpacity, gradientBg,
-        handleGradientBgSelect, setSearchCarouselApi: (api: CarouselApi | undefined) => { if(api) searchCarouselApi.current = api; }, textColor, setTextColor: handleTextColorChange, textOpacity,
+        handleGradientBgSelect, setSearchCarouselApi: (api: CarouselApi | undefined) => { if (api) searchCarouselApi.current = api }, textColor, setTextColor: handleTextColorChange, textOpacity,
         setTextOpacity, activeFont, setActiveFont, fontOptions, isBold, setIsBold,
         isUppercase, setIsUppercase, textAlign, setTextAlign, textShadowEnabled,
         setTextShadowEnabled, shadows, setShadows, textStroke, setTextStroke,
@@ -1058,7 +1058,7 @@ export default function Home() {
         *******************************************************/}
         <main className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative")}>
         {designs.length > 0 && (
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-30 bg-card/20 backdrop-blur-sm p-1 flex gap-1 rounded-md">
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
             CONTROL PANEL
           </div>
         )}
@@ -1151,7 +1151,7 @@ export default function Home() {
                   className="relative transition-transform duration-75" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
-                  <Carousel className="w-full" setApi={(api) => { if (api) carouselApi.current = api; }}>
+                  <Carousel className="w-full" setApi={(api) => { if (api) carouselApi.current = api }}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
