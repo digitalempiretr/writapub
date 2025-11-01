@@ -185,3 +185,5 @@ export function DesignsPanel({ handleApplyTemplate }: DesignsPanelProps) {
 }
 
     
+
+    
