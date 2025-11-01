@@ -10,7 +10,7 @@ body {
   url("https://www.transparenttextures.com/patterns/project-paper.png")
   /*linear-gradient(to top right, #FEAC5E, #C779D0, #4BC0C8);*/ ;
   background-color: var(--background);
-  background-blend-mode: overlay;
+  background-blend-mode: hard-light;
   min-height: 100vh;
   background-attachment: fixed;
 }

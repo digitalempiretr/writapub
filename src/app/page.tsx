@@ -757,8 +757,12 @@ export default function Home() {
   }
 
  const handleDesktopTabClick = (tab: string) => {
-    setActiveSettingsTab(tab);
-    setIsSidebarOpen(true);
+    if (activeSettingsTab === tab && isSidebarOpen) {
+      // Don't close if clicking the same tab
+    } else {
+      setActiveSettingsTab(tab);
+      setIsSidebarOpen(true);
+    }
   };
 
   const handleZoom = (direction: 'in' | 'out') => {
@@ -979,10 +983,78 @@ export default function Home() {
       *******************************************************/}
       <header className="w-full text-left p-4 md:px-8 h-[6vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-background">
         <Logo className="text-[1.5rem] text-primary" />
-        <div className="flex items-center gap-4">
-            {designs.length > 0 && (
-                <>
-                    <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
+        
+      </header>
+
+      <div className="flex-1 flex overflow-hidden" style={{ height: isMobile ? 'calc(100vh - 10vh - 56px)' : 'auto' }}>
+      {/******************************************************
+      *
+      * DESKTOP SIDEBAR
+      * This section is only visible on screens wider than 767px (md breakpoint).
+      * It contains the main settings tabs and their content.
+      *
+      *******************************************************/}
+      {designs.length > 0 && (
+          <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[3vw]")}>
+              <Tabs
+                  orientation="vertical"
+                  value={activeSettingsTab}
+                  onValueChange={handleDesktopTabClick}
+                  className="flex w-full"
+              >
+                  <div className="flex flex-col items-center p-0 space-y-2 bg-sidebar">
+                      <TabsList className="flex flex-col h-full justify-start items-center p-0 bg-sidebar space-y-1">
+                          {settingsTabs.map(tab => (
+                              <TooltipProvider key={tab.value}>
+                                  <Tooltip>
+                                      <TooltipTrigger asChild>
+                                          <TabsTrigger 
+                                              value={tab.value} 
+                                              className="w-12 h-12 data-[state=active]:bg-primary/20"
+                                              onClick={() => handleDesktopTabClick(tab.value)}
+                                          >
+                                              {tab.icon}
+                                          </TabsTrigger>
+                                      </TooltipTrigger>
+                                      {!isSidebarOpen && <TooltipContent side="right"><p>{tab.label}</p></TooltipContent>}
+                                  </Tooltip>
+                              </TooltipProvider>
+                          ))}
+                      </TabsList>
+                  </div>
+                  
+                  {isSidebarOpen && (
+                      <div className="flex-grow flex flex-col w-full bg-sidebar">
+                          <div className="p-4 flex-shrink-0 flex justify-between items-center bg-sidebar">
+                              <h3 className="text-lg font-semibold capitalize text-sidebar-foreground">{activeTabLabel}</h3>
+                              <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="h-8 w-8 rounded-full">
+                                  <X className="h-5 w-5" />
+                                  <span className="sr-only">Close Panel</span>
+                              </Button>
+                          </div>
+                          <TabsContent value={activeSettingsTab} className="mt-0 flex-grow overflow-y-auto">
+                              {renderActiveTabContent()}
+                          </TabsContent>
+                      </div>
+                  )}
+              </Tabs>
+          </div>
+      )}
+      {/******************************************************
+      *
+      * END DESKTOP SIDEBAR
+      *
+      *******************************************************/}
+
+        {/******************************************************
+        *
+        * Main Content Area
+        *
+        *******************************************************/}
+        <main className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative")}>
+           {designs.length > 0 && (
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-card/20 backdrop-blur-sm p-1 flex gap-1 rounded-md">
+                 <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
                         {canvasSizes.map(size => (
                         <TooltipProvider key={size.name}>
                             <Tooltip>
@@ -1036,77 +1108,8 @@ export default function Home() {
                           </Tooltip>
                       </TooltipProvider>
                   </div>
-                </>
-            )}
-        </div>
-      </header>
-
-      <div className="flex-1 flex overflow-hidden" style={{ height: isMobile ? 'calc(100vh - 10vh - 56px)' : 'auto' }}>
-      {/******************************************************
-      *
-      * DESKTOP SIDEBAR
-      * This section is only visible on screens wider than 767px (md breakpoint).
-      * It contains the main settings tabs and their content.
-      *
-      *******************************************************/}
-      {designs.length > 0 && (
-          <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[3vw]")}>
-              <Tabs
-                  orientation="vertical"
-                  value={activeSettingsTab}
-                  onValueChange={setActiveSettingsTab}
-                  className="flex w-full"
-              >
-                  <div className="flex flex-col items-center p-0 space-y-2 bg-sidebar">
-                      <TabsList className="flex flex-col h-full justify-start items-center p-0 bg-sidebar space-y-1">
-                          {settingsTabs.map(tab => (
-                              <TooltipProvider key={tab.value}>
-                                  <Tooltip>
-                                      <TooltipTrigger asChild>
-                                          <TabsTrigger 
-                                              value={tab.value} 
-                                              className="w-12 h-12 data-[state=active]:bg-primary/20"
-                                              onClick={() => handleDesktopTabClick(tab.value)}
-                                          >
-                                              {tab.icon}
-                                          </TabsTrigger>
-                                      </TooltipTrigger>
-                                      {!isSidebarOpen && <TooltipContent side="right"><p>{tab.label}</p></TooltipContent>}
-                                  </Tooltip>
-                              </TooltipProvider>
-                          ))}
-                      </TabsList>
-                  </div>
-                  
-                  {isSidebarOpen && (
-                      <div className="flex-grow flex flex-col w-full bg-sidebar">
-                          <div className="p-4 flex-shrink-0 flex justify-between items-center bg-sidebar">
-                              <h3 className="text-lg font-semibold capitalize text-sidebar-foreground">{activeTabLabel}</h3>
-                              <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="h-8 w-8 rounded-full">
-                                  <X className="h-5 w-5" />
-                                  <span className="sr-only">Close Panel</span>
-                              </Button>
-                          </div>
-                          <TabsContent value={activeSettingsTab} className="mt-0 flex-grow overflow-y-auto">
-                              {renderActiveTabContent()}
-                          </TabsContent>
-                      </div>
-                  )}
-              </Tabs>
-          </div>
-      )}
-      {/******************************************************
-      *
-      * END DESKTOP SIDEBAR
-      *
-      *******************************************************/}
-
-        {/******************************************************
-        *
-        * Main Content Area
-        *
-        *******************************************************/}
-        <main className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative")}>
+            </div>
+          )}
           {designs.length === 0 ? (
             <div className="w-full max-w-2xl">
               <CreativeMagicPanel 
@@ -1138,7 +1141,7 @@ export default function Home() {
                   className="relative transition-transform duration-75" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
-                  <Carousel className="w-full" setApi={api => { carouselApi.current = api; }}>
+                  <Carousel className="w-full" setApi={carouselApi}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
@@ -1255,7 +1258,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
-
-    
