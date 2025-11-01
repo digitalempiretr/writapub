@@ -247,7 +247,6 @@ export default function Home() {
     const remainingText = textToProcess.substring(title.length).trim();
     const bodyParagraphs = remainingText.split('\n').filter(p => p.trim() !== '');
 
-
     const processParagraph = (paragraph: string) => {
       let words = paragraph.split(' ');
       let currentLine = '';
@@ -513,12 +512,8 @@ export default function Home() {
   ]);
   
   const handleMobileTabClick = (tab: string) => {
-    if (isMobilePanelOpen && activeSettingsTab === tab) {
-      // Don't close if clicking the same tab
-    } else {
-      setActiveSettingsTab(tab);
-      setIsMobilePanelOpen(true);
-    }
+    setActiveSettingsTab(tab);
+    setIsMobilePanelOpen(true);
   };
   
 
@@ -810,7 +805,7 @@ export default function Home() {
 
   const renderActiveTabContent = () => {
     const props = {
-        text, setText, handleGenerate: handleGenerate, isLoading,
+        text, setText, handleGenerate, isLoading,
         backgroundTab, setBackgroundTab: setBackgroundTab as (value: string) => void, handleFeelLucky,
         bgColor, handleBgColorSelect: handleBgColorSelect, imageBgUrl, handleImageBgUrlSelect: handleImageBgUrlSelect,
         searchQuery, setSearchQuery, handleSearchImages: handleSearchImages, isSearching, searchedImages,
@@ -823,7 +818,7 @@ export default function Home() {
         strokeColor, setStrokeColor, strokeWidth, setStrokeWidth, isTextBoxEnabled,
         setIsTextBoxEnabled, rectBgColor, setRectBgColor, rectOpacity,
         setRectOpacity, activeEffect, setActiveEffect: handleEffectChange, designs, handleDownloadAll: () => {}, currentSlide,
-        handleDownload: () => {}, fileName, setFileName, handleApplyTemplate: () => {}, myDesigns,
+        handleDownload: () => {}, fileName, setFileName, handleApplyTemplate: applyTemplate, myDesigns,
         handleSaveDesign: handleSaveDesign, handleDeleteDesign: handleDeleteDesign, handleUpdateDesign: handleUpdateDesign, editingDesignId,
         handleEditClick, handleCancelEdit: handleCancelEdit, editingName, setEditingName, designToDelete,
         setDesignToDelete, handleLogDesign, handleImageUpload,
