@@ -51,7 +51,7 @@ import { cn } from "@/lib/utils";
 import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { BookmarkStarIcon, HeartIconG  } from "@/components/ui/icons";
+import { HeartIconG  } from "@/components/ui/icons";
 import * as fabric from 'fabric';
 import { LayersPanel } from "@/components/layers-panel";
 
