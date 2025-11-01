@@ -45,7 +45,7 @@ import { BackgroundSettings } from "@/components/2_background-settings";
 import { DesignsPanel } from "@/components/1_templates";
 import { MyDesignsPanel } from "@/components/4_favorites";
 import { DownloadPanel } from "@/components/5_download-panel";
-import { ElementsPanel } from "@/components/5_elements-panel";
+import { ElementsPanel, CanvasElement } from "@/components/5_elements-panel";
 import { pageInitialColors } from "@/lib/colors";
 import { CreativeMagicPanel } from "@/components/0_creative-magic-panel";
 import { cn } from "@/lib/utils";
@@ -58,19 +58,6 @@ type Design = {
   text: string;
   isTitle: boolean;
 };
-
-type CanvasElement = {
-  id: string;
-  type: 'image' | 'text';
-  url?: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  rotation: number;
-  draggable: boolean;
-};
-
 
 type TextAlign = 'left' | 'center' | 'right';
 type BackgroundType = 'flat' | 'gradient' | 'image';
@@ -127,7 +114,7 @@ export default function Home() {
     return () => {
       carouselApi.current?.off("select", handleSelectCarousel)
     }
-  }, [carouselApi.current]);
+  }, [carouselApi, handleSelectCarousel]);
 
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'duru-sans') || fontOptions[0]);
 
@@ -176,6 +163,7 @@ export default function Home() {
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
   
   const [elements, setElements] = useState<CanvasElement[]>([]);
+  const [selectedElement, setSelectedElement] = useState<string | null>(null);
 
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
@@ -679,12 +667,21 @@ export default function Home() {
           width: 150,
           height: 150,
           rotation: 0,
-          draggable: true,
+          opacity: 1,
+          shape: 'square',
+          alignment: 'left',
         };
         setElements(prev => [...prev, newElement]);
+        setSelectedElement(newElement.id);
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const updateElement = (id: string, newProps: Partial<CanvasElement>) => {
+    setElements(prev =>
+      prev.map(el => (el.id === id ? { ...el, ...newProps } : el))
+    );
   };
 
   const renderCanvas = useCallback((design: Design, index: number) => {
@@ -884,6 +881,7 @@ export default function Home() {
         handleSaveDesign, handleDeleteDesign, handleUpdateDesign, editingDesignId,
         handleEditClick, handleCancelEdit, editingName, setEditingName, designToDelete,
         setDesignToDelete, handleLogDesign, handleImageUpload,
+        elements, setElements, selectedElement, setSelectedElement, updateElement,
     };
 
     switch (activeSettingsTab) {

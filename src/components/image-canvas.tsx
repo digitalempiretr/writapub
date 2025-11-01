@@ -3,6 +3,8 @@
 
 import React, { useEffect, useRef } from "react";
 import type { Shadow } from "@/components/3_text-settings";
+import { CanvasElement } from "./5_elements-panel";
+
 
 export type FontOption = {
   value: string;
@@ -13,17 +15,6 @@ export type FontOption = {
   lineHeight: number | string; // This should be a multiplier, e.g., 1.4
 };
 
-type CanvasElement = {
-  id: string;
-  type: 'image' | 'text';
-  url?: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  rotation: number;
-  draggable: boolean;
-};
 
 export type ImageCanvasProps = {
   text: string;
@@ -400,19 +391,39 @@ const ImageCanvasComponent = ({
         ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
 
         for (const element of elements) {
-          if (element.type === 'image' && element.url) {
-            try {
-              const img = await loadImage(element.url);
-              ctx.save();
-              ctx.translate(element.x + element.width / 2, element.y + element.height / 2);
-              ctx.rotate(element.rotation * Math.PI / 180);
-              ctx.translate(-(element.x + element.width / 2), -(element.y + element.height / 2));
-              ctx.drawImage(img, element.x, element.y, element.width, element.height);
-              ctx.restore();
-            } catch (error) {
-               console.error("Error drawing element image: ", error);
+            if (element.type === 'image' && element.url) {
+                try {
+                    const img = await loadImage(element.url);
+                    ctx.save();
+                    ctx.globalAlpha = element.opacity;
+
+                    let drawX = element.x;
+                    const elWidth = element.width * scalingFactor;
+                    const elHeight = element.height * scalingFactor;
+
+                    if (element.alignment === 'center') {
+                        drawX = (width - elWidth) / 2;
+                    } else if (element.alignment === 'right') {
+                        drawX = width - elWidth - element.x;
+                    }
+
+                    ctx.translate(drawX + elWidth / 2, element.y + elHeight / 2);
+                    ctx.rotate(element.rotation * Math.PI / 180);
+                    ctx.translate(-(drawX + elWidth / 2), -(element.y + elHeight / 2));
+
+                    if (element.shape === 'circle') {
+                        ctx.beginPath();
+                        ctx.arc(drawX + elWidth / 2, element.y + elHeight / 2, Math.min(elWidth, elHeight) / 2, 0, Math.PI * 2, true);
+                        ctx.closePath();
+                        ctx.clip();
+                    }
+                    
+                    ctx.drawImage(img, drawX, element.y, elWidth, elHeight);
+                    ctx.restore();
+                } catch (error) {
+                    console.error("Error drawing element image: ", error);
+                }
             }
-          }
         }
 
         const finalTextColor = hexToRgba(textColor, textOpacity);
