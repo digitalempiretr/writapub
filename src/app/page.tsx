@@ -205,28 +205,28 @@ export default function Home() {
   const handleTextRemaining = useCallback((remaining: string, fromIndex: number) => {
     const nextDesignIndex = fromIndex + 1;
     setDesigns(prevDesigns => {
-        // If there's remaining text...
-        if (remaining) {
-            // ...and there's already a slide after this one...
-            if (prevDesigns[nextDesignIndex]) {
-                // ...check if the text is different. Only update if it is.
-                if (prevDesigns[nextDesignIndex].text !== remaining) {
-                    const newDesigns = [...prevDesigns];
-                    newDesigns[nextDesignIndex].text = remaining;
-                    return newDesigns;
-                }
-            } else {
-                // ...or if there's no slide after this one, create it.
-                return [...prevDesigns, { text: remaining, isTitle: false }];
-            }
+      // If there's remaining text...
+      if (remaining) {
+        // ...and there's already a slide after this one...
+        if (prevDesigns[nextDesignIndex]) {
+          // ...check if the text is different. Only update if it is.
+          if (prevDesigns[nextDesignIndex].text !== remaining) {
+            const newDesigns = [...prevDesigns];
+            newDesigns[nextDesignIndex] = { ...newDesigns[nextDesignIndex], text: remaining };
+            return newDesigns;
+          }
         } else {
-            // If there's no remaining text but there are slides after this one, remove them.
-            if (prevDesigns.length > nextDesignIndex) {
-                return prevDesigns.slice(0, nextDesignIndex);
-            }
+          // ...or if there's no slide after this one, create it.
+          return [...prevDesigns, { text: remaining, isTitle: false }];
         }
-        // If no changes are needed, return the previous state to avoid re-render.
-        return prevDesigns;
+      } else {
+        // If there's no remaining text but there are slides after this one, remove them.
+        if (prevDesigns.length > nextDesignIndex) {
+          return prevDesigns.slice(0, nextDesignIndex);
+        }
+      }
+      // If no changes are needed, return the previous state to avoid re-render.
+      return prevDesigns;
     });
 }, []);
 
