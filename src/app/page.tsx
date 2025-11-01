@@ -49,7 +49,7 @@ import { ElementsPanel, CanvasElement } from "@/components/5_elements-panel";
 import { pageInitialColors } from "@/lib/colors";
 import { CreativeMagicPanel } from "@/components/0_creative-magic-panel";
 import { cn } from "@/lib/utils";
-import { textEffects, parseShadow } from "@/lib/text-effects";
+import { textEffects, parseShadow, TextEffect } from "@/lib/text-effects";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { HeartIconG  } from "@/components/ui/icons";
@@ -203,7 +203,7 @@ export default function Home() {
     };
   }, [isMobilePanelOpen, closePanel]);
 
-    const handleGenerate = () => {
+  const handleGenerate = () => {
     setIsLoading(true);
     setDesigns([]); // Clear previous designs
     const tempCanvas = document.createElement('canvas');
@@ -816,61 +816,62 @@ export default function Home() {
         *******************************************************/}
         <main className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative")}>
         <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
-                 <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
-                        {canvasSizes.map(size => (
-                        <TooltipProvider key={size.name}>
-                            <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                variant="ghost"
-                                size="icon"
-                                className={cn(
-                                    "h-8 w-8 text-primary",
-                                    canvasSize.name === size.name && "bg-primary-foreground/20"
-                                )}
-                                onClick={() => handleCanvasSizeChange(size)}
-                                >
-                                {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
-                                {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
-                                {size.name === 'Square' && <Square className="h-5 w-5" />}
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>{size.name} Format</p>
-                            </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                        ))}
-                    </div>
-                     <div className="bg-card/20 backdrop-blur-sm p-1 flex items-center gap-1 rounded-md">
-                      <TooltipProvider>
-                          <Tooltip>
-                          <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('out')} disabled={zoomLevel <= MIN_ZOOM}>
-                                  <ZoomOut className="h-5 w-5" />
-                              </Button>
-                          </TooltipTrigger>
-                          <TooltipContent><p>Zoom Out (-)</p></TooltipContent>
-                          </Tooltip>
-                          <Tooltip>
-                          <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => resetPanAndZoom(canvasSize)}>
-                                  <RotateCcw className="h-5 w-5" />
-                              </Button>
-                          </TooltipTrigger>
-                          <TooltipContent><p>Reset Zoom</p></TooltipContent>
-                          </Tooltip>
-                          <Tooltip>
-                          <TooltipTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('in')} disabled={zoomLevel >= MAX_ZOOM}>
-                                  <ZoomIn className="h-5 w-5" />
-                              </Button>
-                          </TooltipTrigger>
-                          <TooltipContent><p>Zoom In (+)</p></TooltipContent>
-                          </Tooltip>
-                      </TooltipProvider>
-                  </div>
+            <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
+                {canvasSizes.map(size => (
+                <TooltipProvider key={size.name}>
+                    <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                        variant="ghost"
+                        size="icon"
+                        className={cn(
+                            "h-8 w-8 text-primary",
+                            canvasSize.name === size.name && "bg-primary-foreground/20"
+                        )}
+                        onClick={() => handleCanvasSizeChange(size)}
+                        >
+                        {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
+                        {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
+                        {size.name === 'Square' && <Square className="h-5 w-5" />}
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>{size.name} Format</p>
+                    </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+                ))}
             </div>
+            <div className="bg-card/20 backdrop-blur-sm p-1 flex items-center gap-1 rounded-md">
+            <TooltipProvider>
+                <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('out')} disabled={zoomLevel <= MIN_ZOOM}>
+                        <ZoomOut className="h-5 w-5" />
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent><p>Zoom Out (-)</p></TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => resetPanAndZoom(canvasSize)}>
+                        <RotateCcw className="h-5 w-5" />
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent><p>Reset Zoom</p></TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('in')} disabled={zoomLevel >= MAX_ZOOM}>
+                        <ZoomIn className="h-5 w-5" />
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent><p>Zoom In (+)</p></TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+            </div>
+        </div>
+
           {designs.length === 0 ? (
             <div className="w-full max-w-2xl">
               <CreativeMagicPanel 
