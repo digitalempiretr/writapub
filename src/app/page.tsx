@@ -203,338 +203,6 @@ export default function Home() {
     };
   }, [isMobilePanelOpen, closePanel]);
 
-
-  const handleTextRemaining = useCallback((remaining: string, fromIndex: number) => {
-    const nextDesignIndex = fromIndex + 1;
-    setDesigns(prevDesigns => {
-      if (remaining && prevDesigns[nextDesignIndex]) {
-        if (prevDesigns[nextDesignIndex].text === remaining) {
-          return prevDesigns; 
-        }
-        const newDesigns = [...prevDesigns];
-        newDesigns[nextDesignIndex] = { ...newDesigns[nextDesignIndex], text: remaining };
-        return newDesigns;
-      } else if (remaining && !prevDesigns[nextDesignIndex]) {
-        return [...prevDesigns, { text: remaining, isTitle: false }];
-      } else if (!remaining && prevDesigns.length > nextDesignIndex) {
-        return prevDesigns.slice(0, nextDesignIndex);
-      }
-      return prevDesigns;
-    });
-  }, []);
-
-  const handleGenerate = useCallback(async () => {
-    if (!text) {
-      toast({
-        title: "No Text Entered",
-        description: "Please enter a title or body text.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    setIsLoading(true);
-    setIsGeneratingAnimation(true);
-    setDesigns([]);
-    setIsMobilePanelOpen(false);
-    
-    let finalTitle = "";
-    let finalBody = text;
-
-    const sentenceEndMarkers = /[.!?]/;
-    const firstSentenceMatch = finalBody.match(sentenceEndMarkers);
-    
-    if (firstSentenceMatch && firstSentenceMatch.index !== undefined) {
-        const firstSentenceEnd = firstSentenceMatch.index + 1;
-        finalTitle = finalBody.substring(0, firstSentenceEnd).trim();
-        finalBody = finalBody.substring(firstSentenceEnd).trim();
-    } else {
-        finalTitle = finalBody;
-        finalBody = "";
-    }
-    
-
-    const newDesigns: Design[] = [];
-    if (finalTitle) {
-      newDesigns.push({ text: finalTitle, isTitle: true });
-    }
-    if (finalBody) {
-      newDesigns.push({ text: finalBody, isTitle: false });
-    }
-    setDesigns(newDesigns);
-    
-    setTimeout(() => {
-        setIsGeneratingAnimation(false);
-        setIsLoading(false);
-        if(designsRef.current) {
-            designsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    }, 1618);
-  }, [text, toast]);
-  
-  const handleDownload = useCallback((index: number) => {
-    const canvas = canvasRefs.current[index];
-    if (canvas) {
-      const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
-      const link = document.createElement("a");
-      link.href = dataUrl;
-      link.download = `${fileName || 'writa'}-${index + 1}.jpg`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  }, [fileName]);
-
-  const handleDownloadAll = useCallback(() => {
-    if (designs.length === 0) return;
-    designs.forEach((_, index) => {
-      setTimeout(() => handleDownload(index), index * 300);
-    });
-  }, [designs, handleDownload]);
-
-  const handleSearchImages = async (page = 1) => {
-    if (!searchQuery) return;
-    setIsSearching(true);
-    if (page === 1) {
-      setSearchedImages([]);
-    }
-    try {
-      const result = await findImages({ query: searchQuery, page: page, per_page: 6 });
-      setSearchedImages(prevImages => [...result.imageUrls, ...prevImages]);
-      setSearchPage(page);
-
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Image Search Failed",
-        description: "An error occurred while searching for images. Please ensure your API key is configured correctly.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSearching(false);
-    }
-  };
-
-  const handleKeywordSearch = (keyword: string) => {
-    setSearchQuery(keyword.toLowerCase());
-  };
-
-  const handleBgColorSelect = (color: string) => {
-    setBgColor(color);
-    setBackgroundType('flat');
-    setCurrentTemplate(null);
-  };
-
-  const handleGradientBgSelect = (css: string) => {
-    setGradientBg(css);
-    setBackgroundType('gradient');
-    setCurrentTemplate(null);
-  };
-
-  const handleImageBgUrlSelect = (template: ImageTemplate) => {
-    setCurrentTemplate(template);
-    setBackgroundType('image');
-  };
-
-  useEffect(() => {
-    if (backgroundType === 'image' && currentTemplate) {
-      const formatKey = canvasSize.name.toLowerCase() as keyof ImageTemplate['imageUrls'];
-      setImageBgUrl(currentTemplate.imageUrls[formatKey]);
-    }
-  }, [canvasSize, currentTemplate, backgroundType]);
-
-
-  useEffect(() => {
-    if (searchQuery) {
-        handleSearchImages(1);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery]);
-
-  const handleFeelLucky = () => {
-    const randomSeed = Math.floor(Math.random() * 1000);
-    const url = `https://picsum.photos/seed/${randomSeed}`;
-    const luckyTemplate: ImageTemplate = {
-      name: 'Lucky',
-      imageUrls: {
-        post: `${url}/1080/1350`,
-        story: `${url}/1080/1920`,
-        square: `${url}/1080/1080`,
-      }
-    };
-    handleImageBgUrlSelect(luckyTemplate);
-    setRectBgColor("#f4fdff");
-    setRectOpacity(0.6);
-  };
-
-  const handleTextBoxEnable = (enabled: boolean) => {
-    setIsTextBoxEnabled(enabled);
-    if (!enabled) {
-      setRectOpacity(0);
-    } else {
-      if (rectOpacity === 0) {
-        setRectOpacity(0.5); 
-      }
-    }
-  };
-
-  const handleOverlayEnable = (enabled: boolean) => {
-    setIsOverlayEnabled(enabled);
-    if (!enabled) {
-      setOverlayOpacity(0);
-    } else {
-      if (overlayOpacity === 0) {
-        setOverlayOpacity(0.25);
-      }
-    }
-  };
-
-  const handleApplyTemplate = (template: DesignTemplate) => {
-    // Apply background settings
-    setBackgroundTab(template.background.type);
-    setBackgroundType(template.background.type);
-    setCurrentTemplate(null);
-  
-    if (template.background.type === 'flat') {
-      setBgColor(template.background.value);
-    } else if (template.background.type === 'gradient') {
-      setGradientBg(template.background.value);
-    } else if (template.background.type === 'image') {
-      const imageTemplate: ImageTemplate = {
-        name: template.name,
-        imageUrls: {
-          post: template.background.value,
-          story: template.background.value,
-          square: template.background.value,
-        }
-      }
-      handleImageBgUrlSelect(imageTemplate);
-    }
-  
-    // Apply font and text color
-    const newFont = fontOptions.find(f => f.value === template.font.value) || activeFont;
-    setActiveFont(newFont);
-  
-    // Determine font size based on current canvas format
-    if (canvasSize.name === 'Square') {
-      setActiveFont(prevFont => ({...prevFont, size: 36}));
-    } else {
-      setActiveFont(prevFont => ({...prevFont, size: 48}));
-    }
-  
-    // Apply effect or text color
-    if (template.effect?.id) {
-      const effect = textEffects.find(e => e.id === template.effect!.id) || textEffects[0];
-      handleEffectChange(effect);
-    } else {
-      handleEffectChange(textEffects[0]);
-      setTextColor(template.font.color);
-    }
-  
-    // Apply text box settings
-    setRectBgColor(template.textBox.color);
-    setRectOpacity(template.textBox.opacity);
-    setIsTextBoxEnabled(template.textBox.opacity > 0);
-  
-    // Apply overlay settings
-    setOverlayColor(template.overlay.color);
-    setOverlayOpacity(template.overlay.opacity);
-    setIsOverlayEnabled(template.overlay.opacity > 0);
-  
-    toast({
-      title: "Template Applied",
-      description: `"${template.name}" template has been set.`,
-      duration: 2000,
-    });
-  };
-
-  const handleSaveDesign = useCallback(() => {
-    const canvas = canvasRefs.current[currentSlide];
-    if (!canvas) {
-      toast({
-        variant: "destructive",
-        title: "Cannot save favorite",
-        description: "The design preview is not ready yet.",
-        duration: 2000,
-      });
-      return;
-    }
-
-    const previewImage = canvas.toDataURL("image/jpeg", 0.5);
-
-    let bgValue = '';
-    if (backgroundType === 'flat') bgValue = bgColor;
-    else if (backgroundType === 'gradient') bgValue = gradientBg;
-    else if (backgroundType === 'image') bgValue = imageBgUrl;
-
-    const newDesign: DesignTemplate = {
-      id: `design-${Date.now()}`,
-      name: `Favorite ${myDesigns.length + 1}`,
-      category: 'Favorites',
-      previewImage: previewImage,
-      canvasSize: canvasSize.name,
-      background: {
-        type: backgroundType,
-        value: bgValue,
-      },
-      font: {
-        value: activeFont.value,
-        color: textColor,
-        fontSize: typeof activeFont.size === 'number' ? activeFont.size : 48,
-      },
-      textBox: {
-        color: rectBgColor,
-        opacity: rectOpacity,
-      },
-      overlay: {
-        color: overlayColor,
-        opacity: overlayOpacity,
-      },
-      effect: {
-        id: activeEffect.id,
-      }
-    };
-
-    setMyDesigns(prev => [...prev, newDesign]);
-
-    toast({
-      title: "Design Saved",
-      description: "Your current design has been saved to 'Favorites'.",
-      duration: 2000,
-    });
-
-  }, [currentSlide, backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, myDesigns.length, setMyDesigns, toast, activeEffect, canvasSize]);
-
-  const handleDeleteDesign = (id: string) => {
-    setMyDesigns(prev => prev.filter(d => d.id !== id));
-    setDesignToDelete(null);
-    toast({
-      title: "Favorite Deleted",
-      description: "The selected favorite has been removed.",
-      duration: 2000,
-    });
-  };
-
-  const handleEditClick = (id: string, name: string) => {
-    setEditingDesignId(id);
-    setEditingName(name);
-  };
-
-  const handleCancelEdit = () => {
-    setEditingDesignId(null);
-    setEditingName('');
-  };
-
-  const handleUpdateDesign = (id: string) => {
-    setMyDesigns(prev => prev.map(d => d.id === id ? { ...d, name: editingName } : d));
-    handleCancelEdit();
-    toast({
-      title: "Favorite Updated",
-      description: "The favorite's name has been updated.",
-      duration: 2000,
-    });
-  };
-
   const handleLogDesign = useCallback(() => {
     let bgValue = '';
     if (backgroundType === 'flat') bgValue = bgColor;
@@ -725,7 +393,7 @@ export default function Home() {
           onCanvasReady={(canvas) => {
             canvasRefs.current[index] = canvas;
           }}
-          onTextRemaining={(remaining) => handleTextRemaining(remaining, index)}
+          onTextRemaining={(remaining, index) => {}}
           rectColor={rectBgColor}
           rectOpacity={isTextBoxEnabled ? rectOpacity : 0}
           overlayColor={overlayColor}
@@ -747,7 +415,7 @@ export default function Home() {
     backgroundType, activeFont, bgColor, textColor, textOpacity, 
     gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, 
     overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, 
-    shadows, textStroke, strokeColor, strokeWidth, handleTextRemaining, 
+    shadows, textStroke, strokeColor, strokeWidth, 
     isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize, elements, areElementsEnabled
   ]);
   
@@ -867,29 +535,29 @@ export default function Home() {
 
   const renderActiveTabContent = () => {
     const props = {
-        text, setText, handleGenerate, isLoading,
-        backgroundTab, setBackgroundTab: setBackgroundTab as (value: string) => void, handleFeelLucky,
-        bgColor, handleBgColorSelect, imageBgUrl, handleImageBgUrlSelect: (template: ImageTemplate) => handleImageBgUrlSelect(template),
-        searchQuery, setSearchQuery, handleSearchImages, isSearching, searchedImages,
-        handleKeywordSearch, searchPage, isOverlayEnabled, setIsOverlayEnabled: handleOverlayEnable,
+        text, setText, handleGenerate: () => {}, isLoading,
+        backgroundTab, setBackgroundTab: setBackgroundTab as (value: string) => void, handleFeelLucky: () => {},
+        bgColor, handleBgColorSelect: () => {}, imageBgUrl, handleImageBgUrlSelect: () => {},
+        searchQuery, setSearchQuery, handleSearchImages: () => {}, isSearching, searchedImages,
+        handleKeywordSearch: () => {}, searchPage, isOverlayEnabled, setIsOverlayEnabled: () => {},
         overlayColor, setOverlayColor, overlayOpacity, setOverlayOpacity, gradientBg,
-        handleGradientBgSelect, setSearchCarouselApi: (api: CarouselApi | undefined) => { if (api) searchCarouselApi.current = api }, textColor, setTextColor: handleTextColorChange, textOpacity,
+        handleGradientBgSelect: () => {}, setSearchCarouselApi: (api: CarouselApi | undefined) => { if (api) searchCarouselApi.current = api }, textColor, setTextColor: handleTextColorChange, textOpacity,
         setTextOpacity, activeFont, setActiveFont, fontOptions, isBold, setIsBold,
         isUppercase, setIsUppercase, textAlign, setTextAlign, textShadowEnabled,
         setTextShadowEnabled, shadows, setShadows, textStroke, setTextStroke,
         strokeColor, setStrokeColor, strokeWidth, setStrokeWidth, isTextBoxEnabled,
-        setIsTextBoxEnabled: handleTextBoxEnable, rectBgColor, setRectBgColor, rectOpacity,
-        setRectOpacity, activeEffect, setActiveEffect: handleEffectChange, designs, handleDownloadAll, currentSlide,
-        handleDownload, fileName, setFileName, handleApplyTemplate, myDesigns,
-        handleSaveDesign, handleDeleteDesign, handleUpdateDesign, editingDesignId,
-        handleEditClick, handleCancelEdit, editingName, setEditingName, designToDelete,
+        setIsTextBoxEnabled: () => {}, rectBgColor, setRectBgColor, rectOpacity,
+        setRectOpacity, activeEffect, setActiveEffect: handleEffectChange, designs, handleDownloadAll: () => {}, currentSlide,
+        handleDownload: () => {}, fileName, setFileName, handleApplyTemplate: () => {}, myDesigns,
+        handleSaveDesign: () => {}, handleDeleteDesign: () => {}, handleUpdateDesign: () => {}, editingDesignId,
+        handleEditClick: () => {}, handleCancelEdit: () => {}, editingName, setEditingName, designToDelete,
         setDesignToDelete, handleLogDesign, handleImageUpload,
         elements, setElements, selectedElement, setSelectedElement, updateElement,
         areElementsEnabled, setAreElementsEnabled,
     };
 
     switch (activeSettingsTab) {
-      case 'designs': return <DesignsPanel {...props} />;
+      case 'designs': return <DesignsPanel handleApplyTemplate={() => {}} />;
       case 'favorites': return <MyDesignsPanel {...props} />;
       case 'background': return <BackgroundSettings {...props} />;
       case 'text': return <TextSettings {...props} />;
@@ -1058,12 +726,7 @@ export default function Home() {
         *******************************************************/}
         <main className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative")}>
         {designs.length > 0 && (
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
-            CONTROL PANEL
-          </div>
-        )}
-           {designs.length > 0 && (
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-card/20 backdrop-blur-sm p-1 flex gap-1 rounded-md">
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
                  <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
                         {canvasSizes.map(size => (
                         <TooltipProvider key={size.name}>
@@ -1125,7 +788,7 @@ export default function Home() {
               <CreativeMagicPanel 
                   text={text}
                   setText={setText}
-                  handleGenerate={handleGenerate}
+                  handleGenerate={() => {}}
                   isLoading={isLoading}
               />
             </div>
@@ -1151,7 +814,7 @@ export default function Home() {
                   className="relative transition-transform duration-75" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
-                  <Carousel className="w-full" setApi={(api) => { if (api) carouselApi.current = api }}>
+                  <Carousel className="w-full" setApi={(api) => { carouselApi.current = api; }}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
@@ -1191,7 +854,7 @@ export default function Home() {
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => handleSaveDesign()}>Save</AlertDialogAction>
+                                    <AlertDialogAction onClick={() => {}}>Save</AlertDialogAction>
                                   </AlertDialogFooter>
                                 </AlertDialogContent>
                                 </TooltipProvider>
@@ -1268,5 +931,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
