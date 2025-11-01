@@ -13,6 +13,18 @@ export type FontOption = {
   lineHeight: number | string; // This should be a multiplier, e.g., 1.4
 };
 
+type CanvasElement = {
+  id: string;
+  type: 'image' | 'text';
+  url?: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotation: number;
+  draggable: boolean;
+};
+
 export type ImageCanvasProps = {
   text: string;
   isTitle: boolean;
@@ -41,6 +53,7 @@ export type ImageCanvasProps = {
   strokeColor: string;
   strokeWidth: number;
   fontSmoothing?: React.CSSProperties;
+  elements: CanvasElement[];
 };
 
 // This function wraps text for titles.
@@ -280,14 +293,36 @@ const ImageCanvasComponent = ({
   strokeColor,
   strokeWidth,
   fontSmoothing,
+  elements,
 }: ImageCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const indexRef = useRef<number | null>(null);
   const [viewportHeight, setViewportHeight] = React.useState(1080); // Default, updated on client
+  const imageCache = useRef<Map<string, HTMLImageElement>>(new Map());
 
   useEffect(() => {
     setViewportHeight(window.innerHeight);
   }, []);
+
+  const loadImage = (src: string): Promise<HTMLImageElement> => {
+    return new Promise((resolve, reject) => {
+      if (imageCache.current.has(src)) {
+        resolve(imageCache.current.get(src)!);
+        return;
+      }
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        imageCache.current.set(src, img);
+        resolve(img);
+      };
+      img.onerror = (err) => {
+        console.error("Failed to load image:", src, err);
+        reject(err);
+      };
+      img.src = src;
+    });
+  };
 
   useEffect(() => {
     if (canvasRef.current && indexRef.current === null) {
@@ -355,7 +390,7 @@ const ImageCanvasComponent = ({
         linesToDraw = wrapText(ctx, processedText, textMaxWidth);
       }
 
-      const drawLayout = () => {
+      const drawLayout = async () => {
         if (backgroundImageUrl && overlayColor && (overlayOpacity || overlayOpacity === 0)) {
           ctx.fillStyle = hexToRgba(overlayColor, overlayOpacity);
           ctx.fillRect(0, 0, width, height);
@@ -363,6 +398,22 @@ const ImageCanvasComponent = ({
 
         ctx.fillStyle = hexToRgba(rectColor, rectOpacity);
         ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
+
+        for (const element of elements) {
+          if (element.type === 'image' && element.url) {
+            try {
+              const img = await loadImage(element.url);
+              ctx.save();
+              ctx.translate(element.x + element.width / 2, element.y + element.height / 2);
+              ctx.rotate(element.rotation * Math.PI / 180);
+              ctx.translate(-(element.x + element.width / 2), -(element.y + element.height / 2));
+              ctx.drawImage(img, element.x, element.y, element.width, element.height);
+              ctx.restore();
+            } catch (error) {
+               console.error("Error drawing element image: ", error);
+            }
+          }
+        }
 
         const finalTextColor = hexToRgba(textColor, textOpacity);
         ctx.textAlign = textAlign;
@@ -391,10 +442,8 @@ const ImageCanvasComponent = ({
       };
 
       if (backgroundImageUrl) {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.src = backgroundImageUrl;
-        img.onload = () => {
+        try {
+          const img = await loadImage(backgroundImageUrl);
           const canvasAspect = width / height;
           const imageAspect = img.width / img.height;
           let sx, sy, sWidth, sHeight;
@@ -412,12 +461,11 @@ const ImageCanvasComponent = ({
           }
           
           ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, width, height);
-          drawLayout();
-        };
-        img.onerror = () => {
+          await drawLayout();
+        } catch (error) {
           ctx.fillStyle = "#ccc";
           ctx.fillRect(0,0,width,height);
-          drawLayout();
+          await drawLayout();
         }
       } else if (backgroundColor && backgroundColor.startsWith("linear-gradient")) {
         const colors = backgroundColor.match(/#([0-9a-fA-F]{3,8})/g);
@@ -431,16 +479,16 @@ const ImageCanvasComponent = ({
            ctx.fillStyle = "#ffffff";
         }
         ctx.fillRect(0, 0, width, height);
-        drawLayout();
+        await drawLayout();
       } else {
         ctx.fillStyle = backgroundColor || '#ffffff';
         ctx.fillRect(0, 0, width, height);
-        drawLayout();
+        await drawLayout();
       }
     };
 
     draw();
-  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, viewportHeight, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing]);
+  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, viewportHeight, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, onTextRemaining, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing, elements]);
 
   return (
     <canvas
@@ -453,3 +501,5 @@ const ImageCanvasComponent = ({
   );
 }
 export const ImageCanvas = React.memo(ImageCanvasComponent);
+
+    

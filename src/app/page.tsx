@@ -93,8 +93,8 @@ export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [isGeneratingAnimation, setIsGeneratingAnimation] = useState(false);
   
-  const carouselApi = useRef<CarouselApi | undefined>();
-  const searchCarouselApi = useRef<CarouselApi | undefined>();
+  const carouselApi = useRef<CarouselApi>();
+  const searchCarouselApi = useRef<CarouselApi>();
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [myDesigns, setMyDesigns] = useLocalStorage<DesignTemplate[]>('writa-designs', []);
@@ -127,7 +127,7 @@ export default function Home() {
     return () => {
       carouselApi.current?.off("select", handleSelectCarousel)
     }
-  }, [handleSelectCarousel]);
+  }, [carouselApi.current]);
 
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'duru-sans') || fontOptions[0]);
 
@@ -741,6 +741,7 @@ export default function Home() {
           strokeColor={strokeColor}
           strokeWidth={strokeWidth}
           fontSmoothing={activeEffect.style.fontSmoothing}
+          elements={elements}
         />
     )
   }, [
@@ -748,7 +749,7 @@ export default function Home() {
     gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, 
     overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, 
     shadows, textStroke, strokeColor, strokeWidth, handleTextRemaining, 
-    isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize
+    isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize, elements
   ]);
   
   const handleMobileTabClick = (tab: string) => {
@@ -1261,5 +1262,7 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     

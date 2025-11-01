@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useId } from "react";
@@ -16,7 +17,7 @@ export function ElementsPanel({ handleImageUpload }: ElementsPanelProps) {
   return (
     <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-4 mobile-tab-content">
       <div className="space-y-2">
-        <Label>Upload Image</Label>
+        <Label>Upload Logo or Photo</Label>
         <div className="flex items-center gap-2">
           <Input
             id={fileInputId}
@@ -34,9 +35,11 @@ export function ElementsPanel({ handleImageUpload }: ElementsPanelProps) {
           </Label>
         </div>
         <p className="text-xs text-muted-foreground">
-          Upload your own image to use as an element on the canvas.
+          Upload your logo or profile photo to use as an element on the canvas.
         </p>
       </div>
     </div>
   );
 }
+
+    
