@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, Plus, Search, Upload } from "lucide-react";
+import { Loader2, Plus, Search } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,6 +21,8 @@ import Image from "next/image";
 import { BgOverlayIcon, FeelLucky } from "@/components/ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
+
+const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "Art", "Minimal", "Abstract", "Dreamy", "Cinematic", "Surreal", "Vintage", "Futuristic", "Bohemian"];
 
 type BackgroundSettingsProps = {
   backgroundTab: string;
@@ -45,16 +47,9 @@ type BackgroundSettingsProps = {
   setOverlayOpacity: (opacity: number) => void;
   gradientBg: string;
   handleGradientBgSelect: (css: string) => void;
-  setSearchCarouselApi: (api: CarouselApi) => void;
-  uploadedImages: string[];
-  handleUploadedImageAsBackground: (imageUrl: string) => void;
-  handleCustomImageUpload: (dataUrl: string) => void;
+  setSearchCarouselApi: (api: CarouselApi | undefined) => void;
 };
 
-const searchKeywords = [
-    "Abstract", "Minimalist", "Nature", "Technology", "Vintage", "Urban",
-    "Gradient", "Pastel", "Dark", "Texture", "Space", "Travel", "Food"
-];
 
 export function BackgroundSettings({
   backgroundTab,
@@ -80,27 +75,8 @@ export function BackgroundSettings({
   gradientBg,
   handleGradientBgSelect,
   setSearchCarouselApi,
-  uploadedImages,
-  handleUploadedImageAsBackground,
-  handleCustomImageUpload
 }: BackgroundSettingsProps) {
   const baseId = useId();
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
-
-  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const dataUrl = e.target?.result as string;
-        handleCustomImageUpload(dataUrl);
-        handleUploadedImageAsBackground(dataUrl);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const triggerFileSelect = () => fileInputRef.current?.click();
 
   return (
     <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-4 mobile-tab-content">
@@ -212,34 +188,6 @@ export function BackgroundSettings({
           </Carousel>
         </TabsContent>
         <TabsContent value="image" className="pt-4 space-y-4">
-            <div className="space-y-2">
-                <Button onClick={() => triggerFileSelect()} className="w-full" variant="outline">
-                    <Upload className="mr-2 h-4 w-4" /> Upload Custom Background
-                </Button>
-                <input
-                    ref={fileInputRef}
-                    type="file"
-                    className="hidden"
-                    accept="image/png, image/jpeg, image/webp"
-                    onChange={onFileChange}
-                />
-            </div>
-            {uploadedImages.length > 0 && (
-                <div className="space-y-2">
-                  <Label>Your Uploads</Label>
-                  <Carousel opts={{ align: "start", dragFree: true }} className="w-full">
-                    <CarouselContent className="-ml-2">
-                      {uploadedImages.map((imageUrl, index) => (
-                        <CarouselItem key={index} className="basis-1/4 pl-2">
-                          <button onClick={() => handleUploadedImageAsBackground(imageUrl)} className="w-full">
-                            <Image src={imageUrl} alt={`Uploaded ${index}`} width={100} height={150} className="object-cover aspect-[2/3] rounded-md w-full" />
-                          </button>
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                  </Carousel>
-                </div>
-            )}
           <div className="space-y-2">
             <Label>Ready-made Images</Label>
             <Carousel
@@ -312,7 +260,7 @@ export function BackgroundSettings({
                 </Tooltip>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                    <Button onClick={() => handleFeelLucky()} variant="outline" className="h-10 ml-2">
+                    <Button onClick={handleFeelLucky} variant="outline" className="h-10 ml-2">
                         <FeelLucky />
                         <span>Feel Lucky</span>
                     </Button>
@@ -356,5 +304,3 @@ export function BackgroundSettings({
     </div>
   );
 }
-
-    

@@ -1,8 +1,6 @@
 import type {NextConfig} from 'next';
 
-
 const nextConfig: NextConfig = {
-  
   /* config options here */
   devIndicators: false,
   typescript: {
@@ -51,11 +49,6 @@ const nextConfig: NextConfig = {
       ...config.resolve.alias,
       './favicon.ico.mjs': false,
     };
-    config.externals.push({
-      "utf-8-validate": "commonjs utf-8-validate",
-      bufferutil: "commonjs bufferutil",
-      canvas: "commonjs canvas",
-    });
     return config;
   },
 };

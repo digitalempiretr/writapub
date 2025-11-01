@@ -216,7 +216,7 @@ export function MyDesignsPanel({
                 {myDesigns.map((template) => (
                   <CarouselItem key={template.id} className="basis-1/3 md:basis-1/4 pl-2">
                     <div className="relative group">
-                      <button onClick={() => handleApplyTemplate(template)} className="w-full" disabled={editingDesignId === template.id}>
+                      <button onClick={() => editingDesignId !== template.id && handleApplyTemplate(template)} className="w-full" disabled={editingDesignId === template.id}>
                         <Card className="overflow-hidden">
                           <CardContent className="p-0 aspect-[2/3] w-full">
                             {renderPreview(template)}

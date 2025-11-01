@@ -30,7 +30,7 @@ import {
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw, Layers } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw, Shapes } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -45,21 +45,32 @@ import { BackgroundSettings } from "@/components/2_background-settings";
 import { DesignsPanel } from "@/components/1_templates";
 import { MyDesignsPanel } from "@/components/4_favorites";
 import { DownloadPanel } from "@/components/5_download-panel";
+import { ElementsPanel } from "@/components/5_elements-panel";
 import { pageInitialColors } from "@/lib/colors";
 import { CreativeMagicPanel } from "@/components/0_creative-magic-panel";
 import { cn } from "@/lib/utils";
-import { textEffects, TextEffect, parseShadow } from "@/lib/text-effects";
+import { textEffects, parseShadow } from "@/lib/text-effects";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { HeartIconG  } from "@/components/ui/icons";
-import * as fabric from 'fabric';
-import { LayersPanel } from "@/components/layers-panel";
-
+import { BookmarkStarIcon, HeartIconG  } from "@/components/ui/icons";
 
 type Design = {
   text: string;
   isTitle: boolean;
 };
+
+type CanvasElement = {
+  id: string;
+  type: 'image' | 'text';
+  url?: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotation: number;
+  draggable: boolean;
+};
+
 
 type TextAlign = 'left' | 'center' | 'right';
 type BackgroundType = 'flat' | 'gradient' | 'image';
@@ -81,6 +92,10 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [isGeneratingAnimation, setIsGeneratingAnimation] = useState(false);
+  
+  const carouselApi = useRef<CarouselApi | undefined>();
+  const searchCarouselApi = useRef<CarouselApi | undefined>();
+
   const [currentSlide, setCurrentSlide] = useState(0);
   const [myDesigns, setMyDesigns] = useLocalStorage<DesignTemplate[]>('writa-designs', []);
   const [editingDesignId, setEditingDesignId] = useState<string | null>(null);
@@ -90,12 +105,6 @@ export default function Home() {
   const [backgroundType, setBackgroundType] = useState<BackgroundType>('image');
   const [currentTemplate, setCurrentTemplate] = useState<ImageTemplate | null>(imageTemplates[1]);
   
-  const [fabricInstances, setFabricInstances] = useState<fabric.Canvas[]>([]);
-  const [uploadedImages, setUploadedImages] = useLocalStorage<string[]>('writa-uploads', []);
-
-  const carouselApi = useRef<CarouselApi>();
-  const searchCarouselApi = useRef<CarouselApi>();
-
   useEffect(() => {
     setIsClient(true)
   }, [])
@@ -111,12 +120,12 @@ export default function Home() {
     if (!carouselApi.current) {
       return
     }
-    const api = carouselApi.current;
+
     handleSelectCarousel();
-    api.on("select", handleSelectCarousel)
+    carouselApi.current.on("select", handleSelectCarousel)
 
     return () => {
-      api.off("select", handleSelectCarousel)
+      carouselApi.current?.off("select", handleSelectCarousel)
     }
   }, [handleSelectCarousel]);
 
@@ -165,6 +174,9 @@ export default function Home() {
   const [isPanning, setIsPanning] = useState(false);
   const [panStart, setPanStart] = useState({ x: 0, y: 0 });
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  
+  const [elements, setElements] = useState<CanvasElement[]>([]);
+
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const designsRef = useRef<HTMLDivElement>(null);
@@ -206,29 +218,21 @@ export default function Home() {
   const handleTextRemaining = useCallback((remaining: string, fromIndex: number) => {
     const nextDesignIndex = fromIndex + 1;
     setDesigns(prevDesigns => {
-      const currentNextDesign = prevDesigns[nextDesignIndex];
-      
-      if (remaining) {
-        // If the next slide exists and its text is different, update it.
-        if (currentNextDesign && currentNextDesign.text !== remaining) {
-          const newDesigns = [...prevDesigns];
-          newDesigns[nextDesignIndex] = { ...newDesigns[nextDesignIndex], text: remaining };
-          return newDesigns;
+      if (remaining && prevDesigns[nextDesignIndex]) {
+        if (prevDesigns[nextDesignIndex].text === remaining) {
+          return prevDesigns; 
         }
-        // If the next slide doesn't exist, add a new one.
-        if (!currentNextDesign) {
-          return [...prevDesigns, { text: remaining, isTitle: false }];
-        }
-      } else {
-        // If there's no remaining text but a next slide exists, remove it and subsequent slides.
-        if (prevDesigns.length > nextDesignIndex) {
-          return prevDesigns.slice(0, nextDesignIndex);
-        }
+        const newDesigns = [...prevDesigns];
+        newDesigns[nextDesignIndex] = { ...newDesigns[nextDesignIndex], text: remaining };
+        return newDesigns;
+      } else if (remaining && !prevDesigns[nextDesignIndex]) {
+        return [...prevDesigns, { text: remaining, isTitle: false }];
+      } else if (!remaining && prevDesigns.length > nextDesignIndex) {
+        return prevDesigns.slice(0, nextDesignIndex);
       }
-      // If no changes are needed, return the previous state to prevent a re-render.
       return prevDesigns;
     });
-}, []);
+  }, []);
 
   const handleGenerate = useCallback(async () => {
     if (!text) {
@@ -280,20 +284,17 @@ export default function Home() {
   }, [text, toast]);
   
   const handleDownload = useCallback((index: number) => {
-    const fabricInstance = fabricInstances[index];
-    if (fabricInstance) {
-        const dataUrl = fabricInstance.toDataURL({
-            format: 'jpeg',
-            quality: 0.9,
-        });
-        const link = document.createElement("a");
-        link.href = dataUrl;
-        link.download = `${fileName || 'writa'}-${index + 1}.jpg`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    const canvas = canvasRefs.current[index];
+    if (canvas) {
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = `${fileName || 'writa'}-${index + 1}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
-}, [fabricInstances, fileName]);
+  }, [fileName]);
 
   const handleDownloadAll = useCallback(() => {
     if (designs.length === 0) return;
@@ -459,18 +460,18 @@ export default function Home() {
   };
 
   const handleSaveDesign = useCallback(() => {
-    const canvasInstance = fabricInstances[currentSlide];
-    if (!canvasInstance) {
-        toast({
-            variant: "destructive",
-            title: "Cannot save favorite",
-            description: "The design preview is not ready yet.",
-            duration: 2000,
-        });
-        return;
+    const canvas = canvasRefs.current[currentSlide];
+    if (!canvas) {
+      toast({
+        variant: "destructive",
+        title: "Cannot save favorite",
+        description: "The design preview is not ready yet.",
+        duration: 2000,
+      });
+      return;
     }
 
-    const previewImage = canvasInstance.toDataURL({ format: 'jpeg', quality: 0.5 });
+    const previewImage = canvas.toDataURL("image/jpeg", 0.5);
 
     let bgValue = '';
     if (backgroundType === 'flat') bgValue = bgColor;
@@ -513,7 +514,7 @@ export default function Home() {
       duration: 2000,
     });
 
-  }, [fabricInstances, currentSlide, backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, myDesigns.length, setMyDesigns, toast, activeEffect, canvasSize]);
+  }, [currentSlide, backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, myDesigns.length, setMyDesigns, toast, activeEffect, canvasSize]);
 
   const handleDeleteDesign = (id: string) => {
     setMyDesigns(prev => prev.filter(d => d.id !== id));
@@ -664,6 +665,28 @@ export default function Home() {
     }
   };
   
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newElement: CanvasElement = {
+          id: `element-${Date.now()}`,
+          type: 'image',
+          url: reader.result as string,
+          x: 50,
+          y: 50,
+          width: 150,
+          height: 150,
+          rotation: 0,
+          draggable: true,
+        };
+        setElements(prev => [...prev, newElement]);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const renderCanvas = useCallback((design: Design, index: number) => {
     let currentBg: string | undefined;
     let finalImageUrl: string | undefined;
@@ -701,12 +724,8 @@ export default function Home() {
           backgroundImageUrl={finalImageUrl}
           width={canvasSize.width}
           height={canvasSize.height}
-          onCanvasReady={(fabricInstance) => {
-            setFabricInstances(prev => {
-              const newInstances = [...prev];
-              newInstances[index] = fabricInstance;
-              return newInstances;
-            });
+          onCanvasReady={(canvas) => {
+            canvasRefs.current[index] = canvas;
           }}
           onTextRemaining={(remaining) => handleTextRemaining(remaining, index)}
           rectColor={rectBgColor}
@@ -742,8 +761,12 @@ export default function Home() {
   }
 
  const handleDesktopTabClick = (tab: string) => {
-    setActiveSettingsTab(tab);
-    setIsSidebarOpen(true);
+    if (isSidebarOpen && activeSettingsTab === tab) {
+        setIsSidebarOpen(false);
+    } else {
+        setActiveSettingsTab(tab);
+        setIsSidebarOpen(true);
+    }
   };
 
   const handleZoom = (direction: 'in' | 'out') => {
@@ -841,51 +864,11 @@ export default function Home() {
     }
   }
 
-  const handleCustomImageUpload = (dataUrl: string) => {
-    if (!uploadedImages.includes(dataUrl)) {
-      setUploadedImages(prev => [dataUrl, ...prev]);
-    }
-    const currentCanvas = fabricInstances[currentSlide];
-    if (currentCanvas) {
-      fabric.Image.fromURL(dataUrl, (img) => {
-        img.scaleToWidth(currentCanvas.width! * 0.5);
-        currentCanvas.add(img);
-        currentCanvas.centerObject(img);
-        currentCanvas.renderAll();
-      }, { crossOrigin: 'anonymous' });
-    }
-  };
-
-  const addImageToCanvas = (imageUrl: string) => {
-    const currentCanvas = fabricInstances[currentSlide];
-    if (currentCanvas) {
-      fabric.Image.fromURL(imageUrl, (img) => {
-        img.scaleToWidth(currentCanvas.width! * 0.5);
-        currentCanvas.add(img);
-        currentCanvas.centerObject(img);
-        currentCanvas.renderAll();
-      }, { crossOrigin: 'anonymous' });
-    }
-  };
-
-  const handleUploadedImageAsBackground = (imageUrl: string) => {
-    const customTemplate: ImageTemplate = {
-      name: 'Custom Upload',
-      imageUrls: {
-        post: imageUrl,
-        story: imageUrl,
-        square: imageUrl,
-      },
-    };
-    handleImageBgUrlSelect(customTemplate);
-  };
-
-
   const renderActiveTabContent = () => {
     const props = {
         text, setText, handleGenerate, isLoading,
         backgroundTab, setBackgroundTab: setBackgroundTab as (value: string) => void, handleFeelLucky,
-        bgColor, handleBgColorSelect, imageBgUrl, handleImageBgUrlSelect,
+        bgColor, handleBgColorSelect, imageBgUrl, handleImageBgUrlSelect: (template: ImageTemplate) => handleImageBgUrlSelect(template),
         searchQuery, setSearchQuery, handleSearchImages, isSearching, searchedImages,
         handleKeywordSearch, searchPage, isOverlayEnabled, setIsOverlayEnabled: handleOverlayEnable,
         overlayColor, setOverlayColor, overlayOpacity, setOverlayOpacity, gradientBg,
@@ -899,8 +882,7 @@ export default function Home() {
         handleDownload, fileName, setFileName, handleApplyTemplate, myDesigns,
         handleSaveDesign, handleDeleteDesign, handleUpdateDesign, editingDesignId,
         handleEditClick, handleCancelEdit, editingName, setEditingName, designToDelete,
-        setDesignToDelete, handleLogDesign,
-        uploadedImages, handleCustomImageUpload, addImageToCanvas, handleUploadedImageAsBackground
+        setDesignToDelete, handleLogDesign, handleImageUpload,
     };
 
     switch (activeSettingsTab) {
@@ -908,7 +890,7 @@ export default function Home() {
       case 'favorites': return <MyDesignsPanel {...props} />;
       case 'background': return <BackgroundSettings {...props} />;
       case 'text': return <TextSettings {...props} />;
-      case 'layers': return <LayersPanel {...props} />;
+      case 'elements': return <ElementsPanel {...props} />;
       case 'download': return <DownloadPanel {...props} />;
       default: return null;
     }
@@ -918,7 +900,7 @@ export default function Home() {
     { value: "designs", icon: <LayoutTemplate className="h-5 w-5"/>, label: "Templates" },
     { value: "background", icon: <ImageIcon className="h-5 w-5"/>, label: "Background" },
     { value: "text", icon: <Type className="h-5 w-5"/>, label: "Text" },
-    { value: "layers", icon: <Layers className="h-5 w-5"/>, label: "Layers" },
+    { value: "elements", icon: <Shapes className="h-5 w-5" />, label: "Elements" },
     { value: "favorites", icon: <HeartIcon className="h-5 w-5"/>, label: "Favorites" },
     { value: "download", icon: <Download className="h-5 w-5"/>, label: "Download" },
   ];
@@ -1123,7 +1105,7 @@ export default function Home() {
       *
       * END DESKTOP SIDEBAR
       *
-      ***************************************/}
+      *******************************************************/}
 
         {/******************************************************
         *
@@ -1162,7 +1144,7 @@ export default function Home() {
                   className="relative transition-transform duration-75" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
-                  <Carousel className="w-full" setApi={(api) => { carouselApi.current = api; }}>
+                  <Carousel className="w-full" setApi={(api) => carouselApi.current = api}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
@@ -1279,11 +1261,5 @@ export default function Home() {
     </div>
   );
 }
-
-    
-
-    
-
-
 
     

@@ -665,5 +665,3 @@ export function TextSettings({
     </TooltipProvider>
   );
 }
-
-    
