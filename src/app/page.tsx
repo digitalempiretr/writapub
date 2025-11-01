@@ -93,8 +93,8 @@ export default function Home() {
   const [fabricInstances, setFabricInstances] = useState<fabric.Canvas[]>([]);
   const [uploadedImages, setUploadedImages] = useLocalStorage<string[]>('writa-uploads', []);
 
-  const carouselApi = useRef<CarouselApi>(null);
-  const searchCarouselApi = useRef<CarouselApi>(null);
+  const carouselApi = useRef<CarouselApi>();
+  const searchCarouselApi = useRef<CarouselApi>();
 
   useEffect(() => {
     setIsClient(true)
@@ -206,21 +206,26 @@ export default function Home() {
   const handleTextRemaining = useCallback((remaining: string, fromIndex: number) => {
     const nextDesignIndex = fromIndex + 1;
     setDesigns(prevDesigns => {
+      const currentNextDesign = prevDesigns[nextDesignIndex];
+      
       if (remaining) {
-        if (prevDesigns[nextDesignIndex]) {
-          if (prevDesigns[nextDesignIndex].text !== remaining) {
-            const newDesigns = [...prevDesigns];
-            newDesigns[nextDesignIndex] = { ...newDesigns[nextDesignIndex], text: remaining };
-            return newDesigns;
-          }
-        } else {
+        // If the next slide exists and its text is different, update it.
+        if (currentNextDesign && currentNextDesign.text !== remaining) {
+          const newDesigns = [...prevDesigns];
+          newDesigns[nextDesignIndex] = { ...newDesigns[nextDesignIndex], text: remaining };
+          return newDesigns;
+        }
+        // If the next slide doesn't exist, add a new one.
+        if (!currentNextDesign) {
           return [...prevDesigns, { text: remaining, isTitle: false }];
         }
       } else {
+        // If there's no remaining text but a next slide exists, remove it and subsequent slides.
         if (prevDesigns.length > nextDesignIndex) {
           return prevDesigns.slice(0, nextDesignIndex);
         }
       }
+      // If no changes are needed, return the previous state to prevent a re-render.
       return prevDesigns;
     });
 }, []);
@@ -884,7 +889,7 @@ export default function Home() {
         searchQuery, setSearchQuery, handleSearchImages, isSearching, searchedImages,
         handleKeywordSearch, searchPage, isOverlayEnabled, setIsOverlayEnabled: handleOverlayEnable,
         overlayColor, setOverlayColor, overlayOpacity, setOverlayOpacity, gradientBg,
-        handleGradientBgSelect, setSearchCarouselApi: (api: CarouselApi | undefined) => { (searchCarouselApi.current as any) = api; }, textColor, setTextColor: handleTextColorChange, textOpacity,
+        handleGradientBgSelect, setSearchCarouselApi: (api: CarouselApi | undefined) => { searchCarouselApi.current = api; }, textColor, setTextColor: handleTextColorChange, textOpacity,
         setTextOpacity, activeFont, setActiveFont, fontOptions, isBold, setIsBold,
         isUppercase, setIsUppercase, textAlign, setTextAlign, textShadowEnabled,
         setTextShadowEnabled, shadows, setShadows, textStroke, setTextStroke,
@@ -1157,7 +1162,7 @@ export default function Home() {
                   className="relative transition-transform duration-75" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
-                  <Carousel className="w-full" setApi={(api) => { (carouselApi.current as any) = api; }}>
+                  <Carousel className="w-full" setApi={(api) => { carouselApi.current = api; }}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>

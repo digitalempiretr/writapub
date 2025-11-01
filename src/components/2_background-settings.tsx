@@ -45,12 +45,16 @@ type BackgroundSettingsProps = {
   setOverlayOpacity: (opacity: number) => void;
   gradientBg: string;
   handleGradientBgSelect: (css: string) => void;
-  setSearchCarouselApi: (api: CarouselApi | undefined) => void;
+  setSearchCarouselApi: (api: CarouselApi) => void;
   uploadedImages: string[];
   handleUploadedImageAsBackground: (imageUrl: string) => void;
   handleCustomImageUpload: (dataUrl: string) => void;
 };
 
+const searchKeywords = [
+    "Abstract", "Minimalist", "Nature", "Technology", "Vintage", "Urban",
+    "Gradient", "Pastel", "Dark", "Texture", "Space", "Travel", "Food"
+];
 
 export function BackgroundSettings({
   backgroundTab,
