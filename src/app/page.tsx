@@ -203,6 +203,96 @@ export default function Home() {
     };
   }, [isMobilePanelOpen, closePanel]);
 
+    const handleGenerate = () => {
+    setIsLoading(true);
+    setDesigns([]); // Clear previous designs
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d');
+    
+    if (!tempCtx) {
+      toast({
+        title: "Error",
+        description: "Could not create a temporary canvas context.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    const scalingFactor = canvasSize.width / 1080;
+    const baseFontSize = typeof activeFont.size === 'number' ? activeFont.size : 48;
+    const finalFontSize = baseFontSize * scalingFactor;
+    const finalFontWeight = isBold ? 'bold' : 'normal';
+
+    tempCtx.font = `${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`;
+    
+    const textToProcess = text.trim();
+    const paragraphs = textToProcess.split('\n').filter(p => p.trim() !== '');
+
+    let allSlides: Design[] = [];
+    let title = "";
+    
+    const firstSentenceMatch = textToProcess.match(/^[^.!?]+[.!?]/);
+    if(firstSentenceMatch){
+      title = firstSentenceMatch[0];
+      allSlides.push({ text: title, isTitle: true });
+    } else {
+      title = paragraphs[0] || '';
+      allSlides.push({ text: title, isTitle: true });
+    }
+
+    const remainingText = textToProcess.substring(title.length).trim();
+    const bodyParagraphs = remainingText.split('\n').filter(p => p.trim() !== '');
+
+
+    const processParagraph = (paragraph: string) => {
+      let words = paragraph.split(' ');
+      let currentLine = '';
+      let lineCount = 0;
+      let slideText = '';
+      const MAX_LINES = 12;
+
+      while (words.length > 0) {
+        let lineFull = false;
+        while (!lineFull && words.length > 0) {
+          const word = words[0];
+          const testLine = currentLine ? `${currentLine} ${word}` : word;
+          const textMetrics = tempCtx.measureText(testLine);
+          
+          if (textMetrics.width > (canvasSize.width * 0.8) && currentLine) {
+            slideText += currentLine + '\n';
+            currentLine = '';
+            lineCount++;
+          } else {
+            currentLine = testLine;
+            words.shift();
+          }
+
+          if (lineCount >= MAX_LINES - 1) {
+            lineFull = true;
+          }
+        }
+        
+        if (currentLine) {
+          slideText += currentLine + '\n';
+          currentLine = '';
+          lineCount++;
+        }
+
+        if (lineCount >= MAX_LINES || words.length === 0) {
+          allSlides.push({ text: slideText.trim(), isTitle: false });
+          slideText = '';
+          lineCount = 0;
+        }
+      }
+    };
+
+    bodyParagraphs.forEach(processParagraph);
+    
+    setDesigns(allSlides);
+    setIsLoading(false);
+  };
+
   const handleLogDesign = useCallback(() => {
     let bgValue = '';
     if (backgroundType === 'flat') bgValue = bgColor;
@@ -535,7 +625,7 @@ export default function Home() {
 
   const renderActiveTabContent = () => {
     const props = {
-        text, setText, handleGenerate: () => {}, isLoading,
+        text, setText, handleGenerate: handleGenerate, isLoading,
         backgroundTab, setBackgroundTab: setBackgroundTab as (value: string) => void, handleFeelLucky: () => {},
         bgColor, handleBgColorSelect: () => {}, imageBgUrl, handleImageBgUrlSelect: () => {},
         searchQuery, setSearchQuery, handleSearchImages: () => {}, isSearching, searchedImages,
@@ -725,8 +815,7 @@ export default function Home() {
         *
         *******************************************************/}
         <main className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative")}>
-        {designs.length > 0 && (
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
+        <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
                  <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
                         {canvasSizes.map(size => (
                         <TooltipProvider key={size.name}>
@@ -782,13 +871,12 @@ export default function Home() {
                       </TooltipProvider>
                   </div>
             </div>
-          )}
           {designs.length === 0 ? (
             <div className="w-full max-w-2xl">
               <CreativeMagicPanel 
                   text={text}
                   setText={setText}
-                  handleGenerate={() => {}}
+                  handleGenerate={handleGenerate}
                   isLoading={isLoading}
               />
             </div>
@@ -814,7 +902,7 @@ export default function Home() {
                   className="relative transition-transform duration-75" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
-                  <Carousel className="w-full" setApi={(api) => { carouselApi.current = api; }}>
+                  <Carousel className="w-full" setApi={(api) => { if(api) carouselApi.current = api; }}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
@@ -931,3 +1019,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
