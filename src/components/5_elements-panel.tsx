@@ -69,11 +69,10 @@ export function ElementsPanel({
 
   return (
     <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-4 mobile-tab-content">
-      <div className="flex justify-between items-center">
-        <Label>Canvas Elements</Label>
+      <div className="flex justify-start items-center">
         <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
           <PopoverTrigger asChild>
-            <Button size="sm"><Plus className="mr-2 h-4 w-4" /> Add Element</Button>
+            <Button size="sm"><Plus className="mr-2 h-4 w-4" /> Add Photo</Button>
           </PopoverTrigger>
           <PopoverContent className="w-80" align="end">
               <div className="space-y-4">
@@ -194,7 +193,7 @@ export function ElementsPanel({
             ) : (
                 <div className="text-center py-8">
                   <p className="text-sm text-muted-foreground">No elements added yet.</p>
-                  <p className="text-xs text-muted-foreground">Click "Add Element" to upload your logo.</p>
+                  <p className="text-xs text-muted-foreground">Click "Add Photo" to upload your logo.</p>
                 </div>
             )}
         </div>

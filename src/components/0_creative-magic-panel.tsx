@@ -30,12 +30,12 @@ export function CreativeMagicPanel({ title, setTitle, text, setText, handleGener
 
   return (
     <div className="space-y-10 max-w-[1000px] mx-auto w-full">
-      <CardTitle className="text-foreground text-2xl md:text-3xl text-left font-sans ">Hi, <span className = "text-primary">
+      <CardTitle className="text-foreground text-2xl md:text-3xl text-left font-serif ">Hi, <span className = "text-primary">
         [Users Name] </span></CardTitle>
       <div className="space-y-4">
         <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <Label htmlFor={titleId}>Title (Optional)</Label>
+              <Label className="font-bold font-serif text-xl" htmlFor={titleId}>Title </Label>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -49,23 +49,23 @@ export function CreativeMagicPanel({ title, setTitle, text, setText, handleGener
             </div>
             <Input
                 id={titleId}
-                placeholder="Enter your title here..."
+                placeholder="For cover, first page text...(optional)"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="rounded-lg text-lg text-card-foreground placeholder:text-muted-foreground border-1 shadow font-serif"
+                className="rounded-lg relative z-10 text-lg md:text-lg text-card-foreground placeholder:text-muted-foreground border-1 shadow "
             />
         </div>
         <div className="space-y-2">
-            <Label htmlFor={mainTextAreaId}>What will you Write today?</Label>
+            <Label className="font-bold font-serif text-xl" htmlFor={mainTextAreaId}>What will you<span className = "text-primary"> Write </span>today?</Label>
             <div className="relative text-xl rounded-lg">
             <Textarea
                 id={mainTextAreaId}
                 name="main-text-area"
-                placeholder="Paste your text here..."
+                placeholder="Your magnificent text here..."
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 rows={8}
-                className="rounded-lg relative z-10 text-xl text-card-foreground placeholder:text-muted-foreground border-1 shadow font-serif "
+                className="rounded-lg relative z-10 text-lg text-card-foreground placeholder:text-muted-foreground border-1 shadow  "
             />
             </div>
         </div>
