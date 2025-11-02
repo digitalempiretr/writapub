@@ -30,7 +30,7 @@ import {
 
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw, Shapes, RefreshCcw, RefreshCcwIcon } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw, Shapes, RefreshCcw, RefreshCcwIcon, Info } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -640,17 +640,25 @@ export default function Home() {
   };
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (e.touches.length === 1) {
-      setPanStart({ x: e.touches[0].clientX - panOffset.x, y: e.touches[0].clientY - panOffset.y });
+    if (e.touches.length === 2) {
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const midX = (touch1.clientX + touch2.clientX) / 2;
+      const midY = (touch1.clientY + touch2.clientY) / 2;
+      setPanStart({ x: midX - panOffset.x, y: midY - panOffset.y });
     }
   };
-
+  
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (e.touches.length === 1) {
+    if (e.touches.length === 2) {
       e.preventDefault();
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const midX = (touch1.clientX + touch2.clientX) / 2;
+      const midY = (touch1.clientY + touch2.clientY) / 2;
       setPanOffset({
-        x: e.touches[0].clientX - panStart.x,
-        y: e.touches[0].clientY - panOffset.y,
+        x: midX - panStart.x,
+        y: midY - panStart.y,
       });
     }
   };
@@ -1138,13 +1146,15 @@ export default function Home() {
         *
         *******************************************************/}
         <main 
-          className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative")}
+          ref={designsRef}
+          className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative cursor-default")}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
+          style={{ touchAction: 'none' }}
         >
         {designs.length > 0 && (
             <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
@@ -1218,9 +1228,8 @@ export default function Home() {
             </div>
           ) : (
             <div 
-              ref={designsRef} 
               id="designs-container"
-              className="w-full h-full flex flex-col items-center justify-center cursor-default"
+              className="w-full h-full flex flex-col items-center justify-center"
               onWheel={(e) => {
                 const activeElement = document.activeElement;
                 if (activeElement && (activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'INPUT')) {
@@ -1230,7 +1239,6 @@ export default function Home() {
                 const direction = e.deltaY > 0 ? 'out' : 'in';
                 handleZoom(direction);
               }}
-              style={{ touchAction: 'none' }}
             >
                 <div 
                   className="relative transition-transform duration-75" 
