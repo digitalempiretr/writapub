@@ -249,6 +249,8 @@ export default function Home() {
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
   const [areElementsEnabled, setAreElementsEnabled] = useState(true);
 
+  const [pinchState, setPinchState] = useState<{ distance: number; zoom: number } | null>(null);
+
 
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const designsRef = useRef<HTMLDivElement>(null);
@@ -259,7 +261,8 @@ export default function Home() {
 
   const handleGenerate = useCallback(() => {
     setIsLoading(true);
-    const newDesigns: Design[] = [];
+    setDesigns([]); // Clear previous designs
+    let newDesigns: Design[] = [];
   
     // Create a temporary canvas context for text measurement
     const tempCanvas = document.createElement('canvas');
@@ -642,28 +645,56 @@ export default function Home() {
       }
     }
   };
-
+  
+  const getDistance = (touch1: Touch, touch2: Touch) => {
+    const dx = touch1.clientX - touch2.clientX;
+    const dy = touch1.clientY - touch2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+  
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     if (e.touches.length === 2) {
+      e.preventDefault(); // Prevent default scroll/zoom
       const touch1 = e.touches[0];
       const touch2 = e.touches[1];
       const midX = (touch1.clientX + touch2.clientX) / 2;
       const midY = (touch1.clientY + touch2.clientY) / 2;
       setPanStart({ x: midX - panOffset.x, y: midY - panOffset.y });
+      setPinchState({
+        distance: getDistance(touch1, touch2),
+        zoom: zoomLevel,
+      });
     }
   };
   
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     if (e.touches.length === 2) {
-      e.preventDefault();
+      e.preventDefault(); // Prevent default scroll/zoom
       const touch1 = e.touches[0];
       const touch2 = e.touches[1];
+  
+      // Panning
       const midX = (touch1.clientX + touch2.clientX) / 2;
       const midY = (touch1.clientY + touch2.clientY) / 2;
       setPanOffset({
         x: midX - panStart.x,
         y: midY - panStart.y,
       });
+  
+      // Zooming
+      if (pinchState) {
+        const newDist = getDistance(touch1, touch2);
+        const scale = newDist / pinchState.distance;
+        let newZoom = pinchState.zoom * scale;
+        newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newZoom));
+        setZoomLevel(newZoom);
+      }
+    }
+  };
+  
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length < 2) {
+      setPinchState(null);
     }
   };
 
@@ -1158,6 +1189,7 @@ export default function Home() {
           onMouseLeave={handleMouseUp}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
           style={{ touchAction: 'none' }}
         >
         {designs.length > 0 && (
