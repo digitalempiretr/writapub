@@ -750,7 +750,6 @@ export default function Home() {
     // Set font
     const newFont = fontOptions.find(f => f.value === template.font.value) || activeFont;
     setActiveFont({ ...newFont, size: template.font.fontSize });
-    setTextColor(template.font.color);
   
     // Set textbox
     setIsTextBoxEnabled(template.textBox.opacity > 0);
@@ -771,6 +770,9 @@ export default function Home() {
     } else {
       handleEffectChange(textEffects[0]);
     }
+    
+    // This needs to be last to override effect color
+    setTextColor(template.font.color);
 
     // Set Canvas Size
     const newCanvasSize = canvasSizes.find(s => s.name === template.canvasSize) || canvasSize;
