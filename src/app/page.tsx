@@ -76,7 +76,6 @@ const MAX_ZOOM = 3.0;
 const MIN_ZOOM = 0.25;
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "Art", "Minimal", "Abstract", "Dreamy", "Cinematic", "Surreal", "Vintage", "Futuristic", "Bohemian"];
 
-// This function should be outside the component to be pure and reusable
 const measureAndSplitText = (
   context: CanvasRenderingContext2D,
   text: string,
@@ -203,7 +202,7 @@ export default function Home() {
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'duru-sans') || fontOptions[0]);
 
   const [textAlign, setTextAlign] = useState<TextAlign>('left');
-  const [isBold, setIsBold] = useState(true);
+  const [isBold, setIsBold] = useState(false);
   const [isUppercase, setIsUppercase] = useState(false);
   const [backgroundTab, setBackgroundTab] = useState<BackgroundType>("image");
   const [bgColor, setBgColor] = useState(pageInitialColors.bgColor);
@@ -260,35 +259,34 @@ export default function Home() {
 
   const handleGenerate = useCallback(() => {
     setIsLoading(true);
-    
-    // Create a temporary canvas to measure text
+    setDesigns([]);
+  
     const tempCanvas = document.createElement('canvas');
     const ctx = tempCanvas.getContext('2d');
     if (!ctx) {
         setIsLoading(false);
         return;
     }
-
+  
     const newDesigns: Design[] = [];
     let remainingText = text.trim();
-
-    // Handle optional title
-    if (title.trim() !== '') {
+  
+    if (title.trim()) {
         newDesigns.push({ text: title.trim(), isTitle: true });
     }
-
+  
     const scalingFactor = canvasSize.width / 1080;
     const baseFontSize = typeof activeFont.size === 'number' ? activeFont.size : 48;
     const finalFontSize = baseFontSize * scalingFactor;
     const finalFontWeight = isBold ? Math.min(Number(activeFont.weight) + 300, 900) : activeFont.weight;
-
+  
     document.fonts.load(`${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`).then(() => {
         ctx.font = `${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`;
-
+  
         const rectWidth = 830 * (canvasSize.width / 1080);
         const textMaxWidth = rectWidth - (100 * (canvasSize.width / 1080));
         const currentLineHeight = typeof activeFont.lineHeight === 'number' ? activeFont.lineHeight : parseFloat(activeFont.lineHeight as string);
-
+  
         while (remainingText.length > 0) {
             const maxLineHeight = 2.5;
             const minLineHeight = 1.2;
@@ -303,7 +301,7 @@ export default function Home() {
             newDesigns.push({ text: result.textForCanvas, isTitle: false });
             remainingText = result.remainingText;
     
-            if (newDesigns.length > 50) { // safety break
+            if (newDesigns.length > 50) { 
                 console.error("Exceeded 50 slides, breaking loop.");
                 break;
             }
@@ -312,7 +310,6 @@ export default function Home() {
         setDesigns(newDesigns);
         setIsLoading(false);
     
-        // Scroll to the beginning of the carousel after generation
         setTimeout(() => carouselApi.current?.scrollTo(0), 100);
     });
 }, [text, title, canvasSize, activeFont, isBold]);
@@ -593,13 +590,17 @@ export default function Home() {
       if (e.code === 'Space') {
         e.preventDefault();
         setIsPanning(true);
-        document.body.style.cursor = 'grab';
+        if (designsRef.current) {
+          designsRef.current.style.cursor = 'grab';
+        }
       }
     };
     const handleKeyUp = (e: KeyboardEvent) => {
       if (e.code === 'Space') {
         setIsPanning(false);
-        document.body.style.cursor = 'default';
+         if (designsRef.current) {
+          designsRef.current.style.cursor = 'default';
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -613,7 +614,9 @@ export default function Home() {
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isPanning) {
       e.preventDefault();
-      document.body.style.cursor = 'grabbing';
+       if (designsRef.current) {
+        designsRef.current.style.cursor = 'grabbing';
+      }
       setPanStart({ x: e.clientX - panOffset.x, y: e.clientY - panOffset.y });
     }
   };
@@ -630,9 +633,28 @@ export default function Home() {
 
   const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isPanning) {
-      document.body.style.cursor = 'grab';
+       if (designsRef.current) {
+        designsRef.current.style.cursor = 'grab';
+      }
     }
   };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length === 1) {
+      setPanStart({ x: e.touches[0].clientX - panOffset.x, y: e.touches[0].clientY - panOffset.y });
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length === 1) {
+      e.preventDefault();
+      setPanOffset({
+        x: e.touches[0].clientX - panStart.x,
+        y: e.touches[0].clientY - panStart.y,
+      });
+    }
+  };
+
 
   const resetPanAndZoom = useCallback((size: CanvasSize) => {
     let newZoom;
@@ -1190,11 +1212,13 @@ export default function Home() {
             <div 
               ref={designsRef} 
               id="designs-container"
-              className="w-full h-full flex flex-col items-center justify-center cursor-grab"
+              className="w-full h-full flex flex-col items-center justify-center cursor-default"
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
               onMouseLeave={handleMouseUp}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
                onWheel={(e) => {
                 const activeElement = document.activeElement;
                 if (activeElement && (activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'INPUT')) {
@@ -1204,6 +1228,7 @@ export default function Home() {
                 const direction = e.deltaY > 0 ? 'out' : 'in';
                 handleZoom(direction);
               }}
+              style={{ touchAction: 'none' }}
             >
                 <div 
                   className="relative transition-transform duration-75" 

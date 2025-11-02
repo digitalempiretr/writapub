@@ -278,7 +278,8 @@ const ImageCanvasComponent = ({
 
       ctx.font = `${finalFontWeight} ${finalFontSize}px "${fontFamily}"`;
       
-      const linesToDraw = processedText.split('\n');
+      const linesToDraw = isTitle ? wrapText(ctx, processedText, textMaxWidth) : processedText.split('\n');
+
 
       const drawLayout = async () => {
         if (backgroundImageUrl && overlayColor && (overlayOpacity || overlayOpacity === 0)) {
