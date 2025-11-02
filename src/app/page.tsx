@@ -260,33 +260,33 @@ export default function Home() {
   const handleGenerate = useCallback(() => {
     setIsLoading(true);
     setDesigns([]);
-  
+
     const tempCanvas = document.createElement('canvas');
     const ctx = tempCanvas.getContext('2d');
     if (!ctx) {
         setIsLoading(false);
         return;
     }
-  
+
     const newDesigns: Design[] = [];
     let remainingText = text.trim();
-  
+
     if (title.trim()) {
         newDesigns.push({ text: title.trim(), isTitle: true });
     }
-  
+
     const scalingFactor = canvasSize.width / 1080;
     const baseFontSize = typeof activeFont.size === 'number' ? activeFont.size : 48;
     const finalFontSize = baseFontSize * scalingFactor;
     const finalFontWeight = isBold ? Math.min(Number(activeFont.weight) + 300, 900) : activeFont.weight;
-  
+
     document.fonts.load(`${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`).then(() => {
         ctx.font = `${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`;
-  
+
         const rectWidth = 830 * (canvasSize.width / 1080);
         const textMaxWidth = rectWidth - (100 * (canvasSize.width / 1080));
         const currentLineHeight = typeof activeFont.lineHeight === 'number' ? activeFont.lineHeight : parseFloat(activeFont.lineHeight as string);
-  
+
         while (remainingText.length > 0) {
             const maxLineHeight = 2.5;
             const minLineHeight = 1.2;
@@ -650,7 +650,7 @@ export default function Home() {
       e.preventDefault();
       setPanOffset({
         x: e.touches[0].clientX - panStart.x,
-        y: e.touches[0].clientY - panStart.y,
+        y: e.touches[0].clientY - panOffset.y,
       });
     }
   };
@@ -838,7 +838,7 @@ export default function Home() {
         title: "Search Failed",
         description: error.message || "Could not fetch images from Pexels.",
         variant: "destructive",
-      });
+        });
     } finally {
       setIsSearching(false);
     }
@@ -1137,64 +1137,72 @@ export default function Home() {
         * Main Content Area
         *
         *******************************************************/}
-        <main className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative")}>
+        <main 
+          className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative")}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+        >
         {designs.length > 0 && (
-          <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
-            <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
-                {canvasSizes.map(size => (
-                <TooltipProvider key={size.name}>
+            <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
+                <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
+                    {canvasSizes.map(size => (
+                    <TooltipProvider key={size.name}>
+                        <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                            variant="ghost"
+                            size="icon"
+                            className={cn(
+                                "h-8 w-8 text-primary",
+                                canvasSize.name === size.name && "bg-primary-foreground/20"
+                            )}
+                            onClick={() => handleCanvasSizeChange(size)}
+                            >
+                            {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
+                            {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
+                            {size.name === 'Square' && <Square className="h-5 w-5" />}
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>{size.name} Format</p>
+                        </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                    ))}
+                </div>
+                <div className="bg-card/20 backdrop-blur-sm p-1 flex items-center gap-1 rounded-md">
+                <TooltipProvider>
                     <Tooltip>
                     <TooltipTrigger asChild>
-                        <Button
-                        variant="ghost"
-                        size="icon"
-                        className={cn(
-                            "h-8 w-8 text-primary",
-                            canvasSize.name === size.name && "bg-primary-foreground/20"
-                        )}
-                        onClick={() => handleCanvasSizeChange(size)}
-                        >
-                        {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
-                        {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
-                        {size.name === 'Square' && <Square className="h-5 w-5" />}
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('out')} disabled={zoomLevel <= MIN_ZOOM}>
+                            <ZoomOut className="h-5 w-5" />
                         </Button>
                     </TooltipTrigger>
-                    <TooltipContent>
-                        <p>{size.name} Format</p>
-                    </TooltipContent>
+                    <TooltipContent><p>Zoom Out (-)</p></TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => resetPanAndZoom(canvasSize)}>
+                            <RotateCcw className="h-5 w-5" />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent><p>Reset Zoom</p></TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('in')} disabled={zoomLevel >= MAX_ZOOM}>
+                            <ZoomIn className="h-5 w-5" />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent><p>Zoom In (+)</p></TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
-                ))}
+                </div>
             </div>
-            <div className="bg-card/20 backdrop-blur-sm p-1 flex items-center gap-1 rounded-md">
-            <TooltipProvider>
-                <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('out')} disabled={zoomLevel <= MIN_ZOOM}>
-                        <ZoomOut className="h-5 w-5" />
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent><p>Zoom Out (-)</p></TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => resetPanAndZoom(canvasSize)}>
-                        <RotateCcw className="h-5 w-5" />
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent><p>Reset Zoom</p></TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('in')} disabled={zoomLevel >= MAX_ZOOM}>
-                        <ZoomIn className="h-5 w-5" />
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent><p>Zoom In (+)</p></TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
-            </div>
-        </div>
         )}
 
           {designs.length === 0 ? (
@@ -1213,13 +1221,7 @@ export default function Home() {
               ref={designsRef} 
               id="designs-container"
               className="w-full h-full flex flex-col items-center justify-center cursor-default"
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-               onWheel={(e) => {
+              onWheel={(e) => {
                 const activeElement = document.activeElement;
                 if (activeElement && (activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'INPUT')) {
                   return;
@@ -1351,3 +1353,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
