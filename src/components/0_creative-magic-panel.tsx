@@ -42,7 +42,7 @@ export function CreativeMagicPanel({ title, setTitle, text, setText, handleGener
                     <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Buraya yazılanlar, kapak tasarımı olarak ilk slaytta yer alacaktır.</p>
+                    <p>The text written here will be used as the cover design (first slide).</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
