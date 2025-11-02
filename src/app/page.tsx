@@ -259,34 +259,37 @@ export default function Home() {
 
   const handleGenerate = useCallback(() => {
     setIsLoading(true);
-    setDesigns([]);
-
+    const newDesigns: Design[] = [];
+  
+    // Create a temporary canvas context for text measurement
     const tempCanvas = document.createElement('canvas');
     const ctx = tempCanvas.getContext('2d');
     if (!ctx) {
         setIsLoading(false);
         return;
     }
-
-    const newDesigns: Design[] = [];
+  
     let remainingText = text.trim();
-
+  
+    // 1. Handle the title
     if (title.trim()) {
         newDesigns.push({ text: title.trim(), isTitle: true });
     }
-
+  
+    // 2. Process the body text
     const scalingFactor = canvasSize.width / 1080;
     const baseFontSize = typeof activeFont.size === 'number' ? activeFont.size : 48;
     const finalFontSize = baseFontSize * scalingFactor;
     const finalFontWeight = isBold ? Math.min(Number(activeFont.weight) + 300, 900) : activeFont.weight;
-
+  
     document.fonts.load(`${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`).then(() => {
         ctx.font = `${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`;
-
+  
         const rectWidth = 830 * (canvasSize.width / 1080);
         const textMaxWidth = rectWidth - (100 * (canvasSize.width / 1080));
         const currentLineHeight = typeof activeFont.lineHeight === 'number' ? activeFont.lineHeight : parseFloat(activeFont.lineHeight as string);
-
+  
+        // Continue processing only if there's text left
         while (remainingText.length > 0) {
             const maxLineHeight = 2.5;
             const minLineHeight = 1.2;
@@ -310,9 +313,10 @@ export default function Home() {
         setDesigns(newDesigns);
         setIsLoading(false);
     
+        // Scroll to the first slide after generation
         setTimeout(() => carouselApi.current?.scrollTo(0), 100);
     });
-}, [text, title, canvasSize, activeFont, isBold]);
+  }, [text, title, canvasSize, activeFont, isBold]);
   
    const closePanel = useCallback(() => {
     setIsMobilePanelOpen(false);
@@ -1241,7 +1245,7 @@ export default function Home() {
               }}
             >
                 <div 
-                  className="relative transition-transform duration-75" 
+                  className="relative" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
                   <Carousel className="w-full" setApi={setApi => carouselApi.current = setApi}>
