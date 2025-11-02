@@ -6,8 +6,14 @@ import { CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowUp } from "lucide-react";
+import { Loader2, ArrowUp, Info } from "lucide-react";
 import { Input } from "./ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type CreativeMagicPanelProps = {
   title: string;
@@ -24,10 +30,23 @@ export function CreativeMagicPanel({ title, setTitle, text, setText, handleGener
 
   return (
     <div className="space-y-10 max-w-[1000px] mx-auto w-full">
-      <CardTitle className="text-foreground text-3xl md:text-5xl text-center font-sans ">What will you <span className = "text-primary">Write </span>today?</CardTitle>
+      <CardTitle className="text-foreground text-2xl md:text-3xl text-left font-sans ">Hi, <span className = "text-primary">
+        [Users Name] </span></CardTitle>
       <div className="space-y-4">
         <div className="space-y-2">
-            <Label htmlFor={titleId}>Title (Optional)</Label>
+            <div className="flex items-center gap-2">
+              <Label htmlFor={titleId}>Title (Optional)</Label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Buraya yazılanlar, kapak tasarımı olarak ilk slaytta yer alacaktır.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <Input
                 id={titleId}
                 placeholder="Enter your title here..."
@@ -37,7 +56,7 @@ export function CreativeMagicPanel({ title, setTitle, text, setText, handleGener
             />
         </div>
         <div className="space-y-2">
-            <Label htmlFor={mainTextAreaId}>Body Text</Label>
+            <Label htmlFor={mainTextAreaId}>What will you Write today?</Label>
             <div className="relative text-xl rounded-lg">
             <Textarea
                 id={mainTextAreaId}
