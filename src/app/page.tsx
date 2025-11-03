@@ -1,3 +1,4 @@
+
 "use client";
 
 import { findImages } from "@/ai/flows/find-images-flow";
@@ -73,7 +74,6 @@ const canvasSizes: CanvasSize[] = [
 const ZOOM_STEP = 0.1;
 const MAX_ZOOM = 3.0;
 const MIN_ZOOM = 0.25;
-const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "Art", "Minimal", "Abstract", "Dreamy", "Cinematic", "Surreal", "Vintage", "Futuristic", "Bohemian"];
 
 const measureAndSplitText = (
   context: CanvasRenderingContext2D,
@@ -671,9 +671,11 @@ export default function Home() {
   
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     if (e.touches.length === 2) {
-      e.preventDefault(); // Prevent default scroll/zoom
+      e.preventDefault();
       const touch1 = e.touches[0];
       const touch2 = e.touches[1];
+      if (!touch1 || !touch2) return;
+  
       const midX = (touch1.clientX + touch2.clientX) / 2;
       const midY = (touch1.clientY + touch2.clientY) / 2;
       setPanStart({ x: midX - panOffset.x, y: midY - panOffset.y });
@@ -686,11 +688,11 @@ export default function Home() {
   
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     if (e.touches.length === 2) {
-      e.preventDefault(); // Prevent default scroll/zoom
+      e.preventDefault();
       const touch1 = e.touches[0];
       const touch2 = e.touches[1];
+      if (!touch1 || !touch2) return;
   
-      // Panning
       const midX = (touch1.clientX + touch2.clientX) / 2;
       const midY = (touch1.clientY + touch2.clientY) / 2;
       setPanOffset({
@@ -698,7 +700,6 @@ export default function Home() {
         y: midY - panStart.y,
       });
   
-      // Zooming
       if (pinchState) {
         const newDist = getDistance(touch1, touch2);
         const scale = newDist / pinchState.distance;
@@ -908,7 +909,6 @@ export default function Home() {
   }, [toast]);
 
   const handleKeywordSearch = useCallback((keyword: string) => {
-    setSearchQuery(keyword);
     handleSearchImages(keyword, 1);
   }, [handleSearchImages]);
 
@@ -1407,3 +1407,4 @@ export default function Home() {
 }
 
     
+
