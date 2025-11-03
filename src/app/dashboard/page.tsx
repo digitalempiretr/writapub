@@ -57,9 +57,7 @@ export default function DashboardPage() {
                 </Link>
             </div>
             <div className="ml-auto flex items-center gap-2">
-                 <Button variant="outline" asChild>
-                  <Link href="/">Create New</Link>
-                </Button>
+                {/* The "Create New" button was here and has been moved */}
             </div>
         </header>
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
@@ -132,11 +130,16 @@ export default function DashboardPage() {
 
             <div>
               <Card>
-                <CardHeader>
-                  <CardTitle>Recent Designs</CardTitle>
-                  <CardDescription>
-                    A list of your most recently created designs.
-                  </CardDescription>
+                <CardHeader className="flex flex-row items-start justify-between">
+                  <div>
+                    <CardTitle>Recent Designs</CardTitle>
+                    <CardDescription>
+                      A list of your most recently created designs.
+                    </CardDescription>
+                  </div>
+                  <Button variant="outline" asChild>
+                    <Link href="/">Create New</Link>
+                  </Button>
                 </CardHeader>
                 <CardContent>
                   <Table>
