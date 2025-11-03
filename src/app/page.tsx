@@ -30,7 +30,7 @@ import {
 
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw, Shapes, RefreshCcw, RefreshCcwIcon, Info } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw, Shapes, RefreshCcw, RefreshCcwIcon, Info, Move } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -58,9 +58,16 @@ import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { Resizable, ResizeCallbackData } from 'react-resizable';
 
-type Design = {
-  text: string;
+type TextElement = {
+  id: string;
+  type: 'text';
+  content: string;
   isTitle: boolean;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotation: number;
 };
 
 type TextAlign = 'left' | 'center' | 'right';
@@ -81,12 +88,12 @@ const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "
 
 
 const measureAndSplitText = (
-  context: CanvasRenderingContext2D,
+  ctx: CanvasRenderingContext2D,
   text: string,
   maxWidth: number,
   baseMaxLines: number,
   extendedMaxLines: number
-): { textForCanvas: string; remainingText: string } => {
+): { textForCanvas: string; remainingText: string, lines: number } => {
   const paragraphs = text.split('\n');
   let allWords: string[] = [];
   paragraphs.forEach((p, index) => {
@@ -118,7 +125,7 @@ const measureAndSplitText = (
     }
 
     const testLine = currentLine ? `${currentLine} ${word}` : word;
-    if (context.measureText(testLine).width <= maxWidth) {
+    if (ctx.measureText(testLine).width <= maxWidth) {
       currentLine = testLine;
     } else {
       lines.push(currentLine);
@@ -150,18 +157,18 @@ const measureAndSplitText = (
   if (currentLine) {
     lines.push(currentLine);
   }
-
+  
+  const lineCount = lines.length;
   const textForCanvas = lines.join('\n');
   const finalRemainingText = remainingWords.join(' ').replace(/ \n /g, '\n').trim();
 
-  return { textForCanvas, remainingText: finalRemainingText };
+  return { textForCanvas, remainingText: finalRemainingText, lines: lineCount };
 };
 
 
 export default function Home() {
   const [title, setTitle] = useState('');
   const [text, setText] = useState(defaultText);
-  const [designs, setDesigns] = useState<Design[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [isGeneratingAnimation, setIsGeneratingAnimation] = useState(false);
@@ -249,10 +256,9 @@ export default function Home() {
   const [panStart, setPanStart] = useState({ x: 0, y: 0 });
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
   
-  const [elements, setElements] = useState<CanvasElement[]>([]);
+  const [elements, setElements] = useState<TextElement[][]>([]);
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
-  const [areElementsEnabled, setAreElementsEnabled] = useState(true);
-
+  
   const [pinchState, setPinchState] = useState<{ distance: number; zoom: number } | null>(null);
 
 
@@ -265,10 +271,8 @@ export default function Home() {
 
   const handleGenerate = useCallback(() => {
     setIsLoading(true);
-    setDesigns([]); // Clear previous designs
-    let newDesigns: Design[] = [];
+    setElements([]); // Clear previous elements
   
-    // Create a temporary canvas context for text measurement
     const tempCanvas = document.createElement('canvas');
     const ctx = tempCanvas.getContext('2d');
     if (!ctx) {
@@ -276,14 +280,18 @@ export default function Home() {
         return;
     }
   
-    let remainingText = text.trim();
-  
-    // 1. Handle the title
-    if (title.trim()) {
-        newDesigns.push({ text: title.trim(), isTitle: true });
+    let currentText = text.trim();
+    let currentTitle = title.trim();
+    if (!currentTitle) {
+      const firstSentenceMatch = currentText.match(/^([^.!?]+[.!?])/);
+      if (firstSentenceMatch) {
+        currentTitle = firstSentenceMatch[1].trim();
+        currentText = currentText.substring(firstSentenceMatch[1].length).trim();
+      }
     }
   
-    // 2. Process the body text
+    const newSlides: TextElement[][] = [];
+  
     const scalingFactor = canvasSize.width / 1080;
     const baseFontSize = typeof activeFont.size === 'number' ? activeFont.size : 48;
     const finalFontSize = baseFontSize * scalingFactor;
@@ -295,9 +303,26 @@ export default function Home() {
         const rectWidth = 830 * (canvasSize.width / 1080);
         const textMaxWidth = rectWidth - (100 * (canvasSize.width / 1080));
         const currentLineHeight = typeof activeFont.lineHeight === 'number' ? activeFont.lineHeight : parseFloat(activeFont.lineHeight as string);
+        const lineHeightPx = finalFontSize * currentLineHeight;
   
-        // Continue processing only if there's text left
-        while (remainingText.length > 0) {
+        // 1. Handle the title slide
+        if (currentTitle) {
+            const titleHeight = 150 * scalingFactor;
+            newSlides.push([{
+              id: `title-${Date.now()}`,
+              type: 'text',
+              content: currentTitle,
+              isTitle: true,
+              x: 50 * scalingFactor,
+              y: (canvasSize.height - titleHeight) / 2,
+              width: textMaxWidth,
+              height: titleHeight,
+              rotation: 0
+            }]);
+        }
+  
+        // 2. Process the body text
+        while (currentText.length > 0) {
             const maxLineHeight = 2.5;
             const minLineHeight = 1.2;
             const maxLinesForMinHeight = 14;
@@ -306,21 +331,33 @@ export default function Home() {
             let dynamicMaxLines = Math.floor(maxLinesForMinHeight + slope * (currentLineHeight - minLineHeight));
             dynamicMaxLines = Math.max(maxLinesForMaxHeight, Math.min(maxLinesForMinHeight, dynamicMaxLines));
     
-            const result = measureAndSplitText(ctx, remainingText, textMaxWidth, dynamicMaxLines, dynamicMaxLines + 2);
+            const result = measureAndSplitText(ctx, currentText, textMaxWidth, dynamicMaxLines, dynamicMaxLines + 2);
             
-            newDesigns.push({ text: result.textForCanvas, isTitle: false });
-            remainingText = result.remainingText;
+            const textHeight = result.lines * lineHeightPx;
+
+            newSlides.push([{
+                id: `text-${newSlides.length}-${Date.now()}`,
+                type: 'text',
+                content: result.textForCanvas,
+                isTitle: false,
+                x: 50 * scalingFactor,
+                y: (canvasSize.height - textHeight) / 2,
+                width: textMaxWidth,
+                height: textHeight,
+                rotation: 0,
+            }]);
+            
+            currentText = result.remainingText;
     
-            if (newDesigns.length > 50) { 
+            if (newSlides.length > 50) { 
                 console.error("Exceeded 50 slides, breaking loop.");
                 break;
             }
         }
     
-        setDesigns(newDesigns);
+        setElements(newSlides);
         setIsLoading(false);
     
-        // Scroll to the first slide after generation
         setTimeout(() => carouselApi.current?.scrollTo(0), 100);
     });
   }, [text, title, canvasSize, activeFont, isBold]);
@@ -477,97 +514,36 @@ export default function Home() {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       const reader = new FileReader();
-      reader.onloadend = () => {
-        const newElement: CanvasElement = {
-          id: `element-${Date.now()}`,
-          type: 'image',
-          url: reader.result as string,
-          x: 50,
-          y: 50,
-          width: 150,
-          height: 150,
-          rotation: 0,
-          opacity: 1,
-          shape: 'square',
-          alignment: 'left',
-        };
-        setElements(prev => [...prev, newElement]);
-        setSelectedElement(newElement.id);
-      };
+      // reader.onloadend = () => {
+      //   const newElement: CanvasElement = {
+      //     id: `element-${Date.now()}`,
+      //     type: 'image',
+      //     url: reader.result as string,
+      //     x: 50,
+      //     y: 50,
+      //     width: 150,
+      //     height: 150,
+      //     rotation: 0,
+      //     opacity: 1,
+      //     shape: 'square',
+      //     alignment: 'left',
+      //   };
+      //   setElements(prev => [...prev, newElement]);
+      //   setSelectedElement(newElement.id);
+      // };
       reader.readAsDataURL(file);
     }
   };
 
-  const updateElement = (id: string, newProps: Partial<CanvasElement>) => {
-    setElements(prev =>
-      prev.map(el => (el.id === id ? { ...el, ...newProps } : el))
+  const updateElement = (slideIndex: number, elementId: string, newProps: Partial<TextElement>) => {
+    setElements(prevSlides =>
+      prevSlides.map((slide, sIndex) =>
+        sIndex === slideIndex
+          ? slide.map(el => (el.id === elementId ? { ...el, ...newProps } : el))
+          : slide
+      )
     );
   };
-
-  const renderCanvas = useCallback((design: Design, index: number) => {
-    let currentBg: string | undefined;
-    let finalImageUrl: string | undefined;
-
-    switch(backgroundType) {
-        case "flat":
-            currentBg = bgColor;
-            finalImageUrl = undefined;
-            break;
-        case "gradient":
-            currentBg = gradientBg;
-            finalImageUrl = undefined;
-            break;
-        case "image":
-            currentBg = imageBgUrl; 
-            finalImageUrl = imageBgUrl;
-            break;
-        default:
-            currentBg = bgColor;
-            finalImageUrl = undefined;
-            break;
-    }
-    
-    return (
-        <ImageCanvas
-          isTitle={design.isTitle}
-          fontFamily={activeFont.fontFamily}
-          fontWeight={activeFont.weight}
-          fontSize={activeFont.size}
-          lineHeight={activeFont.lineHeight}
-          text={design.text}
-          textColor={textColor}
-          textOpacity={textOpacity}
-          backgroundColor={currentBg}
-          backgroundImageUrl={finalImageUrl}
-          width={canvasSize.width}
-          height={canvasSize.height}
-          onCanvasReady={(canvas) => {
-            canvasRefs.current[index] = canvas;
-          }}
-          rectColor={rectBgColor}
-          rectOpacity={isTextBoxEnabled ? rectOpacity : 0}
-          overlayColor={overlayColor}
-          overlayOpacity={isOverlayEnabled ? overlayOpacity : 0}
-          textAlign={textAlign}
-          isBold={isBold}
-          isUppercase={isUppercase}
-          textShadowEnabled={textShadowEnabled}
-          shadows={shadows}
-          textStroke={textStroke}
-          strokeColor={strokeColor}
-          strokeWidth={strokeWidth}
-          fontSmoothing={activeEffect.style.fontSmoothing}
-          elements={elements}
-          areElementsEnabled={areElementsEnabled}
-        />
-    )
-  }, [
-    backgroundType, activeFont, bgColor, textColor, textOpacity, 
-    gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, 
-    overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, 
-    shadows, textStroke, strokeColor, strokeWidth, 
-    isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize, elements, areElementsEnabled
-  ]);
   
   const handleMobileTabClick = (tab: string) => {
     if (activeSettingsTab === tab && isMobilePanelOpen) {
@@ -595,7 +571,7 @@ export default function Home() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const activeElement = document.activeElement;
-      if (activeElement && (activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'INPUT')) {
+      if (activeElement && (activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'INPUT' || activeElement.getAttribute('contenteditable') === 'true')) {
         return;
       }
       if (e.code === 'Space') {
@@ -713,10 +689,10 @@ export default function Home() {
     let newZoom;
     if (isMobile) {
         switch(size.name) {
-            case 'Story': newZoom = 0.8; break;
-            case 'Post': newZoom = 1.0; break;
-            case 'Square': newZoom = 1.0; break;
-            default: newZoom = 1.0; break;
+            case 'Story': newZoom = 0.4; break;
+            case 'Post': newZoom = 0.8; break;
+            case 'Square': newZoom = 0.9; break;
+            default: newZoom = 0.8; break;
         }
     } else {
         switch(size.name) {
@@ -876,7 +852,6 @@ export default function Home() {
     }
     setIsSearching(true);
     setSearchPage(page);
-    setSearchQuery(query);
 
     try {
       const results = await findImages({ query, page: page, per_page: 9 });
@@ -899,8 +874,9 @@ export default function Home() {
       setIsSearching(false);
     }
   }, [toast]);
-
+  
   const handleKeywordSearch = (keyword: string) => {
+    setSearchQuery(keyword);
     handleSearchImages(keyword, 1);
   };
 
@@ -919,7 +895,6 @@ export default function Home() {
     setRectBgColor("#f4fdff");
     setRectOpacity(0.6);
   };
-
 
   const renderActiveTabContent = () => {
     const props = {
@@ -983,7 +958,7 @@ export default function Home() {
         setRectOpacity, 
         activeEffect, 
         setActiveEffect: handleEffectChange, 
-        designs, 
+        designs: elements, // Pass elements as designs
         handleDownloadAll: () => {}, 
         currentSlide,
         handleDownload: () => {}, 
@@ -1003,13 +978,13 @@ export default function Home() {
         setDesignToDelete, 
         handleLogDesign, 
         handleImageUpload,
-        elements, 
-        setElements, 
+        elements: [], 
+        setElements: ()=>{}, 
         selectedElement, 
         setSelectedElement, 
-        updateElement,
-        areElementsEnabled, 
-        setAreElementsEnabled,
+        updateElement: ()=>{},
+        areElementsEnabled: true, 
+        setAreElementsEnabled: ()=>{},
     };
 
     switch (activeSettingsTab) {
@@ -1037,7 +1012,7 @@ export default function Home() {
   const renderBulletNavigation = () => {
     if (!carouselApi.current) return null;
     
-    const totalSlides = designs.length;
+    const totalSlides = elements.length;
     if (totalSlides <= 1) return null;
 
     const visibleDots = 7;
@@ -1089,6 +1064,71 @@ export default function Home() {
       </div>
     );
   };
+
+  const TextElementComponent = ({ element, slideIndex }: { element: TextElement, slideIndex: number }) => {
+    const handleStop = (e: DraggableEvent, data: DraggableData) => {
+      updateElement(slideIndex, element.id, { x: data.x, y: data.y });
+    };
+  
+    const onResize = (event: React.SyntheticEvent, { size }: ResizeCallbackData) => {
+      updateElement(slideIndex, element.id, { width: size.width, height: size.height });
+    };
+
+    const textStyle: React.CSSProperties = {
+      fontFamily: activeFont.fontFamily,
+      fontWeight: isBold ? 'bold' : activeFont.weight,
+      fontSize: `${(element.isTitle ? 1.5 : 1) * (typeof activeFont.size === 'number' ? activeFont.size : 48)}px`,
+      lineHeight: activeFont.lineHeight,
+      color: textColor,
+      opacity: textOpacity,
+      textAlign: textAlign,
+      textTransform: isUppercase ? 'uppercase' : 'none',
+      whiteSpace: 'pre-wrap',
+      wordWrap: 'break-word'
+    };
+
+     if (textShadowEnabled && shadows.length > 0) {
+      textStyle.textShadow = shadows.map(s => `${s.offsetX}${s.offsetXUnit} ${s.offsetY}${s.offsetYUnit} ${s.blur}${s.blurUnit} ${s.color}`).join(', ');
+    }
+  
+    return (
+      <Draggable
+        position={{ x: element.x, y: element.y }}
+        onStop={handleStop}
+        handle=".drag-handle"
+        bounds="parent"
+      >
+        <Resizable
+          height={element.height}
+          width={element.width}
+          onResize={onResize}
+          minConstraints={[100, 50]}
+          maxConstraints={[canvasSize.width * 0.9, canvasSize.height * 0.9]}
+        >
+          <div
+            className="group absolute"
+            style={{ width: element.width, height: element.height, transform: `rotate(${element.rotation}deg)` }}
+            onClick={() => setSelectedElement(element.id)}
+          >
+            <div
+                className="drag-handle absolute -top-2.5 -left-2.5 z-10 p-1 bg-primary rounded-full text-primary-foreground opacity-0 group-hover:opacity-100 transition-opacity cursor-move"
+                >
+                <Move className="w-3 h-3" />
+            </div>
+            <div
+              contentEditable
+              suppressContentEditableWarning
+              onBlur={(e) => updateElement(slideIndex, element.id, { content: e.currentTarget.innerText })}
+              style={textStyle}
+              className="w-full h-full p-2 outline-none focus:ring-2 focus:ring-primary"
+            >
+              {element.content}
+            </div>
+          </div>
+        </Resizable>
+      </Draggable>
+    );
+  };
   
   if (!isClient) {
     return (
@@ -1123,7 +1163,7 @@ export default function Home() {
       * It contains the main settings tabs and their content.
       *
       *******************************************************/}
-      {designs.length > 0 && (
+      {elements.length > 0 && (
           <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[3vw]")}>
               <Tabs
                   orientation="vertical"
@@ -1192,7 +1232,7 @@ export default function Home() {
           onTouchEnd={handleTouchEnd}
           style={{ touchAction: 'none' }}
         >
-        {designs.length > 0 && (
+        {elements.length > 0 && (
             <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
                 <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
                     {canvasSizes.map(size => (
@@ -1251,7 +1291,7 @@ export default function Home() {
             </div>
         )}
 
-          {designs.length === 0 ? (
+          {elements.length === 0 ? (
             <div className="w-full max-w-2xl">
               <CreativeMagicPanel 
                   title={title}
@@ -1277,19 +1317,37 @@ export default function Home() {
               }}
             >
                 <div 
-                  className="relative transition-transform duration-75" 
+                  className="relative" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
                   <Carousel className="w-full" setApi={setApi => carouselApi.current = setApi}>
                     <CarouselContent>
-                      {designs.map((design, index) => (
+                      {elements.map((slideElements, index) => (
                         <CarouselItem key={index} data-index={index}>
                           <div 
                             className="p-1 group relative"
                           >
-                            <Card className="overflow-hidden border-0">
-                              <CardContent className="p-0 relative bg-card" style={{ aspectRatio: `${canvasSize.width}/${canvasSize.height}`}}>
-                                {renderCanvas(design, index)}
+                            <Card className="overflow-hidden border-0 shadow-lg">
+                              <CardContent className="p-0 relative bg-card" style={{ width: canvasSize.width, height: canvasSize.height }}>
+                                <ImageCanvas
+                                  isTitle={false}
+                                  backgroundColor={backgroundType === 'flat' ? bgColor : (backgroundType === 'gradient' ? gradientBg : undefined)}
+                                  backgroundImageUrl={backgroundType === 'image' ? imageBgUrl : undefined}
+                                  width={canvasSize.width}
+                                  height={canvasSize.height}
+                                  onCanvasReady={(canvas) => {
+                                    canvasRefs.current[index] = canvas;
+                                  }}
+                                  overlayColor={overlayColor}
+                                  overlayOpacity={isOverlayEnabled ? overlayOpacity : 0}
+                                  elements={[]}
+                                  areElementsEnabled={true}
+                                />
+                                <div className="absolute inset-0 pointer-events-none">
+                                  {slideElements.map(el => (
+                                    <TextElementComponent key={el.id} element={el} slideIndex={index} />
+                                  ))}
+                                </div>
                               </CardContent>
                             </Card>
                             <div className="absolute top-4 right-4 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -1358,7 +1416,7 @@ export default function Home() {
       * It uses a Sheet component to display settings from the bottom.
       *
       *******************************************************/}
-      {isClient && designs.length > 0 && (
+      {isClient && elements.length > 0 && (
           <div ref={mobilePanelRef} className="md:hidden">
               <Sheet open={isMobilePanelOpen} onOpenChange={(isOpen) => {
                   if (!isOpen) {

@@ -17,32 +17,14 @@ export type FontOption = {
 
 
 export type ImageCanvasProps = {
-  text?: string;
   isTitle?: boolean;
-  fontFamily?: string;
-  fontWeight?: string | number;
-  fontSize?: number | string;
-  lineHeight?: number | string; 
   backgroundColor?: string;
-  textColor?: string;
-  textOpacity?: number;
   width: number;
   height: number;
   onCanvasReady: (canvas: HTMLCanvasElement) => void;
   backgroundImageUrl?: string;
-  rectColor?: string;
-  rectOpacity?: number;
   overlayColor?: string;
   overlayOpacity?: number;
-  textAlign?: 'left' | 'center' | 'right';
-  isBold?: boolean;
-  isUppercase?: boolean;
-  textShadowEnabled?: boolean;
-  shadows?: Shadow[];
-  textStroke?: boolean;
-  strokeColor?: string;
-  strokeWidth?: number;
-  fontSmoothing?: React.CSSProperties;
   elements: CanvasElement[];
   areElementsEnabled: boolean;
 };
@@ -121,46 +103,6 @@ const ImageCanvasComponent = ({
           ctx.fillRect(0, 0, width, height);
         }
       
-        if (areElementsEnabled) {
-          for (const element of elements) {
-            if (element.type === 'image' && element.url) {
-              try {
-                const img = await loadImage(element.url);
-                ctx.save();
-                ctx.globalAlpha = element.opacity;
-      
-                const scalingFactor = width / 1080;
-                let drawX = element.x * scalingFactor;
-                let drawY = element.y * scalingFactor;
-                const elWidth = element.width * scalingFactor;
-                const elHeight = element.height * scalingFactor;
-      
-                if (element.alignment === 'center') {
-                  drawX = (width - elWidth) / 2;
-                } else if (element.alignment === 'right') {
-                  drawX = width - elWidth - element.x * scalingFactor;
-                }
-      
-                ctx.translate(drawX + elWidth / 2, drawY + elHeight / 2);
-                ctx.rotate(element.rotation * Math.PI / 180);
-                ctx.translate(-(drawX + elWidth / 2), -(drawY + elHeight / 2));
-      
-                if (element.shape === 'circle') {
-                  ctx.beginPath();
-                  ctx.arc(drawX + elWidth / 2, drawY + elHeight / 2, Math.min(elWidth, elHeight) / 2, 0, Math.PI * 2, true);
-                  ctx.closePath();
-                  ctx.clip();
-                }
-                
-                ctx.drawImage(img, drawX, drawY, elWidth, elHeight);
-                ctx.restore();
-              } catch (error) {
-                console.error("Error drawing element image: ", error);
-              }
-            }
-          }
-        }
-        
         onCanvasReady(canvas);
       };
 
@@ -223,3 +165,5 @@ const ImageCanvasComponent = ({
   );
 }
 export const ImageCanvas = React.memo(ImageCanvasComponent);
+
+    
