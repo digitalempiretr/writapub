@@ -6,18 +6,18 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge"
 import { MoreHorizontal, FileText, BarChart2, Star, Settings, Home, Files, CreditCard, User } from "lucide-react"
 import Link from 'next/link'
+import { Logo } from "@/components/logo"
 
 export default function DashboardPage() {
   return (
     <div className="flex min-h-screen w-full bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-60 flex-col border-r bg-background sm:flex">
-        <div className="flex flex-col gap-y-4 p-4">
-            <Link href="/" className="flex items-center gap-2 font-semibold text-lg">
-                <FileText className="h-6 w-6" />
-                <span>Writa Dashboard</span>
+        <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+            <Link href="/" className="flex items-center gap-2 font-semibold">
+                <Logo className="h-6 w-auto text-primary" />
             </Link>
         </div>
-        <nav className="flex flex-col gap-y-1 px-4">
+        <nav className="flex flex-col gap-y-1 p-2">
           <Button variant="secondary" className="justify-start">
             <Home className="mr-2 h-4 w-4" />
             Dashboard
@@ -52,8 +52,7 @@ export default function DashboardPage() {
         <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
             <div className="sm:hidden">
                  <Link href="/" className="flex items-center gap-2 font-semibold text-lg">
-                    <FileText className="h-6 w-6" />
-                    <span>Writa</span>
+                    <Logo className="h-6 w-auto text-primary" />
                 </Link>
             </div>
             <div className="ml-auto flex items-center gap-2">
@@ -239,3 +238,5 @@ export default function DashboardPage() {
     </div>
   )
 }
+
+    
