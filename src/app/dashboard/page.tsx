@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { MoreHorizontal, FileText, BarChart2, Star, Settings, Home, Files, CreditCard, User } from "lucide-react"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
+import { MoreHorizontal, FileText, BarChart2, Star, Settings, Home, Files, CreditCard, User, LogOut } from "lucide-react"
 import Link from 'next/link'
 import { Logo } from "@/components/logo"
 
@@ -36,16 +37,37 @@ export default function DashboardPage() {
           </Button>
         </nav>
         <div className="mt-auto p-4">
-             <div className="flex items-center gap-2">
-                <Avatar>
-                  <AvatarImage src="https://picsum.photos/seed/user/40/40" alt="User Avatar" />
-                  <AvatarFallback>U</AvatarFallback>
-                </Avatar>
-                <div>
-                    <p className="font-semibold text-sm">[User Name]</p>
-                    <p className="text-xs text-muted-foreground">Pro Plan</p>
-                </div>
-              </div>
+             <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="flex items-center gap-2 w-full justify-start p-2 h-auto">
+                        <Avatar>
+                          <AvatarImage src="https://picsum.photos/seed/user/40/40" alt="User Avatar" />
+                          <AvatarFallback>U</AvatarFallback>
+                        </Avatar>
+                        <div>
+                            <p className="font-semibold text-sm">[User Name]</p>
+                            <p className="text-xs text-muted-foreground">Pro Plan</p>
+                        </div>
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent side="top" align="start" className="w-56">
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Settings</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                         <CreditCard className="mr-2 h-4 w-4" />
+                        <span>Billing</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>Log out</span>
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
         </div>
       </aside>
       <div className="flex flex-1 flex-col sm:ml-60">
@@ -68,7 +90,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
@@ -107,22 +129,6 @@ export default function DashboardPage() {
                    <p className="text-xs text-muted-foreground">
                     in current billing cycle
                   </p>
-                </CardContent>
-              </Card>
-              <Card>
-                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Account
-                  </CardTitle>
-                  <Settings className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                    <Link href="#" className="text-sm font-medium hover:underline">
-                        Manage Settings
-                    </Link>
-                     <p className="text-xs text-muted-foreground">
-                        Profile, billing, and more.
-                    </p>
                 </CardContent>
               </Card>
             </div>
@@ -225,16 +231,39 @@ export default function DashboardPage() {
                     <User className="h-5 w-5" />
                      <span>Profile</span>
                 </Button>
-                 <Button variant="ghost" size="icon" className="h-full w-full rounded-none flex-col text-xs gap-1">
-                    <Avatar className="h-6 w-6">
-                      <AvatarImage src="https://picsum.photos/seed/user/40/40" alt="User Avatar" />
-                      <AvatarFallback>U</AvatarFallback>
-                    </Avatar>
-                     <span>Me</span>
-                </Button>
+                 <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-full w-full rounded-none flex-col text-xs gap-1">
+                            <Avatar className="h-6 w-6">
+                              <AvatarImage src="https://picsum.photos/seed/user/40/40" alt="User Avatar" />
+                              <AvatarFallback>U</AvatarFallback>
+                            </Avatar>
+                             <span>Me</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                     <DropdownMenuContent side="top" align="end" className="w-56">
+                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                            <Settings className="mr-2 h-4 w-4" />
+                            <span>Settings</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <CreditCard className="mr-2 h-4 w-4" />
+                            <span>Billing</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                            <LogOut className="mr-2 h-4 w-4" />
+                            <span>Log out</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
         </nav>
       </div>
     </div>
   )
 }
+
+    
