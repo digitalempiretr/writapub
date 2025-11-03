@@ -5,32 +5,19 @@ import React, { useId, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { AlignCenter, AlignLeft, AlignRight, Circle, ImageUp, Plus, Settings, Trash2, Square as SquareIcon } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, Circle, ImageUp, Plus, Settings, Trash2, Square as SquareIcon, Type } from "lucide-react";
 import { Separator } from "./ui/separator";
 import Image from "next/image";
 import { Slider } from "./ui/slider";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Switch } from "./ui/switch";
-
-
-export type CanvasElement = {
-  id: string;
-  type: 'image' | 'text';
-  url?: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  rotation: number;
-  opacity: number;
-  shape: 'square' | 'circle';
-  alignment: 'left' | 'center' | 'right';
-};
+import type { CanvasElement } from "@/lib/types";
 
 
 type ElementsPanelProps = {
   handleImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleAddText: () => void;
   elements: CanvasElement[];
   selectedElement: string | null;
   setSelectedElement: (id: string | null) => void;
@@ -42,6 +29,7 @@ type ElementsPanelProps = {
 
 export function ElementsPanel({ 
     handleImageUpload, 
+    handleAddText,
     elements,
     selectedElement,
     setSelectedElement,
@@ -69,10 +57,11 @@ export function ElementsPanel({
 
   return (
     <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-4 mobile-tab-content">
-      <div className="flex justify-start items-center">
+      <div className="flex justify-start items-center gap-2">
+        <Button size="sm" onClick={handleAddText}><Type className="mr-2 h-4 w-4" /> Add Textbox</Button>
         <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
           <PopoverTrigger asChild>
-            <Button size="sm"><Plus className="mr-2 h-4 w-4" /> Add Photo</Button>
+            <Button size="sm" variant="outline"><Plus className="mr-2 h-4 w-4" /> Add Photo</Button>
           </PopoverTrigger>
           <PopoverContent className="w-80" align="end">
               <div className="space-y-4">
@@ -115,7 +104,7 @@ export function ElementsPanel({
                       />
                   </div>
 
-                  {currentElement && areElementsEnabled && (
+                  {currentElement && areElementsEnabled && currentElement.type === 'image' && (
                     <div className="space-y-4 pt-4 border-t">
                         <Label className="font-medium">Selected Element Settings</Label>
                         <div className="space-y-2">
@@ -179,8 +168,15 @@ export function ElementsPanel({
                                 selectedElement === el.id ? "border-primary bg-primary/10" : "border-border"
                             )}
                         >
-                            <Image src={el.url!} alt="element" width={40} height={40} className="rounded object-cover aspect-square"/>
-                            <p className="text-sm font-medium truncate flex-grow">Element</p>
+                            {el.type === 'image' && el.url && (
+                                <Image src={el.url} alt="element" width={40} height={40} className="rounded object-cover aspect-square"/>
+                            )}
+                             {el.type === 'text' && (
+                                <Type className="h-10 w-10 p-2 text-muted-foreground" />
+                            )}
+                            <p className="text-sm font-medium truncate flex-grow">
+                                {el.type === 'image' ? `Image Element` : el.text}
+                            </p>
                             <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openSettingsForElement(el.id)}>
                                 <Settings className="h-4 w-4 text-muted-foreground"/>
                             </Button>
@@ -193,7 +189,7 @@ export function ElementsPanel({
             ) : (
                 <div className="text-center py-8">
                   <p className="text-sm text-muted-foreground">No elements added yet.</p>
-                  <p className="text-xs text-muted-foreground">Click "Add Photo" to upload your logo.</p>
+                  <p className="text-xs text-muted-foreground">Click "Add" buttons to add elements.</p>
                 </div>
             )}
         </div>
