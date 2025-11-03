@@ -4,28 +4,70 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { MoreHorizontal, FileText, BarChart2, Star, Settings } from "lucide-react"
+import { MoreHorizontal, FileText, BarChart2, Star, Settings, Home, Files, CreditCard, User } from "lucide-react"
 import Link from 'next/link'
 
 export default function DashboardPage() {
   return (
-    <div className="flex min-h-screen w-full flex-col bg-muted/40">
-      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+    <div className="flex min-h-screen w-full bg-muted/40">
+      <aside className="fixed inset-y-0 left-0 z-10 hidden w-60 flex-col border-r bg-background sm:flex">
+        <div className="flex flex-col gap-y-4 p-4">
+            <Link href="/" className="flex items-center gap-2 font-semibold text-lg">
+                <FileText className="h-6 w-6" />
+                <span>Writa Dashboard</span>
+            </Link>
+        </div>
+        <nav className="flex flex-col gap-y-1 px-4">
+          <Button variant="secondary" className="justify-start">
+            <Home className="mr-2 h-4 w-4" />
+            Dashboard
+          </Button>
+          <Button variant="ghost" className="justify-start">
+            <Files className="mr-2 h-4 w-4" />
+            My Designs
+          </Button>
+          <Button variant="ghost" className="justify-start">
+            <CreditCard className="mr-2 h-4 w-4" />
+            Billing
+          </Button>
+          <Button variant="ghost" className="justify-start">
+            <User className="mr-2 h-4 w-4" />
+            Profile
+          </Button>
+        </nav>
+        <div className="mt-auto p-4">
+             <div className="flex items-center gap-2">
+                <Avatar>
+                  <AvatarImage src="https://picsum.photos/seed/user/40/40" alt="User Avatar" />
+                  <AvatarFallback>U</AvatarFallback>
+                </Avatar>
+                <div>
+                    <p className="font-semibold text-sm">[User Name]</p>
+                    <p className="text-xs text-muted-foreground">Pro Plan</p>
+                </div>
+              </div>
+        </div>
+      </aside>
+      <div className="flex flex-1 flex-col sm:ml-60">
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+            <div className="sm:hidden">
+                 <Link href="/" className="flex items-center gap-2 font-semibold text-lg">
+                    <FileText className="h-6 w-6" />
+                    <span>Writa</span>
+                </Link>
+            </div>
+            <div className="ml-auto flex items-center gap-2">
+                 <Button variant="outline" asChild>
+                  <Link href="/">Create New</Link>
+                </Button>
+            </div>
+        </header>
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-                <p className="text-muted-foreground">Welcome back, [User Name]!</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" asChild>
-                  <Link href="/">Create New</Link>
-                </Button>
-                <Avatar>
-                  <AvatarImage src="https://picsum.photos/seed/user/40/40" alt="User Avatar" />
-                  <AvatarFallback>U</AvatarFallback>
-                </Avatar>
+                <p className="text-muted-foreground">An overview of your creative journey.</p>
               </div>
             </div>
 
@@ -71,13 +113,18 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Account Settings</CardTitle>
+                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Account
+                  </CardTitle>
                   <Settings className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                        Manage your subscription, billing, and profile information.
+                    <Link href="#" className="text-sm font-medium hover:underline">
+                        Manage Settings
+                    </Link>
+                     <p className="text-xs text-muted-foreground">
+                        Profile, billing, and more.
                     </p>
                 </CardContent>
               </Card>
@@ -158,6 +205,33 @@ export default function DashboardPage() {
             </div>
           </div>
         </main>
+         <nav className="fixed inset-x-0 bottom-0 z-10 border-t bg-background sm:hidden">
+            <div className="grid grid-cols-5 h-14">
+                <Button variant="ghost" size="icon" className="h-full w-full rounded-none flex-col text-xs gap-1">
+                    <Home className="h-5 w-5" />
+                    <span>Home</span>
+                </Button>
+                <Button variant="ghost" size="icon" className="h-full w-full rounded-none flex-col text-xs gap-1">
+                    <Files className="h-5 w-5" />
+                     <span>Designs</span>
+                </Button>
+                <Button variant="ghost" size="icon" className="h-full w-full rounded-none flex-col text-xs gap-1">
+                    <CreditCard className="h-5 w-5" />
+                     <span>Billing</span>
+                </Button>
+                 <Button variant="ghost" size="icon" className="h-full w-full rounded-none flex-col text-xs gap-1">
+                    <User className="h-5 w-5" />
+                     <span>Profile</span>
+                </Button>
+                 <Button variant="ghost" size="icon" className="h-full w-full rounded-none flex-col text-xs gap-1">
+                    <Avatar className="h-6 w-6">
+                      <AvatarImage src="https://picsum.photos/seed/user/40/40" alt="User Avatar" />
+                      <AvatarFallback>U</AvatarFallback>
+                    </Avatar>
+                     <span>Me</span>
+                </Button>
+            </div>
+        </nav>
       </div>
     </div>
   )
