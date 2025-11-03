@@ -14,8 +14,8 @@ export default function DashboardPage() {
     <div className="flex min-h-screen w-full bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-60 flex-col border-r bg-background sm:flex">
         <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <Link href="/" className="flex items-center gap-2">
-                <Logo className="text-[1.5rem] text-primary" />
+            <Link href="/" className="flex items-center gap-2 font-semibold">
+                <Logo className="h-6 w-auto text-primary" />
             </Link>
         </div>
         <nav className="flex flex-col gap-y-1 p-2">
