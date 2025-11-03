@@ -855,8 +855,8 @@ export default function Home() {
     setBackgroundType('image');
   };
 
-  const handleSearchImages = useCallback(async (page = 1) => {
-    if (!searchQuery) {
+  const handleSearchImages = useCallback(async (query: string, page = 1) => {
+    if (!query) {
       toast({
         title: "Search query is empty",
         description: "Please enter a term to search for images.",
@@ -866,9 +866,10 @@ export default function Home() {
     }
     setIsSearching(true);
     setSearchPage(page);
+    setSearchQuery(query);
 
     try {
-      const results = await findImages({ query: searchQuery, page: page, per_page: 9 });
+      const results = await findImages({ query, page: page, per_page: 9 });
       if (page === 1) {
         setSearchedImages(results.imageUrls);
       } else {
@@ -887,11 +888,10 @@ export default function Home() {
     } finally {
       setIsSearching(false);
     }
-  }, [searchQuery, toast]);
+  }, [toast]);
 
   const handleKeywordSearch = (keyword: string) => {
-    setSearchQuery(keyword);
-    handleSearchImages(1);
+    handleSearchImages(keyword, 1);
   };
 
   const handleFeelLucky = () => {
@@ -928,7 +928,7 @@ export default function Home() {
         handleImageBgUrlSelect: handleImageBgUrlSelect,
         searchQuery, 
         setSearchQuery, 
-        handleSearchImages: handleSearchImages, 
+        handleSearchImages: () => handleSearchImages(searchQuery, 1),
         isSearching, 
         searchedImages,
         handleKeywordSearch: handleKeywordSearch, 
