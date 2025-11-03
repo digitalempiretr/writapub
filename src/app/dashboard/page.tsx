@@ -59,7 +59,7 @@ export default function DashboardPage() {
                 {/* The "Create New" button was here and has been moved */}
             </div>
         </header>
-        <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+        <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:pt-6 md:gap-8">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
@@ -238,5 +238,3 @@ export default function DashboardPage() {
     </div>
   )
 }
-
-    
