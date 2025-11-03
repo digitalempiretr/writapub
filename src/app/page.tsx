@@ -1066,6 +1066,7 @@ export default function Home() {
   };
 
   const TextElementComponent = ({ element, slideIndex }: { element: TextElement, slideIndex: number }) => {
+    const nodeRef = React.useRef(null);
     const handleStop = (e: DraggableEvent, data: DraggableData) => {
       updateElement(slideIndex, element.id, { x: data.x, y: data.y });
     };
@@ -1097,35 +1098,38 @@ export default function Home() {
         onStop={handleStop}
         handle=".drag-handle"
         bounds="parent"
+        nodeRef={nodeRef}
       >
-        <Resizable
-          height={element.height}
-          width={element.width}
-          onResize={onResize}
-          minConstraints={[100, 50]}
-          maxConstraints={[canvasSize.width * 0.9, canvasSize.height * 0.9]}
-        >
-          <div
-            className="group absolute"
-            style={{ width: element.width, height: element.height, transform: `rotate(${element.rotation}deg)` }}
-            onClick={() => setSelectedElement(element.id)}
+        <div ref={nodeRef}>
+          <Resizable
+            height={element.height}
+            width={element.width}
+            onResize={onResize}
+            minConstraints={[100, 50]}
+            maxConstraints={[canvasSize.width * 0.9, canvasSize.height * 0.9]}
           >
             <div
-                className="drag-handle absolute -top-2.5 -left-2.5 z-10 p-1 bg-primary rounded-full text-primary-foreground opacity-0 group-hover:opacity-100 transition-opacity cursor-move"
-                >
-                <Move className="w-3 h-3" />
-            </div>
-            <div
-              contentEditable
-              suppressContentEditableWarning
-              onBlur={(e) => updateElement(slideIndex, element.id, { content: e.currentTarget.innerText })}
-              style={textStyle}
-              className="w-full h-full p-2 outline-none focus:ring-2 focus:ring-primary"
+              className="group absolute"
+              style={{ width: element.width, height: element.height, transform: `rotate(${element.rotation}deg)` }}
+              onClick={() => setSelectedElement(element.id)}
             >
-              {element.content}
+              <div
+                  className="drag-handle absolute -top-2.5 -left-2.5 z-10 p-1 bg-primary rounded-full text-primary-foreground opacity-0 group-hover:opacity-100 transition-opacity cursor-move"
+                  >
+                  <Move className="w-3 h-3" />
+              </div>
+              <div
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => updateElement(slideIndex, element.id, { content: e.currentTarget.innerText })}
+                style={textStyle}
+                className="w-full h-full p-2 outline-none focus:ring-2 focus:ring-primary"
+              >
+                {element.content}
+              </div>
             </div>
-          </div>
-        </Resizable>
+          </Resizable>
+        </div>
       </Draggable>
     );
   };
