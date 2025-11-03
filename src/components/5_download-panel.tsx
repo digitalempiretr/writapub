@@ -55,6 +55,7 @@ export function DownloadPanel({
           variant="outline"
           size="sm"
           onClick={() => handleDownload(currentSlide)}
+          disabled={designs.length === 0}
         >
           <Download className="mr-2 h-4 w-4" />
           Download This Design

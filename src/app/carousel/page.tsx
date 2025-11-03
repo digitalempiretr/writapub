@@ -349,24 +349,6 @@ export default function Home() {
     };
   }, [isMobilePanelOpen, closePanel]);
 
-  const handleDownload = useCallback((index: number) => {
-    const canvas = canvasRefs.current[index];
-    if (canvas) {
-      const dataUrl = canvas.toDataURL("image/png");
-      const link = document.createElement("a");
-      link.href = dataUrl;
-      link.download = `${fileName}-${index + 1}.png`;
-      link.click();
-    }
-  }, [fileName]);
-
-  const handleDownloadAll = useCallback(() => {
-    designs.forEach((_, index) => {
-      setTimeout(() => handleDownload(index), index * 300);
-    });
-  }, [designs, handleDownload]);
-
-
   const handleLogDesign = useCallback(() => {
     let bgValue = '';
     if (backgroundType === 'flat') bgValue = bgColor;
@@ -907,10 +889,9 @@ export default function Home() {
     }
   }, [toast]);
 
-  const handleKeywordSearch = useCallback((keyword: string) => {
-    setSearchQuery(keyword);
+  const handleKeywordSearch = (keyword: string) => {
     handleSearchImages(keyword, 1);
-  }, [handleSearchImages]);
+  };
 
   const handleFeelLucky = () => {
     const randomSeed = Math.floor(Math.random() * 1000);
@@ -992,9 +973,9 @@ export default function Home() {
         activeEffect, 
         setActiveEffect: handleEffectChange, 
         designs, 
-        handleDownloadAll,
+        handleDownloadAll: () => {}, 
         currentSlide,
-        handleDownload,
+        handleDownload: () => {}, 
         fileName, 
         setFileName, 
         handleApplyTemplate: applyTemplate, 

@@ -3,7 +3,7 @@
 
 import React, { useEffect, useRef } from "react";
 import type { Shadow } from "@/components/3_text-settings";
-import type { CanvasElement } from "@/lib/types";
+import { CanvasElement } from "./5_elements-panel";
 
 
 export type FontOption = {
@@ -292,68 +292,39 @@ const ImageCanvasComponent = ({
 
         if (areElementsEnabled) {
             for (const element of elements) {
-                ctx.save();
-                ctx.globalAlpha = element.opacity;
-                
-                let drawX = element.x;
-                const elWidth = element.width * scalingFactor;
-                const elHeight = element.height * scalingFactor;
-
-                if (element.alignment === 'center') {
-                    drawX = (width - elWidth) / 2;
-                } else if (element.alignment === 'right') {
-                    drawX = width - elWidth - element.x;
-                }
-                
-                ctx.translate(drawX + elWidth / 2, element.y + elHeight / 2);
-                ctx.rotate(element.rotation * Math.PI / 180);
-                
                 if (element.type === 'image' && element.url) {
                     try {
                         const img = await loadImage(element.url);
-                        
+                        ctx.save();
+                        ctx.globalAlpha = element.opacity;
+
+                        let drawX = element.x;
+                        const elWidth = element.width * scalingFactor;
+                        const elHeight = element.height * scalingFactor;
+
+                        if (element.alignment === 'center') {
+                            drawX = (width - elWidth) / 2;
+                        } else if (element.alignment === 'right') {
+                            drawX = width - elWidth - element.x;
+                        }
+
+                        ctx.translate(drawX + elWidth / 2, element.y + elHeight / 2);
+                        ctx.rotate(element.rotation * Math.PI / 180);
+                        ctx.translate(-(drawX + elWidth / 2), -(element.y + elHeight / 2));
+
                         if (element.shape === 'circle') {
                             ctx.beginPath();
-                            ctx.arc(0, 0, Math.min(elWidth, elHeight) / 2, 0, Math.PI * 2, true);
+                            ctx.arc(drawX + elWidth / 2, element.y + elHeight / 2, Math.min(elWidth, elHeight) / 2, 0, Math.PI * 2, true);
                             ctx.closePath();
                             ctx.clip();
                         }
                         
-                        ctx.drawImage(img, -elWidth / 2, -elHeight / 2, elWidth, elHeight);
-
+                        ctx.drawImage(img, drawX, element.y, elWidth, elHeight);
+                        ctx.restore();
                     } catch (error) {
                         console.error("Error drawing element image: ", error);
-                        ctx.fillStyle = '#ccc';
-                        ctx.fillRect(-elWidth / 2, -elHeight / 2, elWidth, elHeight);
                     }
                 }
-                 if (element.type === 'text' && element.text) {
-                    const font = `${element.fontWeight || 'normal'} ${element.fontSize || 24}px "${element.fontFamily || 'sans-serif'}"`;
-                    ctx.font = font;
-                    ctx.fillStyle = element.color || '#000000';
-                    ctx.textAlign = element.alignment;
-                    
-                    // Simple text wrapping for editable text elements
-                    const words = element.text.split(' ');
-                    let line = '';
-                    let currentY = -elHeight / 2 + (element.fontSize || 24);
-                    
-                    for(let n = 0; n < words.length; n++) {
-                        let testLine = line + words[n] + ' ';
-                        let metrics = ctx.measureText(testLine);
-                        let testWidth = metrics.width;
-                        if (testWidth > elWidth && n > 0) {
-                            ctx.fillText(line, 0, currentY);
-                            line = words[n] + ' ';
-                            currentY += element.lineHeight || (element.fontSize || 24);
-                        } else {
-                            line = testLine;
-                        }
-                    }
-                    ctx.fillText(line, 0, currentY);
-                }
-
-                ctx.restore();
             }
         }
 
