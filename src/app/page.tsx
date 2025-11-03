@@ -55,6 +55,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { HeartIconG, RefreshIcon  } from "@/components/ui/icons";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
+import { Resizable, ResizeCallbackData } from 'react-resizable';
 
 type Design = {
   text: string;
@@ -64,6 +66,7 @@ type Design = {
 type TextAlign = 'left' | 'center' | 'right';
 type BackgroundType = 'flat' | 'gradient' | 'image';
 type CanvasSize = { name: 'Post' | 'Story' | 'Square'; width: number; height: number };
+
 
 const canvasSizes: CanvasSize[] = [
     { name: 'Post', width: 1080, height: 1350 },
@@ -75,6 +78,7 @@ const ZOOM_STEP = 0.1;
 const MAX_ZOOM = 3.0;
 const MIN_ZOOM = 0.25;
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "Art", "Minimal", "Abstract", "Dreamy", "Cinematic", "Surreal", "Vintage", "Futuristic", "Bohemian"];
+
 
 const measureAndSplitText = (
   context: CanvasRenderingContext2D,
@@ -664,24 +668,24 @@ export default function Home() {
         distance: getDistance(touch1, touch2),
         zoom: zoomLevel,
       });
+    } else if (e.touches.length === 1 && isPanning) {
+        e.preventDefault();
+        setPanStart({ x: e.touches[0].clientX - panOffset.x, y: e.touches[0].clientY - panOffset.y });
     }
   };
   
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (e.touches.length === 2) {
-      e.preventDefault(); // Prevent default scroll/zoom
+     if (e.touches.length === 2) {
+      e.preventDefault();
       const touch1 = e.touches[0];
       const touch2 = e.touches[1];
-  
-      // Panning
       const midX = (touch1.clientX + touch2.clientX) / 2;
       const midY = (touch1.clientY + touch2.clientY) / 2;
       setPanOffset({
         x: midX - panStart.x,
         y: midY - panStart.y,
       });
-  
-      // Zooming
+
       if (pinchState) {
         const newDist = getDistance(touch1, touch2);
         const scale = newDist / pinchState.distance;
@@ -689,6 +693,12 @@ export default function Home() {
         newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newZoom));
         setZoomLevel(newZoom);
       }
+    } else if (e.touches.length === 1 && isPanning) {
+        e.preventDefault();
+        setPanOffset({
+          x: e.touches[0].clientX - panStart.x,
+          y: e.touches[0].clientY - panStart.y,
+        });
     }
   };
   
@@ -1267,7 +1277,7 @@ export default function Home() {
               }}
             >
                 <div 
-                  className="relative" 
+                  className="relative transition-transform duration-75" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
                   <Carousel className="w-full" setApi={setApi => carouselApi.current = setApi}>
