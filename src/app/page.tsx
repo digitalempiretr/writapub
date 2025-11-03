@@ -1,247 +1,627 @@
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
-import { Check, Menu } from "lucide-react"
-import Link from 'next/link'
-import { Logo } from "@/components/logo"
-import Image from "next/image"
-import { designTemplates } from "@/lib/design-templates"
+"use client";
 
-export default function LandingPage() {
-  const features = [
-    { name: "Intelligent Text Splitting", description: "Writa automatically divides your long texts into perfectly sized, easy-to-read slides." },
-    { name: "Beautiful Templates", description: "Choose from a wide range of professionally designed templates to match your style." },
-    { name: "Custom Branding", description: "Add your own logo, colors, and fonts to maintain a consistent brand identity." },
-    { name: "One-Click Export", description: "Download your entire carousel as high-quality images, ready to post." },
-    { name: "AI-Powered Suggestions", description: "Get smart recommendations for layouts and designs to enhance your content." },
-    { name: "Multi-Platform Formats", description: "Generate designs optimized for Instagram Posts, Stories, LinkedIn, and more." },
-  ]
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { fontOptions, FontOption } from '@/lib/font-options';
+import { designTemplates, DesignTemplate } from '@/lib/design-templates';
+import { imageTemplates, ImageTemplate } from '@/lib/image-templates';
+import { textEffects, TextEffect, parseShadow } from '@/lib/text-effects';
+import { gradientTemplates, pageInitialColors } from '@/lib/colors';
+import { defaultText } from '@/lib/default-text';
 
-  const pricingTiers = [
-    {
-      name: "Basic",
-      price: "£2",
-      description: "For starters who want to create stunning content.",
-      features: ["20 designs per month", "Access to all basic templates", "Standard support"],
-      cta: "Choose Basic",
-    },
-    {
-      name: "Pro",
-      price: "£5",
-      description: "For professionals who need more creative power.",
-      features: ["75 designs per month", "Access to all premium templates", "Advanced customization", "Priority support"],
-      cta: "Choose Pro",
-      popular: true,
-    },
-    {
-      name: "Unlimited",
-      price: "£20",
-      description: "For creators and agencies with high-volume needs.",
-      features: ["Unlimited designs", "All Pro features", "Team collaboration (coming soon)", "Dedicated support"],
-      cta: "Choose Unlimited",
-    },
-  ]
+import { ImageCanvas } from '@/components/image-canvas';
+import { CreativeMagicPanel } from '@/components/0_creative-magic-panel';
+import { DesignsPanel } from '@/components/1_templates';
+import { BackgroundSettings } from '@/components/2_background-settings';
+import { TextSettings, Shadow } from '@/components/3_text-settings';
+import { MyDesignsPanel } from '@/components/4_favorites';
+import { ElementsPanel, CanvasElement } from '@/components/5_elements-panel';
+import { DownloadPanel } from '@/components/5_download-panel';
+
+import { findImages, FindImagesInput, FindImagesOutput } from '@/ai/flows/find-images-flow';
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
+import { cn } from '@/lib/utils';
+import { HeartIconG, BookmarkStarIcon } from '@/components/ui/icons';
+import { Loader2 } from 'lucide-react';
+import Lottie from 'lottie-react';
+import animationData from '@/lib/Lottiefiles + Webflow.json';
+
+
+type CanvasSize = {
+  name: 'Post' | 'Story' | 'Square';
+  width: number;
+  height: number;
+};
+
+const canvasSizes: CanvasSize[] = [
+  { name: 'Post', width: 1080, height: 1350 },
+  { name: 'Story', width: 1080, height: 1920 },
+  { name: 'Square', width: 1080, height: 1080 },
+];
+
+export default function Home() {
+  const { toast } = useToast();
+
+  const [title, setTitle] = useLocalStorage("title", "");
+  const [text, setText] = useLocalStorage("text", defaultText);
+  const [designs, setDesigns] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [searchCarouselApi, setSearchCarouselApi] = useState<CarouselApi>();
+
+  const [canvasSize, setCanvasSize] = useLocalStorage<CanvasSize>('canvasSize', canvasSizes[0]);
+  const [activeFont, setActiveFont] = useLocalStorage<FontOption>('activeFont', fontOptions.find(f => f.value === 'special-elite') || fontOptions[0]);
+  const [activeEffect, setActiveEffect] = useLocalStorage<TextEffect>('activeEffect', textEffects[0]);
+  
+  const [isBold, setIsBold] = useLocalStorage('isBold', false);
+  const [isUppercase, setIsUppercase] = useLocalStorage('isUppercase', false);
+  const [textAlign, setTextAlign] = useLocalStorage<'left' | 'center' | 'right'>('textAlign', 'left');
+  
+  const [isOverlayEnabled, setIsOverlayEnabled] = useLocalStorage('isOverlayEnabled', false);
+  const [overlayColor, setOverlayColor] = useLocalStorage('overlayColor', pageInitialColors.overlayColor);
+  const [overlayOpacity, setOverlayOpacity] = useLocalStorage('overlayOpacity', 0.2);
+
+  const [isTextBoxEnabled, setIsTextBoxEnabled] = useLocalStorage('isTextBoxEnabled', true);
+  const [rectBgColor, setRectBgColor] = useLocalStorage('rectBgColor', pageInitialColors.rectBgColor);
+  const [rectOpacity, setRectOpacity] = useLocalStorage('rectOpacity', 0.0);
+
+  const [textColor, setTextColor] = useLocalStorage('textColor', pageInitialColors.textColor);
+  const [textOpacity, setTextOpacity] = useLocalStorage('textOpacity', 1);
+
+  const [backgroundTab, setBackgroundTab] = useState('flat');
+  const [backgroundValue, setBackgroundValue] = useLocalStorage('backgroundValue', pageInitialColors.bgColor);
+
+  const [myDesigns, setMyDesigns] = useLocalStorage<DesignTemplate[]>('myDesigns', []);
+  const [editingDesignId, setEditingDesignId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState("");
+  const [designToDelete, setDesignToDelete] = useState<string | null>(null);
+  
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchedImages, setSearchedImages] = useState<string[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchPage, setSearchPage] = useState(1);
+
+  const [fileName, setFileName] = useLocalStorage('fileName', 'writa-design');
+
+  const [textShadowEnabled, setTextShadowEnabled] = useLocalStorage('textShadowEnabled', false);
+  const [shadows, setShadows] = useLocalStorage<Shadow[]>('shadows', [
+    { id: 1, color: '#000000', offsetX: 2, offsetY: 2, blur: 4, offsetXUnit: 'px', offsetYUnit: 'px', blurUnit: 'px' },
+  ]);
+
+  const [textStroke, setTextStroke] = useLocalStorage('textStroke', false);
+  const [strokeColor, setStrokeColor] = useLocalStorage('strokeColor', '#ffffff');
+  const [strokeWidth, setStrokeWidth] = useLocalStorage('strokeWidth', 1);
+
+  const [elements, setElements] = useLocalStorage<CanvasElement[]>('elements', []);
+  const [areElementsEnabled, setAreElementsEnabled] = useLocalStorage('areElementsEnabled', true);
+  const [selectedElement, setSelectedElement] = useState<string | null>(null);
+
+  const mainAreaRef = useRef<HTMLDivElement>(null);
+  const [isPanning, setIsPanning] = useState(false);
+  const [startPanPoint, setStartPanPoint] = useState({ x: 0, y: 0 });
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [isSpacePressed, setIsSpacePressed] = useState(false);
+  const [pinchState, setPinchState] = useState<{ initialDistance: number, initialZoom: number } | null>(null);
+
+  useEffect(() => {
+    if (!carouselApi) return;
+    const onSelect = () => setCurrentSlide(carouselApi.selectedScrollSnap());
+    carouselApi.on("select", onSelect);
+    return () => carouselApi.off("select", onSelect);
+  }, [carouselApi]);
+
+  const handleApplyTemplate = useCallback((template: DesignTemplate) => {
+    setCanvasSize(canvasSizes.find(cs => cs.name === template.canvasSize) || canvasSizes[0]);
+    
+    if (template.background.type === 'flat') {
+      setBackgroundTab('flat');
+      setBackgroundValue(template.background.value);
+    } else if (template.background.type === 'gradient') {
+      setBackgroundTab('gradient');
+      setBackgroundValue(template.background.value);
+    } else if (template.background.type === 'image') {
+      setBackgroundTab('image');
+      setBackgroundValue(template.background.value);
+    }
+    
+    const newFont = fontOptions.find(f => f.value === template.font.value) || fontOptions[0];
+    const updatedFont = {...newFont, size: template.font.fontSize || newFont.size };
+    setActiveFont(updatedFont);
+
+    setRectBgColor(template.textBox.color);
+    setRectOpacity(template.textBox.opacity);
+
+    setOverlayColor(template.overlay.color);
+    setOverlayOpacity(template.overlay.opacity);
+    setIsOverlayEnabled(template.overlay.opacity > 0);
+    
+    const effectToApply = textEffects.find(e => e.id === template.effect?.id) || textEffects.find(e => e.id === 'none')!;
+    setActiveEffect(effectToApply);
+    
+    setTextColor(template.font.color);
+
+    toast({ title: "Template Applied", description: `"${template.name}" template has been set.` });
+  }, [setActiveFont, setRectBgColor, setRectOpacity, setOverlayColor, setOverlayOpacity, setIsOverlayEnabled, setBackgroundValue, setTextColor, setCanvasSize, setActiveEffect, toast]);
+
+  const handleEffectChange = useCallback((effect: TextEffect) => {
+    setActiveEffect(effect);
+    
+    if (effect.style.color) {
+      setTextColor(effect.style.color);
+    }
+    
+    if (effect.fontValue) {
+      const newFont = fontOptions.find(f => f.value === effect.fontValue) || activeFont;
+      const effectFontSize = effect.style.fontSize || newFont.size;
+      setActiveFont({...newFont, size: effectFontSize});
+    }
+
+    if (effect.style.textShadow && effect.style.textShadow !== 'none') {
+        setTextShadowEnabled(true);
+        const parsedShadows = parseShadow(effect.style.textShadow);
+        if (parsedShadows.length > 0) {
+          setShadows(parsedShadows);
+        }
+    } else {
+        setTextShadowEnabled(false);
+    }
+
+  }, [setActiveFont, setTextColor, setTextShadowEnabled, setShadows, activeFont]);
+  
+  const handleGenerate = () => {
+    setIsLoading(true);
+    setDesigns([]);
+    let processedText = text;
+    let finalTitle = title;
+  
+    if (!finalTitle) {
+      const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+      finalTitle = sentences[0].trim();
+      processedText = sentences.slice(1).join(' ').trim();
+      setTitle(finalTitle);
+    }
+    
+    const maxLinesPerSlide = 12;
+    const allLines = processedText.split('\n');
+    let slides = [];
+    let currentSlideLines = [];
+  
+    for (const line of allLines) {
+      if (currentSlideLines.length >= maxLinesPerSlide) {
+        slides.push(currentSlideLines.join('\n'));
+        currentSlideLines = [line];
+      } else {
+        currentSlideLines.push(line);
+      }
+    }
+    if (currentSlideLines.length > 0) {
+      slides.push(currentSlideLines.join('\n'));
+    }
+  
+    const finalDesigns = [finalTitle, ...slides].map((slideText, index) => ({
+      text: slideText,
+      isTitle: index === 0,
+    }));
+  
+    setDesigns(finalDesigns);
+    setTimeout(() => {
+        setIsLoading(false);
+        carouselApi?.scrollTo(0);
+    }, 500);
+  };
+  
+  const handleSaveDesign = () => {
+    const newDesign: DesignTemplate = {
+      id: `design-${Date.now()}`,
+      name: 'New Favorite',
+      category: 'Favorites',
+      previewImage: '',
+      background: {
+        type: backgroundTab as 'flat' | 'gradient' | 'image',
+        value: backgroundValue,
+      },
+      font: {
+        value: activeFont.value,
+        color: textColor,
+        fontSize: typeof activeFont.size === 'string' ? 48 : activeFont.size,
+      },
+      textBox: {
+        color: rectBgColor,
+        opacity: rectOpacity,
+      },
+      overlay: {
+        color: overlayColor,
+        opacity: isOverlayEnabled ? overlayOpacity : 0,
+      },
+      canvasSize: canvasSize.name,
+      effect: {
+        id: activeEffect.id,
+      }
+    };
+
+    const canvas = document.querySelector(`#canvas-container-0 canvas`) as HTMLCanvasElement;
+    if (canvas) {
+        newDesign.previewImage = canvas.toDataURL('image/jpeg', 0.5);
+    }
+    setMyDesigns(prev => [newDesign, ...prev]);
+    toast({ title: "Favorite Saved!", description: "Your current design has been saved to your favorites." });
+  };
+
+  const handleUpdateDesign = (id: string) => {
+    const canvas = document.querySelector(`#canvas-container-${currentSlide} canvas`) as HTMLCanvasElement;
+    const previewImage = canvas ? canvas.toDataURL('image/jpeg', 0.5) : '';
+
+    const newDesignData: DesignTemplate = {
+        id: editingDesignId!,
+        name: editingName,
+        category: 'Favorites',
+        previewImage: previewImage,
+        background: {
+          type: backgroundTab as 'flat' | 'gradient' | 'image',
+          value: backgroundValue,
+        },
+        font: {
+          value: activeFont.value,
+          color: textColor,
+          fontSize: typeof activeFont.size === 'string' ? 48 : activeFont.size,
+        },
+        textBox: {
+          color: rectBgColor,
+          opacity: rectOpacity,
+        },
+        overlay: {
+          color: overlayColor,
+          opacity: isOverlayEnabled ? overlayOpacity : 0,
+        },
+        canvasSize: canvasSize.name,
+        effect: {
+          id: activeEffect.id,
+        }
+    };
+    
+    setMyDesigns(myDesigns.map(d => d.id === id ? newDesignData : d));
+    setEditingDesignId(null);
+    toast({ title: "Favorite Updated!", description: `"${editingName}" has been updated.` });
+  };
+  
+  const handleEditClick = (id: string, name: string) => {
+    setEditingDesignId(id);
+    setEditingName(name);
+  };
+  
+  const handleCancelEdit = () => {
+    setEditingDesignId(null);
+    setEditingName("");
+  };
+
+  const handleDeleteDesign = (id: string) => {
+    setMyDesigns(myDesigns.filter(d => d.id !== id));
+    setDesignToDelete(null);
+    toast({ title: "Favorite Deleted", variant: "destructive" });
+  };
+
+  const handleLogDesign = () => {
+    const currentDesignState = {
+        background: { type: backgroundTab, value: backgroundValue },
+        font: { value: activeFont.value, color: textColor, fontSize: activeFont.size },
+        textBox: { color: rectBgColor, opacity: rectOpacity },
+        overlay: { color: overlayColor, opacity: isOverlayEnabled ? overlayOpacity : 0 },
+        canvasSize: canvasSize.name,
+        effect: activeEffect ? { id: activeEffect.id } : undefined,
+    };
+    console.log(JSON.stringify(currentDesignState, null, 2));
+    toast({ title: "Design Logged", description: "Current design settings logged to the console." });
+  };
+  
+  const handleDownload = (index: number) => {
+    const canvas = document.querySelector(`#canvas-container-${index} canvas`) as HTMLCanvasElement;
+    if (canvas) {
+      const link = document.createElement('a');
+      link.download = `${fileName}-${index + 1}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  };
+
+  const handleDownloadAll = () => {
+    designs.forEach((_, index) => {
+      setTimeout(() => handleDownload(index), index * 200);
+    });
+  };
+
+  const handleFeelLucky = () => {
+    const randomTemplate = designTemplates[Math.floor(Math.random() * designTemplates.length)];
+    handleApplyTemplate(randomTemplate);
+  };
+
+  const handleSearchImages = async (page = 1) => {
+    if (!searchQuery) return;
+    setIsSearching(true);
+    if (page === 1) {
+      setSearchedImages([]);
+      setSearchPage(1);
+    }
+    try {
+      const input: FindImagesInput = { query: searchQuery, per_page: 12, page };
+      const result: FindImagesOutput = await findImages(input);
+      setSearchedImages(prev => (page === 1 ? result.imageUrls : [...prev, ...result.imageUrls]));
+      if(page === 1) searchCarouselApi?.scrollTo(0);
+      setSearchPage(page);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Image Search Failed",
+        description: error.message || "Could not fetch images from Pexels.",
+      });
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleKeywordSearch = (keyword: string) => {
+    setSearchQuery(keyword);
+    handleSearchImages(1);
+  };
+  
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newElement: CanvasElement = {
+          id: `element-${Date.now()}`,
+          type: 'image',
+          url: reader.result as string,
+          x: 50,
+          y: 50,
+          width: 150,
+          height: 150,
+          rotation: 0,
+          opacity: 1,
+          shape: 'square',
+          alignment: 'left',
+        };
+        setElements(prev => [...prev, newElement]);
+        setSelectedElement(newElement.id);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const updateElement = (id: string, newProps: Partial<CanvasElement>) => {
+    setElements(prev => prev.map(el => el.id === id ? { ...el, ...newProps } : el));
+  };
+  
+  // Panning and Zooming Logic
+  const getMidpoint = (touches: React.TouchList) => {
+    const touch1 = touches[0];
+    const touch2 = touches[1];
+    return {
+      x: (touch1.clientX + touch2.clientX) / 2,
+      y: (touch1.clientY + touch2.clientY) / 2,
+    };
+  };
+
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    const newZoom = zoomLevel - e.deltaY * 0.01;
+    setZoomLevel(Math.max(0.1, Math.min(newZoom, 5)));
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (isSpacePressed) {
+      e.preventDefault();
+      setIsPanning(true);
+      setStartPanPoint({ x: e.clientX, y: e.clientY });
+    }
+  };
+  
+  const handleMouseUp = () => {
+    setIsPanning(false);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isPanning) {
+      const dx = e.clientX - startPanPoint.x;
+      const dy = e.clientY - startPanPoint.y;
+      setPanOffset(prev => ({ x: prev.x + dx, y: prev.y + dy }));
+      setStartPanPoint({ x: e.clientX, y: e.clientY });
+    }
+  };
+  
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const distance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      setPinchState({ initialDistance: distance, initialZoom: zoomLevel });
+
+      setIsPanning(true);
+      const midpoint = getMidpoint(e.touches);
+      setStartPanPoint({ x: midpoint.x, y: midpoint.y });
+    }
+  };
+  
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && mainAreaRef.current) {
+        e.preventDefault();
+        
+        // Panning
+        const midpoint = getMidpoint(e.touches);
+        const dx = midpoint.x - startPanPoint.x;
+        const dy = midpoint.y - startPanPoint.y;
+        setPanOffset(prev => ({ x: prev.x + dx, y: prev.y + dy }));
+        setStartPanPoint({ x: midpoint.x, y: midpoint.y });
+        
+        // Zooming
+        if (pinchState) {
+            const newDistance = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            const zoomFactor = newDistance / pinchState.initialDistance;
+            const newZoom = pinchState.initialZoom * zoomFactor;
+            setZoomLevel(Math.max(0.1, Math.min(newZoom, 5)));
+        }
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (e.touches.length < 2) {
+        setIsPanning(false);
+        setPinchState(null);
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        setIsSpacePressed(true);
+      }
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        setIsSpacePressed(false);
+        setIsPanning(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center">
-          <div className="mr-4 hidden md:flex">
-            <Link href="/" className="mr-6 flex items-center space-x-2">
-              <Logo className="text-lg text-primary" />
-            </Link>
-            <nav className="flex items-center space-x-6 text-sm font-medium">
-              <Link href="#features" className="text-foreground/60 transition-colors hover:text-foreground/80">Features</Link>
-              <Link href="#templates" className="text-foreground/60 transition-colors hover:text-foreground/80">Templates</Link>
-              <Link href="#pricing" className="text-foreground/60 transition-colors hover:text-foreground/80">Pricing</Link>
-            </nav>
-          </div>
-          <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-            <div className="flex-1 md:flex-grow-0">
-               {/* Mobile menu could be added here */}
-            </div>
-            <nav className="hidden md:flex items-center space-x-2">
-              <Button variant="ghost" asChild>
-                <Link href="/login">Log In</Link>
-              </Button>
-              <Button asChild>
-                <Link href="/signup">Sign Up</Link>
-              </Button>
-            </nav>
-            <div className="md:hidden">
-              <Button variant="ghost" size="icon">
-                <Menu />
-                <span className="sr-only">Toggle Menu</span>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-      
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="w-full py-20 md:py-32 lg:py-40 bg-card">
-          <div className="container px-4 md:px-6">
-            <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
-              <div className="flex flex-col justify-center space-y-4">
-                <div className="space-y-2">
-                  <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none font-serif">
-                    Turn Your Words into <span className="text-primary">Stunning</span> Visuals
-                  </h1>
-                  <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Writa is the effortless way to transform your text into beautiful, shareable carousels for social media. No design skills required.
-                  </p>
-                </div>
-                <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  <Button size="lg" asChild>
-                     <Link href="/signup">Get Started for Free</Link>
-                  </Button>
-                  <Button size="lg" variant="outline" asChild>
-                    <Link href="#templates">Explore Templates</Link>
-                  </Button>
-                </div>
-              </div>
-              <Image
-                src="https://picsum.photos/seed/hero/600/400"
-                width="600"
-                height="400"
-                alt="Hero"
-                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last lg:aspect-square"
-                data-ai-hint="carousel design"
+    <>
+      <header className="h-[5vh] flex items-center p-4 justify-between"></header>
+      <main ref={mainAreaRef}
+        className={cn("h-[95vh] w-full flex flex-col items-center justify-center overflow-hidden", isSpacePressed && 'cursor-grab', isPanning && 'cursor-grabbing')}
+        onWheel={handleWheel}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <div 
+           className="relative"
+           style={{
+            transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`,
+            touchAction: 'none'
+          }}
+        >
+          {designs.length === 0 && !isLoading && (
+            <div className="flex flex-col items-center justify-center h-full w-full max-w-[1000px] mx-auto">
+              <CreativeMagicPanel 
+                  title={title}
+                  setTitle={setTitle}
+                  text={text}
+                  setText={setText}
+                  handleGenerate={handleGenerate}
+                  isLoading={isLoading}
               />
             </div>
-          </div>
-        </section>
+          )}
 
-        {/* Features Section */}
-        <section id="features" className="w-full py-20 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">Key Features</div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Effortless Content Creation</h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Focus on your message. Writa takes care of the design, formatting, and export, saving you hours of work.
-                </p>
+          {isLoading && (
+            <div className="flex flex-col items-center justify-center text-center">
+              <div className="w-64 h-64">
+                <Lottie animationData={animationData} loop={true} />
               </div>
+              <p className="text-lg text-primary animate-pulse font-serif mt-4">Generating your creative designs...</p>
             </div>
-            <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-3 lg:gap-12">
-              {features.map((feature) => (
-                <div key={feature.name} className="flex flex-col justify-center space-y-4">
-                  <Check className="h-8 w-8 text-primary" />
-                  <h3 className="text-xl font-bold">{feature.name}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+          )}
 
-        {/* Templates Section */}
-        <section id="templates" className="w-full py-20 md:py-24 lg:py-32 bg-card">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Find Your Perfect Look</h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Browse our library of professionally designed templates. From minimalist to bold, there's a style for every message.
-                </p>
+          {designs.length > 0 && !isLoading && (
+              <div className="w-full h-full flex flex-col items-center justify-start gap-4">
+                  <Carousel setApi={setCarouselApi} className="w-full max-w-lg md:max-w-xl lg:max-w-2xl">
+                      <CarouselContent>
+                          {designs.map((design, index) => (
+                              <CarouselItem key={index}>
+                                  <Card id={`canvas-container-${index}`} className={cn("overflow-hidden border-2 border-gray-300 shadow-lg", canvasSize.name === "Post" ? "aspect-[4/5]" : canvasSize.name === "Story" ? "aspect-[9/16]" : "aspect-square")}>
+                                      <CardContent className="p-0 h-full w-full">
+                                      <ImageCanvas
+                                          text={design.text}
+                                          isTitle={design.isTitle}
+                                          fontFamily={activeFont.fontFamily}
+                                          fontWeight={activeFont.weight}
+                                          fontSize={activeFont.size}
+                                          lineHeight={activeFont.lineHeight}
+                                          textColor={textColor}
+                                          textOpacity={textOpacity}
+                                          backgroundColor={backgroundTab === 'flat' || backgroundTab === 'gradient' ? backgroundValue : undefined}
+                                          backgroundImageUrl={backgroundTab === 'image' ? backgroundValue : undefined}
+                                          width={canvasSize.width}
+                                          height={canvasSize.height}
+                                          onCanvasReady={(canvas) => {
+                                            const dataUrl = canvas.toDataURL('image/png');
+                                          }}
+                                          rectColor={rectBgColor}
+                                          rectOpacity={isTextBoxEnabled ? rectOpacity : 0}
+                                          overlayColor={overlayColor}
+                                          overlayOpacity={isOverlayEnabled ? overlayOpacity : 0}
+                                          textAlign={textAlign}
+                                          isBold={isBold}
+                                          isUppercase={isUppercase}
+                                          textShadowEnabled={textShadowEnabled}
+                                          shadows={shadows}
+                                          textStroke={textStroke}
+                                          strokeColor={strokeColor}
+                                          strokeWidth={strokeWidth}
+                                          fontSmoothing={{ WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale' }}
+                                          elements={elements}
+                                          areElementsEnabled={areElementsEnabled}
+                                      />
+                                      </CardContent>
+                                  </Card>
+                              </CarouselItem>
+                          ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="-left-4 md:-left-12" />
+                      <CarouselNext className="-right-4 md:-right-12" />
+                  </Carousel>
               </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 py-12">
-              {designTemplates.slice(0, 8).map((template, index) => (
-                <Card key={index} className="overflow-hidden">
-                  <CardContent className="p-0">
-                    <Image
-                      src={template.previewImage || `https://picsum.photos/seed/template${index}/400/500`}
-                      width="400"
-                      height="500"
-                      alt={template.name}
-                      className="aspect-[4/5] w-full object-cover transition-transform duration-300 hover:scale-105"
-                       data-ai-hint="template design"
-                    />
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Pricing Section */}
-        <section id="pricing" className="w-full py-20 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">Pricing</div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Simple, Transparent Pricing</h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Choose the plan that's right for you. No hidden fees.
-                </p>
-              </div>
-            </div>
-            <div className="mx-auto grid max-w-5xl items-start gap-8 py-12 sm:grid-cols-2 lg:grid-cols-3 lg:gap-12">
-              {pricingTiers.map((tier) => (
-                <Card key={tier.name} className={tier.popular ? "border-2 border-primary" : ""}>
-                  <CardHeader>
-                    <CardTitle>{tier.name}</CardTitle>
-                    <CardDescription>{tier.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-4xl font-bold">{tier.price}</span>
-                      <span className="text-muted-foreground">/month</span>
-                    </div>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                      {tier.features.map((feature, i) => (
-                        <li key={i} className="flex items-center gap-2">
-                          <Check className="h-4 w-4 text-primary" />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                  <CardFooter>
-                    <Button className="w-full" variant={tier.popular ? "default" : "outline"}>
-                      {tier.cta}
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-         {/* Call to Action Section */}
-        <section className="w-full py-20 md:py-24 lg:py-32 bg-primary/10">
-          <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
-            <div className="space-y-3">
-              <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
-                Ready to Elevate Your Content?
-              </h2>
-              <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Stop spending hours on design. Start creating beautiful carousels in minutes.
-              </p>
-            </div>
-            <div className="mx-auto w-full max-w-sm space-y-2">
-               <Button size="lg" asChild>
-                  <Link href="/signup">Sign Up Now</Link>
-                </Button>
-            </div>
-          </div>
-        </section>
+          )}
+        </div>
       </main>
 
-      <footer className="w-full bg-card">
-        <div className="container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0">
-          <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
-            <Logo className="text-lg text-primary"/>
-            <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-              Built by you. Powered by AI.
-            </p>
-          </div>
-          <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} Writa Inc. All rights reserved.</p>
+      {designs.length > 0 && !isLoading && (
+        <div className="fixed bottom-0 md:bottom-auto md:top-1/2 md:right-4 md:-translate-y-1/2 w-full md:w-96 bg-card/80 backdrop-blur-sm border-t md:border md:rounded-lg shadow-lg z-20">
+          <Tabs defaultValue="creative-magic" className="w-full">
+            <TabsList className="grid w-full grid-cols-6 h-14 md:h-auto">
+              <TabsTrigger value="creative-magic" className="h-full md:h-auto"><BookmarkStarIcon /></TabsTrigger>
+              <TabsTrigger value="templates" className="h-full md:h-auto"><HeartIconG /></TabsTrigger>
+              <TabsTrigger value="background" className="h-full md:h-auto"><BookmarkStarIcon /></TabsTrigger>
+              <TabsTrigger value="text" className="h-full md:h-auto"><BookmarkStarIcon /></TabsTrigger>
+              <TabsTrigger value="elements" className="h-full md:h-auto"><BookmarkStarIcon /></TabsTrigger>
+              <TabsTrigger value="download" className="h-full md:h-auto"><BookmarkStarIcon /></TabsTrigger>
+            </TabsList>
+            <TabsContent value="creative-magic"><MyDesignsPanel myDesigns={myDesigns} handleSaveDesign={handleSaveDesign} handleDeleteDesign={handleDeleteDesign} handleUpdateDesign={handleUpdateDesign} editingDesignId={editingDesignId} handleEditClick={handleEditClick} handleCancelEdit={handleCancelEdit} editingName={editingName} setEditingName={setEditingName} designToDelete={designToDelete} setDesignToDelete={setDesignToDelete} handleLogDesign={handleLogDesign} handleApplyTemplate={handleApplyTemplate} /></TabsContent>
+            <TabsContent value="templates"><DesignsPanel handleApplyTemplate={handleApplyTemplate} /></TabsContent>
+            <TabsContent value="background"><BackgroundSettings backgroundTab={backgroundTab} setBackgroundTab={setBackgroundTab} handleFeelLucky={handleFeelLucky} bgColor={backgroundTab === 'flat' ? backgroundValue : '#ffffff'} handleBgColorSelect={(color) => { setBackgroundTab('flat'); setBackgroundValue(color);}} imageBgUrl={backgroundTab === 'image' ? backgroundValue : ''} handleImageBgUrlSelect={(template) => { setBackgroundTab('image'); setBackgroundValue(template.imageUrls[canvasSize.name.toLowerCase() as keyof typeof template.imageUrls]);}} searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchImages={handleSearchImages} isSearching={isSearching} searchedImages={searchedImages} handleKeywordSearch={handleKeywordSearch} searchPage={searchPage} isOverlayEnabled={isOverlayEnabled} setIsOverlayEnabled={setIsOverlayEnabled} overlayColor={overlayColor} setOverlayColor={setOverlayColor} overlayOpacity={overlayOpacity} setOverlayOpacity={setOverlayOpacity} gradientBg={backgroundTab === 'gradient' ? backgroundValue : ''} handleGradientBgSelect={(css) => { setBackgroundTab('gradient'); setBackgroundValue(css); }} setSearchCarouselApi={setSearchCarouselApi} /></TabsContent>
+            <TabsContent value="text"><TextSettings text={designs[currentSlide]?.text || text} setText={(newText) => { const newDesigns = [...designs]; newDesigns[currentSlide].text = newText; setDesigns(newDesigns);}} handleGenerate={handleGenerate} isLoading={isLoading} textColor={textColor} setTextColor={setTextColor} textOpacity={textOpacity} setTextOpacity={setTextOpacity} activeFont={activeFont} setActiveFont={setActiveFont} fontOptions={fontOptions} isBold={isBold} setIsBold={setIsBold} isUppercase={isUppercase} setIsUppercase={setIsUppercase} textAlign={textAlign} setTextAlign={setTextAlign} textShadowEnabled={textShadowEnabled} setTextShadowEnabled={setTextShadowEnabled} shadows={shadows} setShadows={setShadows} textStroke={textStroke} setTextStroke={setTextStroke} strokeColor={strokeColor} setStrokeColor={setStrokeColor} strokeWidth={strokeWidth} setStrokeWidth={setStrokeWidth} rectBgColor={rectBgColor} setRectBgColor={setRectBgColor} rectOpacity={rectOpacity} setRectOpacity={setRectOpacity} isTextBoxEnabled={isTextBoxEnabled} setIsTextBoxEnabled={setIsTextBoxEnabled} activeEffect={activeEffect} setActiveEffect={handleEffectChange} /></TabsContent>
+            <TabsContent value="elements"><ElementsPanel handleImageUpload={handleImageUpload} elements={elements} setElements={setElements} selectedElement={selectedElement} setSelectedElement={setSelectedElement} updateElement={updateElement} areElementsEnabled={areElementsEnabled} setAreElementsEnabled={setAreElementsEnabled} /></TabsContent>
+            <TabsContent value="download"><DownloadPanel fileName={fileName} setFileName={setFileName} handleDownloadAll={handleDownloadAll} designs={designs} currentSlide={currentSlide} handleDownload={handleDownload} /></TabsContent>
+          </Tabs>
         </div>
-      </footer>
-    </div>
-  )
+      )}
+    </>
+  );
 }
+
+    
