@@ -1291,7 +1291,7 @@ export default function Home() {
       * HEADER
       *
       *******************************************************/}
-      <header className="w-full text-left p-4 md:px-8 h-[6vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-background">
+      <header className="w-full text-left p-4 md:px-8 h-[6vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-transparent">
         <Logo className="text-[1.5rem] text-primary" />
         
       </header>
@@ -1405,7 +1405,7 @@ export default function Home() {
                 <TooltipProvider>
                     <Tooltip>
                     <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('out')} disabled={zoomLevel <= MIN_ZOOM}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-primary z-30" onClick={() => handleZoom('out')} disabled={zoomLevel <= MIN_ZOOM}>
                             <ZoomOut className="h-5 w-5" />
                         </Button>
                     </TooltipTrigger>
@@ -1532,34 +1532,62 @@ export default function Home() {
           </div>
       )}
 
-      {/******************************************************
+      {/********************************************************************************
       *
       * MOBILE TAB SYSTEM
-      * This section is only visible on screens narrower than 768px (md breakpoint).
-      * It uses a Sheet component to display settings from the bottom.
+      * Bu bölüm, yalnızca 768 pikselden dar ekranlarda (md breakpoint) görünür.
+      * Ayarları alttan açılan bir "Sheet" bileşeni içinde göstermek için kullanılır.
       *
-      *******************************************************/}
+      ********************************************************************************/}
       {isClient && designs.length > 0 && (
           <div ref={mobilePanelRef} className="md:hidden">
+              {/* 
+                Sheet: Alttan, üstten veya yanlardan açılabilen bir panel bileşenidir.
+                open: Panelin açık mı kapalı mı olduğunu kontrol eden state.
+                onOpenChange: Panel durumu değiştiğinde (örneğin, kullanıcı dışarı tıkladığında veya kapatma düğmesine bastığında) tetiklenir.
+              */}
               <Sheet open={isMobilePanelOpen} onOpenChange={(isOpen) => {
+                  // Panel kapanıyorsa, aktif sekme seçimini temizle.
                   if (!isOpen) {
                       setActiveSettingsTab('');
                   }
                   setIsMobilePanelOpen(isOpen);
               }}>
-                  <SheetContent side="bottom" className="h-auto max-h-[40vh] p-0 flex flex-col bg-background">
+                  {/* 
+                    SheetContent: Panelin içeriğini barındıran kısımdır.
+                    side="bottom": Panelin ekranın altından yukarı doğru açılacağını belirtir.
+                  */}
+                  <SheetContent side="bottom" className="h-auto max-h-[50vh] p-0 flex flex-col bg-background">
+                      {/* 
+                        SheetHeader: Panelin başlık bölümü.
+                        SheetTitle: Panelin başlığını gösterir, 'activeTabLabel'dan dinamik olarak gelir (örn. "Background", "Text").
+                      */}
                       <SheetHeader className="p-4 border-b flex-row justify-between items-center bg-background">
                           <SheetTitle className="capitalize">{activeTabLabel}</SheetTitle>
                       </SheetHeader>
+                      {/* 
+                        renderActiveTabContent(): Aktif sekmeye (örn. 'background', 'text') göre ilgili ayar bileşenini (BackgroundSettings, TextSettings vb.) render eder.
+                      */}
                       <div className="flex-grow overflow-y-auto">
                           {renderActiveTabContent()}
                       </div>
                   </SheetContent>
               </Sheet>
 
+              {/* 
+                Bu div, ekranın altına sabitlenmiş olan ve ayar sekmelerini içeren barı temsil eder.
+                isMobilePanelOpen true olduğunda (yani ayar paneli açıkken) gizlenir.
+              */}
               <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-background border-t", isMobilePanelOpen ? "hidden" : "block")}>
+                  {/* Tabs: Sekmeli bir arayüz oluşturmak için kullanılan ana bileşen. */}
                   <Tabs value={activeSettingsTab ?? ''} className="w-full">
+                      {/* TabsList: Tüm sekme düğmelerini (trigger) içeren liste. */}
                       <TabsList className="grid w-full grid-cols-6 h-14 rounded-none bg-background">
+                          {/* 
+                            settingsTabs dizisi üzerinde dönerek her bir ayar sekmesi için bir düğme oluşturur.
+                            onClick: Bir sekme düğmesine tıklandığında handleMobileTabClick fonksiyonunu çalıştırır.
+                            handleMobileTabClick: Tıklanan sekmeyi aktif hale getirir ve ayar panelini (Sheet) açar.
+                          */}
                           {settingsTabs.map(tab => (
                               <TabsTrigger key={tab.value} value={tab.value} onClick={() => handleMobileTabClick(tab.value)}>
                                   {tab.icon}
