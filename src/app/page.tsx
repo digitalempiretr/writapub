@@ -1,3 +1,4 @@
+
 "use client";
 
 import { findImages } from "@/ai/flows/find-images-flow";
@@ -1314,13 +1315,13 @@ export default function Home() {
       </header>
 
       <div className="flex-1 flex overflow-hidden" style={{ height: isMobile ? 'calc(100vh - 10vh - 56px)' : 'auto' }}>
-      {/******************************************************
-      *
+      {/*
+      ********************************************************************************
       * DESKTOP SIDEBAR
       * This section is only visible on screens wider than 767px (md breakpoint).
       * It contains the main settings tabs and their content.
-      *
-      *******************************************************/}
+      ********************************************************************************
+      */}
       {designs.length > 0 && (
           <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[3vw]")}>
               <Tabs
@@ -1367,20 +1368,20 @@ export default function Home() {
               </Tabs>
           </div>
       )}
-      {/******************************************************
-      *
+      {/*
+      ********************************************************************************
       * END DESKTOP SIDEBAR
-      *
-      *******************************************************/}
+      ********************************************************************************
+      */}
 
-      {/******************************************************
-      *
+      {/*
+      ********************************************************************************
       * Main Content Area
       * This area handles the display of either the initial text input
       * form or the generated design carousel. It also includes
       * controls for panning and zooming the canvas.
-      *
-      *******************************************************/}
+      ********************************************************************************
+      */}
         <main 
           ref={designsRef}
           className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative cursor-default")}
@@ -1552,11 +1553,13 @@ export default function Home() {
           </div>
       )}
 
-      {/******************************************************
+      {/*
+      ********************************************************************************
       * MOBILE TAB SYSTEM
       * This section is only visible on screens narrower than 768px (md breakpoint).
       * It uses a Sheet component to display settings from the bottom.
-      *******************************************************/}
+      ********************************************************************************
+      */}
       {isClient && designs.length > 0 && (
           <div ref={mobilePanelRef} className="md:hidden">
               {/* Sheet component for mobile settings */}
@@ -1592,9 +1595,13 @@ export default function Home() {
               </div>
           </div>
       )}
-       {/******************************************************
+       {/*
+      ********************************************************************************
       * END MOBILE TAB SYSTEM
-      *******************************************************/}
+      ********************************************************************************
+      */}
     </div>
   );
 }
+
+    
