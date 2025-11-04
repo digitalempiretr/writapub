@@ -75,6 +75,15 @@ const ZOOM_STEP = 0.1;
 const MAX_ZOOM = 3.0;
 const MIN_ZOOM = 0.25;
 
+/**
+ * Measures and splits a given text to fit within a specified width and line count.
+ * @param {CanvasRenderingContext2D} context - The canvas rendering context for text measurement.
+ * @param {string} text - The input text to be split.
+ * @param {number} maxWidth - The maximum width the text can occupy.
+ * @param {number} baseMaxLines - The base maximum number of lines for a slide.
+ * @param {number} extendedMaxLines - The extended maximum number of lines to avoid awkward sentence breaks.
+ * @returns {{ textForCanvas: string; remainingText: string }} - An object containing the text for the current canvas and the remaining text.
+ */
 const measureAndSplitText = (
   context: CanvasRenderingContext2D,
   text: string,
@@ -153,6 +162,9 @@ const measureAndSplitText = (
 };
 
 
+/**
+ * The main component for the Writa application, handling state and UI for the design editor.
+ */
 export default function Home() {
   const [title, setTitle] = useState('');
   const [text, setText] = useState(defaultText);
@@ -178,6 +190,9 @@ export default function Home() {
     setIsClient(true)
   }, [])
   
+  /**
+   * Handles the carousel's "select" event to update the current slide index.
+   */
   const handleSelectCarousel = useCallback(() => {
     if (!carouselApi.current) {
       return
@@ -258,6 +273,9 @@ export default function Home() {
   const isMobile = useIsMobile();
 
 
+  /**
+   * Generates design slides from the user's title and text input.
+   */
   const handleGenerate = useCallback(() => {
     setIsLoading(true);
     setDesigns([]); // Clear previous designs
@@ -320,11 +338,18 @@ export default function Home() {
     });
   }, [text, title, canvasSize, activeFont, isBold]);
   
+  /**
+   * Closes the mobile settings panel.
+   */
    const closePanel = useCallback(() => {
     setIsMobilePanelOpen(false);
   }, []);
 
    useEffect(() => {
+    /**
+     * Handles clicks outside the mobile panel to close it.
+     * @param {MouseEvent} event - The mouse event.
+     */
     const handleClickOutside = (event: MouseEvent) => {
       if (
         isMobilePanelOpen &&
@@ -349,6 +374,10 @@ export default function Home() {
     };
   }, [isMobilePanelOpen, closePanel]);
 
+  /**
+   * Triggers the download of a single canvas slide as a PNG image.
+   * @param {number} index - The index of the design to download.
+   */
   const handleDownload = useCallback((index: number) => {
     const canvas = canvasRefs.current[index];
     if (canvas) {
@@ -360,6 +389,9 @@ export default function Home() {
     }
   }, [fileName]);
 
+  /**
+   * Triggers the download of all generated canvas slides sequentially.
+   */
   const handleDownloadAll = useCallback(() => {
     designs.forEach((_, index) => {
       setTimeout(() => handleDownload(index), index * 300);
@@ -367,6 +399,9 @@ export default function Home() {
   }, [designs, handleDownload]);
 
 
+  /**
+   * Logs the current design's configuration to the console for development purposes.
+   */
   const handleLogDesign = useCallback(() => {
     let bgValue = '';
     if (backgroundType === 'flat') bgValue = bgColor;
@@ -441,6 +476,10 @@ export default function Home() {
     });
   }, [backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, toast, activeEffect, canvasSize]);
 
+  /**
+   * Applies the styles from a selected text effect to the canvas text.
+   * @param {TextEffect} effect - The text effect to apply.
+   */
   const handleEffectChange = (effect: TextEffect) => {
     setActiveEffect(effect);
 
@@ -475,6 +514,10 @@ export default function Home() {
     }
 };
 
+  /**
+   * Updates the text color and recalculates shadow colors if an effect is active.
+   * @param {string} newColor - The new color for the text.
+   */
   const handleTextColorChange = (newColor: string) => {
     setTextColor(newColor);
     if (activeEffect && activeEffect.id !== 'none' && activeEffect.style.textShadow) {
@@ -486,6 +529,10 @@ export default function Home() {
     }
   };
   
+  /**
+   * Handles the file upload event for images, creating a new canvas element.
+   * @param {React.ChangeEvent<HTMLInputElement>} event - The file input change event.
+   */
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
@@ -511,12 +558,23 @@ export default function Home() {
     }
   };
 
+  /**
+   * Updates the properties of a specific canvas element.
+   * @param {string} id - The ID of the element to update.
+   * @param {Partial<CanvasElement>} newProps - The new properties to apply.
+   */
   const updateElement = (id: string, newProps: Partial<CanvasElement>) => {
     setElements(prev =>
       prev.map(el => (el.id === id ? { ...el, ...newProps } : el))
     );
   };
 
+  /**
+   * Renders a single canvas slide with the current settings.
+   * @param {Design} design - The design object containing text and title info.
+   * @param {number} index - The index of the slide.
+   * @returns {JSX.Element} - The ImageCanvas component.
+   */
   const renderCanvas = useCallback((design: Design, index: number) => {
     let currentBg: string | undefined;
     let finalImageUrl: string | undefined;
@@ -582,6 +640,10 @@ export default function Home() {
     isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize, elements, areElementsEnabled
   ]);
   
+  /**
+   * Handles tab clicks in the mobile view, opening the settings panel.
+   * @param {string} tab - The value of the tab being clicked.
+   */
   const handleMobileTabClick = (tab: string) => {
     if (activeSettingsTab === tab && isMobilePanelOpen) {
       // Don't close if it's already open and the same tab is clicked
@@ -591,6 +653,10 @@ export default function Home() {
     }
   };
   
+  /**
+   * Handles tab clicks in the desktop view, changing the active settings panel.
+   * @param {string} tab - The value of the tab being clicked.
+   */
   const handleDesktopTabClick = (tab: string) => {
       setActiveSettingsTab(tab);
       if (!isSidebarOpen) {
@@ -598,6 +664,10 @@ export default function Home() {
       }
   };
 
+  /**
+   * Handles zooming in or out of the canvas area.
+   * @param {'in' | 'out'} direction - The direction of the zoom.
+   */
   const handleZoom = (direction: 'in' | 'out') => {
     setZoomLevel(prev => {
         const newZoom = direction === 'in' ? prev + ZOOM_STEP : prev - ZOOM_STEP;
@@ -606,6 +676,10 @@ export default function Home() {
   };
 
   useEffect(() => {
+    /**
+     * Handles keydown events for panning (spacebar).
+     * @param {KeyboardEvent} e - The keyboard event.
+     */
     const handleKeyDown = (e: KeyboardEvent) => {
       const activeElement = document.activeElement;
       if (activeElement && (activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'INPUT')) {
@@ -619,6 +693,10 @@ export default function Home() {
         }
       }
     };
+    /**
+     * Handles keyup events to stop panning.
+     * @param {KeyboardEvent} e - The keyboard event.
+     */
     const handleKeyUp = (e: KeyboardEvent) => {
       if (e.code === 'Space') {
         setIsPanning(false);
@@ -635,6 +713,10 @@ export default function Home() {
     };
   }, []);
 
+  /**
+   * Initiates panning when the user holds down the mouse button while panning is active.
+   * @param {React.MouseEvent<HTMLDivElement>} e - The mouse event.
+   */
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isPanning) {
       e.preventDefault();
@@ -645,6 +727,10 @@ export default function Home() {
     }
   };
 
+  /**
+   * Updates the pan offset as the user moves the mouse.
+   * @param {React.MouseEvent<HTMLDivElement>} e - The mouse event.
+   */
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isPanning && e.buttons === 1) {
       e.preventDefault();
@@ -655,6 +741,10 @@ export default function Home() {
     }
   };
 
+  /**
+   * Ends the panning action when the mouse button is released.
+   * @param {React.MouseEvent<HTMLDivElement>} e - The mouse event.
+   */
   const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isPanning) {
        if (designsRef.current) {
@@ -663,19 +753,28 @@ export default function Home() {
     }
   };
   
+  /**
+   * Calculates the distance between two touch points for pinch-to-zoom.
+   * @param {Touch} touch1 - The first touch point.
+   * @param {Touch} touch2 - The second touch point.
+   * @returns {number} - The distance between the touches.
+   */
   const getDistance = (touch1: Touch, touch2: Touch) => {
     const dx = touch1.clientX - touch2.clientX;
     const dy = touch1.clientY - touch2.clientY;
     return Math.sqrt(dx * dx + dy * dy);
   };
   
+  /**
+   * Handles the start of a touch event, initiating panning or pinch-to-zoom.
+   * @param {React.TouchEvent<HTMLDivElement>} e - The touch event.
+   */
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     if (e.touches.length === 2) {
-      e.preventDefault();
+      e.preventDefault(); // Prevent default scroll/zoom
       const touch1 = e.touches[0];
       const touch2 = e.touches[1];
-      if (!touch1 || !touch2) return;
-  
+       if (!touch1 || !touch2) return;
       const midX = (touch1.clientX + touch2.clientX) / 2;
       const midY = (touch1.clientY + touch2.clientY) / 2;
       setPanStart({ x: midX - panOffset.x, y: midY - panOffset.y });
@@ -686,13 +785,18 @@ export default function Home() {
     }
   };
   
+  /**
+   * Handles the movement of touches, updating pan and zoom levels.
+   * @param {React.TouchEvent<HTMLDivElement>} e - The touch event.
+   */
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     if (e.touches.length === 2) {
-      e.preventDefault();
+      e.preventDefault(); // Prevent default scroll/zoom
       const touch1 = e.touches[0];
       const touch2 = e.touches[1];
       if (!touch1 || !touch2) return;
   
+      // Panning
       const midX = (touch1.clientX + touch2.clientX) / 2;
       const midY = (touch1.clientY + touch2.clientY) / 2;
       setPanOffset({
@@ -700,6 +804,7 @@ export default function Home() {
         y: midY - panStart.y,
       });
   
+      // Zooming
       if (pinchState) {
         const newDist = getDistance(touch1, touch2);
         const scale = newDist / pinchState.distance;
@@ -710,6 +815,10 @@ export default function Home() {
     }
   };
   
+  /**
+   * Ends the pinch-to-zoom action when touches are released.
+   * @param {React.TouchEvent<HTMLDivElement>} e - The touch event.
+   */
   const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
     if (e.touches.length < 2) {
       setPinchState(null);
@@ -717,6 +826,11 @@ export default function Home() {
   };
 
 
+  /**
+   * Resets the pan and zoom levels to a default state based on canvas size and device type.
+   * @param {CanvasSize} size - The current canvas size.
+   * @returns {number} The new zoom level.
+   */
   const resetPanAndZoom = useCallback((size: CanvasSize) => {
     let newZoom;
     if (isMobile) {
@@ -745,6 +859,10 @@ export default function Home() {
     }
   }, [isClient, canvasSize, resetPanAndZoom]);
 
+  /**
+   * Changes the canvas size and resets pan/zoom accordingly.
+   * @param {CanvasSize} size - The new canvas size to apply.
+   */
   const handleCanvasSizeChange = (size: CanvasSize) => {
     setCanvasSize(size);
     resetPanAndZoom(size);
@@ -754,6 +872,10 @@ export default function Home() {
       setActiveFont(prevFont => ({...prevFont, size: 48}));
     }
   }
+  /**
+   * Applies all styles from a selected design template.
+   * @param {DesignTemplate} template - The template to apply.
+   */
   const applyTemplate = (template: DesignTemplate) => {
     // Set background
     setBackgroundType(template.background.type);
@@ -802,6 +924,9 @@ export default function Home() {
     });
   };
 
+  /**
+   * Saves the current design settings as a new favorite in local storage.
+   */
   const handleSaveDesign = () => {
     let bgValue = '';
     if (backgroundType === 'flat') bgValue = bgColor;
@@ -832,6 +957,10 @@ export default function Home() {
     });
   };
   
+  /**
+   * Deletes a favorite design from local storage.
+   * @param {string} id - The ID of the design to delete.
+   */
   const handleDeleteDesign = (id: string) => {
     setMyDesigns(prev => prev.filter(d => d.id !== id));
     setDesignToDelete(null);
@@ -841,38 +970,67 @@ export default function Home() {
     });
   };
 
+  /**
+   * Enters edit mode for a favorite design's name.
+   * @param {string} id - The ID of the design to edit.
+   * @param {string} name - The current name of the design.
+   */
   const handleEditClick = (id: string, name: string) => {
     setEditingDesignId(id);
     setEditingName(name);
   };
   
+  /**
+   * Updates the name of a favorite design in local storage.
+   * @param {string} id - The ID of the design to update.
+   */
   const handleUpdateDesign = (id: string) => {
     setMyDesigns(prev => prev.map(d => d.id === id ? { ...d, name: editingName } : d));
     setEditingDesignId(null);
     setEditingName('');
   };
   
+  /**
+   * Cancels the editing of a favorite design's name.
+   */
   const handleCancelEdit = () => {
     setEditingDesignId(null);
     setEditingName('');
   };
 
+  /**
+   * Handles the selection of a solid background color.
+   * @param {string} color - The selected color.
+   */
   const handleBgColorSelect = (color: string) => {
     setBgColor(color);
     setBackgroundType('flat');
   };
 
+  /**
+   * Handles the selection of a gradient background.
+   * @param {string} css - The CSS gradient string.
+   */
   const handleGradientBgSelect = (css: string) => {
     setGradientBg(css);
     setBackgroundType('gradient');
   };
 
+  /**
+   * Handles the selection of a predefined image background.
+   * @param {ImageTemplate} template - The selected image template.
+   */
   const handleImageBgUrlSelect = (template: ImageTemplate) => {
     const sizeName = canvasSize.name.toLowerCase() as 'post' | 'story' | 'square';
     setImageBgUrl(template.imageUrls[sizeName]);
     setBackgroundType('image');
   };
 
+  /**
+   * Searches for images using the Pexels API.
+   * @param {string} query - The search term.
+   * @param {number} [page=1] - The page number for pagination.
+   */
   const handleSearchImages = useCallback(async (query: string, page = 1) => {
     if (!query) {
       toast({
@@ -908,10 +1066,17 @@ export default function Home() {
     }
   }, [toast]);
 
+  /**
+   * Initiates an image search based on a keyword click.
+   * @param {string} keyword - The keyword to search for.
+   */
   const handleKeywordSearch = useCallback((keyword: string) => {
     handleSearchImages(keyword, 1);
   }, [handleSearchImages]);
 
+  /**
+   * Selects a random image from Picsum Photos and applies a default style.
+   */
   const handleFeelLucky = () => {
     const randomSeed = Math.floor(Math.random() * 1000);
     const url = `https://picsum.photos/seed/${randomSeed}`;
@@ -929,6 +1094,10 @@ export default function Home() {
   };
 
 
+  /**
+   * Renders the content of the currently active settings tab.
+   * @returns {JSX.Element | null} The component for the active tab.
+   */
   const renderActiveTabContent = () => {
     const props = {
         title,
@@ -1042,6 +1211,10 @@ export default function Home() {
   
   const activeTabLabel = settingsTabs.find(tab => tab.value === activeSettingsTab)?.label;
 
+  /**
+   * Renders the bullet navigation for the design carousel.
+   * @returns {JSX.Element | null} The bullet navigation UI.
+   */
   const renderBulletNavigation = () => {
     if (!carouselApi.current) return null;
     
@@ -1405,6 +1578,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
-
