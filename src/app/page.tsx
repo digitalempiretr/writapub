@@ -186,6 +186,10 @@ export default function Home() {
   const [backgroundType, setBackgroundType] = useState<BackgroundType>('image');
   const [currentTemplate, setCurrentTemplate] = useState<ImageTemplate | null>(imageTemplates[1]);
   
+  /**
+   * Effect to set the isClient flag to true once the component mounts on the client.
+   * This is used to prevent hydration errors by ensuring browser-specific APIs are only called on the client.
+   */
   useEffect(() => {
     setIsClient(true)
   }, [])
@@ -200,6 +204,9 @@ export default function Home() {
     setCurrentSlide(carouselApi.current.selectedScrollSnap())
   }, []);
 
+  /**
+   * Effect to set up and clean up the carousel's "select" event listener.
+   */
   useEffect(() => {
     if (!carouselApi.current) {
       return
@@ -345,6 +352,9 @@ export default function Home() {
     setIsMobilePanelOpen(false);
   }, []);
 
+  /**
+   * Effect to handle clicks outside the mobile panel to close it.
+   */
    useEffect(() => {
     /**
      * Handles clicks outside the mobile panel to close it.
@@ -675,6 +685,9 @@ export default function Home() {
     });
   };
 
+  /**
+   * Effect to handle keyboard events for panning.
+   */
   useEffect(() => {
     /**
      * Handles keydown events for panning (spacebar).
@@ -853,6 +866,9 @@ export default function Home() {
     return newZoom;
   }, [isMobile]);
 
+  /**
+   * Effect to reset pan and zoom when the canvas size or client status changes.
+   */
   useEffect(() => {
     if(isClient){
       resetPanAndZoom(canvasSize);
@@ -1271,6 +1287,9 @@ export default function Home() {
     );
   };
   
+  /**
+   * Render a loading animation if the component is not yet mounted on the client.
+   */
   if (!isClient) {
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
@@ -1286,24 +1305,11 @@ export default function Home() {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-       {/******************************************************
-      *
-      * HEADER
-      *
-      *******************************************************/}
       <header className="w-full text-left p-4 md:px-8 h-[6vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-transparent">
         <Logo className="text-[1.5rem] text-primary" />
-        
       </header>
 
       <div className="flex-1 flex overflow-hidden" style={{ height: isMobile ? 'calc(100vh - 10vh - 56px)' : 'auto' }}>
-      {/******************************************************
-      *
-      * DESKTOP SIDEBAR
-      * This section is only visible on screens wider than 767px (md breakpoint).
-      * It contains the main settings tabs and their content.
-      *
-      *******************************************************/}
       {designs.length > 0 && (
           <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[3vw]")}>
               <Tabs
@@ -1350,17 +1356,7 @@ export default function Home() {
               </Tabs>
           </div>
       )}
-      {/******************************************************
-      *
-      * END DESKTOP SIDEBAR
-      *
-      *******************************************************/}
 
-        {/******************************************************
-        *
-        * Main Content Area
-        *
-        *******************************************************/}
         <main 
           ref={designsRef}
           className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative cursor-default")}
@@ -1532,62 +1528,27 @@ export default function Home() {
           </div>
       )}
 
-      {/********************************************************************************
-      *
-      * MOBILE TAB SYSTEM
-      * Bu bölüm, yalnızca 768 pikselden dar ekranlarda (md breakpoint) görünür.
-      * Ayarları alttan açılan bir "Sheet" bileşeni içinde göstermek için kullanılır.
-      *
-      ********************************************************************************/}
       {isClient && designs.length > 0 && (
           <div ref={mobilePanelRef} className="md:hidden">
-              {/* 
-                Sheet: Alttan, üstten veya yanlardan açılabilen bir panel bileşenidir.
-                open: Panelin açık mı kapalı mı olduğunu kontrol eden state.
-                onOpenChange: Panel durumu değiştiğinde (örneğin, kullanıcı dışarı tıkladığında veya kapatma düğmesine bastığında) tetiklenir.
-              */}
               <Sheet open={isMobilePanelOpen} onOpenChange={(isOpen) => {
-                  // Panel kapanıyorsa, aktif sekme seçimini temizle.
                   if (!isOpen) {
                       setActiveSettingsTab('');
                   }
                   setIsMobilePanelOpen(isOpen);
               }}>
-                  {/* 
-                    SheetContent: Panelin içeriğini barındıran kısımdır.
-                    side="bottom": Panelin ekranın altından yukarı doğru açılacağını belirtir.
-                  */}
-                  <SheetContent side="bottom" className="h-auto max-h-[50vh] p-0 flex flex-col bg-background">
-                      {/* 
-                        SheetHeader: Panelin başlık bölümü.
-                        SheetTitle: Panelin başlığını gösterir, 'activeTabLabel'dan dinamik olarak gelir (örn. "Background", "Text").
-                      */}
-                      <SheetHeader className="p-4 border-b flex-row justify-between items-center bg-background">
+                  <SheetContent side="bottom" className="h-auto max-h-[50vh] p-0 flex flex-col bg-sidebar">
+                      <SheetHeader className="p-2 px-4 border-b flex-row justify-between items-center bg-background">
                           <SheetTitle className="capitalize">{activeTabLabel}</SheetTitle>
                       </SheetHeader>
-                      {/* 
-                        renderActiveTabContent(): Aktif sekmeye (örn. 'background', 'text') göre ilgili ayar bileşenini (BackgroundSettings, TextSettings vb.) render eder.
-                      */}
                       <div className="flex-grow overflow-y-auto">
                           {renderActiveTabContent()}
                       </div>
                   </SheetContent>
               </Sheet>
 
-              {/* 
-                Bu div, ekranın altına sabitlenmiş olan ve ayar sekmelerini içeren barı temsil eder.
-                isMobilePanelOpen true olduğunda (yani ayar paneli açıkken) gizlenir.
-              */}
-              <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-background border-t", isMobilePanelOpen ? "hidden" : "block")}>
-                  {/* Tabs: Sekmeli bir arayüz oluşturmak için kullanılan ana bileşen. */}
+              <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-sidebar border-t", isMobilePanelOpen ? "hidden" : "block")}>
                   <Tabs value={activeSettingsTab ?? ''} className="w-full">
-                      {/* TabsList: Tüm sekme düğmelerini (trigger) içeren liste. */}
-                      <TabsList className="grid w-full grid-cols-6 h-14 rounded-none bg-background">
-                          {/* 
-                            settingsTabs dizisi üzerinde dönerek her bir ayar sekmesi için bir düğme oluşturur.
-                            onClick: Bir sekme düğmesine tıklandığında handleMobileTabClick fonksiyonunu çalıştırır.
-                            handleMobileTabClick: Tıklanan sekmeyi aktif hale getirir ve ayar panelini (Sheet) açar.
-                          */}
+                      <TabsList className="grid w-full grid-cols-6 h-14 rounded-none bg-sidebar">
                           {settingsTabs.map(tab => (
                               <TabsTrigger key={tab.value} value={tab.value} onClick={() => handleMobileTabClick(tab.value)}>
                                   {tab.icon}
@@ -1598,11 +1559,6 @@ export default function Home() {
               </div>
           </div>
       )}
-      {/******************************************************
-      *
-      * END MOBILE TAB SYSTEM
-      *
-      *******************************************************/}
     </div>
   );
 }
