@@ -186,10 +186,6 @@ export default function Home() {
   const [backgroundType, setBackgroundType] = useState<BackgroundType>('image');
   const [currentTemplate, setCurrentTemplate] = useState<ImageTemplate | null>(imageTemplates[1]);
   
-  /**
-   * Effect to set the isClient flag to true once the component mounts on the client.
-   * This is used to prevent hydration errors by ensuring browser-specific APIs are only called on the client.
-   */
   useEffect(() => {
     setIsClient(true)
   }, [])
@@ -204,9 +200,6 @@ export default function Home() {
     setCurrentSlide(carouselApi.current.selectedScrollSnap())
   }, []);
 
-  /**
-   * Effect to set up and clean up the carousel's "select" event listener.
-   */
   useEffect(() => {
     if (!carouselApi.current) {
       return
@@ -352,9 +345,6 @@ export default function Home() {
     setIsMobilePanelOpen(false);
   }, []);
 
-  /**
-   * Effect to handle clicks outside the mobile panel to close it.
-   */
    useEffect(() => {
     /**
      * Handles clicks outside the mobile panel to close it.
@@ -685,9 +675,6 @@ export default function Home() {
     });
   };
 
-  /**
-   * Effect to handle keyboard events for panning.
-   */
   useEffect(() => {
     /**
      * Handles keydown events for panning (spacebar).
@@ -866,9 +853,6 @@ export default function Home() {
     return newZoom;
   }, [isMobile]);
 
-  /**
-   * Effect to reset pan and zoom when the canvas size or client status changes.
-   */
   useEffect(() => {
     if(isClient){
       resetPanAndZoom(canvasSize);
@@ -1287,9 +1271,6 @@ export default function Home() {
     );
   };
   
-  /**
-   * Render a loading animation if the component is not yet mounted on the client.
-   */
   if (!isClient) {
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
@@ -1305,10 +1286,11 @@ export default function Home() {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-      {/******************************************************
-       * HEADER
-       * Displays the application logo.
-       *******************************************************/}
+       {/******************************************************
+      *
+      * HEADER
+      *
+      *******************************************************/}
       <header className="w-full text-left p-4 md:px-8 h-[6vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-transparent">
         <Logo className="text-[1.5rem] text-primary" />
         
@@ -1374,14 +1356,11 @@ export default function Home() {
       *
       *******************************************************/}
 
-      {/******************************************************
-      *
-      * Main Content Area
-      * This area handles the display of either the initial text input
-      * form or the generated design carousel. It also includes
-      * controls for panning and zooming the canvas.
-      *
-      *******************************************************/}
+        {/******************************************************
+        *
+        * Main Content Area
+        *
+        *******************************************************/}
         <main 
           ref={designsRef}
           className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative cursor-default")}
@@ -1568,8 +1547,8 @@ export default function Home() {
                   }
                   setIsMobilePanelOpen(isOpen);
               }}>
-                  <SheetContent side="bottom" className="h-auto max-h-[50vh] p-0 flex flex-col bg-sidebar">
-                      <SheetHeader className="p-2 px-4 border-b flex-row justify-between items-center bg-background">
+                  <SheetContent side="bottom" className="h-auto max-h-[40vh] p-0 flex flex-col bg-background">
+                      <SheetHeader className="p-4 border-b flex-row justify-between items-center bg-background">
                           <SheetTitle className="capitalize">{activeTabLabel}</SheetTitle>
                       </SheetHeader>
                       <div className="flex-grow overflow-y-auto">
@@ -1578,9 +1557,9 @@ export default function Home() {
                   </SheetContent>
               </Sheet>
 
-              <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-sidebar border-t", isMobilePanelOpen ? "hidden" : "block")}>
+              <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-background border-t", isMobilePanelOpen ? "hidden" : "block")}>
                   <Tabs value={activeSettingsTab ?? ''} className="w-full">
-                      <TabsList className="grid w-full grid-cols-6 h-14 rounded-none bg-sidebar">
+                      <TabsList className="grid w-full grid-cols-6 h-14 rounded-none bg-background">
                           {settingsTabs.map(tab => (
                               <TabsTrigger key={tab.value} value={tab.value} onClick={() => handleMobileTabClick(tab.value)}>
                                   {tab.icon}
@@ -1591,7 +1570,7 @@ export default function Home() {
               </div>
           </div>
       )}
-       {/******************************************************
+      {/******************************************************
       *
       * END MOBILE TAB SYSTEM
       *
