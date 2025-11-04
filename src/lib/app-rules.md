@@ -26,6 +26,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 12. **Vertical Sizing:** The header should have a height of `5vh`, and the main content area should have a height of `95vh`.
 13. **Mobile View Definition:** The "Mobile View" is the layout that applies when the browser window width is less than 768px.
 14. **Case Preservation**: The casing (uppercase/lowercase) of the user's input text, including the title, must be preserved in the final design. Text should not be automatically converted to uppercase.
+15. **Comments Preservation**: Comment lines will NEVER be deleted during edits. A comment line must be added above each block of code explaining what that code does.
 
 #### Türkçe Çekirdek Kurallar
 1.  **Sen Kodlama yapan Yapay Zeka için Geliştirme Öncesi Kontrol:** Yapay zeka (sen), herhangi bir geliştirmeye başlamadan önce, mevcut tüm kuralları ve projenin mevcut durumunu anlamak için `app-rules.md` dosyasını gözden geçirmelidir.
@@ -41,6 +42,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 12. **Dikey Boyutlandırma:** Header `5vh` yüksekliğe, ana içerik alanı ise `95vh` yüksekliğe sahip olmalıdır.
 13. **Mobil Görünüm Tanımı:** "Mobil Görünüm", tarayıcı pencere genişliği 768 pikselden daha küçük olduğunda geçerli olan düzendir.
 14. **Harf Büyüklüğü Koruma**: Kullanıcının girdiği metnin (başlık dahil) büyük/küçük harf durumu, nihai tasarımda korunmalıdır. Metin otomatik olarak büyük harfe çevrilmemelidir.
+15. Düzenlemelerde Yorum satırları ASLA silinmeyecek. Her kod üzerine yorum satırı eklenip o kodun ne işe yaradığı mutlaka yazılmalı.
 
 #### ENGLISH
 
@@ -63,3 +65,4 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 -   All fonts loaded from Google Fonts must include the `latin-ext` character set to ensure correct display of Turkish characters.
 -   In the font selection menu, the name of each font option should be displayed in its own font style. This allows the user to preview how the fonts look before selecting them.
 -   The default font in the font selection dropdown is set to "Special Elite".
+
