@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useId } from "react";
+import React, { useId, useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, Plus, Search } from "lucide-react";
+import { Loader2, Plus, Search, Palette } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
@@ -77,6 +77,9 @@ export function BackgroundSettings({
   setSearchCarouselApi,
 }: BackgroundSettingsProps) {
   const baseId = useId();
+  const [customGradientFrom, setCustomGradientFrom] = useState("#8e2de2");
+  const [customGradientTo, setCustomGradientTo] = useState("#4a00e0");
+
 
   const handleImageSelectFromSearch = (imageUrl: string) => {
     handleImageBgUrlSelect({
@@ -87,6 +90,11 @@ export function BackgroundSettings({
         square: imageUrl,
       },
     });
+  };
+
+  const applyCustomGradient = () => {
+    const css = `linear-gradient(to top right, ${customGradientFrom}, ${customGradientTo})`;
+    handleGradientBgSelect(css);
   };
 
   return (
@@ -177,6 +185,26 @@ export function BackgroundSettings({
         </TabsContent>
         <TabsContent value="gradient" className="pt-4 space-y-4">
           <div className="grid grid-cols-6 gap-2">
+             <Popover>
+              <PopoverTrigger asChild>
+                <Card className="overflow-hidden cursor-pointer">
+                  <CardContent className="aspect-[4/5] flex items-center justify-center" style={{ background: `linear-gradient(to top right, ${customGradientFrom}, ${customGradientTo})` }}>
+                     <Palette className="h-6 w-6 text-white mix-blend-difference" />
+                  </CardContent>
+                </Card>
+              </PopoverTrigger>
+              <PopoverContent className="w-64 space-y-4">
+                <div className="space-y-2">
+                  <Label>From</Label>
+                  <Input type="color" value={customGradientFrom} onChange={(e) => setCustomGradientFrom(e.target.value)} className="w-full h-8 p-1"/>
+                </div>
+                 <div className="space-y-2">
+                  <Label>To</Label>
+                  <Input type="color" value={customGradientTo} onChange={(e) => setCustomGradientTo(e.target.value)} className="w-full h-8 p-1"/>
+                </div>
+                <Button onClick={applyCustomGradient} className="w-full">Apply</Button>
+              </PopoverContent>
+            </Popover>
             {gradientTemplates.map((gradient) => (
               <Card key={gradient.name} className="overflow-hidden cursor-pointer" onClick={() => handleGradientBgSelect(gradient.css)}>
                 <CardContent className="aspect-[4/5]" style={{ background: gradient.css }} />

@@ -38,7 +38,7 @@ export function CreativeMagicPanel({ title, setTitle, text, setText, handleGener
   const mainTextAreaId = useId();
   const isMobile = useIsMobile();
 
-  const infoContent = "The text written here will be used as the cover design (first slide).";
+  const infoContent = "As The Cover Design (1st Carousel Item).";
 
   const renderInfoIcon = () => {
     if (isMobile) {
@@ -49,7 +49,7 @@ export function CreativeMagicPanel({ title, setTitle, text, setText, handleGener
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>About the Title Field</DialogTitle>
+              <DialogTitle className="text-muted-foreground">The Text Written Title Will Be Used</DialogTitle>
               <DialogDescription>
                 {infoContent}
               </DialogDescription>
