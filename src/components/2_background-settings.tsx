@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, Plus, Search, Palette } from "lucide-react";
+import { Loader2, Plus, Search, Palette, RotateCcw } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,6 +22,7 @@ import { BgOverlayIcon, FeelLucky } from "@/components/ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "Art", "Minimal", "Abstract", "Dreamy", "Cinematic", "Surreal", "Vintage", "Futuristic", "Bohemian"];
 
@@ -81,9 +82,7 @@ export function BackgroundSettings({
   const [customGradientFrom, setCustomGradientFrom] = useState("#8e2de2");
   const [customGradientTo, setCustomGradientTo] = useState("#4a00e0");
   const [gradientType, setGradientType] = useState<'linear' | 'radial'>('linear');
-  const [gradientDirection, setGradientDirection] = useState("to top right");
-  const [gradientAngle, setGradientAngle] = useState(45);
-  const [directionType, setDirectionType] = useState<'preset' | 'angle'>('preset');
+  const [gradientAngle, setGradientAngle] = useState(95);
 
 
   const handleImageSelectFromSearch = (imageUrl: string) => {
@@ -100,22 +99,15 @@ export function BackgroundSettings({
   const applyCustomGradient = () => {
     let css = '';
     if (gradientType === 'linear') {
-      const directionValue = directionType === 'angle' ? `${gradientAngle}deg` : gradientDirection;
-      css = `linear-gradient(${directionValue}, ${customGradientFrom}, ${customGradientTo})`;
+      css = `linear-gradient(${gradientAngle}deg, ${customGradientFrom}, ${customGradientTo})`;
     } else {
       css = `radial-gradient(circle, ${customGradientFrom}, ${customGradientTo})`;
     }
     handleGradientBgSelect(css);
   };
 
-  const handleDirectionChange = (value: string) => {
-    setGradientDirection(value);
-    setDirectionType('preset');
-  };
-
   const handleAngleChange = (value: number[]) => {
     setGradientAngle(value[0]);
-    setDirectionType('angle');
   };
 
   return (
@@ -209,7 +201,7 @@ export function BackgroundSettings({
              <Popover>
               <PopoverTrigger asChild>
                 <Card className="overflow-hidden cursor-pointer">
-                  <CardContent className="aspect-[4/5] flex items-center justify-center" style={{ background: gradientType === 'linear' ? `linear-gradient(${directionType === 'angle' ? `${gradientAngle}deg` : gradientDirection}, ${customGradientFrom}, ${customGradientTo})` : `radial-gradient(circle, ${customGradientFrom}, ${customGradientTo})` }}>
+                  <CardContent className="aspect-[4/5] flex items-center justify-center" style={{ background: gradientType === 'linear' ? `linear-gradient(${gradientAngle}deg, ${customGradientFrom}, ${customGradientTo})` : `radial-gradient(circle, ${customGradientFrom}, ${customGradientTo})` }}>
                      <Palette className="h-6 w-6 text-white mix-blend-difference" />
                   </CardContent>
                 </Card>
@@ -225,55 +217,39 @@ export function BackgroundSettings({
                         <Input type="color" value={customGradientTo} onChange={(e) => setCustomGradientTo(e.target.value)} className="w-full h-8 p-1"/>
                     </div>
                 </div>
-                <div className="space-y-2">
-                  <Label>Gradient Type</Label>
-                   <Select value={gradientType} onValueChange={(v: 'linear' | 'radial') => setGradientType(v)}>
-                      <SelectTrigger>
-                          <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                          <SelectItem value="linear">Linear</SelectItem>
-                          <SelectItem value="radial">Radial</SelectItem>
-                      </SelectContent>
-                  </Select>
+
+                <div className="flex items-center gap-2">
+                  <RadioGroup value={gradientType} onValueChange={(v: 'linear' | 'radial') => setGradientType(v)} className="grid grid-cols-2 gap-0 border rounded-md p-0.5">
+                    <div>
+                      <RadioGroupItem value="linear" id="linear" className="sr-only" />
+                      <Label htmlFor="linear" className="block text-center text-sm px-4 py-1.5 rounded-sm cursor-pointer data-[state=checked]:bg-muted" data-state={gradientType === 'linear' ? 'checked' : 'unchecked'}>Linear</Label>
+                    </div>
+                    <div>
+                      <RadioGroupItem value="radial" id="radial" className="sr-only" />
+                      <Label htmlFor="radial" className="block text-center text-sm px-4 py-1.5 rounded-sm cursor-pointer data-[state=checked]:bg-muted" data-state={gradientType === 'radial' ? 'checked' : 'unchecked'}>Radial</Label>
+                    </div>
+                  </RadioGroup>
+                  {gradientType === 'linear' && (
+                    <div className="flex items-center gap-2">
+                       <div className="relative h-8 w-8 border rounded-md flex items-center justify-center">
+                          <div className="w-5 h-5 rounded-full border border-primary/50 relative">
+                             <div className="absolute w-1.5 h-1.5 bg-primary rounded-full" style={{ transform: `translate(-50%, -50%) rotate(${gradientAngle}deg) translate(8px) rotate(-${gradientAngle}deg)` }}></div>
+                          </div>
+                      </div>
+                      <Input type="number" value={gradientAngle} onChange={(e) => setGradientAngle(Number(e.target.value))} className="w-20 h-8" />
+                    </div>
+                  )}
                 </div>
-                
+
                 {gradientType === 'linear' && (
-                  <>
-                    <div className="space-y-2">
-                      <Label>Direction</Label>
-                      <Select value={gradientDirection} onValueChange={handleDirectionChange}>
-                          <SelectTrigger>
-                              <SelectValue placeholder="Select direction" />
-                          </SelectTrigger>
-                          <SelectContent>
-                              <SelectItem value="to top">To Top</SelectItem>
-                              <SelectItem value="to top right">To Top Right</SelectItem>
-                              <SelectItem value="to right">To Right</SelectItem>
-                              <SelectItem value="to bottom right">To Bottom Right</SelectItem>
-                              <SelectItem value="to bottom">To Bottom</SelectItem>
-                              <SelectItem value="to bottom left">To Bottom Left</SelectItem>
-                              <SelectItem value="to left">To Left</SelectItem>
-                              <SelectItem value="to top left">To Top Left</SelectItem>
-                          </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                        <Label>Angle</Label>
-                         <div className="flex items-center gap-2">
-                            <Slider 
-                                value={[gradientAngle]}
-                                max={360}
-                                step={1}
-                                onValueChange={handleAngleChange}
-                            />
-                            <div className="text-sm p-2 rounded-md border border-input tabular-nums w-20 text-center">
-                                {gradientAngle}°
-                            </div>
-                        </div>
-                    </div>
-                  </>
+                   <Slider 
+                      value={[gradientAngle]}
+                      max={360}
+                      step={1}
+                      onValueChange={handleAngleChange}
+                    />
                 )}
+                
 
                 <Button onClick={applyCustomGradient} className="w-full">Apply</Button>
               </PopoverContent>
