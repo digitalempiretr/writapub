@@ -28,15 +28,15 @@ export function MakeCarouselSidebar({
   renderActiveTabContent,
 }: SidebarProps) {
   return (
-    <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[4vw]")}>
+    <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[2vw]")}>
       <Tabs
         orientation="vertical"
         value={activeSettingsTab}
         onValueChange={handleDesktopTabClick}
         className="flex w-full"
       >
-        <div className="flex flex-col items-center p-0 space-y-2 bg-sidebar">
-          <TabsList className="flex flex-col h-full justify-start items-center p-0 bg-sidebar space-y-1">
+        <div className="flex flex-col items-center p-0 space-y-2 bg-sidebar rounded-tr-lg">
+          <TabsList className="flex flex-col h-full justify-start items-center p-0 bg-sidebar space-y-1 rounded-tr-lg">
             {settingsTabs.map(tab => (
               <TooltipProvider key={tab.value}>
                 <Tooltip>
@@ -57,7 +57,7 @@ export function MakeCarouselSidebar({
         </div>
 
         {isSidebarOpen && (
-          <div className="flex-grow flex flex-col w-full bg-sidebar">
+          <div className="flex-grow flex flex-col w-full bg-sidebar rounded-tr-lg">
             <div className="p-4 flex-shrink-0 flex justify-between items-center bg-sidebar">
               <h3 className="text-lg font-semibold capitalize text-sidebar-foreground">{activeTabLabel}</h3>
               <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="h-8 w-8 rounded-full">

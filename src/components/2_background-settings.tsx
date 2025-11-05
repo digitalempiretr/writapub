@@ -155,33 +155,25 @@ export function BackgroundSettings({
           </Popover>
         </div>
         <TabsContent value="flat" className="pt-4 space-y-4">
-          <Carousel className="w-full" opts={{ dragFree: true }}>
-            <CarouselContent>
-              <CarouselItem className="basis-1/7">
-                <div className="relative h-32 w-full">
-                  <Label htmlFor={`${baseId}-bg-color-picker`} className="h-full w-full flex items-center justify-center bg-gray-100 rounded-md border" style={{ backgroundColor: bgColor }}>
-                    <Plus className="h-8 w-8 text-gray-600" />
-                  </Label>
-                  <Input
-                    id={`${baseId}-bg-color-picker`}
-                    type="color"
-                    value={bgColor}
-                    onChange={(e) => handleBgColorSelect(e.target.value)}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  />
-                </div>
-              </CarouselItem>
-              {defaultSolidColors.map(color => (
-                <CarouselItem key={color} className="basis-1/7">
-                  <Card className="overflow-hidden cursor-pointer" onClick={() => handleBgColorSelect(color)}>
-                    <CardContent className="h-32" style={{ backgroundColor: color }} />
-                  </Card>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="-left-4" />
-            <CarouselNext className="-right-4" />
-          </Carousel>
+          <div className="grid grid-cols-6 gap-2">
+            <div className="relative aspect-[4/5] w-full">
+              <Label htmlFor={`${baseId}-bg-color-picker`} className="h-full w-full flex items-center justify-center bg-gray-100 rounded-md border cursor-pointer" style={{ backgroundColor: bgColor }}>
+                <Plus className="h-6 w-6 text-gray-500" />
+              </Label>
+              <Input
+                id={`${baseId}-bg-color-picker`}
+                type="color"
+                value={bgColor}
+                onChange={(e) => handleBgColorSelect(e.target.value)}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+            </div>
+            {defaultSolidColors.map(color => (
+              <Card key={color} className="overflow-hidden cursor-pointer" onClick={() => handleBgColorSelect(color)}>
+                <CardContent className="p-0 aspect-[4/5]" style={{ backgroundColor: color }} />
+              </Card>
+            ))}
+          </div>
         </TabsContent>
         <TabsContent value="gradient" className="pt-4 space-y-4">
           <Carousel className="w-full" opts={{ dragFree: true }}>
