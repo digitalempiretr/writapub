@@ -30,19 +30,19 @@ export function CreativeMagicPanel({ title, setTitle, text, setText, handleGener
 
   return (
     <div className="space-y-10 max-w-[1000px] mx-auto w-full">
-      <CardTitle className="text-foreground text-2xl md:text-3xl text-left font-serif ">Hi, <span className = "text-primary">
+      <CardTitle className="text-foreground text-3xl md:text-3xl text-left font-serif">Hi, <span className = "text-primary">
         [Users Name] </span></CardTitle>
       <div className="space-y-4">
         <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <Label className="font-bold font-serif text-xl" htmlFor={titleId}>Title </Label>
+              <Label className="border-s-8 border-primary px-2 font-bold font-sans text-xl" htmlFor={titleId}>Title </Label>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>The text written here will be used as the cover design (first slide).</p>
+                    <p>The text written here <br></br> will be used as the cover design (first slide).</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -56,7 +56,7 @@ export function CreativeMagicPanel({ title, setTitle, text, setText, handleGener
             />
         </div>
         <div className="space-y-2">
-            <Label className="font-bold font-serif text-xl" htmlFor={mainTextAreaId}>What will you<span className = "text-primary"> Write </span>today?</Label>
+            <Label className="border-s-8 border-primary px-2 font-bold font-sans text-xl" htmlFor={mainTextAreaId}>What will you<span className = "text-primary"> Write </span>today?</Label>
             <div className="relative text-xl rounded-lg">
             <Textarea
                 id={mainTextAreaId}

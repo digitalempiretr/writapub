@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className="nature">
+    <html lang="en" suppressHydrationWarning className="claymorphism">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link

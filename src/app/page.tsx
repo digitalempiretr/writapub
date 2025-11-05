@@ -785,8 +785,8 @@ export default function Home() {
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     if (e.touches.length === 2) {
       e.preventDefault(); // Prevent default scroll/zoom
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
+      const touch1 = e.nativeEvent.touches[0];
+      const touch2 = e.nativeEvent.touches[1];
        if (!touch1 || !touch2) return;
       const midX = (touch1.clientX + touch2.clientX) / 2;
       const midY = (touch1.clientY + touch2.clientY) / 2;
@@ -805,8 +805,8 @@ export default function Home() {
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     if (e.touches.length === 2) {
       e.preventDefault(); // Prevent default scroll/zoom
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
+      const touch1 = e.nativeEvent.touches[0];
+      const touch2 = e.nativeEvent.touches[1];
       if (!touch1 || !touch2) return;
   
       // Panning
@@ -1305,10 +1305,12 @@ export default function Home() {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-      {/******************************************************
-       * HEADER
-       * Displays the application logo.
-       *******************************************************/}
+      {/* 
+      ********************************************************************************
+      * HEADER
+      * Displays the application logo.
+      ********************************************************************************
+      */}
       <header className="w-full text-left p-4 md:px-8 h-[6vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-transparent">
         <Logo className="text-[1.5rem] text-primary" />
         
@@ -1323,14 +1325,17 @@ export default function Home() {
       ********************************************************************************
       */}
       {designs.length > 0 && (
-          <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[3vw]")}>
+          <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[4vw]")}>
               <Tabs
                   orientation="vertical"
                   value={activeSettingsTab}
                   onValueChange={handleDesktopTabClick}
                   className="flex w-full"
               >
-                  <div className="flex flex-col items-center p-0 space-y-2 bg-sidebar">
+                  <div className="flex flex-col items-center p-0 pt-2 space-y-2 bg-sidebar">
+                      <div className={cn("pb-2 transition-all", isSidebarOpen ? 'w-full px-4' : 'w-12')}>
+                        <Logo className={cn("text-primary text-xl transition-all", !isSidebarOpen && "text-3xl text-center w-full")} />
+                      </div>
                       <TabsList className="flex flex-col h-full justify-start items-center p-0 bg-sidebar space-y-1">
                           {settingsTabs.map(tab => (
                               <TooltipProvider key={tab.value}>
