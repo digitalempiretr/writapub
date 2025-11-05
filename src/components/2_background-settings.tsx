@@ -80,6 +80,7 @@ export function BackgroundSettings({
   const baseId = useId();
   const [customGradientFrom, setCustomGradientFrom] = useState("#8e2de2");
   const [customGradientTo, setCustomGradientTo] = useState("#4a00e0");
+  const [gradientType, setGradientType] = useState<'linear' | 'radial'>('linear');
   const [gradientDirection, setGradientDirection] = useState("to top right");
   const [gradientAngle, setGradientAngle] = useState(45);
   const [directionType, setDirectionType] = useState<'preset' | 'angle'>('preset');
@@ -97,8 +98,13 @@ export function BackgroundSettings({
   };
 
   const applyCustomGradient = () => {
-    const directionValue = directionType === 'angle' ? `${gradientAngle}deg` : gradientDirection;
-    const css = `linear-gradient(${directionValue}, ${customGradientFrom}, ${customGradientTo})`;
+    let css = '';
+    if (gradientType === 'linear') {
+      const directionValue = directionType === 'angle' ? `${gradientAngle}deg` : gradientDirection;
+      css = `linear-gradient(${directionValue}, ${customGradientFrom}, ${customGradientTo})`;
+    } else {
+      css = `radial-gradient(circle, ${customGradientFrom}, ${customGradientTo})`;
+    }
     handleGradientBgSelect(css);
   };
 
@@ -203,7 +209,7 @@ export function BackgroundSettings({
              <Popover>
               <PopoverTrigger asChild>
                 <Card className="overflow-hidden cursor-pointer">
-                  <CardContent className="aspect-[4/5] flex items-center justify-center" style={{ background: `linear-gradient(to top right, ${customGradientFrom}, ${customGradientTo})` }}>
+                  <CardContent className="aspect-[4/5] flex items-center justify-center" style={{ background: gradientType === 'linear' ? `linear-gradient(${directionType === 'angle' ? `${gradientAngle}deg` : gradientDirection}, ${customGradientFrom}, ${customGradientTo})` : `radial-gradient(circle, ${customGradientFrom}, ${customGradientTo})` }}>
                      <Palette className="h-6 w-6 text-white mix-blend-difference" />
                   </CardContent>
                 </Card>
@@ -220,37 +226,55 @@ export function BackgroundSettings({
                     </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Direction</Label>
-                  <Select value={gradientDirection} onValueChange={handleDirectionChange}>
+                  <Label>Gradient Type</Label>
+                   <Select value={gradientType} onValueChange={(v: 'linear' | 'radial') => setGradientType(v)}>
                       <SelectTrigger>
-                          <SelectValue placeholder="Select direction" />
+                          <SelectValue placeholder="Select type" />
                       </SelectTrigger>
                       <SelectContent>
-                          <SelectItem value="to top">To Top</SelectItem>
-                          <SelectItem value="to top right">To Top Right</SelectItem>
-                          <SelectItem value="to right">To Right</SelectItem>
-                          <SelectItem value="to bottom right">To Bottom Right</SelectItem>
-                          <SelectItem value="to bottom">To Bottom</SelectItem>
-                          <SelectItem value="to bottom left">To Bottom Left</SelectItem>
-                          <SelectItem value="to left">To Left</SelectItem>
-                          <SelectItem value="to top left">To Top Left</SelectItem>
+                          <SelectItem value="linear">Linear</SelectItem>
+                          <SelectItem value="radial">Radial</SelectItem>
                       </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
-                    <Label>Angle</Label>
-                     <div className="flex items-center gap-2">
-                        <Slider 
-                            value={[gradientAngle]}
-                            max={360}
-                            step={1}
-                            onValueChange={handleAngleChange}
-                        />
-                        <div className="text-sm p-2 rounded-md border border-input tabular-nums w-20 text-center">
-                            {gradientAngle}°
+                
+                {gradientType === 'linear' && (
+                  <>
+                    <div className="space-y-2">
+                      <Label>Direction</Label>
+                      <Select value={gradientDirection} onValueChange={handleDirectionChange}>
+                          <SelectTrigger>
+                              <SelectValue placeholder="Select direction" />
+                          </SelectTrigger>
+                          <SelectContent>
+                              <SelectItem value="to top">To Top</SelectItem>
+                              <SelectItem value="to top right">To Top Right</SelectItem>
+                              <SelectItem value="to right">To Right</SelectItem>
+                              <SelectItem value="to bottom right">To Bottom Right</SelectItem>
+                              <SelectItem value="to bottom">To Bottom</SelectItem>
+                              <SelectItem value="to bottom left">To Bottom Left</SelectItem>
+                              <SelectItem value="to left">To Left</SelectItem>
+                              <SelectItem value="to top left">To Top Left</SelectItem>
+                          </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                        <Label>Angle</Label>
+                         <div className="flex items-center gap-2">
+                            <Slider 
+                                value={[gradientAngle]}
+                                max={360}
+                                step={1}
+                                onValueChange={handleAngleChange}
+                            />
+                            <div className="text-sm p-2 rounded-md border border-input tabular-nums w-20 text-center">
+                                {gradientAngle}°
+                            </div>
                         </div>
                     </div>
-                </div>
+                  </>
+                )}
+
                 <Button onClick={applyCustomGradient} className="w-full">Apply</Button>
               </PopoverContent>
             </Popover>
@@ -378,4 +402,3 @@ export function BackgroundSettings({
     </div>
   );
 }
-
