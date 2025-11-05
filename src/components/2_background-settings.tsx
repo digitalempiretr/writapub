@@ -176,19 +176,13 @@ export function BackgroundSettings({
           </div>
         </TabsContent>
         <TabsContent value="gradient" className="pt-4 space-y-4">
-          <Carousel className="w-full" opts={{ dragFree: true }}>
-            <CarouselContent>
-              {gradientTemplates.map((gradient) => (
-                <CarouselItem key={gradient.name} className="basis-1/4">
-                  <Card className="overflow-hidden cursor-pointer" onClick={() => handleGradientBgSelect(gradient.css)}>
-                    <CardContent className="h-32" style={{ background: gradient.css }} />
-                  </Card>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="-left-4" />
-            <CarouselNext className="-right-4" />
-          </Carousel>
+          <div className="grid grid-cols-6 gap-2">
+            {gradientTemplates.map((gradient) => (
+              <Card key={gradient.name} className="overflow-hidden cursor-pointer" onClick={() => handleGradientBgSelect(gradient.css)}>
+                <CardContent className="aspect-[4/5]" style={{ background: gradient.css }} />
+              </Card>
+            ))}
+          </div>
         </TabsContent>
         <TabsContent value="image" className="pt-4 space-y-4">
           <div className="space-y-2">
