@@ -109,13 +109,13 @@ export function BackgroundSettings({
                   </PopoverTrigger>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Overlay Settings</p>
+                  <p>Background Overlay</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
             <PopoverContent className="w-64 space-y-4">
               <div className="flex items-center justify-between">
-                <Label htmlFor={`${baseId}-overlay-toggle`}>Image Overlay</Label>
+                <Label htmlFor={`${baseId}-overlay-toggle`}>Background Overlay</Label>
                 <Switch
                   id={`${baseId}-overlay-toggle`}
                   checked={isOverlayEnabled}
