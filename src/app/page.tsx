@@ -783,7 +783,7 @@ export default function Home() {
    * @param {React.TouchEvent<HTMLDivElement>} e - The touch event.
    */
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (e.touches.length === 2) {
+    if (e.nativeEvent.touches.length === 2) {
       e.preventDefault(); // Prevent default scroll/zoom
       const touch1 = e.nativeEvent.touches[0];
       const touch2 = e.nativeEvent.touches[1];
@@ -803,7 +803,7 @@ export default function Home() {
    * @param {React.TouchEvent<HTMLDivElement>} e - The touch event.
    */
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (e.touches.length === 2) {
+    if (e.nativeEvent.touches.length === 2) {
       e.preventDefault(); // Prevent default scroll/zoom
       const touch1 = e.nativeEvent.touches[0];
       const touch2 = e.nativeEvent.touches[1];
@@ -1332,10 +1332,7 @@ export default function Home() {
                   onValueChange={handleDesktopTabClick}
                   className="flex w-full"
               >
-                  <div className="flex flex-col items-center p-0 pt-2 space-y-2 bg-sidebar">
-                      <div className={cn("pb-2 transition-all", isSidebarOpen ? 'w-full px-4' : 'w-12')}>
-                        <Logo className={cn("text-primary text-xl transition-all", !isSidebarOpen && "text-3xl text-center w-full")} />
-                      </div>
+                  <div className="flex flex-col items-center p-0 space-y-2 bg-sidebar">
                       <TabsList className="flex flex-col h-full justify-start items-center p-0 bg-sidebar space-y-1">
                           {settingsTabs.map(tab => (
                               <TooltipProvider key={tab.value}>
@@ -1608,5 +1605,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
