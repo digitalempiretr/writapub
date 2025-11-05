@@ -190,7 +190,7 @@ export function BackgroundSettings({
               />
             </div>
             {defaultSolidColors.map(color => (
-              <Card key={color} className="overflow-hidden cursor-pointer" onClick={() => handleBgColorSelect(color)}>
+              <Card key={color} className="overflow-hidden cursor-pointer">
                 <CardContent className="p-0 aspect-[4/5]" style={{ backgroundColor: color }} />
               </Card>
             ))}
@@ -202,7 +202,7 @@ export function BackgroundSettings({
               <PopoverTrigger asChild>
                 <Card className="overflow-hidden cursor-pointer">
                   <CardContent className="aspect-[4/5] flex items-center justify-center" style={{ background: gradientType === 'linear' ? `linear-gradient(${gradientAngle}deg, ${customGradientFrom}, ${customGradientTo})` : `radial-gradient(circle, ${customGradientFrom}, ${customGradientTo})` }}>
-                     <Palette className="h-6 w-6 text-white mix-blend-difference" />
+                     <Plus className="h-6 w-6 text-white mix-blend-difference" />
                   </CardContent>
                 </Card>
               </PopoverTrigger>
@@ -233,7 +233,7 @@ export function BackgroundSettings({
                     <div className="flex items-center gap-2">
                       <div className="relative h-8 w-8 border rounded-md flex items-center justify-center">
                           <div className="w-5 h-5 rounded-full border border-primary/50 relative">
-                             <div className="absolute w-1.5 h-1.5 bg-primary rounded-full top-1/2 left-1/2" style={{ transform: `rotate(${gradientAngle}deg) translate(8px) rotate(-${gradientAngle}deg) translate(-50%, -50%)` }}></div>
+                             <div className="absolute w-1.5 h-1.5 bg-primary rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style={{ transform: `rotate(${gradientAngle}deg) translateX(8px)` }}></div>
                           </div>
                       </div>
                       <Input type="number" value={gradientAngle} onChange={(e) => setGradientAngle(Number(e.target.value))} className="w-20 h-8" />
