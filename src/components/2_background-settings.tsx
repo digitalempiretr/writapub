@@ -231,9 +231,9 @@ export function BackgroundSettings({
                   </RadioGroup>
                   {gradientType === 'linear' && (
                     <div className="flex items-center gap-2">
-                       <div className="relative h-8 w-8 border rounded-md flex items-center justify-center">
+                      <div className="relative h-8 w-8 border rounded-md flex items-center justify-center">
                           <div className="w-5 h-5 rounded-full border border-primary/50 relative">
-                             <div className="absolute w-1.5 h-1.5 bg-primary rounded-full" style={{ transform: `translate(-50%, -50%) rotate(${gradientAngle}deg) translate(8px) rotate(-${gradientAngle}deg)` }}></div>
+                             <div className="absolute w-1.5 h-1.5 bg-primary rounded-full top-1/2 left-1/2" style={{ transform: `rotate(${gradientAngle}deg) translate(8px) rotate(-${gradientAngle}deg) translate(-50%, -50%)` }}></div>
                           </div>
                       </div>
                       <Input type="number" value={gradientAngle} onChange={(e) => setGradientAngle(Number(e.target.value))} className="w-20 h-8" />
