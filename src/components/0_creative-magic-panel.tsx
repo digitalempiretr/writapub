@@ -14,6 +14,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useIsMobile } from "@/hooks/use-mobile";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 type CreativeMagicPanelProps = {
   title: string;
@@ -27,6 +36,42 @@ type CreativeMagicPanelProps = {
 export function CreativeMagicPanel({ title, setTitle, text, setText, handleGenerate, isLoading }: CreativeMagicPanelProps) {
   const titleId = useId();
   const mainTextAreaId = useId();
+  const isMobile = useIsMobile();
+
+  const infoContent = "The text written here will be used as the cover design (first slide).";
+
+  const renderInfoIcon = () => {
+    if (isMobile) {
+      return (
+        <Dialog>
+          <DialogTrigger asChild>
+            <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>About the Title Field</DialogTitle>
+              <DialogDescription>
+                {infoContent}
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      );
+    }
+
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Info className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-primary" />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{infoContent}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  };
 
   return (
     <div className="space-y-10 max-w-[1000px] mx-auto w-full">
@@ -36,16 +81,7 @@ export function CreativeMagicPanel({ title, setTitle, text, setText, handleGener
         <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Label className="border-s-8 border-primary px-2 font-bold font-sans text-xl" htmlFor={titleId}>Title </Label>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>The text written here <br></br> will be used as the cover design (first slide).</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              {renderInfoIcon()}
             </div>
             <Input
                 id={titleId}
