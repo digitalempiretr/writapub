@@ -179,7 +179,7 @@ export function BackgroundSettings({
            <div className="grid grid-cols-6 gap-2">
             <div className="relative aspect-[4/5] w-full">
               <Label htmlFor={`${baseId}-bg-color-picker`} className="h-full w-full flex items-center justify-center bg-gray-100 rounded-md border cursor-pointer" style={{ backgroundColor: bgColor }}>
-                <Plus className="h-6 w-6 text-gray-500" />
+                <Plus className="h-6 w-6 text-gray-500" strokeWidth={3}/>
               </Label>
               <Input
                 id={`${baseId}-bg-color-picker`}
@@ -198,11 +198,12 @@ export function BackgroundSettings({
         </TabsContent>
         <TabsContent value="gradient" className="pt-4 space-y-4">
            <div className="grid grid-cols-6 gap-2">
+           
              <Popover>
               <PopoverTrigger asChild>
                 <Card className="overflow-hidden cursor-pointer">
-                  <CardContent className="aspect-[4/5] flex items-center justify-center" style={{ background: gradientType === 'linear' ? `linear-gradient(${gradientAngle}deg, ${customGradientFrom}, ${customGradientTo})` : `radial-gradient(circle, ${customGradientFrom}, ${customGradientTo})` }}>
-                     <Plus className="h-6 w-6 text-white mix-blend-difference" />
+                  <CardContent className="aspect-[4/5] flex items-center justify-center bg-gray-100">
+                     <Plus className="h-6 w-6 text-gray-500" strokeWidth={3} />
                   </CardContent>
                 </Card>
               </PopoverTrigger>
@@ -232,9 +233,10 @@ export function BackgroundSettings({
                   {gradientType === 'linear' && (
                     <div className="flex items-center gap-2">
                       <div className="relative h-8 w-8 border rounded-md flex items-center justify-center">
-                          <div className="w-5 h-5 rounded-full border border-primary/50 relative">
-                             <div className="absolute w-1.5 h-1.5 bg-primary rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style={{ transform: `rotate(${gradientAngle}deg) translateX(8px)` }}></div>
-                          </div>
+                           <div
+                            className="absolute w-1.5 h-1.5 bg-primary rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                            style={{ transform: `rotate(${gradientAngle}deg) translateX(8px)` }}
+                          />
                       </div>
                       <Input type="number" value={gradientAngle} onChange={(e) => setGradientAngle(Number(e.target.value))} className="w-20 h-8" />
                     </div>

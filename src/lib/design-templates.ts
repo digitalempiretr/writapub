@@ -165,8 +165,8 @@ export const designTemplates: DesignTemplate[] = [
     previewImage: "",
     canvasSize: 'Post',
     background: {
-      type: 'flat',
-      value: '#121221',
+      type: 'image',
+      value: 'https://images.pexels.com/photos/1655166/pexels-photo-1655166.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     },
     font: {
       value: 'luckiest-guy',

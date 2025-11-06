@@ -1062,14 +1062,20 @@ export default function Home() {
     setSearchQuery(query);
 
     try {
-      const results = await findImages({ query, page: page, per_page: 9 });
-      if (page === 1) {
-        setSearchedImages(results.imageUrls);
-      } else {
-        setSearchedImages(prev => [...prev, ...results.imageUrls]);
-      }
+      const results = await findImages({ query, page: page, per_page: page === 1 ? 9 : 4 });
       if (results.imageUrls.length === 0 && page === 1) {
         toast({ title: "No images found." });
+        setSearchedImages([]);
+      } else if (page === 1) {
+        setSearchedImages(results.imageUrls);
+      } else {
+        setSearchedImages(prev => {
+          let updatedImages = [...results.imageUrls, ...prev];
+          if (updatedImages.length > 12) {
+            updatedImages = updatedImages.slice(0, 12);
+          }
+          return updatedImages;
+        });
       }
     } catch (error: any) {
       console.error(error);
@@ -1080,8 +1086,9 @@ export default function Home() {
         });
     } finally {
       setIsSearching(false);
+      setTimeout(() => searchCarouselApi.current?.scrollTo(0), 100);
     }
-  }, [toast]);
+  }, [toast, searchCarouselApi]);
 
   /**
    * Initiates an image search based on a keyword click.
@@ -1312,12 +1319,12 @@ export default function Home() {
       * Displays the application logo.
       ********************************************************************************
       */}
-      <header className="w-full text-left p-4 md:px-8 h-[6vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-transparent">
+      <header className="w-full text-left p-4 md:px-8 h-[6vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-sidebar">
         <Logo className="text-[1.5rem] text-primary" />
         
       </header>
 
-      <div className="flex-1 flex overflow-hidden" style={{ height: isMobile ? 'calc(100vh - 10vh - 56px)' : 'auto' }}>
+      <div className="flex-1 flex overflow-hidden mt-1" style={{ height: isMobile ? 'calc(100vh - 10vh - 56px)' : 'auto' }}>
       {/*
       ********************************************************************************
       * DESKTOP SIDEBAR

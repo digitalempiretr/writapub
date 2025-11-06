@@ -28,7 +28,7 @@ export function MakeCarouselSidebar({
   renderActiveTabContent,
 }: SidebarProps) {
   return (
-    <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50", isSidebarOpen ? "w-[40vw]" : "w-[2vw]")}>
+    <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50 rounded-tr-lg ", isSidebarOpen ? "w-[40vw]" : "w-[2vw]")}>
       <Tabs
         orientation="vertical"
         value={activeSettingsTab}
@@ -58,7 +58,7 @@ export function MakeCarouselSidebar({
 
         {isSidebarOpen && (
           <div className="flex-grow flex flex-col w-full bg-sidebar rounded-tr-lg">
-            <div className="p-4 flex-shrink-0 flex justify-between items-center bg-sidebar">
+            <div className="p-4 flex-shrink-0 flex justify-between items-center bg-sidebar rounded-tr-lg ">
               <h3 className="text-lg font-semibold capitalize text-sidebar-foreground">{activeTabLabel}</h3>
               <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="h-8 w-8 rounded-full">
                 <X className="h-5 w-5" />

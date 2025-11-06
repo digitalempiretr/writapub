@@ -10,7 +10,7 @@ body {
   url("https://www.transparenttextures.com/patterns/project-paper.png")
   /*linear-gradient(to top right, #FEAC5E, #C779D0, #4BC0C8);*/ ;
   background-color: var(--background);
-  background-blend-mode: hard-light;
+  background-blend-mode: darken;
   min-height: 100vh;
   background-attachment: fixed;
 }
@@ -160,7 +160,7 @@ body {
     --radius: 1rem;
     --shadow-x: 2px;
     --shadow-y: 2px;
-    --shadow-blur: 10px;
+    --shadow-blur: 20px;
     --shadow-spread: 4px;
     --shadow-opacity: 0.18;
     --shadow-color: hsl(240 4% 60%);
