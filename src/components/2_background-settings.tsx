@@ -240,7 +240,7 @@ export function BackgroundSettings({
                                 position: 'absolute',
                                 top: '50%',
                                 left: '50%',
-                                transform: `rotate(${gradientAngle}deg) translateX(8px) translate(-50%, -50%)`,
+                                transform: `translate(-50%, -50%) rotate(${gradientAngle}deg) translateX(8px) `,
                             }}
                         />
                       </div>
@@ -338,16 +338,7 @@ export function BackgroundSettings({
                     <p>Search Images</p>
                     </TooltipContent>
                 </Tooltip>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                    <Button onClick={() => handleSearchImages(searchQuery, searchPage + 1)} disabled={isSearching} className="h-10 ml-2">
-                        {isSearching && searchPage > 1 ? <Loader2 className="h-4 w-4 animate-spin" /> : "More"}
-                    </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                    <p>Load More</p>
-                    </TooltipContent>
-                </Tooltip>
+                
                 <Tooltip>
                     <TooltipTrigger asChild>
                     <Button onClick={handleFeelLucky} variant="outline" className="h-10 ml-2">
@@ -394,5 +385,3 @@ export function BackgroundSettings({
     </div>
   );
 }
-
-    
