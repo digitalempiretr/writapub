@@ -23,6 +23,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import { cn } from "@/lib/utils";
 
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "Art", "Minimal", "Abstract", "Dreamy", "Cinematic", "Surreal", "Vintage", "Futuristic", "Bohemian"];
 
@@ -177,7 +178,7 @@ export function BackgroundSettings({
         </div>
         <TabsContent value="flat" className="pt-4 space-y-4">
            <div className="grid grid-cols-6 gap-2">
-            <Card className="overflow-hidden cursor-pointer">
+            <Card className="overflow-hidden cursor-pointer relative">
               <CardContent className="p-0 aspect-[4/5] flex items-center justify-center bg-gray-100">
                 <Label htmlFor={`${baseId}-bg-color-picker`} className="h-full w-full flex items-center justify-center cursor-pointer">
                   <Plus className="h-6 w-6 text-gray-500" strokeWidth={3}/>
@@ -225,23 +226,20 @@ export function BackgroundSettings({
                   <RadioGroup value={gradientType} onValueChange={(v: 'linear' | 'radial') => setGradientType(v)} className="grid grid-cols-2 gap-0 border rounded-md p-0.5">
                     <div>
                       <RadioGroupItem value="linear" id="linear" className="sr-only" />
-                      <Label htmlFor="linear" className="block text-center text-sm px-4 py-1.5 rounded-sm cursor-pointer data-[state=checked]:bg-muted" data-state={gradientType === 'linear' ? 'checked' : 'unchecked'}>Linear</Label>
+                      <Label htmlFor="linear" className={cn("block text-center text-sm px-4 py-1.5 rounded-sm cursor-pointer", gradientType === 'linear' && "bg-muted")}>Linear</Label>
                     </div>
                     <div>
                       <RadioGroupItem value="radial" id="radial" className="sr-only" />
-                      <Label htmlFor="radial" className="block text-center text-sm px-4 py-1.5 rounded-sm cursor-pointer data-[state=checked]:bg-muted" data-state={gradientType === 'radial' ? 'checked' : 'unchecked'}>Radial</Label>
+                      <Label htmlFor="radial" className={cn("block text-center text-sm px-4 py-1.5 rounded-sm cursor-pointer", gradientType === 'radial' && "bg-muted")}>Radial</Label>
                     </div>
                   </RadioGroup>
                   {gradientType === 'linear' && (
                      <div className="relative h-8 w-8 border rounded-md flex items-center justify-center">
                         <div
-                            className="w-1.5 h-1.5 bg-primary rounded-full"
-                            style={{
-                                position: 'absolute',
-                                top: '50%',
-                                left: '50%',
-                                transform: `translate(-50%, -50%) rotate(${gradientAngle}deg) translateX(8px) `,
-                            }}
+                          className="w-1.5 h-1.5 bg-primary rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                          style={{
+                              transform: `rotate(${gradientAngle}deg) translateX(10px) rotate(-${gradientAngle}deg)`,
+                          }}
                         />
                       </div>
                   )}
@@ -343,7 +341,6 @@ export function BackgroundSettings({
                     <TooltipTrigger asChild>
                     <Button onClick={handleFeelLucky} variant="outline" className="h-10 ml-2">
                         <FeelLucky />
-                        <span>Feel Lucky</span>
                     </Button>
                     </TooltipTrigger>
                     <TooltipContent>
