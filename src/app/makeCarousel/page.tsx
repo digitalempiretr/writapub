@@ -1048,40 +1048,48 @@ export default function Home() {
    * @param {string} query - The search term.
    * @param {number} [page=1] - The page number for pagination.
    */
-  const handleSearchImages = useCallback(async (query: string, page = 1) => {
-    if (!query) {
-      toast({
-        title: "Search query is empty",
-        description: "Please enter a term to search for images.",
-        variant: "destructive",
-      });
-      return;
-    }
-    setIsSearching(true);
-    setSearchPage(page);
-    setSearchQuery(query);
+    const handleSearchImages = useCallback(async (query: string, page: number = 1) => {
+        if (!query) {
+            toast({
+                title: "Search query is empty",
+                description: "Please enter a term to search for images.",
+                variant: "destructive",
+            });
+            return;
+        }
+        setIsSearching(true);
+        setSearchPage(page);
+        if(page === 1) {
+            setSearchQuery(query);
+            setSearchedImages([]); 
+        }
 
-    try {
-      const results = await findImages({ query, page: page, per_page: 9 });
-      if (page === 1) {
-        setSearchedImages(results.imageUrls);
-      } else {
-        setSearchedImages(prev => [...prev, ...results.imageUrls]);
-      }
-      if (results.imageUrls.length === 0 && page === 1) {
-        toast({ title: "No images found." });
-      }
-    } catch (error: any) {
-      console.error(error);
-      toast({
-        title: "Search Failed",
-        description: error.message || "Could not fetch images from Pexels.",
-        variant: "destructive",
-        });
-    } finally {
-      setIsSearching(false);
-    }
-  }, [toast]);
+        try {
+            const results = await findImages({ query, page: page, per_page: 4 });
+            if (results.imageUrls.length === 0 && page === 1) {
+                toast({ title: "No images found." });
+                setSearchedImages([]);
+            } else {
+                setSearchedImages(prev => {
+                    const newImages = results.imageUrls.filter(url => !prev.includes(url));
+                    const combined = [...prev, ...newImages];
+                    return combined.length > 12 ? combined.slice(combined.length - 12) : combined;
+                });
+            }
+        } catch (error: any) {
+            console.error(error);
+            toast({
+                title: "Search Failed",
+                description: error.message || "Could not fetch images from Pexels.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsSearching(false);
+            if (page === 1) {
+                 setTimeout(() => searchCarouselApi.current?.scrollTo(0), 100);
+            }
+        }
+    }, [toast]);
 
   /**
    * Initiates an image search based on a keyword click.
@@ -1170,8 +1178,7 @@ export default function Home() {
         strokeWidth, 
         setStrokeWidth, 
         isTextBoxEnabled,
-        setIsTextBoxEnabled, 
-        rectBgColor, 
+        setIsTextBoxEnabled, _rectBgColor: rectBgColor,
         setRectBgColor, 
         rectOpacity,
         setRectOpacity, 
@@ -1200,8 +1207,7 @@ export default function Home() {
         elements, 
         setElements, 
         selectedElement, 
-        setSelectedElement, 
-        updateElement,
+        setSelectedElement, _updateElement: updateElement,
         areElementsEnabled, 
         setAreElementsEnabled,
     };
@@ -1312,12 +1318,12 @@ export default function Home() {
       * Displays the application logo.
       ********************************************************************************
       */}
-      <header className="w-full text-left p-4 md:px-8 h-[6vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-transparent">
+      <header className="w-full text-left p-4 md:px-8 h-[6vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-sidebar">
         <Logo className="text-[1.5rem] text-primary" />
         
       </header>
 
-      <div className="flex-1 flex overflow-hidden" style={{ height: isMobile ? 'calc(100vh - 10vh - 56px)' : 'auto' }}>
+      <div className="flex-1 flex overflow-hidden mt-1" style={{ height: isMobile ? 'calc(100vh - 10vh - 56px)' : 'auto' }}>
       {/*
       ********************************************************************************
       * DESKTOP SIDEBAR
@@ -1363,7 +1369,8 @@ export default function Home() {
           style={{ touchAction: 'none' }}
         >
         {designs.length > 0 && (
-            <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
+            <div className={cn("absolute top-2.5 z-30 bg-muted p-1 flex gap-1 rounded-md", 
+                         "w-full px-4 justify-between md:w-auto md:left-1/2 md:-translate-x-1/2")}>
                 <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
                     {canvasSizes.map(size => (
                     <TooltipProvider key={size.name}>

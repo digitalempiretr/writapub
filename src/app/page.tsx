@@ -1142,7 +1142,7 @@ export default function Home() {
         handleImageBgUrlSelect: handleImageBgUrlSelect,
         searchQuery, 
         setSearchQuery, 
-        handleSearchImages,
+        handleSearchImages: () => handleSearchImages(searchQuery, searchPage),
         isSearching, 
         searchedImages,
         handleKeywordSearch: handleKeywordSearch, 
@@ -1151,8 +1151,7 @@ export default function Home() {
         setIsOverlayEnabled,
         overlayColor, 
         setOverlayColor, 
-        overlayOpacity, 
-        setOverlayOpacity, 
+        overlayOpacity, _setOverlayOpacity: setOverlayOpacity,
         gradientBg,
         handleGradientBgSelect: handleGradientBgSelect, 
         setSearchCarouselApi: (api: CarouselApi | undefined) => { if (api) searchCarouselApi.current = api }, 
@@ -1187,8 +1186,7 @@ export default function Home() {
         setRectOpacity, 
         activeEffect, 
         setActiveEffect: handleEffectChange, 
-        designs, 
-        handleDownloadAll,
+        designs, _handleDownloadAll: handleDownloadAll,
         currentSlide,
         handleDownload,
         fileName, 
@@ -1200,8 +1198,7 @@ export default function Home() {
         handleUpdateDesign: handleUpdateDesign, 
         editingDesignId,
         handleEditClick, 
-        handleCancelEdit: handleCancelEdit, 
-        editingName, 
+        handleCancelEdit: handleCancelEdit, editingName,
         setEditingName, 
         designToDelete,
         setDesignToDelete, 
@@ -1373,7 +1370,8 @@ export default function Home() {
           style={{ touchAction: 'none' }}
         >
         {designs.length > 0 && (
-            <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
+            <div className={cn("absolute top-2.5 z-30 bg-muted p-1 flex gap-1 rounded-md", 
+                         "w-full px-4 justify-between md:w-auto md:left-1/2 md:-translate-x-1/2")}>
                 <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
                     {canvasSizes.map(size => (
                     <TooltipProvider key={size.name}>
@@ -1582,4 +1580,3 @@ export default function Home() {
   );
 }
 
-    

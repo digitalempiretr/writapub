@@ -37,7 +37,7 @@ type BackgroundSettingsProps = {
   handleImageBgUrlSelect: (template: ImageTemplate) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  handleSearchImages: (query: string, page?: number) => void;
+  handleSearchImages: (query: string, page: number) => void;
   isSearching: boolean;
   searchedImages: string[];
   handleKeywordSearch: (keyword: string) => void;
@@ -211,19 +211,8 @@ export function BackgroundSettings({
                 </Card>
               </PopoverTrigger>
               <PopoverContent className="w-80 space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                        <Label>From</Label>
-                        <Input type="color" value={customGradientFrom} onChange={(e) => setCustomGradientFrom(e.target.value)} className="w-full h-8 p-1"/>
-                    </div>
-                    <div className="space-y-2">
-                        <Label>To</Label>
-                        <Input type="color" value={customGradientTo} onChange={(e) => setCustomGradientTo(e.target.value)} className="w-full h-8 p-1"/>
-                    </div>
-                </div>
-
                 <div className="flex items-center gap-2">
-                  <RadioGroup value={gradientType} onValueChange={(v: 'linear' | 'radial') => setGradientType(v)} className="grid grid-cols-2 gap-0 border rounded-md p-0.5">
+                  <RadioGroup value={gradientType} onValueChange={(v: 'linear' | 'radial') => setGradientType(v)} className="grid grid-cols-2 gap-0 border rounded-md p-0.5 w-full">
                     <div>
                       <RadioGroupItem value="linear" id="linear" className="sr-only" />
                       <Label htmlFor="linear" className={cn("block text-center text-sm px-4 py-1.5 rounded-sm cursor-pointer", gradientType === 'linear' && "bg-muted")}>Linear</Label>
@@ -233,15 +222,33 @@ export function BackgroundSettings({
                       <Label htmlFor="radial" className={cn("block text-center text-sm px-4 py-1.5 rounded-sm cursor-pointer", gradientType === 'radial' && "bg-muted")}>Radial</Label>
                     </div>
                   </RadioGroup>
-                  {gradientType === 'linear' && (
-                     <div className="relative h-8 w-8 border rounded-md flex items-center justify-center">
-                        <div
-                          className="w-1.5 h-1.5 bg-primary rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-                          style={{
-                              transform: `rotate(${gradientAngle}deg) translateX(10px) rotate(-${gradientAngle}deg)`,
-                          }}
-                        />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" size="icon" className="h-9 w-9 flex-shrink-0">
+                        <Palette className="h-4 w-4" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-40">
+                      <div className="space-y-2">
+                          <Label>From</Label>
+                          <Input type="color" value={customGradientFrom} onChange={(e) => setCustomGradientFrom(e.target.value)} className="w-full h-8 p-1"/>
                       </div>
+                      <div className="space-y-2 mt-2">
+                          <Label>To</Label>
+                          <Input type="color" value={customGradientTo} onChange={(e) => setCustomGradientTo(e.target.value)} className="w-full h-8 p-1"/>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  
+                  {gradientType === 'linear' && (
+                    <div className="relative h-9 w-9 border rounded-md flex items-center justify-center flex-shrink-0">
+                      <div
+                        className="w-1.5 h-1.5 bg-primary rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                        style={{
+                            transform: `rotate(${gradientAngle}deg) translateX(10px) rotate(-${gradientAngle}deg)`,
+                        }}
+                      />
+                    </div>
                   )}
                 </div>
 
@@ -363,7 +370,7 @@ export function BackgroundSettings({
               >
                 <CarouselContent className="-ml-2">
                   {searchedImages.map((imageUrl, index) => (
-                    <CarouselItem key={index} className="basis-1/4">
+                    <CarouselItem key={index} className="basis-1/4 pl-2">
                       <div onClick={() => handleImageSelectFromSearch(imageUrl)} className="cursor-pointer">
                         <Image src={imageUrl} alt={`Search Result ${index}`} width={200} height={250} className="object-cover aspect-[2/3] rounded-md" />
                       </div>
