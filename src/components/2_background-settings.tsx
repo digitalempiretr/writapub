@@ -36,7 +36,7 @@ type BackgroundSettingsProps = {
   handleImageBgUrlSelect: (template: ImageTemplate) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  handleSearchImages: (page?: number) => void;
+  handleSearchImages: (query: string, page?: number) => void;
   isSearching: boolean;
   searchedImages: string[];
   handleKeywordSearch: (keyword: string) => void;
@@ -177,20 +177,22 @@ export function BackgroundSettings({
         </div>
         <TabsContent value="flat" className="pt-4 space-y-4">
            <div className="grid grid-cols-6 gap-2">
-            <div className="relative aspect-[4/5] w-full">
-              <Label htmlFor={`${baseId}-bg-color-picker`} className="h-full w-full flex items-center justify-center bg-gray-100 rounded-md border cursor-pointer" style={{ backgroundColor: bgColor }}>
-                <Plus className="h-6 w-6 text-gray-500" strokeWidth={3}/>
-              </Label>
-              <Input
-                id={`${baseId}-bg-color-picker`}
-                type="color"
-                value={bgColor}
-                onChange={(e) => handleBgColorSelect(e.target.value)}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              />
-            </div>
+            <Card className="overflow-hidden cursor-pointer">
+              <CardContent className="p-0 aspect-[4/5] flex items-center justify-center bg-gray-100">
+                <Label htmlFor={`${baseId}-bg-color-picker`} className="h-full w-full flex items-center justify-center cursor-pointer">
+                  <Plus className="h-6 w-6 text-gray-500" strokeWidth={3}/>
+                </Label>
+                <Input
+                  id={`${baseId}-bg-color-picker`}
+                  type="color"
+                  value={bgColor}
+                  onChange={(e) => handleBgColorSelect(e.target.value)}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+              </CardContent>
+            </Card>
             {defaultSolidColors.map(color => (
-              <Card key={color} className="overflow-hidden cursor-pointer">
+              <Card key={color} className="overflow-hidden cursor-pointer" onClick={() => handleBgColorSelect(color)}>
                 <CardContent className="p-0 aspect-[4/5]" style={{ backgroundColor: color }} />
               </Card>
             ))}
@@ -231,15 +233,17 @@ export function BackgroundSettings({
                     </div>
                   </RadioGroup>
                   {gradientType === 'linear' && (
-                    <div className="flex items-center gap-2">
-                      <div className="relative h-8 w-8 border rounded-md flex items-center justify-center">
-                           <div
-                            className="absolute w-1.5 h-1.5 bg-primary rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-                            style={{ transform: `rotate(${gradientAngle}deg) translateX(8px)` }}
-                          />
+                     <div className="relative h-8 w-8 border rounded-md flex items-center justify-center">
+                        <div
+                            className="w-1.5 h-1.5 bg-primary rounded-full"
+                            style={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: `rotate(${gradientAngle}deg) translateX(8px) translate(-50%, -50%)`,
+                            }}
+                        />
                       </div>
-                      <Input type="number" value={gradientAngle} onChange={(e) => setGradientAngle(Number(e.target.value))} className="w-20 h-8" />
-                    </div>
                   )}
                 </div>
 
@@ -316,13 +320,13 @@ export function BackgroundSettings({
                   placeholder="Search for images..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(1)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearchImages(searchQuery, 1)}
                   className="flex-grow"
                 />
                 <TooltipProvider>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                    <Button onClick={() => handleSearchImages(1)} disabled={isSearching} size="icon" className="h-10 w-10 flex-shrink-0 ml-2">
+                    <Button onClick={() => handleSearchImages(searchQuery, 1)} disabled={isSearching} size="icon" className="h-10 w-10 flex-shrink-0 ml-2">
                         {isSearching && searchPage === 1 ? (
                         <Loader2 className="h-6 w-6 animate-spin" />
                         ) : (
@@ -332,6 +336,16 @@ export function BackgroundSettings({
                     </TooltipTrigger>
                     <TooltipContent>
                     <p>Search Images</p>
+                    </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                    <Button onClick={() => handleSearchImages(searchQuery, searchPage + 1)} disabled={isSearching} className="h-10 ml-2">
+                        {isSearching && searchPage > 1 ? <Loader2 className="h-4 w-4 animate-spin" /> : "More"}
+                    </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                    <p>Load More</p>
                     </TooltipContent>
                 </Tooltip>
                 <Tooltip>
@@ -369,7 +383,7 @@ export function BackgroundSettings({
                   ))}
                 </CarouselContent>
               </Carousel>
-              <Button onClick={() => handleSearchImages(searchPage + 1)} disabled={isSearching} className="w-full">
+              <Button onClick={() => handleSearchImages(searchQuery, searchPage + 1)} disabled={isSearching} className="w-full">
                 {isSearching && searchPage > 1 ? <Loader2 className="h-4 w-4 animate-spin" /> : "More"}
               </Button>
             </>
@@ -380,3 +394,5 @@ export function BackgroundSettings({
     </div>
   );
 }
+
+    

@@ -1048,47 +1048,50 @@ export default function Home() {
    * @param {string} query - The search term.
    * @param {number} [page=1] - The page number for pagination.
    */
-  const handleSearchImages = useCallback(async (query: string, page = 1) => {
-    if (!query) {
-      toast({
-        title: "Search query is empty",
-        description: "Please enter a term to search for images.",
-        variant: "destructive",
-      });
-      return;
-    }
-    setIsSearching(true);
-    setSearchPage(page);
-    setSearchQuery(query);
+    const handleSearchImages = useCallback(async (query: string, page: number = 1) => {
+        if (!query) {
+            toast({
+                title: "Search query is empty",
+                description: "Please enter a term to search for images.",
+                variant: "destructive",
+            });
+            return;
+        }
+        setIsSearching(true);
+        setSearchPage(page);
+        if(page === 1) {
+            setSearchQuery(query);
+            setSearchedImages([]); 
+        }
 
-    try {
-      const results = await findImages({ query, page: page, per_page: page === 1 ? 9 : 4 });
-      if (results.imageUrls.length === 0 && page === 1) {
-        toast({ title: "No images found." });
-        setSearchedImages([]);
-      } else if (page === 1) {
-        setSearchedImages(results.imageUrls);
-      } else {
-        setSearchedImages(prev => {
-          let updatedImages = [...results.imageUrls, ...prev];
-          if (updatedImages.length > 12) {
-            updatedImages = updatedImages.slice(0, 12);
-          }
-          return updatedImages;
-        });
-      }
-    } catch (error: any) {
-      console.error(error);
-      toast({
-        title: "Search Failed",
-        description: error.message || "Could not fetch images from Pexels.",
-        variant: "destructive",
-        });
-    } finally {
-      setIsSearching(false);
-      setTimeout(() => searchCarouselApi.current?.scrollTo(0), 100);
-    }
-  }, [toast, searchCarouselApi]);
+        try {
+            const results = await findImages({ query, page: page, per_page: 4 });
+            if (results.imageUrls.length === 0 && page === 1) {
+                toast({ title: "No images found." });
+                setSearchedImages([]);
+            } else {
+                setSearchedImages(prev => {
+                    let updatedImages = [...results.imageUrls, ...prev];
+                    if (updatedImages.length > 12) {
+                        updatedImages = updatedImages.slice(0, 12);
+                    }
+                    return updatedImages;
+                });
+            }
+        } catch (error: any) {
+            console.error(error);
+            toast({
+                title: "Search Failed",
+                description: error.message || "Could not fetch images from Pexels.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsSearching(false);
+            if (page === 1) {
+                 setTimeout(() => searchCarouselApi.current?.scrollTo(0), 100);
+            }
+        }
+    }, [toast]);
 
   /**
    * Initiates an image search based on a keyword click.
@@ -1139,7 +1142,7 @@ export default function Home() {
         handleImageBgUrlSelect: handleImageBgUrlSelect,
         searchQuery, 
         setSearchQuery, 
-        handleSearchImages: () => handleSearchImages(searchQuery, 1),
+        handleSearchImages,
         isSearching, 
         searchedImages,
         handleKeywordSearch: handleKeywordSearch, 
@@ -1578,3 +1581,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
