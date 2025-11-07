@@ -30,7 +30,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Download, ImageIcon, LayoutTemplate, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw, Shapes, RefreshCcw, RefreshCcwIcon, Info } from "lucide-react";
+import { Download, ImageIcon, LayoutTemplate, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw, Shapes, RefreshCcw, RefreshCcwIcon, Info, Share2 } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Lottie from 'lottie-react';
 import webflowAnimation from '@/lib/Lottiefiles + Webflow.json';
@@ -55,6 +55,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { HeartIconG, RefreshIcon  } from "@/components/ui/icons";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MakeCarouselSidebar } from "@/components/makeCarousel-sidebar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 
 type Design = {
@@ -1071,7 +1072,7 @@ export default function Home() {
                 setSearchedImages([]);
             } else {
                 setSearchedImages(prev => {
-                    const newImages = [...results.imageUrls, ...prev];
+                    const newImages = [...prev, ...results.imageUrls];
                     const uniqueImages = Array.from(new Set(newImages));
                     return uniqueImages.slice(0, 12);
                 });
@@ -1321,7 +1322,7 @@ export default function Home() {
       <header className="w-full text-left p-4 md:px-8 h-[6vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-sidebar">
         <Logo className="text-[1.5rem] text-primary" />
         {designs.length > 0 && (
-          <div className="w-full max-w-xs">
+           <div className="flex items-center gap-2 w-full max-w-xs">
             <Input
               id="file-name-header"
               name="file-name"
@@ -1331,6 +1332,23 @@ export default function Home() {
               onChange={(e) => setFileName(e.target.value)}
               className="bg-background h-8"
             />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon" className="h-8 w-8">
+                  <Share2 className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={handleDownloadAll} disabled={designs.length === 0}>
+                  <Download className="mr-2 h-4 w-4" />
+                  <span>Download All</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleDownload(currentSlide)} disabled={designs.length === 0}>
+                   <Download className="mr-2 h-4 w-4" />
+                  <span>Download Current</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         )}
       </header>
@@ -1381,7 +1399,7 @@ export default function Home() {
           style={{ touchAction: 'none' }}
         >
         {designs.length > 0 && (
-            <div className="w-full md:w-auto md:justify-center justify-between px-4 md:px-0 absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
+            <div className="w-full md:w-auto px-4 md:px-0 md:justify-center justify-between absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
                 <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
                     {canvasSizes.map(size => (
                     <TooltipProvider key={size.name}>
