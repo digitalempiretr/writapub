@@ -1071,10 +1071,10 @@ export default function Home() {
                 toast({ title: "No images found." });
                 setSearchedImages([]);
             } else {
-                setSearchedImages(prev => {
-                    const newImages = [...prev, ...results.imageUrls];
+                 setSearchedImages(prev => {
+                    const newImages = [...results.imageUrls, ...prev];
                     const uniqueImages = Array.from(new Set(newImages));
-                    return uniqueImages.slice(0, 12);
+                    return uniqueImages.slice(0, 12); 
                 });
             }
         } catch (error: any) {
