@@ -646,10 +646,11 @@ export function TextSettings({
                           onClick={() => setActiveEffect(effect)}
                       >
                         <CardContent 
-                          className="h-20 flex items-center justify-center p-2 text-center text-lg"
+                          className="h-20 flex items-center justify-center p-2 text-center text-3xl"
                           style={effectStyle}
                         >
-                          {effect.name}
+                          {/* {effect.name} */}
+                          Abc
                         </CardContent>
                       </Card>
                     </CarouselItem>

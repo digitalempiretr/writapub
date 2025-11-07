@@ -27,7 +27,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Download, ImageIcon, LayoutTemplate, Type, X, RectangleVertical, Smartphone, Square, HeartIcon, PanelLeft, ZoomIn, ZoomOut, RotateCcw, Shapes, RefreshCcw, RefreshCcwIcon, Info } from "lucide-react";
@@ -1071,9 +1071,9 @@ export default function Home() {
                 setSearchedImages([]);
             } else {
                 setSearchedImages(prev => {
-                    const newImages = results.imageUrls.filter(url => !prev.includes(url));
-                    const combined = [...prev, ...newImages];
-                    return combined.length > 12 ? combined.slice(combined.length - 12) : combined;
+                    const newImages = [...results.imageUrls, ...prev];
+                    const uniqueImages = Array.from(new Set(newImages));
+                    return uniqueImages.slice(0, 12);
                 });
             }
         } catch (error: any) {
@@ -1140,7 +1140,7 @@ export default function Home() {
         handleImageBgUrlSelect: handleImageBgUrlSelect,
         searchQuery, 
         setSearchQuery, 
-        handleSearchImages: () => handleSearchImages(searchQuery, 1),
+        handleSearchImages,
         isSearching, 
         searchedImages,
         handleKeywordSearch: handleKeywordSearch, 
@@ -1178,7 +1178,8 @@ export default function Home() {
         strokeWidth, 
         setStrokeWidth, 
         isTextBoxEnabled,
-        setIsTextBoxEnabled, _rectBgColor: rectBgColor,
+        setIsTextBoxEnabled, 
+        rectBgColor, 
         setRectBgColor, 
         rectOpacity,
         setRectOpacity, 
@@ -1188,8 +1189,6 @@ export default function Home() {
         handleDownloadAll,
         currentSlide,
         handleDownload,
-        fileName, 
-        setFileName, 
         handleApplyTemplate: applyTemplate, 
         myDesigns,
         handleSaveDesign: handleSaveDesign, 
@@ -1207,7 +1206,8 @@ export default function Home() {
         elements, 
         setElements, 
         selectedElement, 
-        setSelectedElement, _updateElement: updateElement,
+        setSelectedElement, 
+        updateElement,
         areElementsEnabled, 
         setAreElementsEnabled,
     };
@@ -1218,7 +1218,7 @@ export default function Home() {
       case 'background': return <BackgroundSettings {...props} />;
       case 'text': return <TextSettings {...props} />;
       case 'elements': return <ElementsPanel {...props} />;
-      case 'download': return <DownloadPanel {...props} />;
+      case 'download': return <DownloadPanel {...props} handleDownload={handleDownload} />;
       default: return null;
     }
   };
@@ -1318,12 +1318,12 @@ export default function Home() {
       * Displays the application logo.
       ********************************************************************************
       */}
-      <header className="w-full text-left p-4 md:px-8 h-[6vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-sidebar">
+      <header className="w-full text-left p-4 md:px-8 h-[6vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-transparent">
         <Logo className="text-[1.5rem] text-primary" />
         
       </header>
 
-      <div className="flex-1 flex overflow-hidden mt-1" style={{ height: isMobile ? 'calc(100vh - 10vh - 56px)' : 'auto' }}>
+      <div className="flex-1 flex overflow-hidden" style={{ height: isMobile ? 'calc(100vh - 10vh - 56px)' : 'auto' }}>
       {/*
       ********************************************************************************
       * DESKTOP SIDEBAR
@@ -1369,8 +1369,7 @@ export default function Home() {
           style={{ touchAction: 'none' }}
         >
         {designs.length > 0 && (
-            <div className={cn("absolute top-2.5 z-30 bg-muted p-1 flex gap-1 rounded-md", 
-                         "w-full px-4 justify-between md:w-auto md:left-1/2 md:-translate-x-1/2")}>
+            <div className="w-full md:w-auto md:justify-center justify-between px-4 md:px-0 absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
                 <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
                     {canvasSizes.map(size => (
                     <TooltipProvider key={size.name}>
@@ -1578,3 +1577,5 @@ export default function Home() {
     </div>
   );
 }
+
+    

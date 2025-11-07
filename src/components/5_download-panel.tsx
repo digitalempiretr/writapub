@@ -8,8 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 
 type DownloadPanelProps = {
-  fileName: string;
-  setFileName: (name: string) => void;
   handleDownloadAll: () => void;
   designs: any[];
   currentSlide: number;
@@ -17,8 +15,6 @@ type DownloadPanelProps = {
 };
 
 export function DownloadPanel({
-  fileName,
-  setFileName,
   handleDownloadAll,
   designs,
   currentSlide,
@@ -29,18 +25,6 @@ export function DownloadPanel({
   return (
     <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-4">
       
-      <div className="space-y-2">
-        <Label htmlFor={`${baseId}-file-name`}>File Name</Label>
-        <Input
-          id={`${baseId}-file-name`}
-          name="file-name"
-          type="text"
-          placeholder="Enter file name..."
-          value={fileName}
-          onChange={(e) => setFileName(e.target.value)}
-          className="bg-sidebar stroke-1"
-        />
-      </div>
       <div className="flex justify-around items-center pt-2">
         <Button
           variant="ghost"

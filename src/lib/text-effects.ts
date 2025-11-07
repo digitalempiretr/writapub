@@ -25,20 +25,20 @@ export const textEffects: TextEffect[] = [
     previewBg: '#e2e8f0',
   },
   {
-    name: 'Retro 3D',
-    id: 'retro3Dd',
+    name: 'Neon',
+    id: 'neon',
+    fontValue: 'tilt-neon',
     style: {
-      color: '#e63946',
-      textShadow: `
-        0.05em 0.05em 0 #222,
-        0.1em 0.1em 0 #444,
-        0.15em 0.15em 0 #666
+      color: '#ffffff',
+      fontFamily: "'Tilt Neon', cursive",
+      glowColor: '#228DFF',
+      fontSize: 48,
+      textShadow: `     
+        0 0 10px {{color}}, 0 0 20px  {{color}}, 0 0 30px  {{color}}, 0 0 40px  {{glow}},
+        0 0 70px  {{glow}}, 0 0 80px  {{glow}}, 0 0 100px {{glow}}, 0 0 150px {{glow}}   
       `,
-      fontFamily: 'oswald',
-      fontWeight: 700,
-      fontSize: '3rem',
     },
-    previewBg: '#121212',
+    previewBg: '#121221',
   },
   {
     name: 'Soft Blur',
@@ -99,22 +99,7 @@ export const textEffects: TextEffect[] = [
     },
     previewBg: '#121221',
   },
-  {
-    name: 'Neon',
-    id: 'neon',
-    fontValue: 'tilt-neon',
-    style: {
-      color: '#ffffff',
-      fontFamily: "'Tilt Neon', cursive",
-      glowColor: '#228DFF',
-      fontSize: 48,
-      textShadow: `     
-        0 0 10px {{color}}, 0 0 20px  {{color}}, 0 0 30px  {{color}}, 0 0 40px  {{glow}},
-        0 0 70px  {{glow}}, 0 0 80px  {{glow}}, 0 0 100px {{glow}}, 0 0 150px {{glow}}   
-      `,
-    },
-    previewBg: '#121221',
-  },
+  
   {
     name: 'Neon 2',
     id: 'neon2',
@@ -136,7 +121,22 @@ export const textEffects: TextEffect[] = [
     },
     previewBg: '#121221',
   },
-  
+  {
+    name: 'Retro 3D',
+    id: 'retro3Dd',
+    style: {
+      color: '#e63946',
+      textShadow: `
+        0.05em 0.05em 0 #222,
+        0.1em 0.1em 0 #444,
+        0.15em 0.15em 0 #666
+      `,
+      fontFamily: 'oswald',
+      fontWeight: 700,
+      fontSize: '3rem',
+    },
+    previewBg: '#121212',
+  },
   {
     name: 'Retro',
     id: 'retro',
