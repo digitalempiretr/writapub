@@ -261,7 +261,7 @@ export default function Home() {
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const [fileName, setFileName] = useState("writa");
+  const [fileName, setFileName] = useState("Untitled design");
   const [zoomLevel, setZoomLevel] = useState(0.5);
 
   const [isPanning, setIsPanning] = useState(false);
@@ -1319,8 +1319,8 @@ export default function Home() {
       * Displays the application logo.
       ********************************************************************************
       */}
-      <header className="w-full text-left p-4 md:px-8 h-[6vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-sidebar">
-        <Logo className="text-[1.5rem] text-primary" />
+      <header className="w-full text-left p-8 px-4 md:px-4 h-[5vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-sidebar shadow-sm md:shadow-none">
+        <Logo className="text-[1.5rem] text-primary pe-16" />
         {designs.length > 0 && (
            <div className="flex items-center gap-2 w-full max-w-xs">
             <Input
@@ -1330,23 +1330,24 @@ export default function Home() {
               placeholder="Enter file name..."
               value={fileName}
               onChange={(e) => setFileName(e.target.value)}
-              className="bg-background h-8"
+              className="bg-sidebar border-muted text-primary h-8 rounded"
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="h-8 w-8">
+                <Button variant="outline" size="icon" className="h-8 w-8 rounded">
                   <Share2 className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={handleDownloadAll} disabled={designs.length === 0}>
-                  <Download className="mr-2 h-4 w-4" />
-                  <span>Download All</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleDownload(currentSlide)} disabled={designs.length === 0}>
+              <DropdownMenuItem onClick={() => handleDownload(currentSlide)} disabled={designs.length === 0}>
                    <Download className="mr-2 h-4 w-4" />
                   <span>Download Current</span>
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleDownloadAll} disabled={designs.length === 0}>
+                  <Download className="mr-2 h-4 w-4" />
+                  <span>Download All Designs</span>
+                </DropdownMenuItem>
+                
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
