@@ -347,6 +347,13 @@ export default function Home() {
     });
   }, [text, title, canvasSize, activeFont, isBold]);
   
+  useEffect(() => {
+    if (designs.length > 0) {
+      handleGenerate();
+    }
+  }, [canvasSize, handleGenerate]);
+
+
   /**
    * Closes the mobile settings panel.
    */
@@ -889,8 +896,6 @@ export default function Home() {
     } else {
       setActiveFont(prevFont => ({...prevFont, size: 48}));
     }
-    // Use a timeout to ensure the state has updated before regenerating
-    setTimeout(handleGenerate, 0);
   }
   /**
    * Applies all styles from a selected design template.
@@ -1610,5 +1615,7 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     
