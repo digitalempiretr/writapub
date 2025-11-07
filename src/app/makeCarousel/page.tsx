@@ -889,6 +889,8 @@ export default function Home() {
     } else {
       setActiveFont(prevFont => ({...prevFont, size: 48}));
     }
+    // Use a timeout to ensure the state has updated before regenerating
+    setTimeout(handleGenerate, 0);
   }
   /**
    * Applies all styles from a selected design template.
@@ -1399,7 +1401,7 @@ export default function Home() {
           style={{ touchAction: 'none' }}
         >
         {designs.length > 0 && (
-            <div className="w-full md:w-auto px-4 md:px-0 md:justify-center justify-between absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
+            <div className="w-full px-4 justify-between md:w-auto md:px-0 md:justify-center absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
                 <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
                     {canvasSizes.map(size => (
                     <TooltipProvider key={size.name}>
