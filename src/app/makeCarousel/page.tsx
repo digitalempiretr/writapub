@@ -351,7 +351,7 @@ export default function Home() {
     if (designs.length > 0) {
       handleGenerate();
     }
-  }, [canvasSize, handleGenerate]);
+  }, [canvasSize]);
 
   /**
    * Closes the mobile settings panel.
@@ -1078,7 +1078,7 @@ export default function Home() {
                 setSearchedImages([]);
             } else {
                  setSearchedImages(prev => {
-                    const newImages = [...results.imageUrls, ...prev];
+                    const newImages = [...prev, ...results.imageUrls];
                     const uniqueImages = Array.from(new Set(newImages));
                     return uniqueImages.slice(0, 12); 
                 });
@@ -1181,7 +1181,7 @@ export default function Home() {
         textStroke, 
         setTextStroke,
         strokeColor, 
-        setStrokeColor, 
+        setStrokeColor, _id_240
         strokeWidth, 
         setStrokeWidth, 
         isTextBoxEnabled,
@@ -1225,7 +1225,7 @@ export default function Home() {
       case 'background': return <BackgroundSettings {...props} />;
       case 'text': return <TextSettings {...props} />;
       case 'elements': return <ElementsPanel {...props} />;
-      case 'download': return <DownloadPanel {...props} handleDownload={handleDownload} />;
+      case 'download': return <DownloadPanel {...props} />;
       default: return null;
     }
   };

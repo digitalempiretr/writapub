@@ -351,7 +351,7 @@ export default function Home() {
     if (designs.length > 0) {
       handleGenerate();
     }
-  }, [canvasSize, handleGenerate]);
+  }, [canvasSize]);
 
 
   /**
@@ -1270,13 +1270,13 @@ export default function Home() {
                 key={i}
                 data-active={i === currentSlide}
                 onClick={() => carouselApi.current?.scrollTo(i)}
-                className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
+                className="h-4 w-4 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
             />
         );
     }
 
     return (
-      <div className="flex justify-center items-center gap-2 mt-4">
+      <div className="flex justify-center items-center gap-2 mt-4 z-40">
         {start > 0 && (
           <>
             <div
@@ -1545,9 +1545,10 @@ export default function Home() {
                       ))}
                     </CarouselContent>
                   </Carousel>
+                 
                 </div>
-                
                 {renderBulletNavigation()}
+                
 
             </div>
           )}
