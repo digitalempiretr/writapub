@@ -1327,7 +1327,7 @@ export default function Home() {
       ********************************************************************************
       */}
       <header className="w-full text-left p-8 px-4 md:px-4 h-[5vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-sidebar shadow-sm md:shadow-none">
-        <Logo className="text-[1.5rem] text-primary pe-16" />
+        <Logo className="text-[1.2rem] md:text-[1.5rem] text-primary pe-12" />
         {designs.length > 0 && (
            <div className="flex items-center gap-2 w-full max-w-xs">
             <Input
@@ -1407,7 +1407,7 @@ export default function Home() {
           style={{ touchAction: 'none' }}
         >
         {designs.length > 0 && (
-            <div className="md:w-auto md:justify-center absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md w-full justify-between px-4">
+            <div className="md:w-auto md:justify-center absolute top-0.5 md:top-0.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 md:rounded-md w-full justify-between px-4">
                 <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
                     {canvasSizes.map(size => (
                     <TooltipProvider key={size.name}>
@@ -1589,7 +1589,7 @@ export default function Home() {
                   }
                   setIsMobilePanelOpen(isOpen);
               }}>
-                  <SheetContent side="bottom" className="h-auto max-h-[50vh] p-0 flex flex-col bg-sidebar">
+                  <SheetContent side="bottom" className="h-auto max-h-[55vh] p-0 flex flex-col bg-sidebar">
                       {/* Header for the mobile settings panel */}
                       <SheetHeader className="p-2 px-4 border-b flex-row justify-between items-center bg-background">
                           <SheetTitle className="capitalize">{activeTabLabel}</SheetTitle>

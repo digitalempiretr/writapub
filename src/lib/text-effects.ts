@@ -34,8 +34,8 @@ export const textEffects: TextEffect[] = [
       glowColor: '#228DFF',
       fontSize: 48,
       textShadow: `     
-        0 0 10px {{color}}, 0 0 20px  {{color}}, 0 0 30px  {{color}}, 0 0 40px  {{glow}},
-        0 0 70px  {{glow}}, 0 0 80px  {{glow}}, 0 0 100px {{glow}}, 0 0 150px {{glow}}   
+        0 0 5px {{color}}, 0 0 10px  {{color}}, 0 0 15px  {{color}}, 0 0 20px  {{glow}},
+        0 0 35px  {{glow}}, 0 0 40px  {{glow}}, 0 0 50px {{glow}}, 0 0 75px {{glow}}   
       `,
     },
     previewBg: '#121221',

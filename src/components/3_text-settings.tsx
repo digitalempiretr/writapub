@@ -1,7 +1,8 @@
 
 "use client";
 
-import React, { useId, useState, useEffect } from "react";
+import React, { useId, useState, useEffect, useRef } from "react";
+import { useInView } from 'react-intersection-observer';
 import {
   Popover,
   PopoverContent,
@@ -127,6 +128,10 @@ export function TextSettings({
 
   const [effectsApi, setEffectsApi] = useState<CarouselApi>();
   const [currentEffectSlide, setCurrentEffectSlide] = useState(0);
+
+  const { ref: colorPaletteRef, inView: colorPaletteInView } = useInView({ triggerOnce: true, threshold: 0.1 });
+  const { ref: textEffectsRef, inView: textEffectsInView } = useInView({ triggerOnce: true, threshold: 0.1 });
+
 
   useCarouselSync(colorPaletteApi, setCurrentPaletteSlide);
   useCarouselSync(effectsApi, setCurrentEffectSlide);
@@ -591,74 +596,82 @@ export function TextSettings({
               </div>
             </div>
             
-          <div className="pt-2">
+          <div className="pt-2" ref={colorPaletteRef}>
             <Label className="text-sm font-medium">Color Palette</Label>
-             <Carousel className="w-full" opts={{ dragFree: true }} setApi={setColorPaletteApi}>
-              <CarouselContent>
-                {defaultSolidColors.map(color => (
-                  <CarouselItem key={color} className="basis-1/7">
-                    <Card 
-                      className="overflow-hidden cursor-pointer bg-transparent border-0 shadow-none" 
-                      onClick={() => setTextColor(color)}
-                    >
-                      <CardContent 
-                        className="h-20 flex items-center justify-center p-0"
-                      >
-                         <span
-                            className="font-['Oswald'] text-4xl font-bold"
-                            style={{ color: color }}
+            {colorPaletteInView ? (
+              <>
+                <Carousel className="w-full" opts={{ dragFree: true }} setApi={setColorPaletteApi}>
+                  <CarouselContent>
+                    {defaultSolidColors.map(color => (
+                      <CarouselItem key={color} className="basis-1/7">
+                        <Card 
+                          className="overflow-hidden cursor-pointer bg-transparent border-0 shadow-none" 
+                          onClick={() => setTextColor(color)}
+                        >
+                          <CardContent 
+                            className="h-20 flex items-center justify-center p-0"
                           >
-                            Abc
-                          </span>
-                      </CardContent>
-                    </Card>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
-            {renderBulletNavigation(colorPaletteApi, currentPaletteSlide, defaultSolidColors.length)}
+                            <span
+                                className="font-['Oswald'] text-4xl font-bold"
+                                style={{ color: color }}
+                              >
+                                Abc
+                              </span>
+                          </CardContent>
+                        </Card>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                </Carousel>
+                {renderBulletNavigation(colorPaletteApi, currentPaletteSlide, defaultSolidColors.length)}
+              </>
+            ) : <div className="h-28" /> }
           </div>
 
-          <div className="pt-2">
+          <div className="pt-2" ref={textEffectsRef}>
             <Label>Text Effects</Label>
-            <Carousel className="w-full" opts={{ dragFree: true, align: "start" }} setApi={setEffectsApi}>
-              <CarouselContent>
-                {textEffects.map(effect => {
-                  const effectStyle: React.CSSProperties = {
-                    backgroundColor: effect.previewBg || (effect.id === 'none' ? '#e2e8f0' : '#333'),
-                    fontFamily: effect.style.fontFamily || "'Playfair Display', serif",
-                    fontWeight: effect.style.fontWeight || 'bold',
-                  };
-                  const finalColor = effect.style.color || '#000000'; // Default to black if no color is defined
-                  effectStyle.color = finalColor;
+            {textEffectsInView ? (
+              <>
+              <Carousel className="w-full" opts={{ dragFree: true, align: "start" }} setApi={setEffectsApi}>
+                <CarouselContent>
+                  {textEffects.map(effect => {
+                    const effectStyle: React.CSSProperties = {
+                      backgroundColor: effect.previewBg || (effect.id === 'none' ? '#e2e8f0' : '#333'),
+                      fontFamily: effect.style.fontFamily || "'Playfair Display', serif",
+                      fontWeight: effect.style.fontWeight || 'bold',
+                    };
+                    const finalColor = effect.style.color || '#000000'; // Default to black if no color is defined
+                    effectStyle.color = finalColor;
 
-                  if (effect.style.textShadow) {
-                      const finalShadowString = effect.style.textShadow
-                        .replace(/{{color}}/g, finalColor)
-                        .replace(/{{glow}}/g, effect.style.glowColor || finalColor);
-                      effectStyle.textShadow = finalShadowString;
-                  }
-                  
-                  return (
-                    <CarouselItem key={effect.id} className="basis-1/4 md:basis-1/5 lg:basis-1/7">
-                      <Card 
-                          className="overflow-hidden cursor-pointer"
-                          onClick={() => setActiveEffect(effect)}
-                      >
-                        <CardContent 
-                          className="h-20 flex items-center justify-center p-2 text-center text-3xl"
-                          style={effectStyle}
+                    if (effect.style.textShadow) {
+                        const finalShadowString = effect.style.textShadow
+                          .replace(/{{color}}/g, finalColor)
+                          .replace(/{{glow}}/g, effect.style.glowColor || finalColor);
+                        effectStyle.textShadow = finalShadowString;
+                    }
+                    
+                    return (
+                      <CarouselItem key={effect.id} className="basis-1/4 md:basis-1/5 lg:basis-1/7">
+                        <Card 
+                            className="overflow-hidden cursor-pointer"
+                            onClick={() => setActiveEffect(effect)}
                         >
-                          {/* {effect.name} */}
-                          Abc
-                        </CardContent>
-                      </Card>
-                    </CarouselItem>
-                  )
-                })}
-              </CarouselContent>
-            </Carousel>
-            {renderBulletNavigation(effectsApi, currentEffectSlide, textEffects.length)}
+                          <CardContent 
+                            className="h-20 flex items-center justify-center p-2 text-center text-3xl"
+                            style={effectStyle}
+                          >
+                            {/* {effect.name} */}
+                            Abc
+                          </CardContent>
+                        </Card>
+                      </CarouselItem>
+                    )
+                  })}
+                </CarouselContent>
+              </Carousel>
+              {renderBulletNavigation(effectsApi, currentEffectSlide, textEffects.length)}
+              </>
+            ) : <div className="h-28" /> }
           </div>
           </div>
         </div>
