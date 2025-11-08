@@ -261,7 +261,7 @@ export default function Home() {
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const [fileName, setFileName] = useState("writa");
+  const [fileName, setFileName] = useState("Untitled design");
   const [zoomLevel, setZoomLevel] = useState(0.5);
 
   const [isPanning, setIsPanning] = useState(false);
@@ -1226,7 +1226,7 @@ export default function Home() {
       case 'background': return <BackgroundSettings {...props} />;
       case 'text': return <TextSettings {...props} />;
       case 'elements': return <ElementsPanel {...props} />;
-      case 'download': return <DownloadPanel {...props} />;
+      case 'download': return <DownloadPanel {...props} handleDownload={handleDownload} />;
       default: return null;
     }
   };
@@ -1270,19 +1270,19 @@ export default function Home() {
                 key={i}
                 data-active={i === currentSlide}
                 onClick={() => carouselApi.current?.scrollTo(i)}
-                className="h-4 w-4 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
+                className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
             />
         );
     }
 
     return (
-      <div className="flex justify-center items-center gap-2">
+      <div className="flex justify-center items-center gap-2 mt-4">
         {start > 0 && (
           <>
             <div
               key={0}
               onClick={() => carouselApi.current?.scrollTo(0)}
-              className="h-4 w-4 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
+              className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
             />
             {start > 1 && <span className="text-foreground -translate-y-1">...</span>}
           </>
@@ -1294,7 +1294,7 @@ export default function Home() {
             <div
               key={totalSlides - 1}
               onClick={() => carouselApi.current?.scrollTo(totalSlides - 1)}
-              className="h-4 w-4 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
+              className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
             />
           </>
         )}
@@ -1326,10 +1326,10 @@ export default function Home() {
       * Displays the application logo.
       ********************************************************************************
       */}
-      <header className="w-full text-left p-4 md:px-8 h-[6vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-transparent">
-        <Logo className="text-[1.5rem] text-primary" />
+      <header className="w-full text-left p-8 px-4 md:px-4 h-[5vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-sidebar shadow-sm md:shadow-none">
+        <Logo className="text-[1.5rem] text-primary pe-16" />
         {designs.length > 0 && (
-          <div className="flex items-center gap-2 w-full max-w-xs">
+           <div className="flex items-center gap-2 w-full max-w-xs">
             <Input
               id="file-name-header"
               name="file-name"
@@ -1337,30 +1337,31 @@ export default function Home() {
               placeholder="Enter file name..."
               value={fileName}
               onChange={(e) => setFileName(e.target.value)}
-              className="bg-background h-8"
+              className="bg-sidebar border-muted text-primary h-8 rounded"
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="h-8 w-8">
-                  <Share2 className="h-4 w-4" />
+                <Button variant="outline" size="icon" className="h-8 w-8 rounded">
+                  <Share2 className="h-4 w-4" color="var(--primary)" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={handleDownloadAll} disabled={designs.length === 0}>
-                  <Download className="mr-2 h-4 w-4" />
-                  <span>Download All</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleDownload(currentSlide)} disabled={designs.length === 0}>
+              <DropdownMenuItem onClick={() => handleDownload(currentSlide)} disabled={designs.length === 0}>
                    <Download className="mr-2 h-4 w-4" />
                   <span>Download Current</span>
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleDownloadAll} disabled={designs.length === 0}>
+                  <Download className="mr-2 h-4 w-4" />
+                  <span>Download All Designs</span>
+                </DropdownMenuItem>
+                
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
         )}
       </header>
 
-      <div className="flex-1 flex overflow-hidden" style={{ height: isMobile ? 'calc(100vh - 10vh - 56px)' : 'auto' }}>
+      <div className="flex-1 flex overflow-hidden mt-1" style={{ height: isMobile ? 'calc(100vh - 10vh - 56px)' : 'auto' }}>
       {/*
       ********************************************************************************
       * DESKTOP SIDEBAR
@@ -1406,7 +1407,7 @@ export default function Home() {
           style={{ touchAction: 'none' }}
         >
         {designs.length > 0 && (
-            <div className="w-full px-4 justify-between md:w-auto md:px-0 md:justify-center absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md">
+            <div className="md:w-auto md:justify-center absolute top-2.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 rounded-md w-full justify-between px-4">
                 <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
                     {canvasSizes.map(size => (
                     <TooltipProvider key={size.name}>
@@ -1546,10 +1547,9 @@ export default function Home() {
                   </Carousel>
                 </div>
                 
-                <div className="hidden md:flex justify-center mt-4">
-                  {renderBulletNavigation()}
+                <div className="hidden md:flex md:justify-center md:items-center md:gap-2 md:mt-4">
+                    {renderBulletNavigation()}
                 </div>
-
             </div>
           )}
         </main>
@@ -1566,9 +1566,18 @@ export default function Home() {
           </div>
       )}
 
+      {/* Mobile-only bullet navigation */}
+      {isClient && designs.length > 0 && (
+        <div className="md:hidden fixed bottom-16 left-0 right-0 z-20">
+          {renderBulletNavigation()}
+        </div>
+      )}
+
       {/*
       ********************************************************************************
       * MOBILE TAB SYSTEM
+      * This section is only visible on screens narrower than 768px (md breakpoint).
+      * It uses a Sheet component to display settings from the bottom.
       ********************************************************************************
       */}
       {isClient && designs.length > 0 && (
@@ -1591,11 +1600,6 @@ export default function Home() {
                       </div>
                   </SheetContent>
               </Sheet>
-
-              {/* Mobile Bullet Navigation */}
-              <div className="fixed bottom-[calc(3.5rem+1rem)] left-0 right-0 z-40 md:hidden">
-                {renderBulletNavigation()}
-              </div>
 
               {/* Bottom navigation bar for mobile */}
               <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-sidebar border-t", isMobilePanelOpen ? "hidden" : "block")}>
