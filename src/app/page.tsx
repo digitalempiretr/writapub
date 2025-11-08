@@ -890,12 +890,6 @@ export default function Home() {
    */
   const handleCanvasSizeChange = (size: CanvasSize) => {
     setCanvasSize(size);
-    resetPanAndZoom(size);
-    if (size.name === 'Square') {
-      setActiveFont(prevFont => ({...prevFont, size: 36}));
-    } else {
-      setActiveFont(prevFont => ({...prevFont, size: 48}));
-    }
   }
   /**
    * Applies all styles from a selected design template.
@@ -1226,7 +1220,7 @@ export default function Home() {
       case 'background': return <BackgroundSettings {...props} />;
       case 'text': return <TextSettings {...props} />;
       case 'elements': return <ElementsPanel {...props} />;
-      case 'download': return <DownloadPanel {...props} handleDownload={handleDownload} />;
+      case 'download': return <DownloadPanel {...props} />;
       default: return null;
     }
   };
@@ -1586,6 +1580,14 @@ export default function Home() {
               <Sheet open={isMobilePanelOpen} onOpenChange={(isOpen) => {
                   if (!isOpen) {
                       setActiveSettingsTab(''); // Reset active tab when sheet closes
+                  } else if (activeSettingsTab === 'text') {
+                      // Prevent auto-focus when opening the text tab
+                      setTimeout(() => {
+                          const activeElement = document.activeElement as HTMLElement;
+                          if (activeElement && activeElement.blur) {
+                            activeElement.blur();
+                          }
+                      }, 0);
                   }
                   setIsMobilePanelOpen(isOpen);
               }}>
