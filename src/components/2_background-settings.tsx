@@ -95,8 +95,8 @@ export function BackgroundSettings({
   const angleControlRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const fromRgba = hexToRgba(customGradientFrom);
-    const toRgba = hexToRgba(customGradientTo);
+    const fromRgba = hexToRgba(customGradientFrom, 1);
+    const toRgba = hexToRgba(customGradientTo, 1);
     let css = '';
     if (gradientType === 'linear') {
       css = `linear-gradient(${gradientAngle}deg, ${fromRgba} 0%, ${toRgba} 100%)`;
@@ -104,7 +104,8 @@ export function BackgroundSettings({
       css = `radial-gradient(circle, ${fromRgba} 0%, ${toRgba} 100%)`;
     }
     handleGradientBgSelect(css);
-  }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, handleGradientBgSelect]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customGradientFrom, customGradientTo, gradientType, gradientAngle]);
   
  const handleAngleInteraction = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement> | MouseEvent | TouchEvent) => {
     if (!angleControlRef.current) return;
@@ -139,12 +140,13 @@ export function BackgroundSettings({
   };
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.preventDefault();
     const handleTouchMove = (moveEvent: TouchEvent) => {
-        handleAngleInteraction(moveEvent);
+      handleAngleInteraction(moveEvent);
     };
     const handleTouchEnd = () => {
-        document.removeEventListener('touchmove', handleTouchMove);
-        document.removeEventListener('touchend', handleTouchEnd);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
     };
     document.addEventListener('touchmove', handleTouchMove);
     document.addEventListener('touchend', handleTouchEnd);
