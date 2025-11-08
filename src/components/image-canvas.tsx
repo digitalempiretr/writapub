@@ -377,18 +377,33 @@ const ImageCanvasComponent = ({
           await drawLayout();
         }
       } else if (backgroundColor && backgroundColor.startsWith("linear-gradient")) {
-        const colors = backgroundColor.match(/#([0-9a-fA-F]{3,8})/g);
-        if (colors && colors.length >= 2) {
-          const gradient = ctx.createLinearGradient(0, 0, 0, height);
-          gradient.addColorStop(0, colors[0]);
-          gradient.addColorStop(0.5, colors[1]);
-          gradient.addColorStop(1, colors[2] || colors[1]);
-          ctx.fillStyle = gradient;
-        } else {
-           ctx.fillStyle = "#ffffff";
-        }
-        ctx.fillRect(0, 0, width, height);
-        await drawLayout();
+          const regex = /(rgba?\(.+?\)|#([0-9a-fA-F]{3,8}))\s+(\d+)%/g;
+          const stops: { color: string; stop: number }[] = [];
+          let match;
+          while ((match = regex.exec(backgroundColor)) !== null) {
+              stops.push({ color: match[1], stop: parseInt(match[3]) / 100 });
+          }
+
+          if (stops.length > 0) {
+              const gradient = ctx.createLinearGradient(0, 0, 0, height);
+              stops.forEach(stop => {
+                  gradient.addColorStop(stop.stop, stop.color);
+              });
+              ctx.fillStyle = gradient;
+          } else {
+              // Fallback for simpler gradients if regex fails
+              const colors = backgroundColor.match(/(rgba?\(.+?\)|#([0-9a-fA-F]{3,8}))/g);
+              if (colors && colors.length >= 2) {
+                  const gradient = ctx.createLinearGradient(0, 0, 0, height);
+                  gradient.addColorStop(0, colors[0]);
+                  gradient.addColorStop(1, colors[1]);
+                  ctx.fillStyle = gradient;
+              } else {
+                  ctx.fillStyle = "#ffffff";
+              }
+          }
+          ctx.fillRect(0, 0, width, height);
+          await drawLayout();
       } else {
         ctx.fillStyle = backgroundColor || '#ffffff';
         ctx.fillRect(0, 0, width, height);
@@ -410,3 +425,5 @@ const ImageCanvasComponent = ({
   );
 }
 export const ImageCanvas = React.memo(ImageCanvasComponent);
+
+    
