@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useId, useState, useEffect, useRef } from "react";
+import React, { useId, useState, useEffect, useRef, useCallback } from "react";
 import {
   Popover,
   PopoverContent,
@@ -53,8 +53,8 @@ type BackgroundSettingsProps = {
   setSearchCarouselApi: (api: CarouselApi | undefined) => void;
 };
 
-// Helper to convert hex to rgba
-const hexToRgba = (hex: string, alpha = 1) => {
+
+function hexToRgba(hex: string, alpha: number) {
     let r = 0, g = 0, b = 0;
     if (hex.length === 4) {
         r = parseInt(hex[1] + hex[1], 16);
@@ -66,8 +66,7 @@ const hexToRgba = (hex: string, alpha = 1) => {
         b = parseInt(hex.substring(5, 7), 16);
     }
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-};
-
+}
 
 export function BackgroundSettings({
   backgroundTab,
@@ -95,16 +94,18 @@ export function BackgroundSettings({
   setSearchCarouselApi,
 }: BackgroundSettingsProps) {
   const baseId = useId();
-  const [customGradientFrom, setCustomGradientFrom] = useState("#eeaece");
-  const [customGradientTo, setCustomGradientTo] = useState("#94bbe9");
+  const [customGradientFrom, setCustomGradientFrom] = useState("#8e2de2");
+  const [customGradientTo, setCustomGradientTo] = useState("#4a00e0");
   const [gradientType, setGradientType] = useState<'linear' | 'radial'>('linear');
-  const [gradientAngle, setGradientAngle] = useState(82);
-  const angleControlRef = useRef<HTMLDivElement>(null);
-  
+  const [gradientAngle, setGradientAngle] = useState(95);
+
+  const angleSelectorRef = useRef<HTMLDivElement>(null);
+  const isDraggingRef = useRef(false);
+
   useEffect(() => {
+    let css = '';
     const fromRgba = hexToRgba(customGradientFrom, 1);
     const toRgba = hexToRgba(customGradientTo, 1);
-    let css = '';
     if (gradientType === 'linear') {
       css = `linear-gradient(${gradientAngle}deg, ${fromRgba} 0%, ${toRgba} 100%)`;
     } else {
@@ -113,52 +114,55 @@ export function BackgroundSettings({
     handleGradientBgSelect(css);
   }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, handleGradientBgSelect]);
   
-
- const handleAngleInteraction = (e: MouseEvent | TouchEvent) => {
-    if (!angleControlRef.current) return;
-  
-    const rect = angleControlRef.current.getBoundingClientRect();
+  const handleAngleInteraction = useCallback((clientX: number, clientY: number) => {
+    if (!angleSelectorRef.current) return;
+    const rect = angleSelectorRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-  
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-  
     const angleRad = Math.atan2(clientY - centerY, clientX - centerX);
-    let angleDeg = Math.round(angleRad * (180 / Math.PI));
-    if (angleDeg < 0) {
-      angleDeg += 360;
-    }
-    setGradientAngle(angleDeg);
-  };
+    const angleDeg = Math.round((angleRad * 180) / Math.PI + 90);
+    setGradientAngle((angleDeg + 360) % 360);
+  }, []);
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      handleAngleInteraction(moveEvent);
-    };
-    const handleMouseUp = () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (isDraggingRef.current) {
+      handleAngleInteraction(e.clientX, e.clientY);
+    }
+  }, [handleAngleInteraction]);
+
+  const handleTouchMove = useCallback((e: TouchEvent) => {
+    if (isDraggingRef.current && e.touches[0]) {
+      handleAngleInteraction(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, [handleAngleInteraction]);
+
+  const handleMouseUp = useCallback(() => {
+    isDraggingRef.current = false;
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
+  }, [handleMouseMove]);
+  
+  const handleTouchEnd = useCallback(() => {
+    isDraggingRef.current = false;
+    document.removeEventListener('touchmove', handleTouchMove);
+    document.removeEventListener('touchend', handleTouchEnd);
+  }, [handleTouchMove]);
+
+  const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    isDraggingRef.current = true;
+    handleAngleInteraction(e.clientX, e.clientY);
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
-    handleAngleInteraction(e.nativeEvent);
-  };
+  }, [handleAngleInteraction, handleMouseMove, handleMouseUp]);
 
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const handleTouchMove = (moveEvent: TouchEvent) => {
-      handleAngleInteraction(moveEvent);
-    };
-    const handleTouchEnd = () => {
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleTouchEnd);
-    };
-    document.addEventListener('touchmove', handleTouchMove);
-    document.addEventListener('touchend', handleTouchEnd);
-    handleAngleInteraction(e.nativeEvent);
-  };
+  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if(e.touches[0]) {
+      isDraggingRef.current = true;
+      handleAngleInteraction(e.touches[0].clientX, e.touches[0].clientY);
+      document.addEventListener('touchmove', handleTouchMove);
+      document.addEventListener('touchend', handleTouchEnd);
+    }
+  }, [handleAngleInteraction, handleTouchMove, handleTouchEnd]);
 
   const handleImageSelectFromSearch = (imageUrl: string) => {
     handleImageBgUrlSelect({
@@ -294,29 +298,24 @@ export function BackgroundSettings({
                     </div>
                   </RadioGroup>
                   {gradientType === 'linear' && (
-                    <div className="flex items-center gap-2">
+                     <div className="flex items-center gap-2">
                         <div
-                            ref={angleControlRef}
-                            onMouseDown={handleMouseDown}
-                            onTouchStart={handleTouchStart}
-                            className="relative h-10 w-10 border rounded-md flex items-center justify-center cursor-pointer"
-                            style={{ touchAction: 'none' }}
+                          ref={angleSelectorRef}
+                          onMouseDown={handleMouseDown}
+                          onTouchStart={handleTouchStart}
+                          className="relative h-10 w-10 border rounded-full flex items-center justify-center cursor-pointer"
                         >
-                             <div className="w-full h-px bg-border/50 rotate-45 absolute"></div>
-                             <div className="w-full h-px bg-border/50 -rotate-45 absolute"></div>
-                             <div className="w-px h-full bg-border/50 absolute"></div>
-                             <div className="h-px w-full bg-border/50 absolute"></div>
-                            <div
-                                className="w-2.5 h-2.5 bg-primary rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-primary-foreground shadow-md"
-                                style={{
-                                    transform: `rotate(${gradientAngle}deg) translateX(12px) rotate(-${gradientAngle}deg)`,
-                                }}
-                            />
+                          <div
+                            className="w-2.5 h-2.5 bg-primary rounded-full absolute"
+                            style={{
+                              transform: `rotate(${gradientAngle}deg) translateX(12px) rotate(-${gradientAngle}deg)`,
+                            }}
+                          />
                         </div>
-                        <div className="text-sm p-2 rounded-md border border-input tabular-nums w-16 text-center">
-                            {gradientAngle}°
+                        <div className="text-sm p-2 rounded-md border border-input tabular-nums w-20 text-center">
+                          {gradientAngle}°
                         </div>
-                    </div>
+                     </div>
                   )}
                 </div>
 
@@ -446,5 +445,3 @@ export function BackgroundSettings({
     </div>
   );
 }
-
-    
