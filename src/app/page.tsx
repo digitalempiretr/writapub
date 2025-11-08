@@ -56,6 +56,7 @@ import { HeartIconG, RefreshIcon  } from "@/components/ui/icons";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MakeCarouselSidebar } from "@/components/makeCarousel-sidebar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { NavBullets } from "@/components/ui/nav-bullets";
 
 
 type Design = {
@@ -175,8 +176,8 @@ export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [isGeneratingAnimation, setIsGeneratingAnimation] = useState(false);
   
-  const carouselApi = useRef<CarouselApi | null>(null);
-  const searchCarouselApi = useRef<CarouselApi | null>(null);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [searchCarouselApi, setSearchCarouselApi] = useState<CarouselApi>();
 
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -200,25 +201,25 @@ export default function Home() {
    * Handles the carousel's "select" event to update the current slide index.
    */
   const handleSelectCarousel = useCallback(() => {
-    if (!carouselApi.current) {
+    if (!carouselApi) {
       return
     }
-    setCurrentSlide(carouselApi.current.selectedScrollSnap())
-  }, []);
+    setCurrentSlide(carouselApi.selectedScrollSnap())
+  }, [carouselApi]);
 
   /**
    * Effect to set up and clean up the carousel's "select" event listener.
    */
   useEffect(() => {
-    if (!carouselApi.current) {
+    if (!carouselApi) {
       return
     }
 
     handleSelectCarousel();
-    carouselApi.current.on("select", handleSelectCarousel)
+    carouselApi.on("select", handleSelectCarousel)
 
     return () => {
-      carouselApi.current?.off("select", handleSelectCarousel)
+      carouselApi?.off("select", handleSelectCarousel)
     }
   }, [carouselApi, handleSelectCarousel]);
 
@@ -343,15 +344,16 @@ export default function Home() {
         setIsLoading(false);
     
         // Scroll to the first slide after generation
-        setTimeout(() => carouselApi.current?.scrollTo(0), 100);
+        setTimeout(() => carouselApi?.scrollTo(0), 100);
     });
-  }, [text, title, canvasSize, activeFont, isBold]);
+  }, [text, title, canvasSize, activeFont, isBold, carouselApi]);
   
   useEffect(() => {
     if (designs.length > 0) {
       handleGenerate();
     }
-  }, [canvasSize, handleGenerate]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canvasSize]);
 
 
   /**
@@ -1088,10 +1090,10 @@ export default function Home() {
         } finally {
             setIsSearching(false);
             if (page === 1) {
-                 setTimeout(() => searchCarouselApi.current?.scrollTo(0), 100);
+                 setTimeout(() => searchCarouselApi?.scrollTo(0), 100);
             }
         }
-    }, [toast]);
+    }, [toast, searchCarouselApi]);
 
   /**
    * Initiates an image search based on a keyword click.
@@ -1155,7 +1157,7 @@ export default function Home() {
         setOverlayOpacity, 
         gradientBg,
         handleGradientBgSelect: handleGradientBgSelect, 
-        setSearchCarouselApi: (api: CarouselApi | undefined) => { if (api) searchCarouselApi.current = api }, 
+        setSearchCarouselApi: setSearchCarouselApi, 
         textColor, 
         setTextColor: handleTextColorChange, 
         textOpacity,
@@ -1235,66 +1237,6 @@ export default function Home() {
   ];
   
   const activeTabLabel = settingsTabs.find(tab => tab.value === activeSettingsTab)?.label;
-
-  /**
-   * Renders the bullet navigation for the design carousel.
-   * @returns {JSX.Element | null} The bullet navigation UI.
-   */
-  const renderBulletNavigation = () => {
-    if (!carouselApi.current) return null;
-    
-    const totalSlides = designs.length;
-    if (totalSlides <= 1) return null;
-
-    const visibleDots = 7;
-    const half = Math.floor(visibleDots / 2);
-
-    let start = Math.max(currentSlide - half, 0);
-    let end = start + visibleDots;
-
-    if (end > totalSlides) {
-      end = totalSlides;
-      start = Math.max(end - visibleDots, 0);
-    }
-    
-    const dots = [];
-    for (let i = start; i < end; i++) {
-        dots.push(
-            <div
-                key={i}
-                data-active={i === currentSlide}
-                onClick={() => carouselApi.current?.scrollTo(i)}
-                className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
-            />
-        );
-    }
-
-    return (
-      <div className="flex justify-center items-center gap-2 mt-4">
-        {start > 0 && (
-          <>
-            <div
-              key={0}
-              onClick={() => carouselApi.current?.scrollTo(0)}
-              className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
-            />
-            {start > 1 && <span className="text-foreground -translate-y-1">...</span>}
-          </>
-        )}
-        {dots}
-        {end < totalSlides && (
-          <>
-            {end < totalSlides - 1 && <span className="text-foreground -translate-y-1">...</span>}
-            <div
-              key={totalSlides - 1}
-              onClick={() => carouselApi.current?.scrollTo(totalSlides - 1)}
-              className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
-            />
-          </>
-        )}
-      </div>
-    );
-  };
   
   /**
    * Render a loading animation if the component is not yet mounted on the client.
@@ -1488,7 +1430,7 @@ export default function Home() {
                   className="relative" 
                   style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
                 >
-                  <Carousel className="w-full" setApi={setApi => carouselApi.current = setApi}>
+                  <Carousel className="w-full" setApi={setCarouselApi}>
                     <CarouselContent>
                       {designs.map((design, index) => (
                         <CarouselItem key={index} data-index={index}>
@@ -1542,7 +1484,7 @@ export default function Home() {
                 </div>
                 
                 <div className="hidden md:flex md:justify-center md:items-center md:gap-2 md:mt-4">
-                    {renderBulletNavigation()}
+                  <NavBullets api={carouselApi} current={currentSlide} total={designs.length} />
                 </div>
             </div>
           )}
@@ -1563,7 +1505,7 @@ export default function Home() {
       {/* Mobile-only bullet navigation */}
       {isClient && designs.length > 0 && (
         <div className="md:hidden fixed bottom-16 left-0 right-0 z-20">
-          {renderBulletNavigation()}
+            <NavBullets api={carouselApi} current={currentSlide} total={designs.length} />
         </div>
       )}
 
@@ -1580,18 +1522,10 @@ export default function Home() {
               <Sheet open={isMobilePanelOpen} onOpenChange={(isOpen) => {
                   if (!isOpen) {
                       setActiveSettingsTab(''); // Reset active tab when sheet closes
-                  } else if (activeSettingsTab === 'text') {
-                      // Prevent auto-focus when opening the text tab
-                      setTimeout(() => {
-                          const activeElement = document.activeElement as HTMLElement;
-                          if (activeElement && activeElement.blur) {
-                            activeElement.blur();
-                          }
-                      }, 0);
                   }
                   setIsMobilePanelOpen(isOpen);
               }}>
-                  <SheetContent side="bottom" className="h-auto max-h-[55vh] p-0 flex flex-col bg-sidebar">
+                  <SheetContent side="bottom" className="h-auto max-h-[55vh] p-0 flex flex-col bg-sidebar" onOpenAutoFocus={(e) => e.preventDefault()}>
                       {/* Header for the mobile settings panel */}
                       <SheetHeader className="p-2 px-4 border-b flex-row justify-between items-center bg-background">
                           <SheetTitle className="capitalize">{activeTabLabel}</SheetTitle>
@@ -1625,3 +1559,4 @@ export default function Home() {
     </div>
   );
 }
+

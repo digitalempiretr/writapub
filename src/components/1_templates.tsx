@@ -14,6 +14,7 @@ import { designTemplates, DesignTemplate } from "@/lib/design-templates";
 import { fontOptions } from "@/lib/font-options";
 import Image from "next/image";
 import { textEffects } from "@/lib/text-effects";
+import { NavBullets } from "./ui/nav-bullets";
 
 type DesignsPanelProps = {
   handleApplyTemplate: (template: DesignTemplate) => void;
@@ -74,60 +75,6 @@ const TemplateCarousel = ({ templates, handleApplyTemplate }: { templates: Desig
       api.off("select", onSelect);
     };
   }, [api]);
-  
-  const renderBulletNavigation = () => {
-    const totalSlides = templates.length;
-    if (totalSlides <= 1) return null;
-
-    const visibleDots = 7;
-    const half = Math.floor(visibleDots / 2);
-
-    let start = Math.max(current - half, 0);
-    let end = start + visibleDots - 1;
-
-    if (end >= totalSlides) {
-      end = totalSlides - 1;
-      start = Math.max(end - visibleDots + 1, 0);
-    }
-    
-    const dots = [];
-    for (let i = start; i <= end; i++) {
-        dots.push(
-            <div
-                key={i}
-                data-active={i === current}
-                onClick={() => api?.scrollTo(i)}
-                className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
-            />
-        );
-    }
-
-    return (
-      <div className="flex justify-center items-center gap-2 mt-2">
-        {start > 0 && (
-          <>
-            <div
-              key={0}
-              onClick={() => api?.scrollTo(0)}
-              className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
-            />
-            {start > 1 && <span className="text-foreground -translate-y-1">...</span>}
-          </>
-        )}
-        {dots}
-        {end < totalSlides - 1 && (
-          <>
-            {end < totalSlides - 2 && <span className="text-foreground -translate-y-1">...</span>}
-            <div
-              key={totalSlides - 1}
-              onClick={() => api?.scrollTo(totalSlides - 1)}
-              className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
-            />
-          </>
-        )}
-      </div>
-    );
-  };
 
   return (
     <div className="space-y-2">
@@ -156,7 +103,7 @@ const TemplateCarousel = ({ templates, handleApplyTemplate }: { templates: Desig
           ))}
         </CarouselContent>
       </Carousel>
-      {renderBulletNavigation()}
+      <NavBullets api={api} current={current} total={templates.length} className="mt-2" />
     </div>
   );
 };
@@ -183,5 +130,3 @@ export function DesignsPanel({ handleApplyTemplate }: DesignsPanelProps) {
     </div>
   );
 }
-
-    
