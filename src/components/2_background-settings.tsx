@@ -275,19 +275,24 @@ export function BackgroundSettings({
                     </div>
                   </RadioGroup>
                   {gradientType === 'linear' && (
-                    <div
-                        ref={angleControlRef}
-                        onMouseDown={handleMouseDown}
-                        onTouchStart={handleTouchStart}
-                        className="relative h-10 w-10 border rounded-md flex items-center justify-center cursor-pointer"
-                        style={{ touchAction: 'none' }}
-                    >
+                    <div className="flex items-center gap-2">
                         <div
-                            className="w-2 h-2 bg-primary rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-                            style={{
-                                transform: `rotate(${gradientAngle}deg) translateX(12px) rotate(-${gradientAngle}deg)`,
-                            }}
-                        />
+                            ref={angleControlRef}
+                            onMouseDown={handleMouseDown}
+                            onTouchStart={handleTouchStart}
+                            className="relative h-10 w-10 border rounded-md flex items-center justify-center cursor-pointer"
+                            style={{ touchAction: 'none' }}
+                        >
+                            <div
+                                className="w-2 h-2 bg-primary rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                                style={{
+                                    transform: `rotate(${gradientAngle}deg) translateX(12px) rotate(-${gradientAngle}deg)`,
+                                }}
+                            />
+                        </div>
+                        <div className="text-sm p-2 rounded-md border border-input tabular-nums w-16 text-center">
+                            {gradientAngle}°
+                        </div>
                     </div>
                   )}
                 </div>
