@@ -261,7 +261,7 @@ export default function Home() {
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const [fileName, setFileName] = useState("Untitled design");
+  const [fileName, setFileName] = useState("writa");
   const [zoomLevel, setZoomLevel] = useState(0.5);
 
   const [isPanning, setIsPanning] = useState(false);
@@ -351,7 +351,7 @@ export default function Home() {
     if (designs.length > 0) {
       handleGenerate();
     }
-  }, [canvasSize]);
+  }, [canvasSize, handleGenerate]);
 
 
   /**
@@ -1276,7 +1276,7 @@ export default function Home() {
     }
 
     return (
-      <div className="flex justify-center items-center gap-2 mt-4 z-40">
+      <div className="flex justify-center items-center gap-2 z-40">
         {start > 0 && (
           <>
             <div
@@ -1326,10 +1326,10 @@ export default function Home() {
       * Displays the application logo.
       ********************************************************************************
       */}
-      <header className="w-full text-left p-8 px-4 md:px-4 h-[5vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-sidebar shadow-sm md:shadow-none">
-        <Logo className="text-[1.5rem] text-primary pe-16" />
+      <header className="w-full text-left p-4 md:px-8 h-[6vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-transparent">
+        <Logo className="text-[1.5rem] text-primary" />
         {designs.length > 0 && (
-           <div className="flex items-center gap-2 w-full max-w-xs">
+          <div className="flex items-center gap-2 w-full max-w-xs">
             <Input
               id="file-name-header"
               name="file-name"
@@ -1337,31 +1337,30 @@ export default function Home() {
               placeholder="Enter file name..."
               value={fileName}
               onChange={(e) => setFileName(e.target.value)}
-              className="bg-sidebar border-muted text-primary h-8 rounded"
+              className="bg-background h-8"
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="h-8 w-8 rounded">
-                  <Share2 className="h-4 w-4" color="var(--primary)" />
+                <Button variant="outline" size="icon" className="h-8 w-8">
+                  <Share2 className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => handleDownload(currentSlide)} disabled={designs.length === 0}>
+                <DropdownMenuItem onClick={handleDownloadAll} disabled={designs.length === 0}>
+                  <Download className="mr-2 h-4 w-4" />
+                  <span>Download All</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleDownload(currentSlide)} disabled={designs.length === 0}>
                    <Download className="mr-2 h-4 w-4" />
                   <span>Download Current</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleDownloadAll} disabled={designs.length === 0}>
-                  <Download className="mr-2 h-4 w-4" />
-                  <span>Download All Designs</span>
-                </DropdownMenuItem>
-                
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
         )}
       </header>
 
-      <div className="flex-1 flex overflow-hidden mt-1" style={{ height: isMobile ? 'calc(100vh - 10vh - 56px)' : 'auto' }}>
+      <div className="flex-1 flex overflow-hidden" style={{ height: isMobile ? 'calc(100vh - 10vh - 56px)' : 'auto' }}>
       {/*
       ********************************************************************************
       * DESKTOP SIDEBAR
@@ -1545,10 +1544,9 @@ export default function Home() {
                       ))}
                     </CarouselContent>
                   </Carousel>
-                 
                 </div>
-                {renderBulletNavigation()}
                 
+                {renderBulletNavigation()}
 
             </div>
           )}
@@ -1620,3 +1618,4 @@ export default function Home() {
     
 
     
+
