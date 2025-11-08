@@ -100,7 +100,7 @@ export function BackgroundSettings({
     setGradientAngle(angle);
   };
   
-  const handleAngleInteraction = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+ const handleAngleInteraction = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     if (!angleControlRef.current) return;
   
     const rect = angleControlRef.current.getBoundingClientRect();
