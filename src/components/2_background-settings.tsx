@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useId, useState } from "react";
+import React, { useId, useState, useEffect } from "react";
 import {
   Popover,
   PopoverContent,
@@ -85,6 +85,19 @@ export function BackgroundSettings({
   const [gradientType, setGradientType] = useState<'linear' | 'radial'>('linear');
   const [gradientAngle, setGradientAngle] = useState(95);
 
+  useEffect(() => {
+    let css = '';
+    if (gradientType === 'linear') {
+      css = `linear-gradient(${gradientAngle}deg, ${customGradientFrom}, ${customGradientTo})`;
+    } else {
+      css = `radial-gradient(circle, ${customGradientFrom}, ${customGradientTo})`;
+    }
+    handleGradientBgSelect(css);
+  }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, handleGradientBgSelect]);
+
+  const handleAngleChange = (value: number) => {
+    setGradientAngle(value);
+  };
 
   const handleImageSelectFromSearch = (imageUrl: string) => {
     handleImageBgUrlSelect({
@@ -95,20 +108,6 @@ export function BackgroundSettings({
         square: imageUrl,
       },
     });
-  };
-
-  const applyCustomGradient = () => {
-    let css = '';
-    if (gradientType === 'linear') {
-      css = `linear-gradient(${gradientAngle}deg, ${customGradientFrom}, ${customGradientTo})`;
-    } else {
-      css = `radial-gradient(circle, ${customGradientFrom}, ${customGradientTo})`;
-    }
-    handleGradientBgSelect(css);
-  };
-
-  const handleAngleChange = (value: number[]) => {
-    setGradientAngle(value[0]);
   };
 
   return (
@@ -250,12 +249,9 @@ export function BackgroundSettings({
                       value={[gradientAngle]}
                       max={360}
                       step={1}
-                      onValueChange={handleAngleChange}
+                      onValueChange={(v) => handleAngleChange(v[0])}
                     />
                 )}
-                
-
-                <Button onClick={applyCustomGradient} className="w-full">Apply</Button>
               </PopoverContent>
             </Popover>
             {gradientTemplates.map((gradient) => (
