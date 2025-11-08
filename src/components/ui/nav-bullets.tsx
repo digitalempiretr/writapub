@@ -14,7 +14,7 @@ type NavBulletsProps = {
 export function NavBullets({ api, current, total, className }: NavBulletsProps) {
   if (!api || total <= 1) return null;
 
-  const visibleDots = 7;
+  const visibleDots = 6;
   const half = Math.floor(visibleDots / 2);
 
   let start = Math.max(current - half, 0);
@@ -46,13 +46,13 @@ export function NavBullets({ api, current, total, className }: NavBulletsProps) 
             onClick={() => api?.scrollTo(0)}
             className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
           />
-          {start > 1 && <span className="text-foreground/50 -translate-y-1">...</span>}
+          {start > 1 && <span className="text-foreground/50 -translate-y-0">・</span>}
         </>
       )}
       {dots}
       {end < total - 1 && (
         <>
-          {end < total - 2 && <span className="text-foreground/50 -translate-y-1">...</span>}
+          {end < total - 2 && <span className="text-foreground/50 -translate-y-0">・</span>}
           <div
             key={total - 1}
             onClick={() => api?.scrollTo(total - 1)}
