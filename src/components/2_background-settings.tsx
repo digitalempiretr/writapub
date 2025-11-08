@@ -95,10 +95,6 @@ export function BackgroundSettings({
     }
     handleGradientBgSelect(css);
   }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, handleGradientBgSelect]);
-
-  const handleAngleChange = (angle: number) => {
-    setGradientAngle(angle);
-  };
   
  const handleAngleInteraction = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     if (!angleControlRef.current) return;
@@ -115,7 +111,7 @@ export function BackgroundSettings({
     if (angleDeg < 0) {
       angleDeg += 360;
     }
-    handleAngleChange(angleDeg);
+    setGradientAngle(angleDeg);
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
