@@ -93,7 +93,7 @@ export function BackgroundSettings({
   const [gradientType, setGradientType] = useState<'linear' | 'radial'>('linear');
   const [gradientAngle, setGradientAngle] = useState(82);
   const angleControlRef = useRef<HTMLDivElement>(null);
-
+  
   useEffect(() => {
     const fromRgba = hexToRgba(customGradientFrom, 1);
     const toRgba = hexToRgba(customGradientTo, 1);
@@ -104,9 +104,9 @@ export function BackgroundSettings({
       css = `radial-gradient(circle, ${fromRgba} 0%, ${toRgba} 100%)`;
     }
     handleGradientBgSelect(css);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [customGradientFrom, customGradientTo, gradientType, gradientAngle]);
+  }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, handleGradientBgSelect]);
   
+
  const handleAngleInteraction = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement> | MouseEvent | TouchEvent) => {
     if (!angleControlRef.current) return;
   
@@ -439,5 +439,7 @@ export function BackgroundSettings({
     </div>
   );
 }
+
+    
 
     
