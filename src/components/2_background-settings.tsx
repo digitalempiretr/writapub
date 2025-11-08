@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useId, useState, useEffect } from "react";
+import React, { useId, useState, useEffect, useRef } from "react";
 import {
   Popover,
   PopoverContent,
@@ -84,6 +84,7 @@ export function BackgroundSettings({
   const [customGradientTo, setCustomGradientTo] = useState("#4a00e0");
   const [gradientType, setGradientType] = useState<'linear' | 'radial'>('linear');
   const [gradientAngle, setGradientAngle] = useState(95);
+  const angleControlRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let css = '';
@@ -95,8 +96,53 @@ export function BackgroundSettings({
     handleGradientBgSelect(css);
   }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, handleGradientBgSelect]);
 
-  const handleAngleChange = (value: number) => {
-    setGradientAngle(value);
+  const handleAngleChange = (angle: number) => {
+    setGradientAngle(angle);
+  };
+  
+  const handleAngleInteraction = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    if (!angleControlRef.current) return;
+  
+    const rect = angleControlRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+  
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+  
+    const angleRad = Math.atan2(clientY - centerY, clientX - centerX);
+    let angleDeg = Math.round(angleRad * (180 / Math.PI));
+    if (angleDeg < 0) {
+      angleDeg += 360;
+    }
+    handleAngleChange(angleDeg);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      handleAngleInteraction(moveEvent as any);
+    };
+    const handleMouseUp = () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    handleAngleInteraction(e);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    const handleTouchMove = (moveEvent: TouchEvent) => {
+        handleAngleInteraction(moveEvent as any);
+    };
+    const handleTouchEnd = () => {
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleTouchEnd);
+    };
+    document.addEventListener('touchmove', handleTouchMove);
+    document.addEventListener('touchend', handleTouchEnd);
+    handleAngleInteraction(e);
   };
 
   const handleImageSelectFromSearch = (imageUrl: string) => {
@@ -233,25 +279,23 @@ export function BackgroundSettings({
                     </div>
                   </RadioGroup>
                   {gradientType === 'linear' && (
-                     <div className="relative h-8 w-8 border rounded-md flex items-center justify-center">
+                    <div
+                        ref={angleControlRef}
+                        onMouseDown={handleMouseDown}
+                        onTouchStart={handleTouchStart}
+                        className="relative h-10 w-10 border rounded-md flex items-center justify-center cursor-pointer"
+                        style={{ touchAction: 'none' }}
+                    >
                         <div
-                          className="w-1.5 h-1.5 bg-primary rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-                          style={{
-                              transform: `rotate(${gradientAngle}deg) translateX(10px) rotate(-${gradientAngle}deg)`,
-                          }}
+                            className="w-2 h-2 bg-primary rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                            style={{
+                                transform: `rotate(${gradientAngle}deg) translateX(12px) rotate(-${gradientAngle}deg)`,
+                            }}
                         />
-                      </div>
+                    </div>
                   )}
                 </div>
 
-                {gradientType === 'linear' && (
-                   <Slider 
-                      value={[gradientAngle]}
-                      max={360}
-                      step={1}
-                      onValueChange={(v) => handleAngleChange(v[0])}
-                    />
-                )}
               </PopoverContent>
             </Popover>
             {gradientTemplates.map((gradient) => (
