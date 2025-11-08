@@ -55,9 +55,16 @@ type BackgroundSettingsProps = {
 
 // Helper to convert hex to rgba
 const hexToRgba = (hex: string, alpha = 1) => {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
+    let r = 0, g = 0, b = 0;
+    if (hex.length === 4) {
+        r = parseInt(hex[1] + hex[1], 16);
+        g = parseInt(hex[2] + hex[2], 16);
+        b = parseInt(hex[3] + hex[3], 16);
+    } else if (hex.length === 7) {
+        r = parseInt(hex.substring(1, 3), 16);
+        g = parseInt(hex.substring(3, 5), 16);
+        b = parseInt(hex.substring(5, 7), 16);
+    }
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
@@ -107,7 +114,7 @@ export function BackgroundSettings({
   }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, handleGradientBgSelect]);
   
 
- const handleAngleInteraction = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement> | MouseEvent | TouchEvent) => {
+ const handleAngleInteraction = (e: MouseEvent | TouchEvent) => {
     if (!angleControlRef.current) return;
   
     const rect = angleControlRef.current.getBoundingClientRect();
@@ -136,7 +143,7 @@ export function BackgroundSettings({
     };
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
-    handleAngleInteraction(e);
+    handleAngleInteraction(e.nativeEvent);
   };
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
@@ -150,7 +157,7 @@ export function BackgroundSettings({
     };
     document.addEventListener('touchmove', handleTouchMove);
     document.addEventListener('touchend', handleTouchEnd);
-    handleAngleInteraction(e);
+    handleAngleInteraction(e.nativeEvent);
   };
 
   const handleImageSelectFromSearch = (imageUrl: string) => {
@@ -439,7 +446,5 @@ export function BackgroundSettings({
     </div>
   );
 }
-
-    
 
     
