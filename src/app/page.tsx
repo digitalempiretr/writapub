@@ -1226,7 +1226,7 @@ export default function Home() {
       case 'background': return <BackgroundSettings {...props} />;
       case 'text': return <TextSettings {...props} />;
       case 'elements': return <ElementsPanel {...props} />;
-      case 'download': return <DownloadPanel {...props} handleDownload={handleDownload} />;
+      case 'download': return <DownloadPanel {...props} />;
       default: return null;
     }
   };
@@ -1276,13 +1276,13 @@ export default function Home() {
     }
 
     return (
-      <div className="flex justify-center items-center gap-2 z-40">
+      <div className="flex justify-center items-center gap-2">
         {start > 0 && (
           <>
             <div
               key={0}
               onClick={() => carouselApi.current?.scrollTo(0)}
-              className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
+              className="h-4 w-4 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
             />
             {start > 1 && <span className="text-foreground -translate-y-1">...</span>}
           </>
@@ -1294,7 +1294,7 @@ export default function Home() {
             <div
               key={totalSlides - 1}
               onClick={() => carouselApi.current?.scrollTo(totalSlides - 1)}
-              className="h-2 w-2 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
+              className="h-4 w-4 rounded-full bg-foreground cursor-pointer transition-all duration-300 bullet-indicator"
             />
           </>
         )}
@@ -1546,7 +1546,9 @@ export default function Home() {
                   </Carousel>
                 </div>
                 
-                {renderBulletNavigation()}
+                <div className="hidden md:flex justify-center mt-4">
+                  {renderBulletNavigation()}
+                </div>
 
             </div>
           )}
@@ -1567,8 +1569,6 @@ export default function Home() {
       {/*
       ********************************************************************************
       * MOBILE TAB SYSTEM
-      * This section is only visible on screens narrower than 768px (md breakpoint).
-      * It uses a Sheet component to display settings from the bottom.
       ********************************************************************************
       */}
       {isClient && designs.length > 0 && (
@@ -1592,6 +1592,11 @@ export default function Home() {
                   </SheetContent>
               </Sheet>
 
+              {/* Mobile Bullet Navigation */}
+              <div className="fixed bottom-[calc(3.5rem+1rem)] left-0 right-0 z-40 md:hidden">
+                {renderBulletNavigation()}
+              </div>
+
               {/* Bottom navigation bar for mobile */}
               <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-sidebar border-t", isMobilePanelOpen ? "hidden" : "block")}>
                   <Tabs value={activeSettingsTab ?? ''} className="w-full">
@@ -1614,8 +1619,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
-
-    
-
