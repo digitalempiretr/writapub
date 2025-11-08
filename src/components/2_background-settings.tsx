@@ -53,6 +53,14 @@ type BackgroundSettingsProps = {
   setSearchCarouselApi: (api: CarouselApi | undefined) => void;
 };
 
+// Helper to convert hex to rgba
+const hexToRgba = (hex: string, alpha = 1) => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
 
 export function BackgroundSettings({
   backgroundTab,
@@ -80,18 +88,20 @@ export function BackgroundSettings({
   setSearchCarouselApi,
 }: BackgroundSettingsProps) {
   const baseId = useId();
-  const [customGradientFrom, setCustomGradientFrom] = useState("#8e2de2");
-  const [customGradientTo, setCustomGradientTo] = useState("#4a00e0");
+  const [customGradientFrom, setCustomGradientFrom] = useState("#eeaece");
+  const [customGradientTo, setCustomGradientTo] = useState("#94bbe9");
   const [gradientType, setGradientType] = useState<'linear' | 'radial'>('linear');
-  const [gradientAngle, setGradientAngle] = useState(95);
+  const [gradientAngle, setGradientAngle] = useState(82);
   const angleControlRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const fromRgba = hexToRgba(customGradientFrom);
+    const toRgba = hexToRgba(customGradientTo);
     let css = '';
     if (gradientType === 'linear') {
-      css = `linear-gradient(${gradientAngle}deg, ${customGradientFrom}, ${customGradientTo})`;
+      css = `linear-gradient(${gradientAngle}deg, ${fromRgba} 0%, ${toRgba} 100%)`;
     } else {
-      css = `radial-gradient(circle, ${customGradientFrom}, ${customGradientTo})`;
+      css = `radial-gradient(circle, ${fromRgba} 0%, ${toRgba} 100%)`;
     }
     handleGradientBgSelect(css);
   }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, handleGradientBgSelect]);
@@ -283,8 +293,12 @@ export function BackgroundSettings({
                             className="relative h-10 w-10 border rounded-md flex items-center justify-center cursor-pointer"
                             style={{ touchAction: 'none' }}
                         >
+                             <div className="w-full h-px bg-border/50 rotate-45 absolute"></div>
+                             <div className="w-full h-px bg-border/50 -rotate-45 absolute"></div>
+                             <div className="w-px h-full bg-border/50 absolute"></div>
+                             <div className="h-px w-full bg-border/50 absolute"></div>
                             <div
-                                className="w-2 h-2 bg-primary rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                                className="w-2.5 h-2.5 bg-primary rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-primary-foreground shadow-md"
                                 style={{
                                     transform: `rotate(${gradientAngle}deg) translateX(12px) rotate(-${gradientAngle}deg)`,
                                 }}
@@ -423,3 +437,5 @@ export function BackgroundSettings({
     </div>
   );
 }
+
+    
