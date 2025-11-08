@@ -96,7 +96,7 @@ export function BackgroundSettings({
     handleGradientBgSelect(css);
   }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, handleGradientBgSelect]);
   
- const handleAngleInteraction = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+ const handleAngleInteraction = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement> | MouseEvent | TouchEvent) => {
     if (!angleControlRef.current) return;
   
     const rect = angleControlRef.current.getBoundingClientRect();
@@ -117,7 +117,7 @@ export function BackgroundSettings({
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     const handleMouseMove = (moveEvent: MouseEvent) => {
-      handleAngleInteraction(moveEvent as any);
+      handleAngleInteraction(moveEvent);
     };
     const handleMouseUp = () => {
       document.removeEventListener('mousemove', handleMouseMove);
@@ -130,7 +130,7 @@ export function BackgroundSettings({
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     const handleTouchMove = (moveEvent: TouchEvent) => {
-        handleAngleInteraction(moveEvent as any);
+        handleAngleInteraction(moveEvent);
     };
     const handleTouchEnd = () => {
         document.removeEventListener('touchmove', handleTouchMove);
