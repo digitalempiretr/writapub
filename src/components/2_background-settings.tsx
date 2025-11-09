@@ -7,6 +7,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
@@ -23,6 +24,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "Art", "Minimal", "Abstract", "Dreamy", "Cinematic", "Surreal", "Vintage", "Futuristic", "Bohemian"];
 
@@ -110,6 +112,7 @@ export function BackgroundSettings({
 
   const angleSelectorRef = useRef<HTMLDivElement>(null);
   const gradientBarRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const sortedStops = [...customGradientStops].sort((a, b) => a.stop - b.stop);
@@ -121,9 +124,12 @@ export function BackgroundSettings({
     } else {
       css = `radial-gradient(circle, ${colorStopsString})`;
     }
-    if (backgroundTab === 'gradient') {
-      handleGradientBgSelect(css);
+    
+    // Only apply if the gradient tab is active and settings have changed.
+    if(backgroundTab === 'gradient'){
+        handleGradientBgSelect(css);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customGradientStops, gradientType, gradientAngle]);
   
   const handleAngleInteraction = useCallback((clientX: number, clientY: number) => {
@@ -237,7 +243,7 @@ export function BackgroundSettings({
       const clampedStop = Math.max(0, Math.min(100, newStop));
 
       setCustomGradientStops(stops =>
-        stops.map(s => (s.id === id ? { ...s, stop: clampedStop } : s))
+        stops.map(s => (s.id === id ? { ...s, ...newProps } : s))
       );
     };
 
@@ -261,71 +267,93 @@ export function BackgroundSettings({
     return `linear-gradient(to right, ${colorStopsString})`;
   }, [customGradientStops]);
 
+  const overlayContent = (
+    <div className="w-full space-y-4">
+      <div className="flex items-center justify-between">
+        <Label htmlFor={`${baseId}-overlay-toggle`}>Background Overlay</Label>
+        <Switch
+          id={`${baseId}-overlay-toggle`}
+          checked={isOverlayEnabled}
+          onCheckedChange={setIsOverlayEnabled}
+        />
+      </div>
+      {isOverlayEnabled && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Label>Color</Label>
+            <Input
+              type="color"
+              value={overlayColor}
+              onChange={(e) => setOverlayColor(e.target.value)}
+              className="h-8 p-1"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor={`${baseId}-overlay-opacity-slider`}>Opacity</Label>
+            <div className="flex items-center gap-2">
+              <Slider
+                id={`${baseId}-overlay-opacity-slider`}
+                max={1}
+                min={0}
+                step={0.01}
+                value={[overlayOpacity]}
+                onValueChange={(value) => setOverlayOpacity(value[0])}
+              />
+              <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
+                {Math.round(overlayOpacity * 100)}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
 
   return (
     <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-4 mobile-tab-content">
-      <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
+      <Tabs value={backgroundTab} onValueChange={(value) => setBackgroundTab(value)} className="w-full">
         <div className="flex items-center gap-2">
           <TabsList className="grid flex-grow grid-cols-3 font-sans">
             <TabsTrigger value="flat">Solid Color</TabsTrigger>
             <TabsTrigger value="gradient">Gradient</TabsTrigger>
             <TabsTrigger value="image">Image</TabsTrigger>
           </TabsList>
-           <Popover>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" size="icon">
-                       <BgOverlayIcon color={isOverlayEnabled ? overlayColor : '#999'} />
-                    </Button>
-                  </PopoverTrigger>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Background Overlay</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <PopoverContent className="w-64 space-y-4">
-              <div className="flex items-center justify-between">
-                <Label htmlFor={`${baseId}-overlay-toggle`}>Background Overlay</Label>
-                <Switch
-                  id={`${baseId}-overlay-toggle`}
-                  checked={isOverlayEnabled}
-                  onCheckedChange={setIsOverlayEnabled}
-                />
-              </div>
-              {isOverlayEnabled && (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <Label>Color</Label>
-                    <Input
-                      type="color"
-                      value={overlayColor}
-                      onChange={(e) => setOverlayColor(e.target.value)}
-                      className="h-8 p-1"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor={`${baseId}-overlay-opacity-slider`}>Opacity</Label>
-                    <div className="flex items-center gap-2">
-                      <Slider
-                        id={`${baseId}-overlay-opacity-slider`}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        value={[overlayOpacity]}
-                        onValueChange={(value) => setOverlayOpacity(value[0])}
-                      />
-                      <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
-                        {Math.round(overlayOpacity * 100)}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </PopoverContent>
-          </Popover>
+           {isMobile ? (
+            <Dialog>
+              <DialogTrigger asChild>
+                 <Button variant="outline" size="icon">
+                     <BgOverlayIcon color={isOverlayEnabled ? overlayColor : '#999'} />
+                  </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Background Overlay</DialogTitle>
+                </DialogHeader>
+                {overlayContent}
+              </DialogContent>
+            </Dialog>
+           ) : (
+            <Popover>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" size="icon">
+                         <BgOverlayIcon color={isOverlayEnabled ? overlayColor : '#999'} />
+                      </Button>
+                    </PopoverTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Background Overlay</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <PopoverContent className="w-64 space-y-4">
+                {overlayContent}
+              </PopoverContent>
+            </Popover>
+           )}
         </div>
         <TabsContent value="flat" className="pt-4 space-y-4">
            <div className="grid grid-cols-6 gap-2">

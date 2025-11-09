@@ -1279,12 +1279,12 @@ export default function Home() {
               placeholder="Enter file name..."
               value={fileName}
               onChange={(e) => setFileName(e.target.value)}
-              className="bg-sidebar border-muted text-primary h-8 rounded"
+              className="bg-sidebar hover:border-primary text-primary h-8 rounded-sm focus:border-indigo-600 focus:outline-hidden text-md bold text-right"
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="h-8 w-8 rounded">
-                  <Share2 className="h-4 w-4" color="var(--primary)" />
+                <Button variant="outline" size="icon" className="h-8 w-8 rounded bg-transparent">
+                  <Download className="h-4 w-4" color="var(--primary)" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>

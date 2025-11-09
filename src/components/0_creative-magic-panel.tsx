@@ -75,12 +75,12 @@ export function CreativeMagicPanel({ title, setTitle, text, setText, handleGener
 
   return (
     <div className="space-y-10 max-w-[1000px] mx-auto w-full">
-      <CardTitle className="text-foreground text-3xl md:text-3xl text-left font-serif">Hi, <span className = "text-primary">
+      <CardTitle className="text-foreground text-3xl md:text-2xl text-left font-serif">Hi, <span className = "text-primary">
         [Users Name] </span></CardTitle>
       <div className="space-y-4">
         <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <Label className="border-s-8 border-primary px-2 font-bold font-sans text-xl" htmlFor={titleId}>Title </Label>
+              <Label className="border-s-4 border-primary px-2 font-bold font-sans text-xl" htmlFor={titleId}>Title</Label>
               {renderInfoIcon()}
             </div>
             <Input
@@ -88,12 +88,12 @@ export function CreativeMagicPanel({ title, setTitle, text, setText, handleGener
                 placeholder="For cover, first page text...(optional)"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="rounded-lg relative z-10 text-lg md:text-lg text-card-foreground placeholder:text-muted-foreground border-1 shadow "
+                className="rounded-lg relative z-10 text-md md:text-lg text-card-foreground placeholder:text-muted-foreground border-1 shadow "
             />
         </div>
         <div className="space-y-2">
-            <Label className="border-s-8 border-primary px-2 font-bold font-sans text-xl" htmlFor={mainTextAreaId}>What will you<span className = "text-primary"> Write </span>today?</Label>
-            <div className="relative text-xl rounded-lg">
+            <Label className="border-s-4 border-primary px-2 font-bold font-sans text-xl" htmlFor={mainTextAreaId}>What will you<span className = "text-primary"> Write </span>today?</Label>
+            <div className="relative text-md md:text-lg rounded-lg">
             <Textarea
                 id={mainTextAreaId}
                 name="main-text-area"
@@ -101,7 +101,7 @@ export function CreativeMagicPanel({ title, setTitle, text, setText, handleGener
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 rows={8}
-                className="rounded-lg relative z-10 text-lg text-card-foreground placeholder:text-muted-foreground border-1 shadow  "
+                className="rounded-lg relative z-10 text-md md:text-lg text-card-foreground placeholder:text-muted-foreground border-1 shadow  "
             />
             </div>
         </div>
