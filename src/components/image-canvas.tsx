@@ -376,31 +376,41 @@ const ImageCanvasComponent = ({
           ctx.fillRect(0,0,width,height);
           await drawLayout();
         }
-      } else if (backgroundColor && backgroundColor.startsWith("linear-gradient")) {
-          const regex = /(rgba?\(.+?\)|#([0-9a-fA-F]{3,8}))\s+(\d+)%/g;
-          const stops: { color: string; stop: number }[] = [];
+      } else if (backgroundColor && (backgroundColor.startsWith("linear-gradient") || backgroundColor.startsWith("radial-gradient"))) {
+          const isLinear = backgroundColor.startsWith("linear-gradient");
+          const colorStopRegex = /(rgba?\(.+?\)|#([0-9a-fA-F]{3,8}))\s*(\d{1,3}%)?/g;
+
+          const stops: { color: string; stop: number | null }[] = [];
           let match;
-          while ((match = regex.exec(backgroundColor)) !== null) {
-              stops.push({ color: match[1], stop: parseInt(match[3]) / 100 });
+          while ((match = colorStopRegex.exec(backgroundColor)) !== null) {
+              const color = match[1];
+              const stop = match[3] ? parseInt(match[3], 10) / 100 : null;
+              stops.push({ color, stop });
           }
 
           if (stops.length > 0) {
-              const gradient = ctx.createLinearGradient(0, 0, 0, height);
+              // Assign default stops if not provided
+              if (stops.every(s => s.stop === null)) {
+                  stops.forEach((s, i) => {
+                      s.stop = i / (stops.length - 1);
+                  });
+              }
+
+              let gradient;
+              if (isLinear) {
+                  gradient = ctx.createLinearGradient(0, 0, 0, height);
+              } else {
+                  gradient = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, Math.max(width, height)/2);
+              }
+              
               stops.forEach(stop => {
+                if (stop.stop !== null) {
                   gradient.addColorStop(stop.stop, stop.color);
+                }
               });
               ctx.fillStyle = gradient;
           } else {
-              // Fallback for simpler gradients if regex fails
-              const colors = backgroundColor.match(/(rgba?\(.+?\)|#([0-9a-fA-F]{3,8}))/g);
-              if (colors && colors.length >= 2) {
-                  const gradient = ctx.createLinearGradient(0, 0, 0, height);
-                  gradient.addColorStop(0, colors[0]);
-                  gradient.addColorStop(1, colors[1]);
-                  ctx.fillStyle = gradient;
-              } else {
-                  ctx.fillStyle = "#ffffff";
-              }
+              ctx.fillStyle = "#ffffff";
           }
           ctx.fillRect(0, 0, width, height);
           await drawLayout();
