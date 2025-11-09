@@ -113,6 +113,7 @@ export function BackgroundSettings({
   const angleSelectorRef = useRef<HTMLDivElement>(null);
   const gradientBarRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
+  const draggingStopId = useRef<number | null>(null);
 
   useEffect(() => {
     const sortedStops = [...customGradientStops].sort((a, b) => a.stop - b.stop);
@@ -129,8 +130,7 @@ export function BackgroundSettings({
     if(backgroundTab === 'gradient'){
         handleGradientBgSelect(css);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [customGradientStops, gradientType, gradientAngle]);
+  }, [customGradientStops, gradientType, gradientAngle, backgroundTab, handleGradientBgSelect]);
   
   const handleAngleInteraction = useCallback((clientX: number, clientY: number) => {
     if (!angleSelectorRef.current) return;
@@ -210,19 +210,19 @@ export function BackgroundSettings({
     );
   }, [activeStopId]);
   
-    const addStop = (e: React.MouseEvent<HTMLDivElement>) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const stop = Math.round(((e.clientX - rect.left) / rect.width) * 100);
-        
-        const newStop: GradientStop = {
-            id: Date.now(),
-            color: '#ffffff',
-            stop: Math.max(0, Math.min(100, stop)),
-        };
+  const addStop = (e: React.MouseEvent<HTMLDivElement>) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const stop = Math.round(((e.clientX - rect.left) / rect.width) * 100);
+      
+      const newStop: GradientStop = {
+          id: Date.now(),
+          color: '#ffffff',
+          stop: Math.max(0, Math.min(100, stop)),
+      };
 
-        setCustomGradientStops(stops => [...stops, newStop]);
-        setActiveStopId(newStop.id);
-    };
+      setCustomGradientStops(stops => [...stops, newStop].sort((a,b) => a.stop - b.stop));
+      setActiveStopId(newStop.id);
+  };
 
   const removeActiveStop = () => {
     if (activeStopId && customGradientStops.length > 2) {
@@ -232,29 +232,36 @@ export function BackgroundSettings({
     }
   };
   
-  const handleStopDrag = useCallback((id: number) => {
-    const onMouseMove = (moveEvent: MouseEvent | TouchEvent) => {
-      const currentX = 'touches' in moveEvent ? moveEvent.touches[0].clientX : moveEvent.clientX;
-      const gradientBar = gradientBarRef.current;
-      if (!gradientBar) return;
-      
-      const rect = gradientBar.getBoundingClientRect();
-      const newStop = Math.round(((currentX - rect.left) / rect.width) * 100);
-      const clampedStop = Math.max(0, Math.min(100, newStop));
+  const handleStopDrag = useCallback((id: number, e: React.MouseEvent | React.TouchEvent) => {
+    draggingStopId.current = id;
+    setActiveStopId(id);
+    e.stopPropagation();
 
-      setCustomGradientStops(stops =>
-        stops.map(s => (s.id === id ? { ...s, ...newProps } : s))
-      );
+    const onMouseMove = (moveEvent: MouseEvent | TouchEvent) => {
+        if (draggingStopId.current !== id) return;
+
+        const currentX = 'touches' in moveEvent ? moveEvent.touches[0].clientX : moveEvent.clientX;
+        const gradientBar = gradientBarRef.current;
+        if (!gradientBar) return;
+        
+        const rect = gradientBar.getBoundingClientRect();
+        const newStop = Math.round(((currentX - rect.left) / rect.width) * 100);
+        const clampedStop = Math.max(0, Math.min(100, newStop));
+
+        setCustomGradientStops(stops =>
+            stops.map(s => (s.id === id ? { ...s, stop: clampedStop } : s))
+        );
     };
 
     const onMouseUp = () => {
-      document.removeEventListener('mousemove', onMouseMove);
+      draggingStopId.current = null;
+      document.removeEventListener('mousemove', onMouseMove as any);
       document.removeEventListener('mouseup', onMouseUp);
       document.removeEventListener('touchmove', onMouseMove as any);
       document.removeEventListener('touchend', onMouseUp);
     };
 
-    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mousemove', onMouseMove as any);
     document.addEventListener('mouseup', onMouseUp);
     document.addEventListener('touchmove', onMouseMove as any);
     document.addEventListener('touchend', onMouseUp);
@@ -306,6 +313,100 @@ export function BackgroundSettings({
           </div>
         </div>
       )}
+    </div>
+  );
+
+  const customGradientEditorContent = (
+    <div className="w-full space-y-4">
+      <div className="space-y-3">
+        <Label>Custom Gradient</Label>
+         <div 
+          ref={gradientBarRef}
+          className="relative h-6 w-full rounded-full border-2 border-transparent cursor-pointer"
+          onMouseDown={addStop} 
+          style={{background: gradientSliderBg}}
+         >
+          {customGradientStops.map(s => (
+             <div 
+               key={s.id}
+               className={cn(
+                 "absolute top-1/2 -translate-x-1/2 -translate-y-1/2 h-5 w-5 rounded-full border-2 cursor-pointer",
+                 activeStopId === s.id ? 'border-primary ring-2 ring-primary ring-offset-2 bg-background' : 'border-background'
+               )}
+               style={{ left: `${s.stop}%`, backgroundColor: s.color }}
+               onMouseDown={(e) => handleStopDrag(s.id, e)}
+               onTouchStart={(e) => handleStopDrag(s.id, e)}
+             />
+          ))}
+         </div>
+      </div>
+
+      {activeStop && (
+         <div className="space-y-4 p-3 border rounded-md">
+           <div className="flex items-center justify-between">
+             <Label className="text-sm">Edit Stop</Label>
+             <Button 
+               variant="ghost" 
+               size="icon" 
+               className="h-6 w-6" 
+               onClick={removeActiveStop}
+               disabled={customGradientStops.length <= 2}
+             >
+               <Trash2 className="h-4 w-4 text-destructive"/>
+             </Button>
+           </div>
+           <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+                <Label className="text-xs">Color</Label>
+                <Input type="color" value={activeStop.color} onChange={(e) => updateActiveStop({ color: e.target.value })} className="w-full h-8 p-1"/>
+            </div>
+            <div className="space-y-2">
+                <Label className="text-xs">Position</Label>
+                <Input type="number" value={activeStop.stop} min={0} max={100} onChange={(e) => updateActiveStop({ stop: Number(e.target.value) })} className="w-full h-8 p-1"/>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      <div className="flex items-center gap-2">
+        <RadioGroup value={gradientType} onValueChange={(v: 'linear' | 'radial') => setGradientType(v)} className="grid grid-cols-2 gap-0 border rounded-md p-0.5">
+          <div>
+            <RadioGroupItem value="linear" id="linear" className="sr-only" />
+            <Label htmlFor="linear" className={cn("block text-center text-sm px-4 py-1.5 rounded-sm cursor-pointer", gradientType === 'linear' && "bg-muted")}>Linear</Label>
+          </div>
+          <div>
+            <RadioGroupItem value="radial" id="radial" className="sr-only" />
+            <Label htmlFor="radial" className={cn("block text-center text-sm px-4 py-1.5 rounded-sm cursor-pointer", gradientType === 'radial' && "bg-muted")}>Radial</Label>
+          </div>
+        </RadioGroup>
+        {gradientType === 'linear' && (
+           <div className="flex items-center gap-2">
+              <div
+                ref={angleSelectorRef}
+                onMouseDown={handleAngleMouseDown}
+                onTouchStart={handleAngleTouchStart}
+                className="relative h-10 w-10 border rounded-full flex items-center justify-center cursor-pointer"
+                style={{ touchAction: 'none' }}
+              >
+                <div
+                  className="w-2.5 h-2.5 bg-primary rounded-full absolute"
+                  style={{
+                    transform: `rotate(${gradientAngle}deg) translateY(-12px)`,
+                  }}
+                />
+              </div>
+              <Input
+                  type="number"
+                  value={gradientAngle}
+                  onChange={handleAngleInputChange}
+                  onBlur={handleAngleInputBlur}
+                  className="text-sm p-2 rounded-md border border-input tabular-nums w-20 text-center"
+                  min="0"
+                  max="360"
+              />
+            </div>
+        )}
+      </div>
     </div>
   );
 
@@ -381,114 +482,37 @@ export function BackgroundSettings({
         <TabsContent value="gradient" className="pt-4 space-y-4">
            <div className="grid grid-cols-6 gap-2">
            
-             <Popover>
-              <PopoverTrigger asChild>
-                <Card className="overflow-hidden cursor-pointer" onClick={() => handleGradientBgSelect(gradientSliderBg)}>
-                  <CardContent className="aspect-[4/5] flex items-center justify-center bg-gray-100">
-                     <Plus className="h-6 w-6 text-gray-500" strokeWidth={3} />
-                  </CardContent>
-                </Card>
-              </PopoverTrigger>
-              <PopoverContent className="w-80 space-y-4">
-                <div className="space-y-3">
-                  <Label>Custom Gradient</Label>
-                   <div 
-                    ref={gradientBarRef}
-                    className="relative h-6 w-full rounded-full border-2 border-transparent cursor-pointer"
-                    onMouseDown={addStop} 
-                    style={{background: gradientSliderBg}}
-                   >
-                    {customGradientStops.map(s => (
-                       <div 
-                         key={s.id}
-                         className={cn(
-                           "absolute top-1/2 -translate-x-1/2 -translate-y-1/2 h-5 w-5 rounded-full border-2 cursor-pointer",
-                           activeStopId === s.id ? 'border-primary ring-2 ring-primary ring-offset-2 bg-background' : 'border-background'
-                         )}
-                         style={{ left: `${s.stop}%`, backgroundColor: s.color }}
-                         onMouseDown={(e) => {
-                           e.stopPropagation();
-                           setActiveStopId(s.id);
-                           handleStopDrag(s.id);
-                         }}
-                         onTouchStart={(e) => {
-                            e.stopPropagation();
-                            setActiveStopId(s.id);
-                            handleStopDrag(s.id);
-                         }}
-                       />
-                    ))}
-                   </div>
-                </div>
+            {isMobile ? (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Card className="overflow-hidden cursor-pointer" onClick={() => handleGradientBgSelect(gradientSliderBg)}>
+                    <CardContent className="aspect-[4/5] flex items-center justify-center bg-gray-100">
+                      <Plus className="h-6 w-6 text-gray-500" strokeWidth={3} />
+                    </CardContent>
+                  </Card>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Custom Gradient</DialogTitle>
+                  </DialogHeader>
+                  {customGradientEditorContent}
+                </DialogContent>
+              </Dialog>
+            ) : (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Card className="overflow-hidden cursor-pointer" onClick={() => handleGradientBgSelect(gradientSliderBg)}>
+                    <CardContent className="aspect-[4/5] flex items-center justify-center bg-gray-100">
+                      <Plus className="h-6 w-6 text-gray-500" strokeWidth={3} />
+                    </CardContent>
+                  </Card>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 space-y-4">
+                  {customGradientEditorContent}
+                </PopoverContent>
+              </Popover>
+            )}
 
-                {activeStop && (
-                   <div className="space-y-4 p-3 border rounded-md">
-                     <div className="flex items-center justify-between">
-                       <Label className="text-sm">Edit Stop</Label>
-                       <Button 
-                         variant="ghost" 
-                         size="icon" 
-                         className="h-6 w-6" 
-                         onClick={removeActiveStop}
-                         disabled={customGradientStops.length <= 2}
-                       >
-                         <Trash2 className="h-4 w-4 text-destructive"/>
-                       </Button>
-                     </div>
-                     <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                          <Label className="text-xs">Color</Label>
-                          <Input type="color" value={activeStop.color} onChange={(e) => updateActiveStop({ color: e.target.value })} className="w-full h-8 p-1"/>
-                      </div>
-                      <div className="space-y-2">
-                          <Label className="text-xs">Position</Label>
-                          <Input type="number" value={activeStop.stop} min={0} max={100} onChange={(e) => updateActiveStop({ stop: Number(e.target.value) })} className="w-full h-8 p-1"/>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                <div className="flex items-center gap-2">
-                  <RadioGroup value={gradientType} onValueChange={(v: 'linear' | 'radial') => setGradientType(v)} className="grid grid-cols-2 gap-0 border rounded-md p-0.5">
-                    <div>
-                      <RadioGroupItem value="linear" id="linear" className="sr-only" />
-                      <Label htmlFor="linear" className={cn("block text-center text-sm px-4 py-1.5 rounded-sm cursor-pointer", gradientType === 'linear' && "bg-muted")}>Linear</Label>
-                    </div>
-                    <div>
-                      <RadioGroupItem value="radial" id="radial" className="sr-only" />
-                      <Label htmlFor="radial" className={cn("block text-center text-sm px-4 py-1.5 rounded-sm cursor-pointer", gradientType === 'radial' && "bg-muted")}>Radial</Label>
-                    </div>
-                  </RadioGroup>
-                  {gradientType === 'linear' && (
-                     <div className="flex items-center gap-2">
-                        <div
-                          ref={angleSelectorRef}
-                          onMouseDown={handleAngleMouseDown}
-                          onTouchStart={handleAngleTouchStart}
-                          className="relative h-10 w-10 border rounded-full flex items-center justify-center cursor-pointer"
-                          style={{ touchAction: 'none' }}
-                        >
-                          <div
-                            className="w-2.5 h-2.5 bg-primary rounded-full absolute"
-                            style={{
-                              transform: `rotate(${gradientAngle}deg) translateY(-12px)`,
-                            }}
-                          />
-                        </div>
-                        <Input
-                            type="number"
-                            value={gradientAngle}
-                            onChange={handleAngleInputChange}
-                            onBlur={handleAngleInputBlur}
-                            className="text-sm p-2 rounded-md border border-input tabular-nums w-20 text-center"
-                            min="0"
-                            max="360"
-                        />
-                      </div>
-                  )}
-                </div>
-              </PopoverContent>
-            </Popover>
             {gradientTemplates.map((gradient) => (
               <Card key={gradient.name} className="overflow-hidden cursor-pointer" onClick={() => handleGradientBgSelect(gradient.css)}>
                 <CardContent className="aspect-[4/5]" style={{ background: gradient.css }} />
@@ -615,4 +639,5 @@ export function BackgroundSettings({
 }
 
 
+    
     
