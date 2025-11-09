@@ -106,14 +106,14 @@ export function BackgroundSettings({
   const [activeStopId, setActiveStopId] = useState<number | null>(customGradientStops[0]?.id ?? null);
 
   const [gradientType, setGradientType] = useState<'linear' | 'radial'>('linear');
-  const [gradientAngle, setGradientAngle] = useState(82);
+  const [gradientAngle, setGradientAngle] = useState(90);
 
   const angleSelectorRef = useRef<HTMLDivElement>(null);
-  const isDraggingAngleRef = useRef(false);
   const gradientBarRef = useRef<HTMLDivElement>(null);
 
-  // When custom settings change, build and apply the new gradient CSS
   useEffect(() => {
+    if (backgroundTab !== 'gradient') return;
+
     const sortedStops = [...customGradientStops].sort((a, b) => a.stop - b.stop);
     const colorStopsString = sortedStops.map(s => `${s.color} ${s.stop}%`).join(', ');
 
@@ -123,11 +123,7 @@ export function BackgroundSettings({
     } else {
       css = `radial-gradient(circle, ${colorStopsString})`;
     }
-    
-    // Auto-apply if the gradient tab is active
-    if (backgroundTab === 'gradient') {
-      handleGradientBgSelect(css);
-    }
+    handleGradientBgSelect(css);
 
   }, [customGradientStops, gradientType, gradientAngle, handleGradientBgSelect, backgroundTab]);
   
@@ -142,16 +138,11 @@ export function BackgroundSettings({
   }, []);
 
   const handleAngleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    isDraggingAngleRef.current = true;
-    
     const handleMouseMove = (event: MouseEvent) => {
-      if (isDraggingAngleRef.current) {
-        handleAngleInteraction(event.clientX, event.clientY);
-      }
+      handleAngleInteraction(event.clientX, event.clientY);
     };
 
     const handleMouseUp = () => {
-      isDraggingAngleRef.current = false;
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
@@ -161,24 +152,19 @@ export function BackgroundSettings({
   }, [handleAngleInteraction]);
 
   const handleAngleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-    if(e.touches[0]) {
-      isDraggingAngleRef.current = true;
-      
       const handleTouchMove = (event: TouchEvent) => {
-        if (isDraggingAngleRef.current && event.touches[0]) {
+        if (event.touches[0]) {
           handleAngleInteraction(event.touches[0].clientX, event.touches[0].clientY);
         }
       };
 
       const handleTouchEnd = () => {
-        isDraggingAngleRef.current = false;
         document.removeEventListener('touchmove', handleTouchMove);
         document.removeEventListener('touchend', handleTouchEnd);
       };
 
       document.addEventListener('touchmove', handleTouchMove);
       document.addEventListener('touchend', handleTouchEnd);
-    }
   }, [handleAngleInteraction]);
 
   const handleImageSelectFromSearch = (imageUrl: string) => {
@@ -225,7 +211,7 @@ export function BackgroundSettings({
       
       const newStop: GradientStop = {
         id: Date.now(),
-        color: '#ffffff', // Default color for new stop
+        color: '#ffffff',
         stop: Math.max(0, Math.min(100, stop)),
       };
 
@@ -236,11 +222,12 @@ export function BackgroundSettings({
   const removeActiveStop = () => {
     if (activeStopId && customGradientStops.length > 2) {
       setCustomGradientStops(stops => stops.filter(s => s.id !== activeStopId));
-      setActiveStopId(customGradientStops.find(s => s.id !== activeStopId)?.id || null);
+      const newActiveIndex = Math.max(0, customGradientStops.findIndex(s => s.id !== activeStopId));
+      setActiveStopId(customGradientStops[newActiveIndex]?.id || null);
     }
   };
   
-  const handleStopDrag = useCallback((id: number, startX: number) => {
+  const handleStopDrag = useCallback((id: number) => {
     const onMouseMove = (moveEvent: MouseEvent | TouchEvent) => {
       const currentX = 'touches' in moveEvent ? moveEvent.touches[0].clientX : moveEvent.clientX;
       const gradientBar = gradientBarRef.current;
@@ -381,7 +368,7 @@ export function BackgroundSettings({
                    <div 
                     ref={gradientBarRef}
                     className="relative h-6 w-full rounded-full border-2 border-transparent cursor-pointer"
-                    onClick={addStop} 
+                    onMouseDown={addStop} 
                     style={{background: gradientSliderBg}}
                    >
                     {customGradientStops.map(s => (
@@ -395,14 +382,12 @@ export function BackgroundSettings({
                          onMouseDown={(e) => {
                            e.stopPropagation();
                            setActiveStopId(s.id);
-                           handleStopDrag(s.id, e.clientX);
+                           handleStopDrag(s.id);
                          }}
                          onTouchStart={(e) => {
                             e.stopPropagation();
                             setActiveStopId(s.id);
-                            if (e.touches[0]) {
-                              handleStopDrag(s.id, e.touches[0].clientX);
-                            }
+                            handleStopDrag(s.id);
                          }}
                        />
                     ))}
