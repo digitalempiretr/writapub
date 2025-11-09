@@ -102,7 +102,7 @@ export function BackgroundSettings({
   const angleSelectorRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
 
-  const applyCustomGradient = useCallback(() => {
+  useEffect(() => {
     let css = '';
     const fromRgba = hexToRgba(customGradientFrom, 1);
     const toRgba = hexToRgba(customGradientTo, 1);
@@ -111,9 +111,12 @@ export function BackgroundSettings({
     } else {
       css = `radial-gradient(circle, ${fromRgba} 0%, ${toRgba} 100%)`;
     }
-    handleGradientBgSelect(css);
-  }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, handleGradientBgSelect]);
-  
+    // Only apply if the gradient tab is active to avoid overwriting other background types
+    if (backgroundTab === 'gradient') {
+      handleGradientBgSelect(css);
+    }
+  }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, handleGradientBgSelect, backgroundTab]);
+
   const handleAngleInteraction = useCallback((clientX: number, clientY: number) => {
     if (!angleSelectorRef.current) return;
     const rect = angleSelectorRef.current.getBoundingClientRect();
@@ -121,7 +124,7 @@ export function BackgroundSettings({
     const centerY = rect.top + rect.height / 2;
     const angleRad = Math.atan2(clientY - centerY, clientX - centerX);
     // Add 90 degrees to make the top the 0 point
-    const angleDeg = Math.round((angleRad * 180) / Math.PI) + 90;
+    let angleDeg = Math.round((angleRad * 180) / Math.PI) + 90;
     // Normalize to 0-360 range
     setGradientAngle((angleDeg + 360) % 360);
   }, []);
@@ -343,10 +346,9 @@ export function BackgroundSettings({
                             min="0"
                             max="360"
                         />
-                     </div>
+                      </div>
                   )}
                 </div>
-                 <Button onClick={applyCustomGradient} className="w-full">Apply Custom Gradient</Button>
               </PopoverContent>
             </Popover>
             {gradientTemplates.map((gradient) => (
@@ -473,7 +475,3 @@ export function BackgroundSettings({
     </div>
   );
 }
-
-    
-
-    
