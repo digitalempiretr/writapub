@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, Plus, Search, Palette, RotateCcw } from "lucide-react";
+import { Loader2, Plus, Search, Palette, RotateCcw, Trash2 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,11 +21,16 @@ import Image from "next/image";
 import { BgOverlayIcon, FeelLucky } from "@/components/ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { cn } from "@/lib/utils";
 
 const searchKeywords = ["Texture", "Background", "Wallpaper", "Nature", "Sea", "Art", "Minimal", "Abstract", "Dreamy", "Cinematic", "Surreal", "Vintage", "Futuristic", "Bohemian"];
+
+type GradientStop = {
+  id: number;
+  color: string;
+  stop: number;
+};
 
 type BackgroundSettingsProps = {
   backgroundTab: string;
@@ -94,91 +99,37 @@ export function BackgroundSettings({
   setSearchCarouselApi,
 }: BackgroundSettingsProps) {
   const baseId = useId();
-  const [customGradientFrom, setCustomGradientFrom] = useState("#eeaecc");
-  const [customGradientTo, setCustomGradientTo] = useState("#94bbe9");
+  const [customGradientStops, setCustomGradientStops] = useState<GradientStop[]>([
+    { id: 1, color: "#eeaecc", stop: 0 },
+    { id: 2, color: "#94bbe9", stop: 100 },
+  ]);
+  const [activeStopId, setActiveStopId] = useState<number | null>(customGradientStops[0].id);
+
   const [gradientType, setGradientType] = useState<'linear' | 'radial'>('linear');
   const [gradientAngle, setGradientAngle] = useState(82);
 
   const angleSelectorRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
 
+  // When custom settings change, build and apply the new gradient CSS
   useEffect(() => {
+    const sortedStops = [...customGradientStops].sort((a, b) => a.stop - b.stop);
+    const colorStopsString = sortedStops.map(s => `${s.color} ${s.stop}%`).join(', ');
+
     let css = '';
-    const fromRgba = hexToRgba(customGradientFrom, 1);
-    const toRgba = hexToRgba(customGradientTo, 1);
     if (gradientType === 'linear') {
-      css = `linear-gradient(${gradientAngle}deg, ${fromRgba} 0%, ${toRgba} 100%)`;
+      css = `linear-gradient(${gradientAngle}deg, ${colorStopsString})`;
     } else {
-      css = `radial-gradient(circle, ${fromRgba} 0%, ${toRgba} 100%)`;
+      css = `radial-gradient(circle, ${colorStopsString})`;
     }
     
-    // Only apply if the gradient tab is active and this is not an initial render
-    // from a predefined template. This prevents overwriting a selected template.
+    // Only auto-apply if the gradient tab is active
     if (backgroundTab === 'gradient') {
-      const isCustomChange = gradientBg !== css;
-      // Heuristic: If a predefined template was just clicked, its CSS will match gradientBg exactly.
-      // A custom change will result in a different CSS string.
-      const isPredefinedTemplate = gradientTemplates.some(t => t.css === gradientBg);
-
-      // A bit complex logic: Apply if it's a custom change, and it's NOT just after a predefined template was clicked.
-      // This is tricky. A better way is to add a state to track if the change is user-initiated from this component.
-      // For now, let's just apply it. The user's main complaint was it NOT applying. Let's make it apply, but be careful.
-      
-      // Let's simplify. The user wants it to apply automatically. The problem was that clicking a predefined gradient
-      // also triggered this. The `handleGradientBgSelect` function needs to be the single source of truth.
-      // Let's remove the automatic application from here and add a button back, but a smaller one. Or, let's be smart.
-      
-      // The issue is that when a predefined gradient is clicked, `handleGradientBgSelect` is called,
-      // but this useEffect also runs and overwrites it with the custom gradient.
-      // We need a way to know if the change came from the custom controls.
+      handleGradientBgSelect(css);
     }
-  }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, handleGradientBgSelect, backgroundTab, gradientBg]);
 
-  const applyCustomGradient = useCallback(() => {
-    let css = '';
-    const fromRgba = hexToRgba(customGradientFrom, 1);
-    const toRgba = hexToRgba(customGradientTo, 1);
-    if (gradientType === 'linear') {
-      css = `linear-gradient(${gradientAngle}deg, ${fromRgba} 0%, ${toRgba} 100%)`;
-    } else {
-      css = `radial-gradient(circle, ${fromRgba} 0%, ${toRgba} 100%)`;
-    }
-    handleGradientBgSelect(css);
-  }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, handleGradientBgSelect]);
+  }, [customGradientStops, gradientType, gradientAngle, handleGradientBgSelect, backgroundTab]);
   
-  // Re-introducing the automatic application with a check to prevent overwriting predefined selections.
-  useEffect(() => {
-      // This effect runs whenever custom gradient parameters change.
-      // We generate the CSS that these parameters *would* create.
-      let currentCustomCss = '';
-      const fromRgba = hexToRgba(customGradientFrom, 1);
-      const toRgba = hexToRgba(customGradientTo, 1);
-      if (gradientType === 'linear') {
-          currentCustomCss = `linear-gradient(${gradientAngle}deg, ${fromRgba} 0%, ${toRgba} 100%)`;
-      } else {
-          currentCustomCss = `radial-gradient(circle, ${fromRgba} 0%, ${toRgba} 100%)`;
-      }
-
-      // We check if the main `gradientBg` state is one of the predefined templates.
-      // If it is, it means the user just clicked a template, and we should *not*
-      // overwrite it with the custom gradient.
-      const isPredefined = gradientTemplates.some(template => template.css === gradientBg);
-
-      // If the current `gradientBg` is NOT a predefined one, it's safe to assume
-      // the user is working with a custom gradient, so we can apply the changes.
-      // Or, if the current `gradientBg` is already the one we are about to generate, do nothing.
-      if (!isPredefined && backgroundTab === 'gradient') {
-         handleGradientBgSelect(currentCustomCss);
-      } else if (isPredefined && backgroundTab === 'gradient' && gradientBg !== currentCustomCss) {
-        // User has a predefined gradient selected, but now they are changing the custom controls.
-        // This means they want to switch to custom.
-        handleGradientBgSelect(currentCustomCss);
-      }
-
-
-  }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, backgroundTab]);
-
-
   const handleAngleInteraction = useCallback((clientX: number, clientY: number) => {
     if (!angleSelectorRef.current) return;
     const rect = angleSelectorRef.current.getBoundingClientRect();
@@ -190,9 +141,8 @@ export function BackgroundSettings({
   }, []);
 
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
     isDraggingRef.current = true;
-
+    
     const handleMouseMove = (event: MouseEvent) => {
       if (isDraggingRef.current) {
         handleAngleInteraction(event.clientX, event.clientY);
@@ -211,7 +161,6 @@ export function BackgroundSettings({
 
   const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
     if(e.touches[0]) {
-      e.preventDefault();
       isDraggingRef.current = true;
       
       const handleTouchMove = (event: TouchEvent) => {
@@ -242,15 +191,13 @@ export function BackgroundSettings({
     });
   };
   
-    const handleAngleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAngleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // Allow empty string to let user clear the input
     if (value === '') {
-        setGradientAngle(0); // or some other default
+        setGradientAngle(0);
         return;
     }
     const angle = parseInt(value, 10);
-    // Only update if it's a number and within the valid range
     if (!isNaN(angle) && angle >= 0 && angle <= 360) {
         setGradientAngle(angle);
     }
@@ -261,6 +208,42 @@ export function BackgroundSettings({
           setGradientAngle(0);
       }
   };
+
+  const activeStop = customGradientStops.find(s => s.id === activeStopId);
+
+  const updateActiveStop = (newProps: Partial<GradientStop>) => {
+    if (!activeStopId) return;
+    setCustomGradientStops(stops =>
+      stops.map(s => (s.id === activeStopId ? { ...s, ...newProps } : s))
+    );
+  };
+  
+  const addStop = (e: React.MouseEvent<HTMLDivElement>) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const stop = Math.round(((e.clientX - rect.left) / rect.width) * 100);
+      
+      const newStop: GradientStop = {
+        id: Date.now(),
+        color: '#ffffff', // Default color for new stop
+        stop: Math.max(0, Math.min(100, stop)),
+      };
+
+      setCustomGradientStops(stops => [...stops, newStop]);
+      setActiveStopId(newStop.id);
+  };
+
+  const removeActiveStop = () => {
+    if (activeStopId && customGradientStops.length > 2) {
+      setCustomGradientStops(stops => stops.filter(s => s.id !== activeStopId));
+      setActiveStopId(customGradientStops[0]?.id || null);
+    }
+  };
+  
+  const gradientSliderBg = React.useMemo(() => {
+    const sortedStops = [...customGradientStops].sort((a, b) => a.stop - b.stop);
+    const colorStopsString = sortedStops.map(s => `${s.color} ${s.stop}%`).join(', ');
+    return `linear-gradient(to right, ${colorStopsString})`;
+  }, [customGradientStops]);
 
 
   return (
@@ -363,17 +346,53 @@ export function BackgroundSettings({
                 </Card>
               </PopoverTrigger>
               <PopoverContent className="w-80 space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                        <Label>From</Label>
-                        <Input type="color" value={customGradientFrom} onChange={(e) => setCustomGradientFrom(e.target.value)} className="w-full h-8 p-1"/>
-                    </div>
-                    <div className="space-y-2">
-                        <Label>To</Label>
-                        <Input type="color" value={customGradientTo} onChange={(e) => setCustomGradientTo(e.target.value)} className="w-full h-8 p-1"/>
-                    </div>
+                <div className="space-y-3">
+                  <Label>Custom Gradient</Label>
+                   <div className="relative h-6 w-full rounded-full border-2 border-transparent" onClick={addStop} style={{background: gradientSliderBg}}>
+                    {customGradientStops.map(s => (
+                       <div 
+                         key={s.id}
+                         className={cn(
+                           "absolute top-1/2 -translate-x-1/2 -translate-y-1/2 h-5 w-5 rounded-full border-2 cursor-pointer",
+                           activeStopId === s.id ? 'border-primary ring-2 ring-primary ring-offset-2 bg-background' : 'border-background bg-transparent'
+                         )}
+                         style={{ left: `${s.stop}%`, backgroundColor: s.color }}
+                         onMouseDown={(e) => {
+                           e.stopPropagation();
+                           setActiveStopId(s.id);
+                         }}
+                       />
+                    ))}
+                   </div>
                 </div>
 
+                {activeStop && (
+                   <div className="space-y-4 p-3 border rounded-md">
+                     <div className="flex items-center justify-between">
+                       <Label className="text-sm">Edit Stop</Label>
+                       <Button 
+                         variant="ghost" 
+                         size="icon" 
+                         className="h-6 w-6" 
+                         onClick={removeActiveStop}
+                         disabled={customGradientStops.length <= 2}
+                       >
+                         <Trash2 className="h-4 w-4 text-destructive"/>
+                       </Button>
+                     </div>
+                     <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                          <Label>Color</Label>
+                          <Input type="color" value={activeStop.color} onChange={(e) => updateActiveStop({ color: e.target.value })} className="w-full h-8 p-1"/>
+                      </div>
+                      <div className="space-y-2">
+                          <Label>Position</Label>
+                          <Input type="number" value={activeStop.stop} min={0} max={100} onChange={(e) => updateActiveStop({ stop: Number(e.target.value) })} className="w-full h-8 p-1"/>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
                 <div className="flex items-center gap-2">
                   <RadioGroup value={gradientType} onValueChange={(v: 'linear' | 'radial') => setGradientType(v)} className="grid grid-cols-2 gap-0 border rounded-md p-0.5">
                     <div>

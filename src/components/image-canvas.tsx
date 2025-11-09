@@ -378,33 +378,47 @@ const ImageCanvasComponent = ({
         }
       } else if (backgroundColor && (backgroundColor.startsWith("linear-gradient") || backgroundColor.startsWith("radial-gradient"))) {
           const isLinear = backgroundColor.startsWith("linear-gradient");
+          const angleMatch = backgroundColor.match(/(\d+)deg/);
+          const angle = angleMatch ? parseInt(angleMatch[1], 10) : 0;
+  
+          // More robust regex to handle hex, rgb, rgba and percentages
           const colorStopRegex = /(rgba?\(.+?\)|#([0-9a-fA-F]{3,8}))\s*(\d{1,3}%)?/g;
 
-          const stops: { color: string; stop: number | null }[] = [];
+          const stops: { color: string; stop: number }[] = [];
           let match;
           while ((match = colorStopRegex.exec(backgroundColor)) !== null) {
               const color = match[1];
-              const stop = match[3] ? parseInt(match[3], 10) / 100 : null;
+              // If stop percentage is not defined, it will be calculated
+              const stop = match[3] ? parseInt(match[3], 10) / 100 : -1;
               stops.push({ color, stop });
           }
 
-          if (stops.length > 0) {
-              // Assign default stops if not provided
-              if (stops.every(s => s.stop === null)) {
-                  stops.forEach((s, i) => {
-                      s.stop = i / (stops.length - 1);
-                  });
-              }
+          // if no stops are defined, assign them evenly
+          if (stops.every(s => s.stop === -1)) {
+              stops.forEach((s, i) => {
+                  s.stop = i / (stops.length - 1);
+              });
+          }
 
+          if (stops.length > 0) {
               let gradient;
               if (isLinear) {
-                  gradient = ctx.createLinearGradient(0, 0, 0, height);
+                  // Convert CSS angle to canvas gradient coordinates
+                  const angleRad = ((angle - 90) * Math.PI) / 180;
+                  const x0 = width / 2;
+                  const y0 = height / 2;
+                  const r = Math.sqrt(Math.pow(width/2, 2) + Math.pow(height/2, 2));
+                  const x1 = x0 - Math.cos(angleRad) * r;
+                  const y1 = y0 - Math.sin(angleRad) * r;
+                  const x2 = x0 + Math.cos(angleRad) * r;
+                  const y2 = y0 + Math.sin(angleRad) * r;
+                  gradient = ctx.createLinearGradient(x1, y1, x2, y2);
               } else {
                   gradient = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, Math.max(width, height)/2);
               }
               
               stops.forEach(stop => {
-                if (stop.stop !== null) {
+                if (stop.stop !== -1) {
                   gradient.addColorStop(stop.stop, stop.color);
                 }
               });
