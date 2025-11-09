@@ -103,13 +103,14 @@ export function BackgroundSettings({
     { id: 1, color: "#eeaecc", stop: 0 },
     { id: 2, color: "#94bbe9", stop: 100 },
   ]);
-  const [activeStopId, setActiveStopId] = useState<number | null>(customGradientStops[0].id);
+  const [activeStopId, setActiveStopId] = useState<number | null>(customGradientStops[0]?.id ?? null);
 
   const [gradientType, setGradientType] = useState<'linear' | 'radial'>('linear');
   const [gradientAngle, setGradientAngle] = useState(82);
 
   const angleSelectorRef = useRef<HTMLDivElement>(null);
-  const isDraggingRef = useRef(false);
+  const isDraggingAngleRef = useRef(false);
+  const gradientBarRef = useRef<HTMLDivElement>(null);
 
   // When custom settings change, build and apply the new gradient CSS
   useEffect(() => {
@@ -123,7 +124,7 @@ export function BackgroundSettings({
       css = `radial-gradient(circle, ${colorStopsString})`;
     }
     
-    // Only auto-apply if the gradient tab is active
+    // Auto-apply if the gradient tab is active
     if (backgroundTab === 'gradient') {
       handleGradientBgSelect(css);
     }
@@ -140,17 +141,17 @@ export function BackgroundSettings({
     setGradientAngle((angleDeg + 360) % 360);
   }, []);
 
-  const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    isDraggingRef.current = true;
+  const handleAngleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    isDraggingAngleRef.current = true;
     
     const handleMouseMove = (event: MouseEvent) => {
-      if (isDraggingRef.current) {
+      if (isDraggingAngleRef.current) {
         handleAngleInteraction(event.clientX, event.clientY);
       }
     };
 
     const handleMouseUp = () => {
-      isDraggingRef.current = false;
+      isDraggingAngleRef.current = false;
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
@@ -159,18 +160,18 @@ export function BackgroundSettings({
     document.addEventListener('mouseup', handleMouseUp);
   }, [handleAngleInteraction]);
 
-  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+  const handleAngleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
     if(e.touches[0]) {
-      isDraggingRef.current = true;
+      isDraggingAngleRef.current = true;
       
       const handleTouchMove = (event: TouchEvent) => {
-        if (isDraggingRef.current && event.touches[0]) {
+        if (isDraggingAngleRef.current && event.touches[0]) {
           handleAngleInteraction(event.touches[0].clientX, event.touches[0].clientY);
         }
       };
 
       const handleTouchEnd = () => {
-        isDraggingRef.current = false;
+        isDraggingAngleRef.current = false;
         document.removeEventListener('touchmove', handleTouchMove);
         document.removeEventListener('touchend', handleTouchEnd);
       };
@@ -211,12 +212,12 @@ export function BackgroundSettings({
 
   const activeStop = customGradientStops.find(s => s.id === activeStopId);
 
-  const updateActiveStop = (newProps: Partial<GradientStop>) => {
+  const updateActiveStop = useCallback((newProps: Partial<GradientStop>) => {
     if (!activeStopId) return;
     setCustomGradientStops(stops =>
       stops.map(s => (s.id === activeStopId ? { ...s, ...newProps } : s))
     );
-  };
+  }, [activeStopId]);
   
   const addStop = (e: React.MouseEvent<HTMLDivElement>) => {
       const rect = e.currentTarget.getBoundingClientRect();
@@ -235,10 +236,39 @@ export function BackgroundSettings({
   const removeActiveStop = () => {
     if (activeStopId && customGradientStops.length > 2) {
       setCustomGradientStops(stops => stops.filter(s => s.id !== activeStopId));
-      setActiveStopId(customGradientStops[0]?.id || null);
+      setActiveStopId(customGradientStops.find(s => s.id !== activeStopId)?.id || null);
     }
   };
   
+  const handleStopDrag = useCallback((id: number, startX: number) => {
+    const onMouseMove = (moveEvent: MouseEvent | TouchEvent) => {
+      const currentX = 'touches' in moveEvent ? moveEvent.touches[0].clientX : moveEvent.clientX;
+      const gradientBar = gradientBarRef.current;
+      if (!gradientBar) return;
+      
+      const rect = gradientBar.getBoundingClientRect();
+      const newStop = Math.round(((currentX - rect.left) / rect.width) * 100);
+      const clampedStop = Math.max(0, Math.min(100, newStop));
+
+      setCustomGradientStops(stops =>
+        stops.map(s => (s.id === id ? { ...s, stop: clampedStop } : s))
+      );
+    };
+
+    const onMouseUp = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      document.removeEventListener('touchmove', onMouseMove as any);
+      document.removeEventListener('touchend', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+    document.addEventListener('touchmove', onMouseMove as any);
+    document.addEventListener('touchend', onMouseUp);
+
+  }, []);
+
   const gradientSliderBg = React.useMemo(() => {
     const sortedStops = [...customGradientStops].sort((a, b) => a.stop - b.stop);
     const colorStopsString = sortedStops.map(s => `${s.color} ${s.stop}%`).join(', ');
@@ -348,18 +378,31 @@ export function BackgroundSettings({
               <PopoverContent className="w-80 space-y-4">
                 <div className="space-y-3">
                   <Label>Custom Gradient</Label>
-                   <div className="relative h-6 w-full rounded-full border-2 border-transparent" onClick={addStop} style={{background: gradientSliderBg}}>
+                   <div 
+                    ref={gradientBarRef}
+                    className="relative h-6 w-full rounded-full border-2 border-transparent cursor-pointer"
+                    onClick={addStop} 
+                    style={{background: gradientSliderBg}}
+                   >
                     {customGradientStops.map(s => (
                        <div 
                          key={s.id}
                          className={cn(
                            "absolute top-1/2 -translate-x-1/2 -translate-y-1/2 h-5 w-5 rounded-full border-2 cursor-pointer",
-                           activeStopId === s.id ? 'border-primary ring-2 ring-primary ring-offset-2 bg-background' : 'border-background bg-transparent'
+                           activeStopId === s.id ? 'border-primary ring-2 ring-primary ring-offset-2 bg-background' : 'border-background'
                          )}
                          style={{ left: `${s.stop}%`, backgroundColor: s.color }}
                          onMouseDown={(e) => {
                            e.stopPropagation();
                            setActiveStopId(s.id);
+                           handleStopDrag(s.id, e.clientX);
+                         }}
+                         onTouchStart={(e) => {
+                            e.stopPropagation();
+                            setActiveStopId(s.id);
+                            if (e.touches[0]) {
+                              handleStopDrag(s.id, e.touches[0].clientX);
+                            }
                          }}
                        />
                     ))}
@@ -382,11 +425,11 @@ export function BackgroundSettings({
                      </div>
                      <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                          <Label>Color</Label>
+                          <Label className="text-xs">Color</Label>
                           <Input type="color" value={activeStop.color} onChange={(e) => updateActiveStop({ color: e.target.value })} className="w-full h-8 p-1"/>
                       </div>
                       <div className="space-y-2">
-                          <Label>Position</Label>
+                          <Label className="text-xs">Position</Label>
                           <Input type="number" value={activeStop.stop} min={0} max={100} onChange={(e) => updateActiveStop({ stop: Number(e.target.value) })} className="w-full h-8 p-1"/>
                       </div>
                     </div>
@@ -408,8 +451,8 @@ export function BackgroundSettings({
                      <div className="flex items-center gap-2">
                         <div
                           ref={angleSelectorRef}
-                          onMouseDown={handleMouseDown}
-                          onTouchStart={handleTouchStart}
+                          onMouseDown={handleAngleMouseDown}
+                          onTouchStart={handleAngleTouchStart}
                           className="relative h-10 w-10 border rounded-full flex items-center justify-center cursor-pointer"
                           style={{ touchAction: 'none' }}
                         >
@@ -558,5 +601,3 @@ export function BackgroundSettings({
     </div>
   );
 }
-
-    
