@@ -196,7 +196,7 @@ export default function Home() {
   useEffect(() => {
     setIsClient(true)
   }, [])
-  
+
   /**
    * Handles the carousel's "select" event to update the current slide index.
    */
@@ -249,9 +249,15 @@ export default function Home() {
   const [overlayOpacity, setOverlayOpacity] = useState(0.25);
 
   const [textShadowEnabled, setTextShadowEnabled] = useState(false);
-  const [shadows, setShadows] = useState<Shadow[]>([
-    { id: Date.now(), color: '#000000', offsetX: 5, offsetY: 5, blur: 5, offsetXUnit: 'px', offsetYUnit: 'px', blurUnit: 'px' }
-  ]);
+  const [shadows, setShadows] = useState<Shadow[]>([]);
+  
+  useEffect(() => {
+    if (shadows.length === 0) {
+      setShadows([{ id: Date.now(), color: '#000000', offsetX: 5, offsetY: 5, blur: 5, offsetXUnit: 'px', offsetYUnit: 'px', blurUnit: 'px' }]);
+    }
+  }, [shadows]);
+
+
   const [activeEffect, setActiveEffect] = useState<TextEffect>(textEffects[0]);
 
   const [textStroke, setTextStroke] = useState(false);
