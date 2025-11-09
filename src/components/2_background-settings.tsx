@@ -121,8 +121,9 @@ export function BackgroundSettings({
     } else {
       css = `radial-gradient(circle, ${colorStopsString})`;
     }
-    handleGradientBgSelect(css);
-
+    if (backgroundTab === 'gradient') {
+      handleGradientBgSelect(css);
+    }
   }, [customGradientStops, gradientType, gradientAngle]);
   
   const handleAngleInteraction = useCallback((clientX: number, clientY: number) => {
@@ -203,19 +204,19 @@ export function BackgroundSettings({
     );
   }, [activeStopId]);
   
-  const addStop = (e: React.MouseEvent<HTMLDivElement>) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const stop = Math.round(((e.clientX - rect.left) / rect.width) * 100);
-      
-      const newStop: GradientStop = {
-        id: Date.now(),
-        color: '#ffffff',
-        stop: Math.max(0, Math.min(100, stop)),
-      };
+    const addStop = (e: React.MouseEvent<HTMLDivElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const stop = Math.round(((e.clientX - rect.left) / rect.width) * 100);
+        
+        const newStop: GradientStop = {
+            id: Date.now(),
+            color: '#ffffff',
+            stop: Math.max(0, Math.min(100, stop)),
+        };
 
-      setCustomGradientStops(stops => [...stops, newStop]);
-      setActiveStopId(newStop.id);
-  };
+        setCustomGradientStops(stops => [...stops, newStop]);
+        setActiveStopId(newStop.id);
+    };
 
   const removeActiveStop = () => {
     if (activeStopId && customGradientStops.length > 2) {
@@ -354,7 +355,7 @@ export function BackgroundSettings({
            
              <Popover>
               <PopoverTrigger asChild>
-                <Card className="overflow-hidden cursor-pointer">
+                <Card className="overflow-hidden cursor-pointer" onClick={() => handleGradientBgSelect(gradientSliderBg)}>
                   <CardContent className="aspect-[4/5] flex items-center justify-center bg-gray-100">
                      <Plus className="h-6 w-6 text-gray-500" strokeWidth={3} />
                   </CardContent>
