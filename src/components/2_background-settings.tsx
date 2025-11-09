@@ -101,8 +101,8 @@ export function BackgroundSettings({
 
   const angleSelectorRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
-
-  useEffect(() => {
+  
+  const applyCustomGradient = () => {
     let css = '';
     const fromRgba = hexToRgba(customGradientFrom, 1);
     const toRgba = hexToRgba(customGradientTo, 1);
@@ -112,7 +112,7 @@ export function BackgroundSettings({
       css = `radial-gradient(circle, ${fromRgba} 0%, ${toRgba} 100%)`;
     }
     handleGradientBgSelect(css);
-  }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, handleGradientBgSelect]);
+  };
   
   const handleAngleInteraction = useCallback((clientX: number, clientY: number) => {
     if (!angleSelectorRef.current) return;
@@ -126,6 +126,7 @@ export function BackgroundSettings({
 
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     isDraggingRef.current = true;
+    e.preventDefault();
 
     const handleMouseMove = (event: MouseEvent) => {
       if (isDraggingRef.current) {
@@ -146,6 +147,8 @@ export function BackgroundSettings({
   const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
     if(e.touches[0]) {
       isDraggingRef.current = true;
+      e.preventDefault();
+      
       const handleTouchMove = (event: TouchEvent) => {
         if (isDraggingRef.current && event.touches[0]) {
           handleAngleInteraction(event.touches[0].clientX, event.touches[0].clientY);
@@ -176,7 +179,12 @@ export function BackgroundSettings({
 
   return (
     <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-4 mobile-tab-content">
-      <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
+      <Tabs value={backgroundTab} onValueChange={(value) => {
+        setBackgroundTab(value);
+        if (value !== 'gradient') {
+          // If we switch away from gradient tab, no automatic change.
+        }
+      }} className="w-full">
         <div className="flex items-center gap-2">
           <TabsList className="grid flex-grow grid-cols-3 font-sans">
             <TabsTrigger value="flat">Solid Color</TabsTrigger>
@@ -318,7 +326,7 @@ export function BackgroundSettings({
                      </div>
                   )}
                 </div>
-
+                 <Button onClick={applyCustomGradient} className="w-full">Apply Custom Gradient</Button>
               </PopoverContent>
             </Popover>
             {gradientTemplates.map((gradient) => (
@@ -445,5 +453,7 @@ export function BackgroundSettings({
     </div>
   );
 }
+
+    
 
     
