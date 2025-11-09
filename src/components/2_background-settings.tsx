@@ -101,7 +101,7 @@ export function BackgroundSettings({
 
   const angleSelectorRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
-  
+
   const applyCustomGradient = () => {
     let css = '';
     const fromRgba = hexToRgba(customGradientFrom, 1);
@@ -120,7 +120,9 @@ export function BackgroundSettings({
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     const angleRad = Math.atan2(clientY - centerY, clientX - centerX);
-    const angleDeg = Math.round((angleRad * 180) / Math.PI + 90);
+    // Add 90 degrees to make the top the 0 point
+    const angleDeg = Math.round((angleRad * 180) / Math.PI) + 90;
+    // Normalize to 0-360 range
     setGradientAngle((angleDeg + 360) % 360);
   }, []);
 
@@ -179,12 +181,7 @@ export function BackgroundSettings({
 
   return (
     <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-4 mobile-tab-content">
-      <Tabs value={backgroundTab} onValueChange={(value) => {
-        setBackgroundTab(value);
-        if (value !== 'gradient') {
-          // If we switch away from gradient tab, no automatic change.
-        }
-      }} className="w-full">
+      <Tabs value={backgroundTab} onValueChange={setBackgroundTab} className="w-full">
         <div className="flex items-center gap-2">
           <TabsList className="grid flex-grow grid-cols-3 font-sans">
             <TabsTrigger value="flat">Solid Color</TabsTrigger>
@@ -316,7 +313,7 @@ export function BackgroundSettings({
                           <div
                             className="w-2.5 h-2.5 bg-primary rounded-full absolute"
                             style={{
-                              transform: `rotate(${gradientAngle}deg) translateX(12px) rotate(-${gradientAngle}deg)`,
+                              transform: `rotate(${gradientAngle}deg) translateY(-12px)`,
                             }}
                           />
                         </div>
