@@ -94,10 +94,10 @@ export function BackgroundSettings({
   setSearchCarouselApi,
 }: BackgroundSettingsProps) {
   const baseId = useId();
-  const [customGradientFrom, setCustomGradientFrom] = useState("#8e2de2");
-  const [customGradientTo, setCustomGradientTo] = useState("#4a00e0");
+  const [customGradientFrom, setCustomGradientFrom] = useState("#eeaecc");
+  const [customGradientTo, setCustomGradientTo] = useState("#94bbe9");
   const [gradientType, setGradientType] = useState<'linear' | 'radial'>('linear');
-  const [gradientAngle, setGradientAngle] = useState(95);
+  const [gradientAngle, setGradientAngle] = useState(82);
 
   const angleSelectorRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
@@ -124,45 +124,44 @@ export function BackgroundSettings({
     setGradientAngle((angleDeg + 360) % 360);
   }, []);
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (isDraggingRef.current) {
-      handleAngleInteraction(e.clientX, e.clientY);
-    }
-  }, [handleAngleInteraction]);
-
-  const handleTouchMove = useCallback((e: TouchEvent) => {
-    if (isDraggingRef.current && e.touches[0]) {
-      handleAngleInteraction(e.touches[0].clientX, e.touches[0].clientY);
-    }
-  }, [handleAngleInteraction]);
-
-  const handleMouseUp = useCallback(() => {
-    isDraggingRef.current = false;
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
-  }, [handleMouseMove]);
-  
-  const handleTouchEnd = useCallback(() => {
-    isDraggingRef.current = false;
-    document.removeEventListener('touchmove', handleTouchMove);
-    document.removeEventListener('touchend', handleTouchEnd);
-  }, [handleTouchMove]);
-
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     isDraggingRef.current = true;
-    handleAngleInteraction(e.clientX, e.clientY);
+
+    const handleMouseMove = (event: MouseEvent) => {
+      if (isDraggingRef.current) {
+        handleAngleInteraction(event.clientX, event.clientY);
+      }
+    };
+
+    const handleMouseUp = () => {
+      isDraggingRef.current = false;
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
-  }, [handleAngleInteraction, handleMouseMove, handleMouseUp]);
+  }, [handleAngleInteraction]);
 
   const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
     if(e.touches[0]) {
       isDraggingRef.current = true;
-      handleAngleInteraction(e.touches[0].clientX, e.touches[0].clientY);
+      const handleTouchMove = (event: TouchEvent) => {
+        if (isDraggingRef.current && event.touches[0]) {
+          handleAngleInteraction(event.touches[0].clientX, event.touches[0].clientY);
+        }
+      };
+
+      const handleTouchEnd = () => {
+        isDraggingRef.current = false;
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleTouchEnd);
+      };
+
       document.addEventListener('touchmove', handleTouchMove);
       document.addEventListener('touchend', handleTouchEnd);
     }
-  }, [handleAngleInteraction, handleTouchMove, handleTouchEnd]);
+  }, [handleAngleInteraction]);
 
   const handleImageSelectFromSearch = (imageUrl: string) => {
     handleImageBgUrlSelect({
@@ -304,6 +303,7 @@ export function BackgroundSettings({
                           onMouseDown={handleMouseDown}
                           onTouchStart={handleTouchStart}
                           className="relative h-10 w-10 border rounded-full flex items-center justify-center cursor-pointer"
+                          style={{ touchAction: 'none' }}
                         >
                           <div
                             className="w-2.5 h-2.5 bg-primary rounded-full absolute"
@@ -445,3 +445,5 @@ export function BackgroundSettings({
     </div>
   );
 }
+
+    
