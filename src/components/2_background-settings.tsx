@@ -102,7 +102,7 @@ export function BackgroundSettings({
   const angleSelectorRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
 
-  const applyCustomGradient = () => {
+  const applyCustomGradient = useCallback(() => {
     let css = '';
     const fromRgba = hexToRgba(customGradientFrom, 1);
     const toRgba = hexToRgba(customGradientTo, 1);
@@ -112,7 +112,7 @@ export function BackgroundSettings({
       css = `radial-gradient(circle, ${fromRgba} 0%, ${toRgba} 100%)`;
     }
     handleGradientBgSelect(css);
-  };
+  }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, handleGradientBgSelect]);
   
   const handleAngleInteraction = useCallback((clientX: number, clientY: number) => {
     if (!angleSelectorRef.current) return;
@@ -149,7 +149,6 @@ export function BackgroundSettings({
   const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
     if(e.touches[0]) {
       isDraggingRef.current = true;
-      e.preventDefault();
       
       const handleTouchMove = (event: TouchEvent) => {
         if (isDraggingRef.current && event.touches[0]) {
@@ -177,6 +176,24 @@ export function BackgroundSettings({
         square: imageUrl,
       },
     });
+  };
+
+  const handleAngleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value === '') {
+        setGradientAngle(0);
+        return;
+    }
+    const angle = parseInt(value, 10);
+    if (!isNaN(angle) && angle >= 0 && angle <= 360) {
+        setGradientAngle(angle);
+    }
+  };
+
+  const handleAngleInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+      if (e.target.value === '') {
+          setGradientAngle(0);
+      }
   };
 
   return (
@@ -317,9 +334,15 @@ export function BackgroundSettings({
                             }}
                           />
                         </div>
-                        <div className="text-sm p-2 rounded-md border border-input tabular-nums w-20 text-center">
-                          {gradientAngle}°
-                        </div>
+                        <Input
+                            type="number"
+                            value={gradientAngle}
+                            onChange={handleAngleInputChange}
+                            onBlur={handleAngleInputBlur}
+                            className="text-sm p-2 rounded-md border border-input tabular-nums w-20 text-center"
+                            min="0"
+                            max="360"
+                        />
                      </div>
                   )}
                 </div>
