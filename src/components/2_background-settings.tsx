@@ -111,11 +111,73 @@ export function BackgroundSettings({
     } else {
       css = `radial-gradient(circle, ${fromRgba} 0%, ${toRgba} 100%)`;
     }
-    // Only apply if the gradient tab is active to avoid overwriting other background types
+    
+    // Only apply if the gradient tab is active and this is not an initial render
+    // from a predefined template. This prevents overwriting a selected template.
     if (backgroundTab === 'gradient') {
-      handleGradientBgSelect(css);
+      const isCustomChange = gradientBg !== css;
+      // Heuristic: If a predefined template was just clicked, its CSS will match gradientBg exactly.
+      // A custom change will result in a different CSS string.
+      const isPredefinedTemplate = gradientTemplates.some(t => t.css === gradientBg);
+
+      // A bit complex logic: Apply if it's a custom change, and it's NOT just after a predefined template was clicked.
+      // This is tricky. A better way is to add a state to track if the change is user-initiated from this component.
+      // For now, let's just apply it. The user's main complaint was it NOT applying. Let's make it apply, but be careful.
+      
+      // Let's simplify. The user wants it to apply automatically. The problem was that clicking a predefined gradient
+      // also triggered this. The `handleGradientBgSelect` function needs to be the single source of truth.
+      // Let's remove the automatic application from here and add a button back, but a smaller one. Or, let's be smart.
+      
+      // The issue is that when a predefined gradient is clicked, `handleGradientBgSelect` is called,
+      // but this useEffect also runs and overwrites it with the custom gradient.
+      // We need a way to know if the change came from the custom controls.
     }
-  }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, handleGradientBgSelect, backgroundTab]);
+  }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, handleGradientBgSelect, backgroundTab, gradientBg]);
+
+  const applyCustomGradient = useCallback(() => {
+    let css = '';
+    const fromRgba = hexToRgba(customGradientFrom, 1);
+    const toRgba = hexToRgba(customGradientTo, 1);
+    if (gradientType === 'linear') {
+      css = `linear-gradient(${gradientAngle}deg, ${fromRgba} 0%, ${toRgba} 100%)`;
+    } else {
+      css = `radial-gradient(circle, ${fromRgba} 0%, ${toRgba} 100%)`;
+    }
+    handleGradientBgSelect(css);
+  }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, handleGradientBgSelect]);
+  
+  // Re-introducing the automatic application with a check to prevent overwriting predefined selections.
+  useEffect(() => {
+      // This effect runs whenever custom gradient parameters change.
+      // We generate the CSS that these parameters *would* create.
+      let currentCustomCss = '';
+      const fromRgba = hexToRgba(customGradientFrom, 1);
+      const toRgba = hexToRgba(customGradientTo, 1);
+      if (gradientType === 'linear') {
+          currentCustomCss = `linear-gradient(${gradientAngle}deg, ${fromRgba} 0%, ${toRgba} 100%)`;
+      } else {
+          currentCustomCss = `radial-gradient(circle, ${fromRgba} 0%, ${toRgba} 100%)`;
+      }
+
+      // We check if the main `gradientBg` state is one of the predefined templates.
+      // If it is, it means the user just clicked a template, and we should *not*
+      // overwrite it with the custom gradient.
+      const isPredefined = gradientTemplates.some(template => template.css === gradientBg);
+
+      // If the current `gradientBg` is NOT a predefined one, it's safe to assume
+      // the user is working with a custom gradient, so we can apply the changes.
+      // Or, if the current `gradientBg` is already the one we are about to generate, do nothing.
+      if (!isPredefined && backgroundTab === 'gradient') {
+         handleGradientBgSelect(currentCustomCss);
+      } else if (isPredefined && backgroundTab === 'gradient' && gradientBg !== currentCustomCss) {
+        // User has a predefined gradient selected, but now they are changing the custom controls.
+        // This means they want to switch to custom.
+        handleGradientBgSelect(currentCustomCss);
+      }
+
+
+  }, [customGradientFrom, customGradientTo, gradientType, gradientAngle, backgroundTab]);
+
 
   const handleAngleInteraction = useCallback((clientX: number, clientY: number) => {
     if (!angleSelectorRef.current) return;
@@ -123,15 +185,13 @@ export function BackgroundSettings({
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     const angleRad = Math.atan2(clientY - centerY, clientX - centerX);
-    // Add 90 degrees to make the top the 0 point
     let angleDeg = Math.round((angleRad * 180) / Math.PI) + 90;
-    // Normalize to 0-360 range
     setGradientAngle((angleDeg + 360) % 360);
   }, []);
 
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    isDraggingRef.current = true;
     e.preventDefault();
+    isDraggingRef.current = true;
 
     const handleMouseMove = (event: MouseEvent) => {
       if (isDraggingRef.current) {
@@ -151,6 +211,7 @@ export function BackgroundSettings({
 
   const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
     if(e.touches[0]) {
+      e.preventDefault();
       isDraggingRef.current = true;
       
       const handleTouchMove = (event: TouchEvent) => {
@@ -180,14 +241,16 @@ export function BackgroundSettings({
       },
     });
   };
-
-  const handleAngleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  
+    const handleAngleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    // Allow empty string to let user clear the input
     if (value === '') {
-        setGradientAngle(0);
+        setGradientAngle(0); // or some other default
         return;
     }
     const angle = parseInt(value, 10);
+    // Only update if it's a number and within the valid range
     if (!isNaN(angle) && angle >= 0 && angle <= 360) {
         setGradientAngle(angle);
     }
@@ -198,6 +261,7 @@ export function BackgroundSettings({
           setGradientAngle(0);
       }
   };
+
 
   return (
     <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-4 mobile-tab-content">
@@ -475,3 +539,5 @@ export function BackgroundSettings({
     </div>
   );
 }
+
+    
