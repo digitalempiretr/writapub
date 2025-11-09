@@ -112,8 +112,6 @@ export function BackgroundSettings({
   const gradientBarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (backgroundTab !== 'gradient') return;
-
     const sortedStops = [...customGradientStops].sort((a, b) => a.stop - b.stop);
     const colorStopsString = sortedStops.map(s => `${s.color} ${s.stop}%`).join(', ');
 
@@ -125,7 +123,7 @@ export function BackgroundSettings({
     }
     handleGradientBgSelect(css);
 
-  }, [customGradientStops, gradientType, gradientAngle, handleGradientBgSelect, backgroundTab]);
+  }, [customGradientStops, gradientType, gradientAngle]);
   
   const handleAngleInteraction = useCallback((clientX: number, clientY: number) => {
     if (!angleSelectorRef.current) return;
@@ -586,3 +584,6 @@ export function BackgroundSettings({
     </div>
   );
 }
+
+
+    
