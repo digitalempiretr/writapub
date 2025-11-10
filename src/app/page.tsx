@@ -46,7 +46,7 @@ import { DesignsPanel } from "@/components/1_templates";
 import { MyDesignsPanel } from "@/components/4_favorites";
 import { DownloadPanel } from "@/components/5_download-panel";
 import { ElementsPanel, CanvasElement } from "@/components/5_elements-panel";
-import { pageInitialColors } from "@/lib/colors";
+import { pageInitialColors, gradientTemplates } from "@/lib/colors";
 import { CreativeMagicPanel } from "@/components/0_creative-magic-panel";
 import { cn } from "@/lib/utils";
 import { textEffects, parseShadow, TextEffect } from "@/lib/text-effects";
@@ -232,7 +232,7 @@ export default function Home() {
   const [bgColor, setBgColor] = useState(pageInitialColors.bgColor);
   const [textColor, setTextColor] = useState(pageInitialColors.textColor);
   const [textOpacity, setTextOpacity] = useState(1);
-  const [gradientBg, setGradientBg] = useState(pageInitialColors.gradientBg);
+  const [gradientBg, setGradientBg] = useState(gradientTemplates[0].css);
   const [imageBgUrl, setImageBgUrl] = useState(imageTemplates[1].imageUrls.post);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchedImages, setSearchedImages] = useState<string[]>([]);
@@ -374,29 +374,28 @@ export default function Home() {
    * Effect to handle clicks outside the mobile panel to close it.
    */
    useEffect(() => {
-    /**
-     * Handles clicks outside the mobile panel to close it.
-     * @param {MouseEvent} event - The mouse event.
-     */
     const handleClickOutside = (event: MouseEvent) => {
+      const targetElement = event.target as Element;
+  
       if (
         isMobilePanelOpen &&
         mobilePanelRef.current &&
-        !mobilePanelRef.current.contains(event.target as Node)
+        !mobilePanelRef.current.contains(targetElement)
       ) {
-        const targetElement = event.target as Element;
-        if (
-          targetElement.closest('[role="dialog"]') ||
-          targetElement.closest('[data-radix-dialog-overlay]') ||
-          targetElement.closest('[role="alertdialog"]') ||
-          targetElement.closest('[data-radix-popper-content-wrapper]')
-        ) {
+        // This is the crucial check: Do not close if the click is on a dialog overlay or its content
+        if (targetElement.closest('[role="dialog"]') || targetElement.closest('[data-radix-dialog-overlay]')) {
           return;
         }
+  
+        // Also, do not close if a popover is open
+        if (targetElement.closest('[data-radix-popper-content-wrapper]')) {
+          return;
+        }
+  
         closePanel();
       }
     };
-
+  
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -684,7 +683,6 @@ export default function Home() {
   
   /**
    * Handles tab clicks in the desktop view, changing the active settings panel.
-   * @param {string} tab - The value of the tab being clicked.
    */
   const handleDesktopTabClick = (tab: string) => {
       setActiveSettingsTab(tab);
@@ -1144,7 +1142,7 @@ export default function Home() {
         handleGenerate, 
         isLoading,
         backgroundTab, 
-        setBackgroundTab: setBackgroundTab as (value: string) => void, 
+        setBackgroundTab: setBackgroundTab, 
         handleFeelLucky,
         bgColor, 
         handleBgColorSelect: handleBgColorSelect, 
