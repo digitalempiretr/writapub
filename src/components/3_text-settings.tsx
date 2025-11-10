@@ -8,6 +8,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
@@ -28,6 +35,7 @@ import { textEffects, TextEffect } from "@/lib/text-effects";
 import { cn } from "@/lib/utils";
 import { useCarouselSync } from "@/hooks/use-carousel-sync";
 import { NavBullets } from "./ui/nav-bullets";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 
 type Unit = 'px' | 'em' | 'rem';
@@ -133,6 +141,7 @@ export function TextSettings({
   const { ref: colorPaletteRef, inView: colorPaletteInView } = useInView({ triggerOnce: true, threshold: 0.1 });
   const { ref: textEffectsRef, inView: textEffectsInView } = useInView({ triggerOnce: true, threshold: 0.1 });
 
+  const isMobile = useIsMobile();
 
   useCarouselSync(colorPaletteApi, setCurrentPaletteSlide);
   useCarouselSync(effectsApi, setCurrentEffectSlide);
@@ -179,6 +188,179 @@ export function TextSettings({
   }
 
   const unitOptions: Unit[] = ['px', 'em', 'rem'];
+
+  const fontSizeContent = (
+    <div className="w-64 space-y-4">
+      <div className="space-y-2">
+          <Label htmlFor={`${baseId}-font-size-slider`}>Font Size</Label>
+           <div className="flex items-center gap-2">
+              <Slider id={`${baseId}-font-size-slider`} max={200} min={20} step={1} value={[internalFontSize]} onValueChange={(v) => setInternalFontSize(v[0])} onValueCommit={(v) => handleFontValueChange('size', v[0])}/>
+              <Input type="number" value={internalFontSize} onChange={(e) => setInternalFontSize(Number(e.target.value))} onBlur={() => handleFontValueChange('size', internalFontSize)} className="w-20 h-8 text-xs" />
+           </div>
+      </div>
+      <div className="space-y-2">
+          <Label htmlFor={`${baseId}-line-height-slider`}>Line Height</Label>
+          <div className="flex items-center gap-2">
+              <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[internalLineHeight]} onValueChange={(v) => setInternalLineHeight(v[0])} onValueCommit={(v) => handleFontValueChange('lineHeight', v[0])}/>
+               <Input type="number" value={internalLineHeight} onChange={(e) => setInternalLineHeight(Number(e.target.value))} onBlur={() => handleFontValueChange('lineHeight', internalLineHeight)} step="0.1" className="w-20 h-8 text-xs" />
+          </div>
+      </div>
+    </div>
+  );
+
+  const textOpacityContent = (
+    <div className="w-56 space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor={`${baseId}-text-opacity-slider`}>Text Opacity</Label>
+        <div className="flex items-center gap-2">
+          <Slider
+            id={`${baseId}-text-opacity-slider`}
+            max={1}
+            min={0}
+            step={0.01}
+            value={[textOpacity]}
+            onValueChange={(value) => setTextOpacity(value[0])}
+            className="flex-grow"
+          />
+          <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
+            {Math.round(textOpacity * 100)}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const textShadowContent = (
+    <div className="w-96 space-y-4" style={{ maxWidth: 'calc(100vw - 2rem)'}}>
+      <div className="flex items-center justify-between">
+        <Label htmlFor={`${baseId}-shadow-toggle`}>Enable Text Shadow</Label>
+        <Switch id={`${baseId}-shadow-toggle`} checked={textShadowEnabled} onCheckedChange={setTextShadowEnabled} />
+      </div>
+      {textShadowEnabled && (
+        <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
+          {shadows.map((shadow, index) => (
+            <div key={shadow.id} className="p-2 border rounded-md space-y-3">
+              <div className="flex justify-between items-center">
+                 <div className="flex items-center gap-2">
+                  <Label className="text-xs font-medium">Layer {index + 1}</Label>
+                   <Input type="color" value={shadow.color} onChange={(e) => updateShadow(shadow.id, { color: e.target.value })} className="h-6 w-8 p-0.5"/>
+                 </div>
+                 <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeShadow(shadow.id)}>
+                  <Trash2 className="h-4 w-4" />
+                 </Button>
+              </div>
+
+              <div className="space-y-1">
+                <Label htmlFor={`${baseId}-shadow-blur-${index}`} className="text-xs">Blur</Label>
+                <div className="flex items-center gap-2">
+                  <Slider id={`${baseId}-shadow-blur-${index}`} max={40} min={0} step={1} value={[shadow.blur]} onValueChange={(v) => updateShadow(shadow.id, { blur: v[0] })} />
+                  <Input type="number" value={shadow.blur} onChange={e => updateShadow(shadow.id, {blur: Number(e.target.value)})} className="h-7 w-20 text-xs" />
+                  <Select value={shadow.blurUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { blurUnit: v })}>
+                    <SelectTrigger className="w-20 h-7 text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {unitOptions.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor={`${baseId}-shadow-offset-x-${index}`} className="text-xs">X Offset</Label>
+                 <div className="flex items-center gap-2">
+                  <Slider id={`${baseId}-shadow-offset-x-${index}`} max={20} min={-20} step={1} value={[shadow.offsetX]} onValueChange={(v) => updateShadow(shadow.id, { offsetX: v[0] })} />
+                  <Input type="number" value={shadow.offsetX} onChange={e => updateShadow(shadow.id, {offsetX: Number(e.target.value)})} className="h-7 w-20 text-xs" />
+                   <Select value={shadow.offsetXUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { offsetXUnit: v })}>
+                      <SelectTrigger className="w-20 h-7 text-xs"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {unitOptions.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                 </div>
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor={`${baseId}-shadow-offset-y-${index}`} className="text-xs">Y Offset</Label>
+                <div className="flex items-center gap-2">
+                  <Slider id={`${baseId}-shadow-offset-y-${index}`} max={20} min={-20} step={1} value={[shadow.offsetY]} onValueChange={(v) => updateShadow(shadow.id, { offsetY: v[0] })} />
+                  <Input type="number" value={shadow.offsetY} onChange={e => updateShadow(shadow.id, {offsetY: Number(e.target.value)})} className="h-7 w-20 text-xs" />
+                  <Select value={shadow.offsetYUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { offsetYUnit: v })}>
+                    <SelectTrigger className="w-20 h-7 text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {unitOptions.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+          ))}
+           <Button variant="outline" size="sm" onClick={addShadow} className="w-full">
+             <Plus className="mr-2 h-4 w-4" /> Add Shadow Layer
+           </Button>
+        </div>
+      )}
+    </div>
+  );
+
+  const textStrokeContent = (
+     <div className="w-64 space-y-4">
+      <div className="flex items-center justify-between">
+        <Label htmlFor={`${baseId}-stroke-toggle`}>Text Stroke</Label>
+        <Switch id={`${baseId}-stroke-toggle`} checked={textStroke} onCheckedChange={setTextStroke} />
+      </div>
+      {textStroke && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Label>Color</Label>
+            <Input type="color" value={strokeColor} onChange={(e) => setStrokeColor(e.target.value)} className="h-8 p-1"/>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor={`${baseId}-stroke-width`}>Width</Label>
+            <Slider id={`${baseId}-stroke-width`} max={10} min={1} step={0.5} value={[strokeWidth]} onValueChange={(v) => setStrokeWidth(v[0])} />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  const textBoxContent = (
+      <div className="w-64 space-y-4">
+      <div className="flex items-center justify-between">
+          <Label htmlFor={`${baseId}-textbox-toggle`}>Text Box Background</Label>
+          <Switch
+          id={`${baseId}-textbox-toggle`}
+          checked={isTextBoxEnabled}
+          onCheckedChange={setIsTextBoxEnabled}
+          />
+      </div>
+      {isTextBoxEnabled && (
+          <div className="space-y-4">
+          <div className="flex items-center gap-2">
+              <Label>Color</Label>
+              <Input
+              type="color"
+              value={rectBgColor}
+              onChange={(e) => setRectBgColor(e.target.value)}
+              className="h-8 p-1"
+              />
+          </div>
+          <div className="space-y-2">
+              <Label htmlFor={`${baseId}-rect-opacity-slider`}>Opacity</Label>
+              <div className="flex items-center gap-2">
+              <Slider
+                  id={`${baseId}-rect-opacity-slider`}
+                  max={1}
+                  min={0}
+                  step={0.01}
+                  value={[rectOpacity]}
+                  onValueChange={(value) => setRectOpacity(value[0])}
+              />
+              <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
+                  {Math.round(rectOpacity * 100)}
+              </div>
+              </div>
+          </div>
+          </div>
+      )}
+      </div>
+  );
 
 
   return (
@@ -239,34 +421,38 @@ export function TextSettings({
                     </SelectContent>
                   </Select>
                 </div>
-                 <Popover>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" size="icon" className="h-10 w-10 flex-shrink-0">
+                 {isMobile ? (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                       <Button variant="outline" size="icon" className="h-10 w-10 flex-shrink-0">
                           <FontSizeIcon />
                         </Button>
-                      </PopoverTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Font Size & Line Height</p></TooltipContent>
-                  </Tooltip>
-                  <PopoverContent className="w-64 space-y-4">
-                    <div className="space-y-2">
-                        <Label htmlFor={`${baseId}-font-size-slider`}>Font Size</Label>
-                         <div className="flex items-center gap-2">
-                            <Slider id={`${baseId}-font-size-slider`} max={200} min={20} step={1} value={[internalFontSize]} onValueChange={(v) => setInternalFontSize(v[0])} onValueCommit={(v) => handleFontValueChange('size', v[0])}/>
-                            <Input type="number" value={internalFontSize} onChange={(e) => setInternalFontSize(Number(e.target.value))} onBlur={() => handleFontValueChange('size', internalFontSize)} className="w-20 h-8 text-xs" />
-                         </div>
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor={`${baseId}-line-height-slider`}>Line Height</Label>
-                        <div className="flex items-center gap-2">
-                            <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[internalLineHeight]} onValueChange={(v) => setInternalLineHeight(v[0])} onValueCommit={(v) => handleFontValueChange('lineHeight', v[0])}/>
-                             <Input type="number" value={internalLineHeight} onChange={(e) => setInternalLineHeight(Number(e.target.value))} onBlur={() => handleFontValueChange('lineHeight', internalLineHeight)} step="0.1" className="w-20 h-8 text-xs" />
-                        </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Font Size & Line Height</DialogTitle>
+                        </DialogHeader>
+                       {fontSizeContent}
+                    </DialogContent>
+                  </Dialog>
+                 ) : (
+                  <Popover>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" size="icon" className="h-10 w-10 flex-shrink-0">
+                            <FontSizeIcon />
+                          </Button>
+                        </PopoverTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent><p>Font Size & Line Height</p></TooltipContent>
+                    </Tooltip>
+                    <PopoverContent className="w-64 space-y-4">
+                      {fontSizeContent}
+                    </PopoverContent>
+                  </Popover>
+                 )}
+
 
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -319,39 +505,40 @@ export function TextSettings({
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                <Popover>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
-                          <TextBoxOpacity />
-                        </Button>
-                      </PopoverTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Text Opacity</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  <PopoverContent className="w-56 space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor={`${baseId}-text-opacity-slider`}>Text Opacity</Label>
-                      <div className="flex items-center gap-2">
-                        <Slider
-                          id={`${baseId}-text-opacity-slider`}
-                          max={1}
-                          min={0}
-                          step={0.01}
-                          value={[textOpacity]}
-                          onValueChange={(value) => setTextOpacity(value[0])}
-                          className="flex-grow"
-                        />
-                        <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
-                          {Math.round(textOpacity * 100)}
-                        </div>
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                {isMobile ? (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
+                        <TextBoxOpacity />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Text Opacity</DialogTitle>
+                      </DialogHeader>
+                      {textOpacityContent}
+                    </DialogContent>
+                  </Dialog>
+                ) : (
+                  <Popover>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
+                            <TextBoxOpacity />
+                          </Button>
+                        </PopoverTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Text Opacity</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    <PopoverContent className="w-56 space-y-4">
+                      {textOpacityContent}
+                    </PopoverContent>
+                  </Popover>
+                )}
+
 
                 <Separator orientation="vertical" className="h-10 flex-shrink-0" />
 
@@ -371,123 +558,94 @@ export function TextSettings({
                     </TooltipTrigger>
                     <TooltipContent><p>Uppercase</p></TooltipContent>
                 </Tooltip>
-                <Popover>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10" data-active={textShadowEnabled} >
-                           <TextShadowIcon />
-                        </Button>
-                      </PopoverTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Text Shadow</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  <PopoverContent className="w-96 space-y-4" align="end">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor={`${baseId}-shadow-toggle`}>Enable Text Shadow</Label>
-                      <Switch id={`${baseId}-shadow-toggle`} checked={textShadowEnabled} onCheckedChange={setTextShadowEnabled} />
-                    </div>
-                    {textShadowEnabled && (
-                      <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
-                        {shadows.map((shadow, index) => (
-                          <div key={shadow.id} className="p-2 border rounded-md space-y-3">
-                            <div className="flex justify-between items-center">
-                               <div className="flex items-center gap-2">
-                                <Label className="text-xs font-medium">Layer {index + 1}</Label>
-                                 <Input type="color" value={shadow.color} onChange={(e) => updateShadow(shadow.id, { color: e.target.value })} className="h-6 w-8 p-0.5"/>
-                               </div>
-                               <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeShadow(shadow.id)}>
-                                <Trash2 className="h-4 w-4" />
-                               </Button>
-                            </div>
+                
+                {isMobile ? (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10" data-active={textShadowEnabled} >
+                         <TextShadowIcon />
+                      </Button>
+                    </DialogTrigger>
+                     <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Text Shadow</DialogTitle>
+                        </DialogHeader>
+                       {textShadowContent}
+                    </DialogContent>
+                  </Dialog>
+                ) : (
+                  <Popover>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10" data-active={textShadowEnabled} >
+                             <TextShadowIcon />
+                          </Button>
+                        </PopoverTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Text Shadow</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    <PopoverContent className="w-96 space-y-4" align="end">
+                      {textShadowContent}
+                    </PopoverContent>
+                  </Popover>
+                )}
 
-                            <div className="space-y-1">
-                              <Label htmlFor={`${baseId}-shadow-blur-${index}`} className="text-xs">Blur</Label>
-                              <div className="flex items-center gap-2">
-                                <Slider id={`${baseId}-shadow-blur-${index}`} max={40} min={0} step={1} value={[shadow.blur]} onValueChange={(v) => updateShadow(shadow.id, { blur: v[0] })} />
-                                <Input type="number" value={shadow.blur} onChange={e => updateShadow(shadow.id, {blur: Number(e.target.value)})} className="h-7 w-20 text-xs" />
-                                <Select value={shadow.blurUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { blurUnit: v })}>
-                                  <SelectTrigger className="w-20 h-7 text-xs"><SelectValue /></SelectTrigger>
-                                  <SelectContent>
-                                    {unitOptions.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                            </div>
-                            <div className="space-y-1">
-                              <Label htmlFor={`${baseId}-shadow-offset-x-${index}`} className="text-xs">X Offset</Label>
-                               <div className="flex items-center gap-2">
-                                <Slider id={`${baseId}-shadow-offset-x-${index}`} max={20} min={-20} step={1} value={[shadow.offsetX]} onValueChange={(v) => updateShadow(shadow.id, { offsetX: v[0] })} />
-                                <Input type="number" value={shadow.offsetX} onChange={e => updateShadow(shadow.id, {offsetX: Number(e.target.value)})} className="h-7 w-20 text-xs" />
-                                 <Select value={shadow.offsetXUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { offsetXUnit: v })}>
-                                    <SelectTrigger className="w-20 h-7 text-xs"><SelectValue /></SelectTrigger>
-                                    <SelectContent>
-                                      {unitOptions.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
-                                    </SelectContent>
-                                  </Select>
-                               </div>
-                            </div>
-                            <div className="space-y-1">
-                              <Label htmlFor={`${baseId}-shadow-offset-y-${index}`} className="text-xs">Y Offset</Label>
-                              <div className="flex items-center gap-2">
-                                <Slider id={`${baseId}-shadow-offset-y-${index}`} max={20} min={-20} step={1} value={[shadow.offsetY]} onValueChange={(v) => updateShadow(shadow.id, { offsetY: v[0] })} />
-                                <Input type="number" value={shadow.offsetY} onChange={e => updateShadow(shadow.id, {offsetY: Number(e.target.value)})} className="h-7 w-20 text-xs" />
-                                <Select value={shadow.offsetYUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { offsetYUnit: v })}>
-                                  <SelectTrigger className="w-20 h-7 text-xs"><SelectValue /></SelectTrigger>
-                                  <SelectContent>
-                                    {unitOptions.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                         <Button variant="outline" size="sm" onClick={addShadow} className="w-full">
-                           <Plus className="mr-2 h-4 w-4" /> Add Shadow Layer
-                         </Button>
-                      </div>
-                    )}
-                  </PopoverContent>
-                </Popover>
+                {isMobile ? (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
+                        <TextStrokeIcon />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Text Stroke</DialogTitle>
+                      </DialogHeader>
+                      {textStrokeContent}
+                    </DialogContent>
+                  </Dialog>
+                ): (
+                  <Popover>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
+                            <TextStrokeIcon />
+                          </Button>
+                        </PopoverTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Text Stroke</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    <PopoverContent className="w-64 space-y-4">
+                     {textStrokeContent}
+                    </PopoverContent>
+                  </Popover>
+                )}
 
-                <Popover>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
-                          <TextStrokeIcon />
-                        </Button>
-                      </PopoverTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Text Stroke</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  <PopoverContent className="w-64 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor={`${baseId}-stroke-toggle`}>Text Stroke</Label>
-                      <Switch id={`${baseId}-stroke-toggle`} checked={textStroke} onCheckedChange={setTextStroke} />
-                    </div>
-                    {textStroke && (
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-2">
-                          <Label>Color</Label>
-                          <Input type="color" value={strokeColor} onChange={(e) => setStrokeColor(e.target.value)} className="h-8 p-1"/>
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor={`${baseId}-stroke-width`}>Width</Label>
-                          <Slider id={`${baseId}-stroke-width`} max={10} min={1} step={0.5} value={[strokeWidth]} onValueChange={(v) => setStrokeWidth(v[0])} />
-                        </div>
-                      </div>
-                    )}
-                  </PopoverContent>
-                </Popover>
                 
                 <Separator orientation="vertical" className="h-10 flex-shrink-0" />
             
-                <Popover>
+                {isMobile ? (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="icon" className="flex-shrink-0 h-10 w-10">
+                        <TextBgBoxIcon color={isTextBoxEnabled ? rectBgColor : '#999'} />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Text Box Settings</DialogTitle>
+                      </DialogHeader>
+                      {textBoxContent}
+                    </DialogContent>
+                  </Dialog>
+                ) : (
+                  <Popover>
                     <Tooltip>
                     <TooltipTrigger asChild>
                         <PopoverTrigger asChild>
@@ -501,45 +659,11 @@ export function TextSettings({
                     </TooltipContent>
                     </Tooltip>
                     <PopoverContent className="w-64 space-y-4">
-                    <div className="flex items-center justify-between">
-                        <Label htmlFor={`${baseId}-textbox-toggle`}>Text Box Background</Label>
-                        <Switch
-                        id={`${baseId}-textbox-toggle`}
-                        checked={isTextBoxEnabled}
-                        onCheckedChange={setIsTextBoxEnabled}
-                        />
-                    </div>
-                    {isTextBoxEnabled && (
-                        <div className="space-y-4">
-                        <div className="flex items-center gap-2">
-                            <Label>Color</Label>
-                            <Input
-                            type="color"
-                            value={rectBgColor}
-                            onChange={(e) => setRectBgColor(e.target.value)}
-                            className="h-8 p-1"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor={`${baseId}-rect-opacity-slider`}>Opacity</Label>
-                            <div className="flex items-center gap-2">
-                            <Slider
-                                id={`${baseId}-rect-opacity-slider`}
-                                max={1}
-                                min={0}
-                                step={0.01}
-                                value={[rectOpacity]}
-                                onValueChange={(value) => setRectOpacity(value[0])}
-                            />
-                            <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
-                                {Math.round(rectOpacity * 100)}
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-                    )}
+                      {textBoxContent}
                     </PopoverContent>
                 </Popover>
+                )}
+                
 
               </div>
             </div>

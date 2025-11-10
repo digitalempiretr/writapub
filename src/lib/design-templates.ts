@@ -32,216 +32,6 @@ export type DesignTemplate = {
 };
 
 export const designTemplates: DesignTemplate[] = [
-   // Authors Templates Category
-   {
-    id: 'daktilo',
-    name: "Daktilo",
-    category: 'Authors Templates', // Or 'Color Styles' or 'Special Effects'
-    previewImage: "https://i.ibb.co/N6Qvdnbw/daktilo-template.jpg",
-    canvasSize: 'Post',
-    background: {
-      type: 'image',
-      value: 'https://i.ibb.co/nMxGgznf/book-shadow-post.jpg',
-    },
-    font: {
-      value: 'special-elite',
-      color: '#0F2027',
-      fontSize: 48,
-    },
-    textBox: {
-      color: '#f4ede4',
-      opacity: 0,
-    },
-    overlay: {
-      color: '#008080',
-      opacity: 0,
-    },
-    effect: {
-      id: 'none',
-    }
-  },
-  {
-    id: 'template-milky',
-    name: "Milky",
-    category: 'Authors Templates',
-    previewImage: "https://i.ibb.co/zhYZ5H5V/milky-1.jpg",
-    canvasSize: 'Post',
-    background: {
-      type: 'image',
-      value: 'https://i.ibb.co/kVJS28vc/6.jpg',
-    },
-    font: {
-      value: 'style-script',
-      color: '#3f5b4d',
-      fontSize: 58,
-    },
-    textBox: {
-      color: '#e5e5ff',
-      opacity: 0,
-    },
-    overlay: {
-      color: '#7585A3',
-      opacity: 0,
-    },
-  },
-  {
-    id: 'template-art-school-of-athens',
-    name: "Art School Of Athens",
-    category: 'Authors Templates',
-    previewImage: "https://i.ibb.co/sd7gmFQk/Art-School-Of-Athens.jpg",
-    canvasSize: 'Post',
-    background: {
-      type: 'image',
-      value: 'https://images.pexels.com/photos/159862/art-school-of-athens-raphael-italian-painter-fresco-159862.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    },
-    font: {
-      value: 'duru-sans',
-      color: '#FFFFFF',
-      fontSize: 48,
-    },
-    textBox: {
-        color: '#383839',
-        opacity: 0.53,
-      },
-    overlay: {
-      color: '#7585A3',
-      opacity: 0,
-    },
-  },
-  {
-    id: 'template-marble',
-    name: "Marble",
-    category: 'Authors Templates',
-    previewImage: "https://i.ibb.co/Q763twkW/marble-template.jpg",
-    canvasSize: 'Post',
-    background: {
-      type: 'image',
-      value: 'https://i.ibb.co/DDZ3y2Lk/7.jpg',
-    },
-    font: {
-      value: 'duru-sans',
-      color: '#706051',
-      fontSize: 48,
-    },
-    textBox: {
-        color: '#a79c92',
-        opacity: 0.5,
-      },
-    overlay: {
-      color: '#7585A3',
-      opacity: 0,
-    },
-  },
-  {
-    id: 'template-birdseyesea',
-    name: "Birds Eye Sea",
-    category: 'Authors Templates',
-    previewImage: "https://i.ibb.co/qYdKfn9F/Birds-Eye-Sea.jpg",
-    canvasSize: 'Post',
-    background: {
-      type: 'image',
-      value: 'https://images.pexels.com/photos/1655166/pexels-photo-1655166.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    },
-    font: {
-      value: 'duru-sans',
-      color: '#FFFFFF',
-      fontSize: 48,
-    },
-    textBox: {
-        color: '#7585A3',
-        opacity: 0,
-      },
-    overlay: {
-      color: '#7585A3',
-      opacity: 0,
-    },
-  },  
-
-  // Special Effects Category
-  {
-    id: 'template-neon-blue',
-    name: "Blue Neon",
-    category: 'Special Effects',
-    previewImage: "",
-    canvasSize: 'Post',
-    background: {
-      type: 'image',
-      value: 'https://images.pexels.com/photos/1655166/pexels-photo-1655166.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    },
-    font: {
-      value: 'luckiest-guy',
-      color: '#ffffff',
-      fontSize: 48,
-    },
-    textBox: {
-      color: '#f4ede4',
-      opacity: 0,
-    },
-    overlay: {
-      color: '#008080',
-      opacity: 0,
-    },
-    effect: {
-      id: 'neon',
-    }
-  },
-  {
-    id: 'red-3d-cartoon',
-    name: "Red 3D Cartoon",
-    category: 'Special Effects',
-    previewImage: "",
-    canvasSize: 'Post',
-    background: {
-      type: 'flat',
-      value: '#FF5757',
-    },
-    font: {
-      value: 'luckiest-guy',
-      color: '#ffffff',
-      fontSize: 48,
-    },
-    textBox: {
-      color: '#f4ede4',
-      opacity: 0,
-    },
-    overlay: {
-      color: '#008080',
-      opacity: 0,
-    },
-    effect: {
-      id: '3dcartoon',
-    }
-  },
-   {
-    id: 'template-roses',
-    name: "Roses",
-    category: 'Special Effects',
-    previewImage: "",
-    canvasSize: 'Post',
-    background: {
-      type: 'flat',
-      value: '#121221',
-    },
-    font: {
-      value: 'niconne', 
-      color: '#fcedd8',
-      fontSize: 70,
-    },
-    textBox: {
-      color: '#f4ede4',
-      opacity: 0,
-    },
-    overlay: {
-      color: '#008080',
-      opacity: 0,
-    },
-    effect: {
-      id: 'roses',
-    }
-  },
-
- 
-
   // Color Styles Category
   {
     id: 'styles-Night-Chalk',
@@ -1322,7 +1112,219 @@ export const designTemplates: DesignTemplate[] = [
     color: '#7585A3',
     opacity: 0,
   },
-},
+}, 
+  
+  // Authors Templates Category
+   {
+    id: 'daktilo',
+    name: "Daktilo",
+    category: 'Authors Templates', // Or 'Color Styles' or 'Special Effects'
+    previewImage: "https://i.ibb.co/N6Qvdnbw/daktilo-template.jpg",
+    canvasSize: 'Post',
+    background: {
+      type: 'image',
+      value: 'https://i.ibb.co/nMxGgznf/book-shadow-post.jpg',
+    },
+    font: {
+      value: 'special-elite',
+      color: '#0F2027',
+      fontSize: 48,
+    },
+    textBox: {
+      color: '#f4ede4',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#008080',
+      opacity: 0,
+    },
+    effect: {
+      id: 'none',
+    }
+  },
+  {
+    id: 'template-milky',
+    name: "Milky",
+    category: 'Authors Templates',
+    previewImage: "https://i.ibb.co/zhYZ5H5V/milky-1.jpg",
+    canvasSize: 'Post',
+    background: {
+      type: 'image',
+      value: 'https://i.ibb.co/kVJS28vc/6.jpg',
+    },
+    font: {
+      value: 'style-script',
+      color: '#3f5b4d',
+      fontSize: 58,
+    },
+    textBox: {
+      color: '#e5e5ff',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+  },
+  {
+    id: 'template-art-school-of-athens',
+    name: "Art School Of Athens",
+    category: 'Authors Templates',
+    previewImage: "https://i.ibb.co/sd7gmFQk/Art-School-Of-Athens.jpg",
+    canvasSize: 'Post',
+    background: {
+      type: 'image',
+      value: 'https://images.pexels.com/photos/159862/art-school-of-athens-raphael-italian-painter-fresco-159862.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    },
+    font: {
+      value: 'duru-sans',
+      color: '#FFFFFF',
+      fontSize: 48,
+    },
+    textBox: {
+        color: '#383839',
+        opacity: 0.53,
+      },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+  },
+  {
+    id: 'template-marble',
+    name: "Marble",
+    category: 'Authors Templates',
+    previewImage: "https://i.ibb.co/Q763twkW/marble-template.jpg",
+    canvasSize: 'Post',
+    background: {
+      type: 'image',
+      value: 'https://i.ibb.co/DDZ3y2Lk/7.jpg',
+    },
+    font: {
+      value: 'duru-sans',
+      color: '#706051',
+      fontSize: 48,
+    },
+    textBox: {
+        color: '#a79c92',
+        opacity: 0.5,
+      },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+  },
+  {
+    id: 'template-birdseyesea',
+    name: "Birds Eye Sea",
+    category: 'Authors Templates',
+    previewImage: "https://i.ibb.co/qYdKfn9F/Birds-Eye-Sea.jpg",
+    canvasSize: 'Post',
+    background: {
+      type: 'image',
+      value: 'https://images.pexels.com/photos/1655166/pexels-photo-1655166.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    },
+    font: {
+      value: 'duru-sans',
+      color: '#FFFFFF',
+      fontSize: 48,
+    },
+    textBox: {
+        color: '#7585A3',
+        opacity: 0,
+      },
+    overlay: {
+      color: '#7585A3',
+      opacity: 0,
+    },
+  },  
+
+  // Special Effects Category
+  {
+    id: 'template-neon-blue',
+    name: "Blue Neon",
+    category: 'Special Effects',
+    previewImage: "",
+    canvasSize: 'Post',
+    background: {
+      type: 'image',
+      value: 'https://images.pexels.com/photos/1655166/pexels-photo-1655166.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    },
+    font: {
+      value: 'luckiest-guy',
+      color: '#ffffff',
+      fontSize: 48,
+    },
+    textBox: {
+      color: '#f4ede4',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#008080',
+      opacity: 0,
+    },
+    effect: {
+      id: 'neon',
+    }
+  },
+  {
+    id: 'red-3d-cartoon',
+    name: "Red 3D Cartoon",
+    category: 'Special Effects',
+    previewImage: "",
+    canvasSize: 'Post',
+    background: {
+      type: 'flat',
+      value: '#FF5757',
+    },
+    font: {
+      value: 'luckiest-guy',
+      color: '#ffffff',
+      fontSize: 48,
+    },
+    textBox: {
+      color: '#f4ede4',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#008080',
+      opacity: 0,
+    },
+    effect: {
+      id: '3dcartoon',
+    }
+  },
+   {
+    id: 'template-roses',
+    name: "Roses",
+    category: 'Special Effects',
+    previewImage: "",
+    canvasSize: 'Post',
+    background: {
+      type: 'flat',
+      value: '#121221',
+    },
+    font: {
+      value: 'niconne', 
+      color: '#fcedd8',
+      fontSize: 70,
+    },
+    textBox: {
+      color: '#f4ede4',
+      opacity: 0,
+    },
+    overlay: {
+      color: '#008080',
+      opacity: 0,
+    },
+    effect: {
+      id: 'roses',
+    }
+  },
+
+ 
+
+  
 
   // Gradient Styles Category
   {
