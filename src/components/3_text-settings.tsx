@@ -194,22 +194,22 @@ export function TextSettings({
       <div className="space-y-2">
           <Label htmlFor={`${baseId}-font-size-slider`}>Font Size</Label>
            <div className="flex items-center gap-2">
-              <Slider id={`${baseId}-font-size-slider`} max={200} min={20} step={1} value={[internalFontSize]} onValueChange={(v) => setInternalFontSize(v[0])} onValueCommit={(v) => handleFontValueChange('size', v[0])}/>
-              <Input type="number" value={internalFontSize} onChange={(e) => setInternalFontSize(Number(e.target.value))} onBlur={() => handleFontValueChange('size', internalFontSize)} className="h-8 text-xs" />
+              <Slider id={`${baseId}-font-size-slider`} max={200} min={16} step={1} value={[internalFontSize]} onValueChange={(v) => setInternalFontSize(v[0])} onValueCommit={(v) => handleFontValueChange('size', v[0])}/>
+              <Input type="number" value={internalFontSize} onChange={(e) => setInternalFontSize(Number(e.target.value))} onBlur={() => handleFontValueChange('size', internalFontSize)} className="h-8 text-xs flex-grow" />
            </div>
       </div>
       <div className="space-y-2">
           <Label htmlFor={`${baseId}-line-height-slider`}>Line Height</Label>
           <div className="flex items-center gap-2">
               <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[internalLineHeight]} onValueChange={(v) => setInternalLineHeight(v[0])} onValueCommit={(v) => handleFontValueChange('lineHeight', v[0])}/>
-               <Input type="number" value={internalLineHeight} onChange={(e) => setInternalLineHeight(Number(e.target.value))} onBlur={() => handleFontValueChange('lineHeight', internalLineHeight)} step="0.1" className="h-8 text-xs" />
+               <Input type="number" value={internalLineHeight} onChange={(e) => setInternalLineHeight(Number(e.target.value))} onBlur={() => handleFontValueChange('lineHeight', internalLineHeight)} step="0.1" className="h-8 text-xs flex-grow" />
           </div>
       </div>
     </div>
   );
 
   const textOpacityContent = (
-    <div className="w-56 space-y-4">
+    <div className="w-100 md:w-56 space-y-4">
       <div className="space-y-2">
         <Label htmlFor={`${baseId}-text-opacity-slider`}>Text Opacity</Label>
         <div className="flex items-center gap-2">
@@ -231,7 +231,7 @@ export function TextSettings({
   );
 
   const textShadowContent = (
-    <div className="w-96 space-y-4" style={{ maxWidth: 'calc(100vw - 2rem)'}}>
+    <div className="w-100 space-y-4" style={{ maxWidth: 'calc(100vw - 2rem)'}}>
       <div className="flex items-center justify-between">
         <Label htmlFor={`${baseId}-shadow-toggle`}>Enable Text Shadow</Label>
         <Switch id={`${baseId}-shadow-toggle`} checked={textShadowEnabled} onCheckedChange={setTextShadowEnabled} />
@@ -300,7 +300,7 @@ export function TextSettings({
   );
 
   const textStrokeContent = (
-     <div className="w-64 space-y-4">
+     <div className="w-100 space-y-4">
       <div className="flex items-center justify-between">
         <Label htmlFor={`${baseId}-stroke-toggle`}>Text Stroke</Label>
         <Switch id={`${baseId}-stroke-toggle`} checked={textStroke} onCheckedChange={setTextStroke} />
@@ -321,7 +321,7 @@ export function TextSettings({
   );
 
   const textBoxContent = (
-      <div className="w-64 space-y-4">
+      <div className="w-100 space-y-4">
       <div className="flex items-center justify-between">
           <Label htmlFor={`${baseId}-textbox-toggle`}>Text Box Background</Label>
           <Switch
@@ -533,7 +533,7 @@ export function TextSettings({
                         <p>Text Opacity</p>
                       </TooltipContent>
                     </Tooltip>
-                    <PopoverContent className="w-56 space-y-4">
+                    <PopoverContent className="w-100 space-y-4">
                       {textOpacityContent}
                     </PopoverContent>
                   </Popover>
@@ -753,3 +753,4 @@ export function TextSettings({
 }
 
     
+

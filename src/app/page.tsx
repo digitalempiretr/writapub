@@ -360,7 +360,7 @@ export default function Home() {
       handleGenerate();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canvasSize]);
+  }, [canvasSize, activeFont]);
 
 
   /**
