@@ -173,22 +173,18 @@ export function BackgroundSettings({
     parseAndSetGradient(css);
   };
   
-  useEffect(() => {
+  const generateGradientCss = useCallback(() => {
     const sortedStops = [...customGradientStops].sort((a, b) => a.stop - b.stop);
     const colorStopsString = sortedStops.map(s => `${s.color} ${s.stop}%`).join(', ');
 
-    let css = '';
     if (gradientType === 'linear') {
-      css = `linear-gradient(${gradientAngle}deg, ${colorStopsString})`;
+      return `linear-gradient(${gradientAngle}deg, ${colorStopsString})`;
     } else {
-      css = `radial-gradient(circle, ${colorStopsString})`;
-    }
-    
-    // Only apply if the gradient tab is active and settings have changed.
-    if(backgroundTab === 'gradient'){
-        applyGradientToCanvas(css);
+      return `radial-gradient(circle, ${colorStopsString})`;
     }
   }, [customGradientStops, gradientType, gradientAngle]);
+
+  const gradientSliderBg = React.useMemo(() => generateGradientCss(), [generateGradientCss]);
   
   const handleAngleInteraction = useCallback((clientX: number, clientY: number) => {
     if (!angleSelectorRef.current) return;
@@ -310,7 +306,7 @@ export function BackgroundSettings({
         const clampedStop = Math.max(0, Math.min(100, newStop));
 
         setCustomGradientStops(stops =>
-            stops.map(s => (s.id === id ? { ...s, ...newProps } : s))
+            stops.map(s => (s.id === id ? { ...s, stop: clampedStop } : s))
         );
     };
 
@@ -329,11 +325,6 @@ export function BackgroundSettings({
 
   }, []);
 
-  const gradientSliderBg = React.useMemo(() => {
-    const sortedStops = [...customGradientStops].sort((a, b) => a.stop - b.stop);
-    const colorStopsString = sortedStops.map(s => `${s.color} ${s.stop}%`).join(', ');
-    return `linear-gradient(to right, ${colorStopsString})`;
-  }, [customGradientStops]);
 
   const overlayContent = (
     <div className="w-full space-y-4">
@@ -547,10 +538,9 @@ export function BackgroundSettings({
             {isMobile ? (
               <Dialog>
                 <DialogTrigger asChild>
-                  <Card className="overflow-hidden cursor-pointer" onClick={() => applyGradientToCanvas(gradientSliderBg)}>
+                   <Card className="overflow-hidden cursor-pointer" onClick={() => applyGradientToCanvas(gradientSliderBg)}>
                     <CardContent className="aspect-[4/5] flex items-center justify-center bg-gray-100 p-0">
                     <h2 className="text-gray-500 text-3xl bold">+</h2>
-                      
                     </CardContent>
                   </Card>
                 </DialogTrigger>
@@ -704,3 +694,4 @@ export function BackgroundSettings({
 
     
     
+
