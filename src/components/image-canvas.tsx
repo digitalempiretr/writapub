@@ -32,6 +32,11 @@ export type ImageCanvasProps = {
   backgroundImageUrl?: string;
   rectColor: string;
   rectOpacity: number;
+  textBoxPadding: number;
+  textBoxBorderRadius: number;
+  isTextBoxBorderEnabled: boolean;
+  textBoxBorderColor: string;
+  textBoxBorderWidth: number;
   overlayColor?: string;
   overlayOpacity?: number;
   textAlign: 'left' | 'center' | 'right';
@@ -194,6 +199,11 @@ const ImageCanvasComponent = ({
   backgroundImageUrl,
   rectColor,
   rectOpacity,
+  textBoxPadding,
+  textBoxBorderRadius,
+  isTextBoxBorderEnabled,
+  textBoxBorderColor,
+  textBoxBorderWidth,
   overlayColor,
   overlayOpacity,
   textAlign,
@@ -273,8 +283,8 @@ const ImageCanvasComponent = ({
       const rectHeight = 1100 * (height / 1350);
       const rectX = (width - rectWidth) / 2;
       const rectY = (height - rectHeight) / 2;
-      const textPadding = 50 * (width / 1080);
-      const textMaxWidth = rectWidth - (textPadding * 2);
+      const finalPadding = textBoxPadding * scalingFactor;
+      const textMaxWidth = rectWidth - (finalPadding * 2);
 
       ctx.font = `${finalFontWeight} ${finalFontSize}px "${fontFamily}"`;
       
@@ -288,7 +298,16 @@ const ImageCanvasComponent = ({
         }
 
         ctx.fillStyle = hexToRgba(rectColor, rectOpacity);
-        ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
+        // Use roundRect for border radius
+        ctx.beginPath();
+        ctx.roundRect(rectX, rectY, rectWidth, rectHeight, [textBoxBorderRadius * scalingFactor]);
+        ctx.fill();
+
+        if(isTextBoxBorderEnabled) {
+          ctx.strokeStyle = textBoxBorderColor;
+          ctx.lineWidth = textBoxBorderWidth * scalingFactor;
+          ctx.stroke();
+        }
 
         if (areElementsEnabled) {
             for (const element of elements) {
@@ -335,9 +354,9 @@ const ImageCanvasComponent = ({
         
         let textX;
         if (textAlign === 'left') {
-            textX = rectX + textPadding;
+            textX = rectX + finalPadding;
         } else if (textAlign === 'right') {
-            textX = rectX + rectWidth - textPadding;
+            textX = rectX + rectWidth - finalPadding;
         } else { // center
             textX = rectX + rectWidth / 2;
         }
@@ -436,7 +455,7 @@ const ImageCanvasComponent = ({
     };
 
     draw();
-  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, viewportHeight, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing, elements, areElementsEnabled]);
+  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, viewportHeight, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing, elements, areElementsEnabled, textBoxPadding, textBoxBorderRadius, isTextBoxBorderEnabled, textBoxBorderColor, textBoxBorderWidth]);
 
   return (
     <canvas
@@ -449,5 +468,3 @@ const ImageCanvasComponent = ({
   );
 }
 export const ImageCanvas = React.memo(ImageCanvasComponent);
-
-    

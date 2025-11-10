@@ -22,7 +22,7 @@ import { TextColorChooseIcon, TextBgBoxIcon, TextBoxOpacity, TextStrokeIcon, Ref
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FontOption } from "@/lib/font-options";
 import { Button } from "@/components/ui/button";
-import { Bold, CaseUpper, AlignLeft, AlignCenter, AlignRight, Loader2, Trash2, Plus } from "lucide-react";
+import { Bold, CaseUpper, AlignLeft, AlignCenter, AlignRight, Loader2, Trash2, Plus, CornerUpLeft } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
@@ -87,6 +87,16 @@ type TextSettingsProps = {
   setIsTextBoxEnabled: (value: boolean) => void;
   activeEffect: TextEffect;
   setActiveEffect: (effect: TextEffect) => void;
+  textBoxPadding: number;
+  setTextBoxPadding: (value: number) => void;
+  textBoxBorderRadius: number;
+  setTextBoxBorderRadius: (value: number) => void;
+  isTextBoxBorderEnabled: boolean;
+  setIsTextBoxBorderEnabled: (value: boolean) => void;
+  textBoxBorderColor: string;
+  setTextBoxBorderColor: (value: string) => void;
+  textBoxBorderWidth: number;
+  setTextBoxBorderWidth: (value: number) => void;
 };
 
 export function TextSettings({
@@ -125,6 +135,16 @@ export function TextSettings({
   setIsTextBoxEnabled,
   activeEffect,
   setActiveEffect,
+  textBoxPadding,
+  setTextBoxPadding,
+  textBoxBorderRadius,
+  setTextBoxBorderRadius,
+  isTextBoxBorderEnabled,
+  setIsTextBoxBorderEnabled,
+  textBoxBorderColor,
+  setTextBoxBorderColor,
+  textBoxBorderWidth,
+  setTextBoxBorderWidth,
 }: TextSettingsProps) {
   const baseId = useId();
   const [internalText, setInternalText] = useState(text);
@@ -178,6 +198,7 @@ export function TextSettings({
   const handleFontChange = (value: string) => {
     const newFont = fontOptions.find(f => f.value === value) || activeFont;
     setActiveFont(newFont);
+    handleGenerate();
   };
   
   const handleFontValueChange = <K extends keyof FontOption>(key: K, value: FontOption[K]) => {
@@ -195,21 +216,21 @@ export function TextSettings({
           <Label htmlFor={`${baseId}-font-size-slider`}>Font Size</Label>
            <div className="flex items-center gap-2">
               <Slider id={`${baseId}-font-size-slider`} max={200} min={16} step={1} value={[internalFontSize]} onValueChange={(v) => setInternalFontSize(v[0])} onValueCommit={(v) => handleFontValueChange('size', v[0])} className="flex-grow"/>
-              <Input type="number" value={internalFontSize} onChange={(e) => setInternalFontSize(Number(e.target.value))} onBlur={() => handleFontValueChange('size', internalFontSize)} className="h-8 text-xs w-16" />
+              <Input type="number" value={internalFontSize} onChange={(e) => setInternalFontSize(Number(e.target.value))} onBlur={() => handleFontValueChange('size', internalFontSize)} className="h-8 text-xs" />
            </div>
       </div>
       <div className="space-y-2">
           <Label htmlFor={`${baseId}-line-height-slider`}>Line Height</Label>
           <div className="flex items-center gap-2">
               <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[internalLineHeight]} onValueChange={(v) => setInternalLineHeight(v[0])} onValueCommit={(v) => handleFontValueChange('lineHeight', v[0])} className="flex-grow"/>
-               <Input type="number" value={internalLineHeight} onChange={(e) => setInternalLineHeight(Number(e.target.value))} onBlur={() => handleFontValueChange('lineHeight', internalLineHeight)} step="0.1" className="h-8 text-xs w-16" />
+               <Input type="number" value={internalLineHeight} onChange={(e) => setInternalLineHeight(Number(e.target.value))} onBlur={() => handleFontValueChange('lineHeight', internalLineHeight)} step="0.1" className="h-8 text-xs" />
           </div>
       </div>
     </div>
   );
 
   const textOpacityContent = (
-    <div className="w-100 md:w-56 space-y-4">
+    <div className="w-full md:w-56 space-y-4">
       <div className="space-y-2">
         <Label htmlFor={`${baseId}-text-opacity-slider`}>Text Opacity</Label>
         <div className="flex items-center gap-2">
@@ -231,7 +252,7 @@ export function TextSettings({
   );
 
   const textShadowContent = (
-    <div className="w-100 space-y-4" style={{ maxWidth: 'calc(100vw - 2rem)'}}>
+    <div className="w-full space-y-4" style={{ maxWidth: 'calc(100vw - 2rem)'}}>
       <div className="flex items-center justify-between">
         <Label htmlFor={`${baseId}-shadow-toggle`}>Enable Text Shadow</Label>
         <Switch id={`${baseId}-shadow-toggle`} checked={textShadowEnabled} onCheckedChange={setTextShadowEnabled} />
@@ -254,7 +275,7 @@ export function TextSettings({
                 <Label htmlFor={`${baseId}-shadow-blur-${index}`} className="text-xs">Blur</Label>
                 <div className="flex items-center gap-2">
                   <Slider id={`${baseId}-shadow-blur-${index}`} max={40} min={0} step={1} value={[shadow.blur]} onValueChange={(v) => updateShadow(shadow.id, { blur: v[0] })} />
-                  <Input type="number" value={shadow.blur} onChange={e => updateShadow(shadow.id, {blur: Number(e.target.value)})} className="h-7 w-20 text-xs" />
+                  <Input type="number" value={shadow.blur} onChange={e => updateShadow(shadow.id, {blur: Number(e.target.value)})} className="h-7 text-xs" />
                   <Select value={shadow.blurUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { blurUnit: v })}>
                     <SelectTrigger className="w-20 h-7 text-xs"><SelectValue /></SelectTrigger>
                     <SelectContent>
@@ -267,7 +288,7 @@ export function TextSettings({
                 <Label htmlFor={`${baseId}-shadow-offset-x-${index}`} className="text-xs">X Offset</Label>
                  <div className="flex items-center gap-2">
                   <Slider id={`${baseId}-shadow-offset-x-${index}`} max={20} min={-20} step={1} value={[shadow.offsetX]} onValueChange={(v) => updateShadow(shadow.id, { offsetX: v[0] })} />
-                  <Input type="number" value={shadow.offsetX} onChange={e => updateShadow(shadow.id, {offsetX: Number(e.target.value)})} className="h-7 w-20 text-xs" />
+                  <Input type="number" value={shadow.offsetX} onChange={e => updateShadow(shadow.id, {offsetX: Number(e.target.value)})} className="h-7 text-xs" />
                    <Select value={shadow.offsetXUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { offsetXUnit: v })}>
                       <SelectTrigger className="w-20 h-7 text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -280,7 +301,7 @@ export function TextSettings({
                 <Label htmlFor={`${baseId}-shadow-offset-y-${index}`} className="text-xs">Y Offset</Label>
                 <div className="flex items-center gap-2">
                   <Slider id={`${baseId}-shadow-offset-y-${index}`} max={20} min={-20} step={1} value={[shadow.offsetY]} onValueChange={(v) => updateShadow(shadow.id, { offsetY: v[0] })} />
-                  <Input type="number" value={shadow.offsetY} onChange={e => updateShadow(shadow.id, {offsetY: Number(e.target.value)})} className="h-7 w-20 text-xs" />
+                  <Input type="number" value={shadow.offsetY} onChange={e => updateShadow(shadow.id, {offsetY: Number(e.target.value)})} className="h-7 text-xs" />
                   <Select value={shadow.offsetYUnit} onValueChange={(v: Unit) => updateShadow(shadow.id, { offsetYUnit: v })}>
                     <SelectTrigger className="w-20 h-7 text-xs"><SelectValue /></SelectTrigger>
                     <SelectContent>
@@ -300,7 +321,7 @@ export function TextSettings({
   );
 
   const textStrokeContent = (
-     <div className="w-100 space-y-4">
+     <div className="w-full space-y-4">
       <div className="flex items-center justify-between">
         <Label htmlFor={`${baseId}-stroke-toggle`}>Text Stroke</Label>
         <Switch id={`${baseId}-stroke-toggle`} checked={textStroke} onCheckedChange={setTextStroke} />
@@ -321,45 +342,80 @@ export function TextSettings({
   );
 
   const textBoxContent = (
-      <div className="w-100 space-y-4">
-      <div className="flex items-center justify-between">
-          <Label htmlFor={`${baseId}-textbox-toggle`}>Text Box Background</Label>
-          <Switch
-          id={`${baseId}-textbox-toggle`}
-          checked={isTextBoxEnabled}
-          onCheckedChange={setIsTextBoxEnabled}
-          />
-      </div>
-      {isTextBoxEnabled && (
-          <div className="space-y-4">
-          <div className="flex items-center gap-2">
-              <Label>Color</Label>
-              <Input
-              type="color"
-              value={rectBgColor}
-              onChange={(e) => setRectBgColor(e.target.value)}
-              className="h-8 p-1"
-              />
-          </div>
-          <div className="space-y-2">
-              <Label htmlFor={`${baseId}-rect-opacity-slider`}>Opacity</Label>
+    <div className="w-full space-y-4">
+    <div className="flex items-center justify-between">
+        <Label htmlFor={`${baseId}-textbox-toggle`}>Text Box Background</Label>
+        <Switch
+        id={`${baseId}-textbox-toggle`}
+        checked={isTextBoxEnabled}
+        onCheckedChange={setIsTextBoxEnabled}
+        />
+    </div>
+    {isTextBoxEnabled && (
+        <div className="space-y-4 border-t pt-4">
+            <div className="flex items-center gap-2">
+                <Label>Color</Label>
+                <Input
+                type="color"
+                value={rectBgColor}
+                onChange={(e) => setRectBgColor(e.target.value)}
+                className="h-8 p-1"
+                />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor={`${baseId}-rect-opacity-slider`}>Opacity</Label>
+                <div className="flex items-center gap-2">
+                    <Slider
+                        id={`${baseId}-rect-opacity-slider`}
+                        max={1} min={0} step={0.01}
+                        value={[rectOpacity]}
+                        onValueChange={(value) => setRectOpacity(value[0])}
+                    />
+                    <span className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
+                        {Math.round(rectOpacity * 100)}
+                    </span>
+                </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={`${baseId}-padding-slider`}>Padding</Label>
               <div className="flex items-center gap-2">
-              <Slider
-                  id={`${baseId}-rect-opacity-slider`}
-                  max={1}
-                  min={0}
-                  step={0.01}
-                  value={[rectOpacity]}
-                  onValueChange={(value) => setRectOpacity(value[0])}
-              />
-              <div className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">
-                  {Math.round(rectOpacity * 100)}
+                <Slider id={`${baseId}-padding-slider`} max={200} min={0} step={5} value={[textBoxPadding]} onValueChange={(v) => setTextBoxPadding(v[0])} />
+                <span className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">{textBoxPadding}</span>
               </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={`${baseId}-radius-slider`}>Border Radius</Label>
+              <div className="flex items-center gap-2">
+                <Slider id={`${baseId}-radius-slider`} max={200} min={0} step={5} value={[textBoxBorderRadius]} onValueChange={(v) => setTextBoxBorderRadius(v[0])} />
+                <span className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">{textBoxBorderRadius}</span>
               </div>
-          </div>
-          </div>
-      )}
-      </div>
+            </div>
+            
+            <Separator />
+
+            <div className="flex items-center justify-between">
+                <Label htmlFor={`${baseId}-border-toggle`}>Border</Label>
+                <Switch id={`${baseId}-border-toggle`} checked={isTextBoxBorderEnabled} onCheckedChange={setIsTextBoxBorderEnabled} />
+            </div>
+
+            {isTextBoxBorderEnabled && (
+                <div className="space-y-4">
+                     <div className="flex items-center gap-2">
+                        <Label>Border Color</Label>
+                        <Input type="color" value={textBoxBorderColor} onChange={(e) => setTextBoxBorderColor(e.target.value)} className="h-8 p-1"/>
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor={`${baseId}-border-width-slider`}>Border Width</Label>
+                        <div className="flex items-center gap-2">
+                            <Slider id={`${baseId}-border-width-slider`} max={20} min={1} step={1} value={[textBoxBorderWidth]} onValueChange={(v) => setTextBoxBorderWidth(v[0])}/>
+                            <span className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">{textBoxBorderWidth}</span>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    )}
+    </div>
   );
 
 
@@ -533,7 +589,7 @@ export function TextSettings({
                         <p>Text Opacity</p>
                       </TooltipContent>
                     </Tooltip>
-                    <PopoverContent className="w-100 space-y-4">
+                    <PopoverContent className="w-full space-y-4">
                       {textOpacityContent}
                     </PopoverContent>
                   </Popover>
@@ -621,7 +677,7 @@ export function TextSettings({
                         <p>Text Stroke</p>
                       </TooltipContent>
                     </Tooltip>
-                    <PopoverContent className="w-64 space-y-4">
+                    <PopoverContent className="w-full space-y-4">
                      {textStrokeContent}
                     </PopoverContent>
                   </Popover>
@@ -658,7 +714,7 @@ export function TextSettings({
                         <p>Text Box Settings</p>
                     </TooltipContent>
                     </Tooltip>
-                    <PopoverContent className="w-64 space-y-4">
+                    <PopoverContent className="w-full space-y-4">
                       {textBoxContent}
                     </PopoverContent>
                 </Popover>

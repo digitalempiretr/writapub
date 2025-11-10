@@ -5,10 +5,6 @@
 
 body {  
   font-family: var(--font-sans), 'Instrument Serif', Arial, Helvetica, sans-serif;
-  
-  background-image: 
-  url("https://www.transparenttextures.com/patterns/project-paper.png")
-  /*linear-gradient(to top right, #FEAC5E, #C779D0, #4BC0C8);*/ ;
   background-color: var(--background);
   background-blend-mode: darken;
   min-height: 100vh;

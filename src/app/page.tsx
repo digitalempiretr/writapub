@@ -244,6 +244,13 @@ export default function Home() {
   const [rectBgColor, setRectBgColor] = useState(pageInitialColors.rectBgColor);
   const [rectOpacity, setRectOpacity] = useState(0);
 
+  const [textBoxPadding, setTextBoxPadding] = useState(50);
+  const [textBoxBorderRadius, setTextBoxBorderRadius] = useState(0);
+  const [isTextBoxBorderEnabled, setIsTextBoxBorderEnabled] = useState(false);
+  const [textBoxBorderColor, setTextBoxBorderColor] = useState('#000000');
+  const [textBoxBorderWidth, setTextBoxBorderWidth] = useState(2);
+
+
   const [isOverlayEnabled, setIsOverlayEnabled] = useState(false);
   const [overlayColor, setOverlayColor] = useState(pageInitialColors.overlayColor);
   const [overlayOpacity, setOverlayOpacity] = useState(0.25);
@@ -323,7 +330,7 @@ export default function Home() {
         ctx.font = `${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`;
   
         const rectWidth = 830 * (canvasSize.width / 1080);
-        const textMaxWidth = rectWidth - (100 * (canvasSize.width / 1080));
+        const textMaxWidth = rectWidth - (textBoxPadding * 2 * (canvasSize.width / 1080));
         const currentLineHeight = typeof activeFont.lineHeight === 'number' ? activeFont.lineHeight : parseFloat(activeFont.lineHeight as string);
   
         // Continue processing only if there's text left
@@ -353,7 +360,7 @@ export default function Home() {
         // Scroll to the first slide after generation
         setTimeout(() => carouselApi?.scrollTo(0), 100);
     });
-  }, [text, title, canvasSize, activeFont, isBold, carouselApi]);
+  }, [text, title, canvasSize, activeFont, isBold, carouselApi, textBoxPadding]);
   
   useEffect(() => {
     if (designs.length > 0) {
@@ -645,6 +652,11 @@ export default function Home() {
           }}
           rectColor={rectBgColor}
           rectOpacity={isTextBoxEnabled ? rectOpacity : 0}
+          textBoxPadding={textBoxPadding}
+          textBoxBorderRadius={textBoxBorderRadius}
+          isTextBoxBorderEnabled={isTextBoxBorderEnabled}
+          textBoxBorderColor={textBoxBorderColor}
+          textBoxBorderWidth={textBoxBorderWidth}
           overlayColor={overlayColor}
           overlayOpacity={isOverlayEnabled ? overlayOpacity : 0}
           textAlign={textAlign}
@@ -665,7 +677,8 @@ export default function Home() {
     gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, 
     overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, 
     shadows, textStroke, strokeColor, strokeWidth, 
-    isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize, elements, areElementsEnabled
+    isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize, elements, areElementsEnabled,
+    textBoxPadding, textBoxBorderRadius, isTextBoxBorderEnabled, textBoxBorderColor, textBoxBorderWidth
   ]);
   
   /**
@@ -1192,7 +1205,17 @@ export default function Home() {
         rectBgColor, 
         setRectBgColor, 
         rectOpacity,
-        setRectOpacity, 
+        setRectOpacity,
+        textBoxPadding,
+        setTextBoxPadding,
+        textBoxBorderRadius,
+        setTextBoxBorderRadius,
+        isTextBoxBorderEnabled,
+        setIsTextBoxBorderEnabled,
+        textBoxBorderColor,
+        setTextBoxBorderColor,
+        textBoxBorderWidth,
+        setTextBoxBorderWidth,
         activeEffect, 
         setActiveEffect: handleEffectChange, 
         designs, 
@@ -1268,7 +1291,7 @@ export default function Home() {
       * Displays the application logo.
       ********************************************************************************
       */}
-      <header className="w-full text-left p-8 px-4 md:px-4 h-[5vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-sidebar shadow-sm md:shadow-none">
+      <header className="w-full text-left p-8 px-4 md:px-4 h-[5vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-sidebar shadow-sm md:shadow-none ">
         <Logo className="text-[1.2rem] md:text-[1.5rem] text-primary pe-12" />
         {designs.length > 0 && (
            <div className="flex items-center gap-2 w-full max-w-xs">
@@ -1303,7 +1326,7 @@ export default function Home() {
         )}
       </header>
 
-      <div className="flex-1 flex overflow-hidden mt-1" style={{ height: isMobile ? 'calc(100vh - 10vh - 56px)' : 'auto' }}>
+      <div className="flex-1 flex overflow-hidden" style={{ height: isMobile ? 'calc(100vh - 10vh - 56px)' : 'auto' }}>
       {/*
       ********************************************************************************
       * DESKTOP SIDEBAR
@@ -1338,7 +1361,7 @@ export default function Home() {
       */}
         <main 
           ref={designsRef}
-          className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative cursor-default")}
+          className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative cursor-default bg-[url(https://www.transparenttextures.com/patterns/project-paper.png)]")}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
@@ -1349,7 +1372,7 @@ export default function Home() {
           style={{ touchAction: 'none' }}
         >
         {designs.length > 0 && (
-            <div className="md:w-auto md:justify-center absolute top-0.5 md:top-0.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 md:rounded-md w-full justify-between px-4">
+            <div className="md:w-auto md:justify-center absolute top-0.5 md:top-1.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 md:rounded-md w-full justify-between px-4">
                 <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
                     {canvasSizes.map(size => (
                     <TooltipProvider key={size.name}>
