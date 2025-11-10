@@ -34,9 +34,11 @@ type GradientStop = {
   stop: number;
 };
 
+type BackgroundType = 'flat' | 'gradient' | 'image';
+
 type BackgroundSettingsProps = {
   backgroundTab: string;
-  setBackgroundTab: (value: string) => void;
+  setBackgroundTab: (value: BackgroundType) => void;
   handleFeelLucky: () => void;
   bgColor: string;
   handleBgColorSelect: (color: string) => void;
@@ -167,7 +169,6 @@ export function BackgroundSettings({
   };
 
   const handleGradientBgSelect = (css: string) => {
-    setBackgroundTab('gradient');
     applyGradientToCanvas(css);
     parseAndSetGradient(css);
   };
@@ -268,6 +269,9 @@ export function BackgroundSettings({
   }, [activeStopId]);
   
   const addStop = (e: React.MouseEvent<HTMLDivElement>) => {
+      if ((e.target as HTMLElement).closest('[data-stop-handle="true"]')) {
+          return;
+      }
       const rect = e.currentTarget.getBoundingClientRect();
       const stop = Math.round(((e.clientX - rect.left) / rect.width) * 100);
       
@@ -306,7 +310,7 @@ export function BackgroundSettings({
         const clampedStop = Math.max(0, Math.min(100, newStop));
 
         setCustomGradientStops(stops =>
-            stops.map(s => (s.id === id ? { ...s, stop: clampedStop } : s))
+            stops.map(s => (s.id === id ? { ...s, ...newProps } : s))
         );
     };
 
@@ -386,6 +390,7 @@ export function BackgroundSettings({
           {customGradientStops.map(s => (
              <div 
                key={s.id}
+               data-stop-handle="true"
                className={cn(
                  "absolute top-1/2 -translate-x-1/2 -translate-y-1/2 h-5 w-5 rounded-full border-2 cursor-pointer",
                  activeStopId === s.id ? 'border-primary ring-2 ring-primary ring-offset-2 bg-background' : 'border-background'
@@ -470,7 +475,7 @@ export function BackgroundSettings({
 
   return (
     <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-4 mobile-tab-content">
-      <Tabs value={backgroundTab} onValueChange={(value) => setBackgroundTab(value)} className="w-full">
+      <Tabs value={backgroundTab} onValueChange={(value) => setBackgroundTab(value as BackgroundType)} className="w-full">
         <div className="flex items-center gap-2">
           <TabsList className="grid flex-grow grid-cols-3 font-sans">
             <TabsTrigger value="flat">Solid Color</TabsTrigger>
