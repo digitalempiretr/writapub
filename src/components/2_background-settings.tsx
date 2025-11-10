@@ -150,12 +150,14 @@ export function BackgroundSettings({
       const stopRegex = /(rgba?\(.+?\)|#([0-9a-fA-F]{3,6}))\s+(\d{1,3}(?:\.\d+)?)%/g;
       let match;
       const newStops: GradientStop[] = [];
+      let lastStop = -1;
       while ((match = stopRegex.exec(stopsContent)) !== null) {
         newStops.push({
           id: Date.now() + Math.random(),
           color: match[1],
           stop: parseFloat(match[3])
         });
+        lastStop = parseFloat(match[3]);
       }
       if (newStops.length > 0) {
         setCustomGradientStops(newStops);
@@ -183,6 +185,12 @@ export function BackgroundSettings({
       return `radial-gradient(circle, ${colorStopsString})`;
     }
   }, [customGradientStops, gradientType, gradientAngle]);
+
+  useEffect(() => {
+    const newCss = generateGradientCss();
+    applyGradientToCanvas(newCss);
+  }, [customGradientStops, gradientType, gradientAngle, generateGradientCss, applyGradientToCanvas]);
+
 
   const gradientSliderBg = React.useMemo(() => generateGradientCss(), [generateGradientCss]);
   
@@ -538,7 +546,7 @@ export function BackgroundSettings({
             {isMobile ? (
               <Dialog>
                 <DialogTrigger asChild>
-                   <Card className="overflow-hidden cursor-pointer" onClick={() => applyGradientToCanvas(gradientSliderBg)}>
+                   <Card className="overflow-hidden cursor-pointer" onClick={() => applyGradientToCanvas(gradientBg)}>
                     <CardContent className="aspect-[4/5] flex items-center justify-center bg-gray-100 p-0">
                     <h2 className="text-gray-500 text-3xl bold">+</h2>
                     </CardContent>
@@ -554,7 +562,7 @@ export function BackgroundSettings({
             ) : (
               <Popover>
                 <PopoverTrigger asChild>
-                  <Card className="overflow-hidden cursor-pointer" onClick={() => applyGradientToCanvas(gradientSliderBg)}>
+                  <Card className="overflow-hidden cursor-pointer" onClick={() => applyGradientToCanvas(gradientBg)}>
                     <CardContent className="aspect-[4/5] flex items-center justify-center bg-gray-100 p-0">
                     <p className="text-gray-500 text-3xl bold">+</p>
                     </CardContent>
@@ -694,4 +702,5 @@ export function BackgroundSettings({
 
     
     
+
 
