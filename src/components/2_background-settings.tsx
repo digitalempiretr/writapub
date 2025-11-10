@@ -97,7 +97,7 @@ export function BackgroundSettings({
   overlayOpacity,
   setOverlayOpacity,
   gradientBg,
-  handleGradientBgSelect,
+  handleGradientBgSelect: applyGradientToCanvas,
   setSearchCarouselApi,
 }: BackgroundSettingsProps) {
   const baseId = useId();
@@ -115,6 +115,63 @@ export function BackgroundSettings({
   const isMobile = useIsMobile();
   const draggingStopId = useRef<number | null>(null);
 
+  const parseAndSetGradient = (css: string) => {
+    try {
+      const typeMatch = css.match(/^(linear|radial)-gradient/);
+      const newType = (typeMatch ? typeMatch[1] : 'linear') as 'linear' | 'radial';
+      setGradientType(newType);
+
+      const content = css.substring(css.indexOf('(') + 1, css.lastIndexOf(')'));
+      
+      let angle = 90; // Default angle
+      let stopsContent = content;
+
+      if (newType === 'linear') {
+        const angleMatch = content.match(/^(to\s+[\w\s]+|[\d.-]+deg),/);
+        if (angleMatch) {
+          const angleStr = angleMatch[1].trim();
+          stopsContent = content.substring(angleMatch[0].length).trim();
+          
+          if (angleStr.includes('deg')) {
+            angle = parseFloat(angleStr);
+          } else {
+            const directions: { [key: string]: number } = {
+              'to top': 0, 'to top right': 45, 'to right': 90, 'to bottom right': 135,
+              'to bottom': 180, 'to bottom left': 225, 'to left': 270, 'to top left': 315
+            };
+            angle = directions[angleStr] || 90;
+          }
+        }
+      }
+      setGradientAngle(angle);
+
+      const stopRegex = /(rgba?\(.+?\)|#([0-9a-fA-F]{3,6}))\s+(\d{1,3}(?:\.\d+)?)%/g;
+      let match;
+      const newStops: GradientStop[] = [];
+      while ((match = stopRegex.exec(stopsContent)) !== null) {
+        newStops.push({
+          id: Date.now() + Math.random(),
+          color: match[1],
+          stop: parseFloat(match[3])
+        });
+      }
+      if (newStops.length > 0) {
+        setCustomGradientStops(newStops);
+        if (newStops.length > 0) {
+          setActiveStopId(newStops[0].id);
+        }
+      }
+    } catch(e) {
+      console.error("Failed to parse gradient string", e);
+    }
+  };
+
+  const handleGradientBgSelect = (css: string) => {
+    setBackgroundTab('gradient');
+    applyGradientToCanvas(css);
+    parseAndSetGradient(css);
+  };
+  
   useEffect(() => {
     const sortedStops = [...customGradientStops].sort((a, b) => a.stop - b.stop);
     const colorStopsString = sortedStops.map(s => `${s.color} ${s.stop}%`).join(', ');
@@ -128,9 +185,9 @@ export function BackgroundSettings({
     
     // Only apply if the gradient tab is active and settings have changed.
     if(backgroundTab === 'gradient'){
-        handleGradientBgSelect(css);
+        applyGradientToCanvas(css);
     }
-  }, [customGradientStops, gradientType, gradientAngle, backgroundTab, handleGradientBgSelect]);
+  }, [customGradientStops, gradientType, gradientAngle]);
   
   const handleAngleInteraction = useCallback((clientX: number, clientY: number) => {
     if (!angleSelectorRef.current) return;
@@ -485,9 +542,10 @@ export function BackgroundSettings({
             {isMobile ? (
               <Dialog>
                 <DialogTrigger asChild>
-                  <Card className="overflow-hidden cursor-pointer" onClick={() => handleGradientBgSelect(gradientSliderBg)}>
-                    <CardContent className="aspect-[4/5] flex items-center justify-center bg-gray-100">
-                      <Plus className="h-6 w-6 text-gray-500" strokeWidth={3} />
+                  <Card className="overflow-hidden cursor-pointer" onClick={() => applyGradientToCanvas(gradientSliderBg)}>
+                    <CardContent className="aspect-[4/5] flex items-center justify-center bg-gray-100 p-0">
+                    <h2 className="text-gray-500 text-3xl bold">+</h2>
+                      
                     </CardContent>
                   </Card>
                 </DialogTrigger>
@@ -501,9 +559,9 @@ export function BackgroundSettings({
             ) : (
               <Popover>
                 <PopoverTrigger asChild>
-                  <Card className="overflow-hidden cursor-pointer" onClick={() => handleGradientBgSelect(gradientSliderBg)}>
-                    <CardContent className="aspect-[4/5] flex items-center justify-center bg-gray-100">
-                      <Plus className="h-6 w-6 text-gray-500" strokeWidth={3} />
+                  <Card className="overflow-hidden cursor-pointer" onClick={() => applyGradientToCanvas(gradientSliderBg)}>
+                    <CardContent className="aspect-[4/5] flex items-center justify-center bg-gray-100 p-0">
+                    <p className="text-gray-500 text-3xl bold">+</p>
                     </CardContent>
                   </Card>
                 </PopoverTrigger>
