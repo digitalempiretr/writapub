@@ -360,7 +360,7 @@ export default function Home() {
       handleGenerate();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canvasSize, activeFont]);
+  }, [canvasSize]);
 
 
   /**
@@ -1142,7 +1142,7 @@ export default function Home() {
         handleGenerate, 
         isLoading,
         backgroundTab, 
-        setBackgroundTab: setBackgroundTab, 
+        setBackgroundTab,
         handleFeelLucky,
         bgColor, 
         handleBgColorSelect: handleBgColorSelect, 
@@ -1565,4 +1565,3 @@ export default function Home() {
     </div>
   );
 }
-
