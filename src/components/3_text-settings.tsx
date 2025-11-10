@@ -190,19 +190,19 @@ export function TextSettings({
   const unitOptions: Unit[] = ['px', 'em', 'rem'];
 
   const fontSizeContent = (
-    <div className="w-64 space-y-4">
+    <div className="w-80 space-y-4">
       <div className="space-y-2">
           <Label htmlFor={`${baseId}-font-size-slider`}>Font Size</Label>
            <div className="flex items-center gap-2">
               <Slider id={`${baseId}-font-size-slider`} max={200} min={20} step={1} value={[internalFontSize]} onValueChange={(v) => setInternalFontSize(v[0])} onValueCommit={(v) => handleFontValueChange('size', v[0])}/>
-              <Input type="number" value={internalFontSize} onChange={(e) => setInternalFontSize(Number(e.target.value))} onBlur={() => handleFontValueChange('size', internalFontSize)} className="w-20 h-8 text-xs" />
+              <Input type="number" value={internalFontSize} onChange={(e) => setInternalFontSize(Number(e.target.value))} onBlur={() => handleFontValueChange('size', internalFontSize)} className="w-16 h-8 text-xs" />
            </div>
       </div>
       <div className="space-y-2">
           <Label htmlFor={`${baseId}-line-height-slider`}>Line Height</Label>
           <div className="flex items-center gap-2">
               <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[internalLineHeight]} onValueChange={(v) => setInternalLineHeight(v[0])} onValueCommit={(v) => handleFontValueChange('lineHeight', v[0])}/>
-               <Input type="number" value={internalLineHeight} onChange={(e) => setInternalLineHeight(Number(e.target.value))} onBlur={() => handleFontValueChange('lineHeight', internalLineHeight)} step="0.1" className="w-20 h-8 text-xs" />
+               <Input type="number" value={internalLineHeight} onChange={(e) => setInternalLineHeight(Number(e.target.value))} onBlur={() => handleFontValueChange('lineHeight', internalLineHeight)} step="0.1" className="w-16 h-8 text-xs" />
           </div>
       </div>
     </div>
@@ -447,7 +447,7 @@ export function TextSettings({
                       </TooltipTrigger>
                       <TooltipContent><p>Font Size & Line Height</p></TooltipContent>
                     </Tooltip>
-                    <PopoverContent className="w-64 space-y-4">
+                    <PopoverContent className="w-80 space-y-4">
                       {fontSizeContent}
                     </PopoverContent>
                   </Popover>
@@ -751,3 +751,5 @@ export function TextSettings({
     </TooltipProvider>
   );
 }
+
+    
