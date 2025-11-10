@@ -253,6 +253,7 @@ export default function Home() {
   
   useEffect(() => {
     if (shadows.length === 0) {
+      // Initialize with a default shadow only on the client side
       setShadows([{ id: Date.now(), color: '#000000', offsetX: 5, offsetY: 5, blur: 5, offsetXUnit: 'px', offsetYUnit: 'px', blurUnit: 'px' }]);
     }
   }, [shadows]);
@@ -386,6 +387,7 @@ export default function Home() {
         const targetElement = event.target as Element;
         if (
           targetElement.closest('[role="dialog"]') ||
+          targetElement.closest('[data-radix-dialog-overlay]') ||
           targetElement.closest('[role="alertdialog"]') ||
           targetElement.closest('[data-radix-popper-content-wrapper]')
         ) {
