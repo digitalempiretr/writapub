@@ -546,7 +546,7 @@ export function BackgroundSettings({
             {isMobile ? (
               <Dialog>
                 <DialogTrigger asChild>
-                   <Card className="overflow-hidden cursor-pointer" onClick={() => applyGradientToCanvas(gradientBg)}>
+                   <Card className="overflow-hidden cursor-pointer">
                     <CardContent className="aspect-[4/5] flex items-center justify-center bg-gray-100 p-0">
                     <h2 className="text-gray-500 text-3xl bold">+</h2>
                     </CardContent>
@@ -562,7 +562,7 @@ export function BackgroundSettings({
             ) : (
               <Popover>
                 <PopoverTrigger asChild>
-                  <Card className="overflow-hidden cursor-pointer" onClick={() => applyGradientToCanvas(gradientBg)}>
+                  <Card className="overflow-hidden cursor-pointer">
                     <CardContent className="aspect-[4/5] flex items-center justify-center bg-gray-100 p-0">
                     <p className="text-gray-500 text-3xl bold">+</p>
                     </CardContent>
@@ -705,3 +705,6 @@ export function BackgroundSettings({
 
 
 
+
+
+    
