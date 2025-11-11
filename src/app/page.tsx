@@ -329,21 +329,20 @@ export default function Home() {
     document.fonts.load(`${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`).then(() => {
         ctx.font = `${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`;
   
+        const rectHeight = 1100 * (canvasSize.height / 1350);
         const rectWidth = 830 * (canvasSize.width / 1080);
-        const textMaxWidth = rectWidth - (textBoxPadding * 2 * (canvasSize.width / 1080));
+        const textMaxWidth = rectWidth - (textBoxPadding * 2 * scalingFactor);
         const currentLineHeight = typeof activeFont.lineHeight === 'number' ? activeFont.lineHeight : parseFloat(activeFont.lineHeight as string);
+        const finalLineHeight = finalFontSize * currentLineHeight;
+  
+        // Dynamically calculate max lines based on available height
+        const dynamicMaxLines = Math.floor(rectHeight / finalLineHeight);
+        const baseMaxLines = Math.max(1, dynamicMaxLines - 2); // Leave some buffer
+        const extendedMaxLines = dynamicMaxLines; // Allow using full height if needed
   
         // Continue processing only if there's text left
         while (remainingText.length > 0) {
-            const maxLineHeight = 2.5;
-            const minLineHeight = 1.2;
-            const maxLinesForMinHeight = 14;
-            const maxLinesForMaxHeight = 8;
-            const slope = (maxLinesForMaxHeight - maxLinesForMinHeight) / (maxLineHeight - minLineHeight);
-            let dynamicMaxLines = Math.floor(maxLinesForMinHeight + slope * (currentLineHeight - minLineHeight));
-            dynamicMaxLines = Math.max(maxLinesForMaxHeight, Math.min(maxLinesForMinHeight, dynamicMaxLines));
-    
-            const result = measureAndSplitText(ctx, remainingText, textMaxWidth, dynamicMaxLines, dynamicMaxLines + 2);
+            const result = measureAndSplitText(ctx, remainingText, textMaxWidth, baseMaxLines, extendedMaxLines);
             
             newDesigns.push({ text: result.textForCanvas, isTitle: false });
             remainingText = result.remainingText;
@@ -364,6 +363,7 @@ export default function Home() {
   
   useEffect(() => {
     if (designs.length > 0) {
+      // Re-generate if canvas size changes
       handleGenerate();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -382,27 +382,20 @@ export default function Home() {
    */
    useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      if (!isMobilePanelOpen) return;
+
       const targetElement = event.target as Element;
-  
-      if (
-        isMobilePanelOpen &&
-        mobilePanelRef.current &&
-        !mobilePanelRef.current.contains(targetElement)
-      ) {
-        // This is the crucial check: Do not close if the click is on a dialog overlay or its content
-        if (targetElement.closest('[role="dialog"]') || targetElement.closest('[data-radix-dialog-overlay]')) {
-          return;
-        }
-  
-        // Also, do not close if a popover is open
-        if (targetElement.closest('[data-radix-popper-content-wrapper]')) {
-          return;
-        }
-  
-        closePanel();
+
+      // Check if the click is on the sheet itself or a popover/dialog triggered from within the sheet
+      const isClickInsideSheet = mobilePanelRef.current && mobilePanelRef.current.contains(targetElement);
+      const isClickOnDialog = targetElement.closest('[role="dialog"], [data-radix-dialog-overlay]');
+      const isClickOnPopover = targetElement.closest('[data-radix-popper-content-wrapper]');
+
+      if (!isClickInsideSheet && !isClickOnDialog && !isClickOnPopover) {
+          closePanel();
       }
     };
-  
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -513,7 +506,6 @@ export default function Home() {
 
   /**
    * Applies the styles from a selected text effect to the canvas text.
-   * @param {TextEffect} effect - The text effect to apply.
    */
   const handleEffectChange = (effect: TextEffect) => {
     setActiveEffect(effect);
