@@ -224,6 +224,7 @@ export default function Home() {
   }, [carouselApi, handleSelectCarousel]);
 
   const [activeFont, setActiveFont] = useState<FontOption>(fontOptions.find(f => f.value === 'duru-sans') || fontOptions[0]);
+  const [fontSize, setFontSize] = useState(48);
 
   const [textAlign, setTextAlign] = useState<TextAlign>('left');
   const [isBold, setIsBold] = useState(false);
@@ -322,8 +323,7 @@ export default function Home() {
   
     // 2. Process the body text
     const scalingFactor = canvasSize.width / 1080;
-    const baseFontSize = typeof activeFont.size === 'number' ? activeFont.size : 48;
-    const finalFontSize = baseFontSize * scalingFactor;
+    const finalFontSize = fontSize * scalingFactor;
     const finalFontWeight = isBold ? Math.min(Number(activeFont.weight) + 300, 900) : activeFont.weight;
   
     document.fonts.load(`${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`).then(() => {
@@ -359,7 +359,7 @@ export default function Home() {
         // Scroll to the first slide after generation
         setTimeout(() => carouselApi?.scrollTo(0), 100);
     });
-  }, [text, title, canvasSize, activeFont, isBold, carouselApi, textBoxPadding]);
+  }, [text, title, canvasSize, activeFont, isBold, carouselApi, textBoxPadding, fontSize]);
   
   useEffect(() => {
     if (designs.length > 0) {
@@ -447,7 +447,7 @@ export default function Home() {
       font: {
         value: activeFont.value,
         color: textColor,
-        fontSize: typeof activeFont.size === 'number' ? activeFont.size : 48,
+        fontSize: fontSize,
       },
       textBox: {
         color: rectBgColor,
@@ -502,7 +502,7 @@ export default function Home() {
       description: "Open developer tools (F12) to see the design code.",
       duration: 5000,
     });
-  }, [backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, toast, activeEffect, canvasSize]);
+  }, [backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, toast, activeEffect, canvasSize, fontSize]);
 
   /**
    * Applies the styles from a selected text effect to the canvas text.
@@ -513,12 +513,13 @@ export default function Home() {
     if (effect.fontValue) {
         const newFont = fontOptions.find(f => f.value === effect.fontValue);
         if (newFont) {
-            const newSize = typeof effect.style.fontSize === 'number' ? effect.style.fontSize : newFont.size;
-            setActiveFont({ ...newFont, size: newSize });
+            setActiveFont(newFont);
         }
-    } else if (typeof effect.style.fontSize === 'number') {
-        setActiveFont(prevFont => ({...prevFont, size: effect.style.fontSize!}));
     }
+    if (typeof effect.style.fontSize === 'number') {
+        setFontSize(effect.style.fontSize);
+    }
+
 
     if (effect.id === 'none') {
         setTextShadowEnabled(false);
@@ -630,7 +631,7 @@ export default function Home() {
           isTitle={design.isTitle}
           fontFamily={activeFont.fontFamily}
           fontWeight={activeFont.weight}
-          fontSize={activeFont.size}
+          fontSize={fontSize}
           lineHeight={activeFont.lineHeight}
           text={design.text}
           textColor={textColor}
@@ -670,7 +671,7 @@ export default function Home() {
     overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, 
     shadows, textStroke, strokeColor, strokeWidth, 
     isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize, elements, areElementsEnabled,
-    textBoxPadding, textBoxBorderRadius, isTextBoxBorderEnabled, textBoxBorderColor, textBoxBorderWidth
+    textBoxPadding, textBoxBorderRadius, isTextBoxBorderEnabled, textBoxBorderColor, textBoxBorderWidth, fontSize
   ]);
   
   /**
@@ -921,7 +922,8 @@ export default function Home() {
   
     // Set font
     const newFont = fontOptions.find(f => f.value === template.font.value) || activeFont;
-    setActiveFont({ ...newFont, size: template.font.fontSize });
+    setActiveFont(newFont);
+    setFontSize(template.font.fontSize);
   
     // Set textbox
     setIsTextBoxEnabled(template.textBox.opacity > 0);
@@ -974,7 +976,7 @@ export default function Home() {
       font: { 
         value: activeFont.value, 
         color: textColor,
-        fontSize: typeof activeFont.size === 'number' ? activeFont.size : 48,
+        fontSize: fontSize,
       },
       textBox: { color: rectBgColor, opacity: rectOpacity },
       overlay: { color: overlayColor, opacity: overlayOpacity },
@@ -1174,7 +1176,9 @@ export default function Home() {
         textOpacity,
         setTextOpacity, 
         activeFont, 
-        setActiveFont, 
+        setActiveFont,
+        fontSize,
+        setFontSize,
         fontOptions, 
         isBold, 
         setIsBold,
@@ -1195,9 +1199,8 @@ export default function Home() {
         isTextBoxEnabled,
         setIsTextBoxEnabled, 
         rectBgColor, 
-        setRectBgColor, 
-        rectOpacity,
-        setRectOpacity,
+        setRectBgColor, _rectOpacity: rectOpacity,
+        setRectOpacity: setRectOpacity,
         textBoxPadding,
         setTextBoxPadding,
         textBoxBorderRadius,
@@ -1220,8 +1223,7 @@ export default function Home() {
         handleDeleteDesign: handleDeleteDesign, 
         handleUpdateDesign: handleUpdateDesign, 
         editingDesignId,
-        handleEditClick, 
-        handleCancelEdit: handleCancelEdit, 
+        handleEditClick, _handleCancelEdit: handleCancelEdit,
         editingName, 
         setEditingName, 
         designToDelete,

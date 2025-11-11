@@ -38,7 +38,7 @@ type MyDesignsPanelProps = {
   handleUpdateDesign: (id: string) => void;
   editingDesignId: string | null;
   handleEditClick: (id: string, name: string) => void;
-  handleCancelEdit: () => void;
+  _handleCancelEdit: () => void;
   editingName: string;
   setEditingName: (name: string) => void;
   designToDelete: string | null;
@@ -54,7 +54,7 @@ export function MyDesignsPanel({
   handleUpdateDesign,
   editingDesignId,
   handleEditClick,
-  handleCancelEdit,
+  _handleCancelEdit: handleCancelEdit,
   editingName,
   setEditingName,
   designToDelete,
@@ -89,6 +89,7 @@ export function MyDesignsPanel({
       fontFamily: font?.fontFamily || 'sans-serif',
       color: template.font.color,
       fontWeight: 'bold',
+      fontSize: `${template.font.fontSize}px`,
     };
 
     if (effect && effect.style.textShadow) {

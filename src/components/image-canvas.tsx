@@ -11,7 +11,6 @@ export type FontOption = {
   label: string;
   fontFamily: string;
   weight: string | number;
-  size: number | string; // Base size for body text, title will be a multiple of this
   lineHeight: number | string; // This should be a multiplier, e.g., 1.4
 };
 
@@ -21,7 +20,7 @@ export type ImageCanvasProps = {
   isTitle: boolean;
   fontFamily: string;
   fontWeight: string | number;
-  fontSize: number | string;
+  fontSize: number;
   lineHeight: number | string; // This is now a multiplier
   backgroundColor?: string;
   textColor: string;
