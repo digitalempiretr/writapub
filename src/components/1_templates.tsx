@@ -88,7 +88,7 @@ const TemplateCarousel = ({ templates, handleApplyTemplate }: { templates: Desig
       >
         <CarouselContent className="-ml-2">
           {templates.map((template) => (
-            <CarouselItem key={template.id} className="basis-1/4 md:basis-1/6 pl-2">
+            <CarouselItem key={template.id} className="basis-1/4 md:basis-1/4 pl-2">
               <button onClick={() => handleApplyTemplate(template)} className="w-full group">
                 <Card className="overflow-hidden">
                   <CardContent className="p-0 aspect-[4/5] w-full">
