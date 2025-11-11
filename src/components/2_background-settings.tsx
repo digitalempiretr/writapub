@@ -131,65 +131,6 @@ export function BackgroundSettings({
     handleGradientBgSelect(newCss);
   }, [customGradientStops, gradientType, gradientAngle, generateGradientCss, handleGradientBgSelect]);
 
-  const parseAndSetGradient = (css: string) => {
-    try {
-      const typeMatch = css.match(/^(linear|radial)-gradient/);
-      const newType = (typeMatch ? typeMatch[1] : 'linear') as 'linear' | 'radial';
-      setGradientType(newType);
-
-      const content = css.substring(css.indexOf('(') + 1, css.lastIndexOf(')'));
-      
-      let angle = 90; // Default angle
-      let stopsContent = content;
-
-      if (newType === 'linear') {
-        const angleMatch = content.match(/^(to\s+[\w\s]+|[\d.-]+deg),/);
-        if (angleMatch) {
-          const angleStr = angleMatch[1].trim();
-          stopsContent = content.substring(angleMatch[0].length).trim();
-          
-          if (angleStr.includes('deg')) {
-            angle = parseFloat(angleStr);
-          } else {
-            const directions: { [key: string]: number } = {
-              'to top': 0, 'to top right': 45, 'to right': 90, 'to bottom right': 135,
-              'to bottom': 180, 'to bottom left': 225, 'to left': 270, 'to top left': 315
-            };
-            angle = directions[angleStr] || 90;
-          }
-        }
-      }
-      setGradientAngle(angle);
-
-      const stopRegex = /(rgba?\(.+?\)|#([0-9a-fA-F]{3,6}))\s+(\d{1,3}(?:\.\d+)?)%/g;
-      let match;
-      const newStops: GradientStop[] = [];
-      let lastStop = -1;
-      while ((match = stopRegex.exec(stopsContent)) !== null) {
-        newStops.push({
-          id: Date.now() + Math.random(),
-          color: match[1],
-          stop: parseFloat(match[3])
-        });
-        lastStop = parseFloat(match[3]);
-      }
-      if (newStops.length > 0) {
-        setCustomGradientStops(newStops);
-        if (newStops.length > 0) {
-          setActiveStopId(newStops[0].id);
-        }
-      }
-    } catch(e) {
-      console.error("Failed to parse gradient string", e);
-    }
-  };
-
-  const handleLocalGradientSelect = (css: string) => {
-    handleGradientBgSelect(css);
-    parseAndSetGradient(css);
-  };
-
-
   const gradientSliderBg = React.useMemo(() => generateGradientCss(), [generateGradientCss]);
   
   const handleAngleInteraction = useCallback((clientX: number, clientY: number) => {
@@ -573,7 +514,7 @@ export function BackgroundSettings({
             )}
 
             {gradientTemplates.map((gradient) => (
-              <Card key={gradient.name} className="overflow-hidden cursor-pointer" onClick={() => handleLocalGradientSelect(gradient.css)}>
+              <Card key={gradient.name} className="overflow-hidden cursor-pointer" onClick={() => handleGradientBgSelect(gradient.css)}>
                 <CardContent className="aspect-[4/5]" style={{ background: gradient.css }} />
               </Card>
             ))}
@@ -696,3 +637,6 @@ export function BackgroundSettings({
     </div>
   );
 }
+
+
+    
