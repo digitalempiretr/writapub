@@ -19,7 +19,6 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 5.  **Dynamic Slide Generation:** The number of generated images (slides) is not fixed. It dynamically increases based on the length of the input text until all text is placed.
 6.  **Dynamic Line Calculation & Smart Sentence Protection:** The application must dynamically calculate the maximum number of lines that can fit on each slide based on the current canvas size, font size, and line height. This calculation determines a `baseMaxLines` for general use and an `extendedMaxLines` to prevent awkward sentence breaks. If a sentence is about to be split leaving only a few words for the next slide, the line limit for the current slide can be temporarily increased up to `extendedMaxLines` to keep the sentence intact. This ensures text never overflows while maintaining readability.
 7.  **No Overflow:** Both the title and body text must always remain **inside** the text box area in the center of the canvas. The text must **never** overflow vertically or horizontally outside this area. Long titles must automatically wrap to new lines.
-8.  **Automatic Title Logic:** If the user has not specified a title, the first sentence of the entered text is automatically used as the title. In this case, this sentence used as the title **must be removed** from the beginning of the main text.
 9.  **Paragraph & Newline Preservation:** Paragraphs, newlines, and casing (uppercase/lowercase) entered by the user in the text area must be preserved and reflected in the final designs.
 10. **Unified Layout & Carousel Behavior:** On all screen sizes, the control panel and the design preview area are displayed one below the other. The carousel navigation (slider arrows) must only affect the design previews, while the control panel below it remains static.
 11. **Initial View:** The main content input area should be vertically centered on the screen. The "Designs" section should be hidden by default and only appear after content generation.
@@ -35,7 +34,6 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 5.  **Dinamik Slayt Oluşturma:** Oluşturulan görsel (slayt) sayısı sabit değildir. Girilen metnin uzunluğuna göre, tüm metin yerleştirilene kadar dinamik olarak artar.
 6.  **Dinamik Satır Hesaplama ve Akıllı Cümle Koruma:** Uygulama, her bir slayta sığabilecek maksimum satır sayısını, o anki kanvas boyutuna, yazı tipi boyutuna ve satır yüksekliğine göre dinamik olarak hesaplamalıdır. Bu hesaplama, genel kullanım için bir `baseMaxLines` (temel maksimum satır) ve anlamsız cümle bölünmelerini önlemek için bir `extendedMaxLines` (genişletilmiş maksimum satır) belirler. Eğer bir cümle, sonraki slayta sadece birkaç kelime kalacak şekilde bölünmek üzereyse, cümlenin bütünlüğünü korumak adına mevcut slaydın limiti geçici olarak `extendedMaxLines`'a kadar artırılabilir. Bu, metnin okunabilirliğini korurken taşmasını kesin olarak engeller.
 7.  **Taşma Engeli:** Hem başlık hem de gövde metni, her zaman kanvasın ortasındaki metin kutusu alanının **içinde kalmalıdır**. Metin, bu alanın dışına dikey veya yatay olarak **asla taşmamalıdır**. Uzun başlıklar otomatik olarak alt satırlara sarılmalıdır.
-8.  **Otomatik Başlık Mantığı:** Kullanıcı bir başlık belirtmemişse, girilen metnin ilk cümlesi otomatik olarak başlık olarak kullanılır. Bu durumda, başlık olarak kullanılan bu cümle, ana metnin başından **kaldırılmalıdır**.
 9.  **Paragraf, Satır Başı ve Harf Büyüklüğü Koruma:** Kullanıcının metin alanına girdiği paragraflar, satır başları ve harf büyüklüğü (büyük/küçük harf) korunmalı ve oluşturulan tasarımlara aynen yansıtılmalıdır.
 10. **Birleşik Yerleşim ve Karusel Davranışı:** Tüm ekran boyutlarında, kontrol paneli ve tasarım önizleme alanı alt alta görüntülenmelidir. Karusel navigasyonu (kaydırma okları) sadece tasarım önizlemelerini etkilemeli, altındaki kontrol paneli ise sabit kalmalıdır.
 11. **Başlangıç Görünümü:** Ana içerik giriş alanı ekranın dikeyinde ortalanmalıdır. "Designs" bölümü varsayılan olarak gizli olmalı ve yalnızca içerik oluşturulduktan sonra görünmelidir.
@@ -64,6 +62,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 ### 3. Font & Character Support
 -   All fonts loaded from Google Fonts must include the `latin-ext` character set to ensure correct display of Turkish characters.
 -   In the font selection menu, the name of each font option should be displayed in its own font style. This allows the user to preview how the fonts look before selecting them.
+
 
 
 
