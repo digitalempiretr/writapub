@@ -17,4 +17,5 @@ export const gradientTemplates = [
   { name: "Emerald", css: "linear-gradient(to right, #348f50, #56b4d3)" },
   { name: "Steel", css: "linear-gradient(to right, #65799b, #5e2563)" },
   { name: "Cosmic", css: "linear-gradient(to right, #ff00cc, #333399)" },
+  { name: "BlueBlack", css: "linear-gradient(90deg,rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%)" },
 ];
