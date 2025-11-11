@@ -46,8 +46,7 @@ import { DesignsPanel } from "@/components/1_templates";
 import { MyDesignsPanel } from "@/components/4_favorites";
 import { DownloadPanel } from "@/components/5_download-panel";
 import { ElementsPanel, CanvasElement } from "@/components/5_elements-panel";
-import { pageInitialColors } from "@/lib/colors";
-import { gradientTemplates } from '@/lib/gradient-templates';
+import { pageInitialColors, gradientTemplates } from "@/lib/colors";
 import { CreativeMagicPanel } from "@/components/0_creative-magic-panel";
 import { cn } from "@/lib/utils";
 import { textEffects, parseShadow, TextEffect } from "@/lib/text-effects";
@@ -278,30 +277,300 @@ export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const [fileName, setFileName] = useState("Untitled design");
-  const [zoomLevel, setZoomLevel] = useState(1);
-  const [generatedCanvases, setGeneratedCanvases] = useState<HTMLCanvasElement[]>([]);
-  const { toast } = useToast();
+  const [zoomLevel, setZoomLevel] = useState(0.5);
 
-  // Elements state
+  const [isPanning, setIsPanning] = useState(false);
+  const [panStart, setPanStart] = useState({ x: 0, y: 0 });
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  
   const [elements, setElements] = useState<CanvasElement[]>([]);
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
   const [areElementsEnabled, setAreElementsEnabled] = useState(true);
 
+  const [pinchState, setPinchState] = useState<{ distance: number; zoom: number } | null>(null);
+
+
+  const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
+  const designsRef = useRef<HTMLDivElement>(null);
+  const mobilePanelRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
   const isMobile = useIsMobile();
 
-  const handleZoomIn = () => setZoomLevel(prev => Math.min(prev + ZOOM_STEP, MAX_ZOOM));
-  const handleZoomOut = () => setZoomLevel(prev => Math.max(prev - ZOOM_STEP, MIN_ZOOM));
-  const handleZoomReset = () => setZoomLevel(1);
 
+  /**
+   * Generates design slides from the user's title and text input.
+   */
+  const handleGenerate = useCallback(() => {
+    setIsLoading(true);
+    setDesigns([]); // Clear previous designs
+    let newDesigns: Design[] = [];
+  
+    // Create a temporary canvas context for text measurement
+    const tempCanvas = document.createElement('canvas');
+    const ctx = tempCanvas.getContext('2d');
+    if (!ctx) {
+        setIsLoading(false);
+        return;
+    }
+  
+    let remainingText = text.trim();
+  
+    // 1. Handle the title
+    if (title.trim()) {
+        newDesigns.push({ text: title.trim(), isTitle: true });
+    }
+  
+    // 2. Process the body text
+    const scalingFactor = canvasSize.width / 1080;
+    const finalFontSize = fontSize * scalingFactor;
+    const finalFontWeight = isBold ? Math.min(Number(activeFont.weight) + 300, 900) : activeFont.weight;
+  
+    document.fonts.load(`${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`).then(() => {
+        ctx.font = `${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`;
+  
+        const rectHeight = 1100 * (canvasSize.height / 1350);
+        const rectWidth = 830 * (canvasSize.width / 1080);
+        const textMaxWidth = rectWidth - (textBoxPadding * 2 * scalingFactor);
+        const currentLineHeight = typeof activeFont.lineHeight === 'number' ? activeFont.lineHeight : parseFloat(activeFont.lineHeight as string);
+        const finalLineHeight = finalFontSize * currentLineHeight;
+  
+        // Dynamically calculate max lines based on available height
+        const dynamicMaxLines = Math.floor(rectHeight / finalLineHeight);
+        const baseMaxLines = Math.max(1, dynamicMaxLines - 2); // Leave some buffer
+        const extendedMaxLines = dynamicMaxLines; // Allow using full height if needed
+  
+        // Continue processing only if there's text left
+        while (remainingText.length > 0) {
+            const result = measureAndSplitText(ctx, remainingText, textMaxWidth, baseMaxLines, extendedMaxLines);
+            
+            newDesigns.push({ text: result.textForCanvas, isTitle: false });
+            remainingText = result.remainingText;
+    
+            if (newDesigns.length > 50) { 
+                console.error("Exceeded 50 slides, breaking loop.");
+                break;
+            }
+        }
+    
+        setDesigns(newDesigns);
+        setIsLoading(false);
+    
+        // Scroll to the first slide after generation
+        setTimeout(() => carouselApi?.scrollTo(0), 100);
+    });
+  }, [text, title, canvasSize, activeFont, isBold, carouselApi, textBoxPadding, fontSize]);
+  
+  useEffect(() => {
+    if (designs.length > 0) {
+      const timeoutId = setTimeout(() => {
+        handleGenerate();
+      }, 100);
+      return () => clearTimeout(timeoutId);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isBold, isUppercase, textAlign, activeEffect]);
+
+
+  /**
+   * Closes the mobile settings panel.
+   */
+   const closePanel = useCallback(() => {
+    setIsMobilePanelOpen(false);
+  }, []);
+
+  /**
+   * Effect to handle clicks outside the mobile panel to close it.
+   */
+   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!isMobilePanelOpen) return;
+
+      const targetElement = event.target as Element;
+
+      // Check if the click is on the sheet itself or a popover/dialog triggered from within the sheet
+      const isClickInsideSheet = mobilePanelRef.current && mobilePanelRef.current.contains(targetElement);
+      const isClickOnDialog = targetElement.closest('[role="dialog"], [data-radix-dialog-overlay]');
+      const isClickOnPopover = targetElement.closest('[data-radix-popper-content-wrapper]');
+
+      if (!isClickInsideSheet && !isClickOnDialog && !isClickOnPopover) {
+          closePanel();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobilePanelOpen, closePanel]);
+
+  /**
+   * Triggers the download of a single canvas slide as a PNG image.
+   * @param {number} index - The index of the design to download.
+   */
+  const handleDownload = useCallback((index: number) => {
+    const canvas = canvasRefs.current[index];
+    if (canvas) {
+      const dataUrl = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = `${fileName}-${index + 1}.png`;
+      link.click();
+    }
+  }, [fileName]);
+
+  /**
+   * Triggers the download of all generated canvas slides sequentially.
+   */
+  const handleDownloadAll = useCallback(() => {
+    designs.forEach((_, index) => {
+      setTimeout(() => handleDownload(index), index * 300);
+    });
+  }, [designs, handleDownload]);
+
+
+  /**
+   * Logs the current design's configuration to the console for development purposes.
+   */
+  const handleLogDesign = useCallback(() => {
+    let bgValue = '';
+    if (backgroundType === 'flat') bgValue = bgColor;
+    else if (backgroundType === 'gradient') bgValue = gradientBg;
+    else if (backgroundType === 'image') bgValue = imageBgUrl;
+  
+    const templateToLog = {
+      previewImage: "''", // Placeholder
+      category: "UNCATEGORIZED",
+      canvasSize: canvasSize.name,
+      background: {
+        type: backgroundType,
+        value: bgValue,
+      },
+      font: {
+        value: activeFont.value,
+        color: textColor,
+        fontSize: fontSize,
+      },
+      textBox: {
+        color: rectBgColor,
+        opacity: rectOpacity,
+      },
+      overlay: {
+        color: overlayColor,
+        opacity: overlayOpacity,
+      },
+       effect: {
+        id: activeEffect.id
+      }
+    };
+
+    const templateString = `
+{
+  id: 'template-NEW_ID',
+  name: "New Template Name",
+  category: 'Special Effects', // Or 'Color Styles' or 'Image Templates'
+  previewImage: "",
+  canvasSize: '${templateToLog.canvasSize}',
+  background: {
+    type: '${templateToLog.background.type}',
+    value: ${templateToLog.background.type === 'gradient' 
+      ? `gradientTemplates.find(g => g.name === 'YOUR_GRADIENT_NAME')?.css || '${templateToLog.background.value}'`
+      : `'${templateToLog.background.value}'`
+    },
+  },
+  font: {
+    value: '${templateToLog.font.value}',
+    color: '${templateToLog.font.color}',
+    fontSize: ${templateToLog.font.fontSize},
+  },
+  textBox: {
+    color: '${templateToLog.textBox.color}',
+    opacity: ${templateToLog.textBox.opacity},
+  },
+  overlay: {
+    color: '${templateToLog.overlay.color}',
+    opacity: ${templateToLog.overlay.opacity},
+  },
+  effect: {
+    id: '${templateToLog.effect?.id}',
+  }
+},`;
+  
+    console.log("Copy this code snippet to add to design-templates.ts:");
+    console.log(templateString);
+  
+    toast({
+      title: "Design Logged to Console",
+      description: "Open developer tools (F12) to see the design code.",
+      duration: 5000,
+    });
+  }, [backgroundType, bgColor, gradientBg, imageBgUrl, activeFont, textColor, rectBgColor, rectOpacity, overlayColor, overlayOpacity, toast, activeEffect, canvasSize, fontSize]);
+
+  /**
+   * Applies the styles from a selected text effect to the canvas text.
+   */
+  const handleEffectChange = (effect: TextEffect) => {
+    setActiveEffect(effect);
+
+    if (effect.fontValue) {
+        const newFont = fontOptions.find(f => f.value === effect.fontValue);
+        if (newFont) {
+            setActiveFont(newFont);
+        }
+    }
+    if (typeof effect.style.fontSize === 'number') {
+        setFontSize(effect.style.fontSize);
+    }
+
+
+    if (effect.id === 'none') {
+        setTextShadowEnabled(false);
+        setTextColor(pageInitialColors.textColor);
+    } else {
+        if (effect.style.color) {
+            setTextColor(effect.style.color);
+        }
+        if (effect.style.textShadow) {
+            setTextShadowEnabled(true);
+            const finalShadowString = effect.style.textShadow
+              .replace(/{{color}}/g, effect.style.color || textColor)
+              .replace(/{{glow}}/g, effect.style.glowColor || effect.style.color || textColor);
+
+            const parsedShadows = parseShadow(finalShadowString);
+            setShadows(parsedShadows);
+        } else {
+            setTextShadowEnabled(false);
+        }
+    }
+};
+
+  /**
+   * Updates the text color and recalculates shadow colors if an effect is active.
+   * @param {string} newColor - The new color for the text.
+   */
+  const handleTextColorChange = (newColor: string) => {
+    setTextColor(newColor);
+    if (activeEffect && activeEffect.id !== 'none' && activeEffect.style.textShadow) {
+      const finalShadowString = activeEffect.style.textShadow
+        .replace(/{{color}}/g, newColor)
+        .replace(/{{glow}}/g, activeEffect.style.glowColor || newColor);
+      const newShadows = parseShadow(finalShadowString);
+      setShadows(newShadows);
+    }
+  };
+  
+  /**
+   * Handles the file upload event for images, creating a new canvas element.
+   * @param {React.ChangeEvent<HTMLInputElement>} event - The file input change event.
+   */
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onloadend = () => {
         const newElement: CanvasElement = {
-          id: `element_${Date.now()}`,
+          id: `element-${Date.now()}`,
           type: 'image',
-          url: e.target?.result as string,
+          url: reader.result as string,
           x: 50,
           y: 50,
           width: 150,
@@ -318,611 +587,994 @@ export default function Home() {
     }
   };
 
+  /**
+   * Updates the properties of a specific canvas element.
+   * @param {string} id - The ID of the element to update.
+   * @param {Partial<CanvasElement>} newProps - The new properties to apply.
+   */
   const updateElement = (id: string, newProps: Partial<CanvasElement>) => {
-    setElements(prev => prev.map(el => el.id === id ? { ...el, ...newProps } : el));
+    setElements(prev =>
+      prev.map(el => (el.id === id ? { ...el, ...newProps } : el))
+    );
   };
 
+  /**
+   * Renders a single canvas slide with the current settings.
+   * @param {Design} design - The design object containing text and title info.
+   * @param {number} index - The index of the slide.
+   * @returns {JSX.Element} - The ImageCanvas component.
+   */
+  const renderCanvas = useCallback((design: Design, index: number) => {
+    let currentBg: string | undefined;
+    let finalImageUrl: string | undefined;
 
-  const handleBgColorSelect = (color: string) => {
-    setBgColor(color);
-    setBackgroundType('flat');
-    setImageBgUrl('');
-    setGradientBg('');
-  };
-  
-  const handleGradientBgSelect = (css: string) => {
-    setGradientBg(css);
-    setBackgroundType('gradient');
-    setImageBgUrl('');
-  };
-
-  const handleImageBgUrlSelect = (template: ImageTemplate) => {
-    setCurrentTemplate(template);
-    const newUrl = template.imageUrls[canvasSize.name.toLowerCase() as keyof typeof template.imageUrls] || template.imageUrls.post;
-    setImageBgUrl(newUrl);
-    setBackgroundType('image');
-  };
-
-  const handleFeelLucky = () => {
-    const randomTemplate = imageTemplates[Math.floor(Math.random() * imageTemplates.length)];
-    handleImageBgUrlSelect(randomTemplate);
-  }
-
-  const handleSearchImages = async (query: string, page = 1) => {
-    if (!query.trim()) return;
-    setIsSearching(true);
-    try {
-      const result = await findImages({ query, page, per_page: 12 });
-      if (page === 1) {
-        setSearchedImages(result.imageUrls);
-      } else {
-        setSearchedImages(prev => [...prev, ...result.imageUrls]);
-      }
-      setSearchPage(page);
-
-      if (page === 1 && result.imageUrls.length > 0) {
-        handleImageSelectFromSearch(result.imageUrls[0]);
-        setTimeout(() => searchCarouselApi?.scrollTo(0), 100);
-      }
-
-    } catch (error: any) {
-      console.error(error);
-      toast({
-        variant: "destructive",
-        title: "Image search failed.",
-        description: error.message || "Could not fetch images from Pexels.",
-      });
-    } finally {
-      setIsSearching(false);
-    }
-  };
-
-  const handleImageSelectFromSearch = (imageUrl: string) => {
-    handleImageBgUrlSelect({
-      name: `Search: ${searchQuery}`,
-      imageUrls: {
-        post: imageUrl,
-        story: imageUrl,
-        square: imageUrl,
-      },
-    });
-  };
-
-  const handleKeywordSearch = (keyword: string) => {
-    setSearchQuery(keyword);
-    handleSearchImages(keyword, 1);
-  };
-
-
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  const generateDesigns = useCallback(() => {
-    if (!text.trim()) {
-      toast({
-        title: 'Text is empty',
-        description: 'Please enter some text to generate designs.',
-        variant: 'destructive',
-      });
-      return;
+    switch(backgroundType) {
+        case "flat":
+            currentBg = bgColor;
+            finalImageUrl = undefined;
+            break;
+        case "gradient":
+            currentBg = gradientBg;
+            finalImageUrl = undefined;
+            break;
+        case "image":
+            currentBg = imageBgUrl; 
+            finalImageUrl = imageBgUrl;
+            break;
+        default:
+            currentBg = bgColor;
+            finalImageUrl = undefined;
+            break;
     }
     
-    setIsGeneratingAnimation(true);
-    setTimeout(() => {
-      setIsLoading(true);
-      setDesigns([]); // Clear previous designs
-      setGeneratedCanvases([]); // Clear previous canvases
-      setActiveSettingsTab('designs');
-      
-      setTimeout(() => {
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = canvasSize.width;
-        tempCanvas.height = canvasSize.height;
-        const ctx = tempCanvas.getContext('2d');
-        if (!ctx) {
-          setIsLoading(false);
-          setIsGeneratingAnimation(false);
-          return;
-        }
-
-        const scalingFactor = canvasSize.width / 1080;
-        const finalFontSize = fontSize * scalingFactor;
-        const finalLineHeight = finalFontSize * (typeof activeFont.lineHeight === 'number' ? activeFont.lineHeight : parseFloat(activeFont.lineHeight as string));
-        const finalPadding = textBoxPadding * scalingFactor;
-
-        const rectWidth = (canvasSize.name === 'Square' ? 900 : 830) * scalingFactor;
-        const textMaxWidth = rectWidth - (finalPadding * 2);
-
-        const rectHeight = (canvasSize.name === 'Story' ? 1500 : canvasSize.name === 'Square' ? 900 : 1100) * scalingFactor;
-        const textMaxHeight = rectHeight - (finalPadding * 2);
-
-        ctx.font = `${isBold ? Math.min(Number(activeFont.weight) + 300, 900) : activeFont.weight} ${finalFontSize}px "${activeFont.fontFamily}"`;
-        
-        const baseMaxLines = Math.floor(textMaxHeight / finalLineHeight);
-        const extendedMaxLines = baseMaxLines + 2; 
-
-        let remainingText = text;
-        const newDesigns: Design[] = [];
-        
-        let finalTitle = title.trim();
-        if (!finalTitle && !text.startsWith('http') && !text.startsWith('www')) {
-          const firstSentenceMatch = text.match(/^[^.!?\n]+[.!?\n]?/);
-          if (firstSentenceMatch) {
-              finalTitle = firstSentenceMatch[0].trim();
-              remainingText = text.substring(finalTitle.length).trim();
-          } else {
-              const firstLine = text.split('\n')[0];
-              finalTitle = firstLine;
-              remainingText = text.substring(finalLine.length).trim();
-          }
-        } else if (!finalTitle) {
-          finalTitle = text.split('\n')[0];
-          remainingText = text.substring(finalTitle.length).trim();
-        }
-
-        if (finalTitle) {
-          newDesigns.push({ text: finalTitle, isTitle: true });
-        }
-        
-        let loopCount = 0;
-        const maxLoops = 50; 
-        while (remainingText.trim().length > 0 && loopCount < maxLoops) {
-          const { textForCanvas, remainingText: nextRemainingText } = measureAndSplitText(
-            ctx,
-            remainingText,
-            textMaxWidth,
-            baseMaxLines,
-            extendedMaxLines
-          );
-          
-          if (textForCanvas) {
-            newDesigns.push({ text: textForCanvas, isTitle: false });
-          }
-          remainingText = nextRemainingText;
-          loopCount++;
-        }
-
-        setDesigns(newDesigns);
-        setIsLoading(false);
-        setIsGeneratingAnimation(false);
-      }, 500); // Allow state to clear
-    }, 1000); // Lottie animation duration
-  }, [text, title, fontSize, activeFont, canvasSize, isBold, textBoxPadding, toast]);
-
-  const handleCanvasReady = (canvas: HTMLCanvasElement, index: number) => {
-    setGeneratedCanvases(prev => {
-      const newCanvases = [...prev];
-      newCanvases[index] = canvas;
-      return newCanvases;
-    });
-  };
-
-  const downloadCanvas = (canvas: HTMLCanvasElement, downloadFileName: string) => {
-    const link = document.createElement('a');
-    link.download = `${downloadFileName}.png`;
-    link.href = canvas.toDataURL('image/png', 1.0);
-    link.click();
-  };
-
-  const handleDownload = (index: number) => {
-    const canvas = generatedCanvases[index];
-    if (canvas) {
-      downloadCanvas(canvas, `${fileName}-${index + 1}`);
+    return (
+        <ImageCanvas
+          isTitle={design.isTitle}
+          fontFamily={activeFont.fontFamily}
+          fontWeight={activeFont.weight}
+          fontSize={fontSize}
+          lineHeight={activeFont.lineHeight}
+          text={design.text}
+          textColor={textColor}
+          textOpacity={textOpacity}
+          backgroundColor={currentBg}
+          backgroundImageUrl={finalImageUrl}
+          width={canvasSize.width}
+          height={canvasSize.height}
+          onCanvasReady={(canvas) => {
+            canvasRefs.current[index] = canvas;
+          }}
+          rectColor={rectBgColor}
+          rectOpacity={isTextBoxEnabled ? rectOpacity : 0}
+          textBoxPadding={textBoxPadding}
+          textBoxBorderRadius={textBoxBorderRadius}
+          isTextBoxBorderEnabled={isTextBoxBorderEnabled}
+          textBoxBorderColor={textBoxBorderColor}
+          textBoxBorderWidth={textBoxBorderWidth}
+          overlayColor={overlayColor}
+          overlayOpacity={isOverlayEnabled ? overlayOpacity : 0}
+          textAlign={textAlign}
+          isBold={isBold}
+          isUppercase={isUppercase}
+          textShadowEnabled={textShadowEnabled}
+          shadows={shadows}
+          textStroke={textStroke}
+          strokeColor={strokeColor}
+          strokeWidth={strokeWidth}
+          fontSmoothing={activeEffect.style.fontSmoothing}
+          elements={elements}
+          areElementsEnabled={areElementsEnabled}
+        />
+    )
+  }, [
+    backgroundType, activeFont, bgColor, textColor, textOpacity, 
+    gradientBg, imageBgUrl, rectBgColor, rectOpacity, overlayColor, 
+    overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, 
+    shadows, textStroke, strokeColor, strokeWidth, 
+    isTextBoxEnabled, isOverlayEnabled, activeEffect, canvasSize, elements, areElementsEnabled,
+    textBoxPadding, textBoxBorderRadius, isTextBoxBorderEnabled, textBoxBorderColor, textBoxBorderWidth, fontSize
+  ]);
+  
+  /**
+   * Handles tab clicks in the mobile view, opening the settings panel.
+   * @param {string} tab - The value of the tab being clicked.
+   */
+  const handleMobileTabClick = (tab: string) => {
+    if (activeSettingsTab === tab && isMobilePanelOpen) {
+      // Don't close if it's already open and the same tab is clicked
     } else {
-      toast({
-        title: "Canvas not ready",
-        description: "Please wait for the design to render before downloading.",
-        variant: "destructive"
-      })
+      setActiveSettingsTab(tab);
+      setIsMobilePanelOpen(true);
     }
   };
+  
+  /**
+   * Handles tab clicks in the desktop view, changing the active settings panel.
+   */
+  const handleDesktopTabClick = (tab: string) => {
+      setActiveSettingsTab(tab);
+      if (!isSidebarOpen) {
+          setIsSidebarOpen(true);
+      }
+  };
 
-  const handleDownloadAll = () => {
-    if (generatedCanvases.length < designs.length) {
-      toast({
-        title: "Canvases not ready",
-        description: "Please wait for all designs to render before downloading all.",
-        variant: "destructive"
-      });
-      return;
-    }
-    generatedCanvases.forEach((canvas, index) => {
-      setTimeout(() => {
-        downloadCanvas(canvas, `${fileName}-${index + 1}`);
-      }, index * 200); // Stagger downloads
+  /**
+   * Handles zooming in or out of the canvas area.
+   * @param {'in' | 'out'} direction - The direction of the zoom.
+   */
+  const handleZoom = (direction: 'in' | 'out') => {
+    setZoomLevel(prev => {
+        const newZoom = direction === 'in' ? prev + ZOOM_STEP : prev - ZOOM_STEP;
+        return Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newZoom));
     });
   };
 
-  const getActiveTemplate = (): DesignTemplate => {
-    return {
-      id: `writa-${Date.now()}`,
-      name: "New Favorite",
+  /**
+   * Effect to handle keyboard events for panning.
+   */
+  useEffect(() => {
+    /**
+     * Handles keydown events for panning (spacebar).
+     * @param {KeyboardEvent} e - The keyboard event.
+     */
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const activeElement = document.activeElement;
+      if (activeElement && (activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'INPUT')) {
+        return;
+      }
+      if (e.code === 'Space') {
+        e.preventDefault();
+        setIsPanning(true);
+        if (designsRef.current) {
+          designsRef.current.style.cursor = 'grab';
+        }
+      }
+    };
+    /**
+     * Handles keyup events to stop panning.
+     * @param {KeyboardEvent} e - The keyboard event.
+     */
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        setIsPanning(false);
+         if (designsRef.current) {
+          designsRef.current.style.cursor = 'default';
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+
+  /**
+   * Initiates panning when the user holds down the mouse button while panning is active.
+   * @param {React.MouseEvent<HTMLDivElement>} e - The mouse event.
+   */
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isPanning) {
+      e.preventDefault();
+       if (designsRef.current) {
+        designsRef.current.style.cursor = 'grabbing';
+      }
+      setPanStart({ x: e.clientX - panOffset.x, y: e.clientY - panOffset.y });
+    }
+  };
+
+  /**
+   * Updates the pan offset as the user moves the mouse.
+   * @param {React.MouseEvent<HTMLDivElement>} e - The mouse event.
+   */
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isPanning && e.buttons === 1) {
+      e.preventDefault();
+      setPanOffset({
+        x: e.clientX - panStart.x,
+        y: e.clientY - panStart.y,
+      });
+    }
+  };
+
+  /**
+   * Ends the panning action when the mouse button is released.
+   * @param {React.MouseEvent<HTMLDivElement>} e - The mouse event.
+   */
+  const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isPanning) {
+       if (designsRef.current) {
+        designsRef.current.style.cursor = 'grab';
+      }
+    }
+  };
+  
+  /**
+   * Calculates the distance between two touch points for pinch-to-zoom.
+   * @param {Touch} touch1 - The first touch point.
+   * @param {Touch} touch2 - The second touch point.
+   * @returns {number} - The distance between the touches.
+   */
+  const getDistance = (touch1: Touch, touch2: Touch) => {
+    const dx = touch1.clientX - touch2.clientX;
+    const dy = touch1.clientY - touch2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+  
+  /**
+   * Handles the start of a touch event, initiating panning or pinch-to-zoom.
+   * @param {React.TouchEvent<HTMLDivElement>} e - The touch event.
+   */
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.nativeEvent.touches.length === 2) {
+      e.preventDefault(); // Prevent default scroll/zoom
+      const touch1 = e.nativeEvent.touches[0];
+      const touch2 = e.nativeEvent.touches[1];
+       if (!touch1 || !touch2) return;
+      const midX = (touch1.clientX + touch2.clientX) / 2;
+      const midY = (touch1.clientY + touch2.clientY) / 2;
+      setPanStart({ x: midX - panOffset.x, y: midY - panOffset.y });
+      setPinchState({
+        distance: getDistance(touch1, touch2),
+        zoom: zoomLevel,
+      });
+    }
+  };
+  
+  /**
+   * Handles the movement of touches, updating pan and zoom levels.
+   * @param {React.TouchEvent<HTMLDivElement>} e - The touch event.
+   */
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.nativeEvent.touches.length === 2) {
+      e.preventDefault(); // Prevent default scroll/zoom
+      const touch1 = e.nativeEvent.touches[0];
+      const touch2 = e.nativeEvent.touches[1];
+      if (!touch1 || !touch2) return;
+  
+      // Panning
+      const midX = (touch1.clientX + touch2.clientX) / 2;
+      const midY = (touch1.clientY + touch2.clientY) / 2;
+      setPanOffset({
+        x: midX - panStart.x,
+        y: midY - panStart.y,
+      });
+  
+      // Zooming
+      if (pinchState) {
+        const newDist = getDistance(touch1, touch2);
+        const scale = newDist / pinchState.distance;
+        let newZoom = pinchState.zoom * scale;
+        newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newZoom));
+        setZoomLevel(newZoom);
+      }
+    }
+  };
+  
+  /**
+   * Ends the pinch-to-zoom action when touches are released.
+   * @param {React.TouchEvent<HTMLDivElement>} e - The touch event.
+   */
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length < 2) {
+      setPinchState(null);
+    }
+  };
+
+
+  /**
+   * Resets the pan and zoom levels to a default state based on canvas size and device type.
+   * @param {CanvasSize} size - The current canvas size.
+   * @returns {number} The new zoom level.
+   */
+  const resetPanAndZoom = useCallback((size: CanvasSize) => {
+    let newZoom;
+    if (isMobile) {
+        switch(size.name) {
+            case 'Story': newZoom = 0.8; break;
+            case 'Post': newZoom = 1.0; break;
+            case 'Square': newZoom = 1.0; break;
+            default: newZoom = 1.0; break;
+        }
+    } else {
+        switch(size.name) {
+            case 'Story': newZoom = 0.4; break;
+            case 'Post': newZoom = 0.5; break;
+            case 'Square': newZoom = 0.6; break;
+            default: newZoom = 0.5; break;
+        }
+    }
+    setZoomLevel(newZoom);
+    setPanOffset({ x: 0, y: 0 });
+    return newZoom;
+  }, [isMobile]);
+
+  /**
+   * Effect to reset pan and zoom when the canvas size or client status changes.
+   */
+  useEffect(() => {
+    if(isClient){
+      resetPanAndZoom(canvasSize);
+    }
+  }, [isClient, canvasSize, resetPanAndZoom]);
+
+  /**
+   * Changes the canvas size and resets pan/zoom accordingly.
+   * @param {CanvasSize} size - The new canvas size to apply.
+   */
+  const handleCanvasSizeChange = (size: CanvasSize) => {
+    setCanvasSize(size);
+  }
+  /**
+   * Applies all styles from a selected design template.
+   * @param {DesignTemplate} template - The template to apply.
+   */
+  const applyTemplate = (template: DesignTemplate) => {
+    // Set background
+    setBackgroundType(template.background.type);
+    if (template.background.type === 'flat') {
+      setBgColor(template.background.value);
+    } else if (template.background.type === 'gradient') {
+      setGradientBg(template.background.value);
+    } else {
+      setImageBgUrl(template.background.value);
+    }
+  
+    // Set font
+    const newFont = fontOptions.find(f => f.value === template.font.value) || activeFont;
+    setActiveFont(newFont);
+    
+    // Set textbox
+    setIsTextBoxEnabled(template.textBox.opacity > 0);
+    setRectBgColor(template.textBox.color);
+    setRectOpacity(template.textBox.opacity);
+  
+    // Set overlay
+    setIsOverlayEnabled(template.overlay.opacity > 0);
+    setOverlayColor(template.overlay.color);
+    setOverlayOpacity(template.overlay.opacity);
+  
+    // Set effect
+    if (template.effect) {
+      const effect = textEffects.find(e => e.id === template.effect!.id);
+      if (effect) {
+        handleEffectChange(effect);
+      }
+    } else {
+      handleEffectChange(textEffects[0]);
+    }
+    
+    // This needs to be last to override effect color
+    setTextColor(template.font.color);
+
+    // Set Canvas Size
+    const newCanvasSize = canvasSizes.find(s => s.name === template.canvasSize) || canvasSize;
+    handleCanvasSizeChange(newCanvasSize);
+  
+    toast({
+      title: "Template Applied",
+      description: `The "${template.name}" template has been applied.`,
+    });
+  };
+
+  /**
+   * Saves the current design settings as a new favorite in local storage.
+   */
+  const handleSaveDesign = () => {
+    let bgValue = '';
+    if (backgroundType === 'flat') bgValue = bgColor;
+    else if (backgroundType === 'gradient') bgValue = gradientBg;
+    else if (backgroundType === 'image') bgValue = imageBgUrl;
+
+    const newDesign: DesignTemplate = {
+      id: `design-${Date.now()}`,
+      name: `Favorite ${myDesigns.length + 1}`,
       category: 'Favorites',
-      previewImage: '', 
-      background: {
-        type: backgroundType,
-        value: backgroundType === 'flat' ? bgColor : backgroundType === 'gradient' ? gradientBg : imageBgUrl,
-      },
-      font: {
-        value: activeFont.value,
+      previewImage: '', // Canvas preview will be generated later
+      background: { type: backgroundType, value: bgValue },
+      font: { 
+        value: activeFont.value, 
         color: textColor,
         fontSize: fontSize,
       },
-      textBox: {
-        color: rectBgColor,
-        opacity: rectOpacity,
-      },
-      overlay: {
-        color: overlayColor,
-        opacity: isOverlayEnabled ? overlayOpacity : 0,
-      },
+      textBox: { color: rectBgColor, opacity: rectOpacity },
+      overlay: { color: overlayColor, opacity: overlayOpacity },
       canvasSize: canvasSize.name,
-      effect: activeEffect.id !== 'none' ? { id: activeEffect.id } : undefined,
+      effect: { id: activeEffect.id },
     };
-  };
 
-  const handleSaveDesign = () => {
-    const currentDesign = getActiveTemplate();
-    const canvas = generatedCanvases[0];
-    if (canvas) {
-      canvas.toBlob(blob => {
-        if(blob) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            currentDesign.previewImage = e.target?.result as string;
-            setMyDesigns(prev => [...prev, currentDesign]);
-            toast({ title: "Favorite Saved!", description: "Your current design has been added to your favorites." });
-          }
-          reader.readAsDataURL(blob);
-        }
-      }, 'image/jpeg', 0.5)
-    } else {
-       // Fallback if canvas is not ready, save without preview
-      setMyDesigns(prev => [...prev, currentDesign]);
-      toast({ title: "Favorite Saved!", description: "Your current design has been added to your favorites." });
-    }
+    setMyDesigns(prevDesigns => [newDesign, ...prevDesigns]);
+    toast({
+      title: "Favorite Saved!",
+      description: "Your current design has been saved to your favorites.",
+    });
   };
-
+  
+  /**
+   * Deletes a favorite design from local storage.
+   * @param {string} id - The ID of the design to delete.
+   */
   const handleDeleteDesign = (id: string) => {
     setMyDesigns(prev => prev.filter(d => d.id !== id));
     setDesignToDelete(null);
-    toast({ title: "Favorite Deleted" });
+    toast({
+      title: "Favorite Deleted",
+      variant: "destructive",
+    });
   };
 
+  /**
+   * Enters edit mode for a favorite design's name.
+   * @param {string} id - The ID of the design to edit.
+   * @param {string} name - The current name of the design.
+   */
   const handleEditClick = (id: string, name: string) => {
     setEditingDesignId(id);
     setEditingName(name);
   };
-
+  
+  /**
+   * Updates the name of a favorite design in local storage.
+   * @param {string} id - The ID of the design to update.
+   */
+  const handleUpdateDesign = (id: string) => {
+    setMyDesigns(prev => prev.map(d => d.id === id ? { ...d, name: editingName } : d));
+    setEditingDesignId(null);
+    setEditingName('');
+  };
+  
+  /**
+   * Cancels the editing of a favorite design's name.
+   */
   const handleCancelEdit = () => {
     setEditingDesignId(null);
     setEditingName('');
   };
 
-
-
-  const handleUpdateDesign = (id: string) => {
-    if (!editingName.trim()) {
-      toast({ title: "Name cannot be empty", variant: "destructive" });
-      return;
-    }
-    setMyDesigns(prev => prev.map(d => d.id === id ? { ...d, name: editingName } : d));
-    handleCancelEdit();
+  /**
+   * Handles the selection of a solid background color.
+   */
+  const handleBgColorSelect = (color: string) => {
+    setBgColor(color);
+    setBackgroundType('flat');
   };
 
-  const handleLogDesign = () => {
-    console.log(JSON.stringify(getActiveTemplate(), null, 2));
-    toast({ title: "Design Logged", description: "The current design's configuration has been logged to the console." });
+  /**
+   * Handles the selection of a gradient background.
+   */
+  const handleGradientBgSelect = (css: string) => {
+    setGradientBg(css);
+    setBackgroundType('gradient');
   };
 
-  const handleApplyTemplate = (template: DesignTemplate) => {
-    if (template.background.type === 'flat') {
-      setBgColor(template.background.value);
-      setBackgroundType('flat');
-    } else if (template.background.type === 'gradient') {
-      setGradientBg(template.background.value);
-      setBackgroundType('gradient');
-    } else if (template.background.type === 'image') {
-      const imgTemplate = imageTemplates.find(it => it.imageUrls.post === template.background.value);
-      if (imgTemplate) {
-        handleImageBgUrlSelect(imgTemplate);
-      } else {
-        handleImageSelectFromSearch(template.background.value);
-      }
-      setBackgroundType('image');
-    }
-
-    const newFont = fontOptions.find(f => f.value === template.font.value) || activeFont;
-    setActiveFont(newFont);
-    setTextColor(template.font.color);
-    setFontSize(template.font.fontSize);
-
-    setRectBgColor(template.textBox.color);
-    setRectOpacity(template.textBox.opacity);
-    setIsTextBoxEnabled(template.textBox.opacity > 0);
-
-    setOverlayColor(template.overlay.color);
-    setOverlayOpacity(template.overlay.opacity);
-    setIsOverlayEnabled(template.overlay.opacity > 0);
-    
-    const newCanvasSize = canvasSizes.find(cs => cs.name === template.canvasSize) || canvasSize;
-    setCanvasSize(newCanvasSize);
-
-    if (template.effect) {
-      const effect = textEffects.find(e => e.id === template.effect!.id) || textEffects[0];
-      setActiveEffect(effect);
-      if(effect.id !== 'none') {
-        setTextShadowEnabled(true);
-        setShadows(parseShadow(effect.style.textShadow || ''))
-      } else {
-        setTextShadowEnabled(false);
-      }
-    } else {
-      setActiveEffect(textEffects[0]);
-      setTextShadowEnabled(false);
-    }
-
-
-    toast({ title: `Template "${template.name}" Applied` });
+  /**
+   * Handles the selection of a predefined image background.
+   * @param {ImageTemplate} template - The selected image template.
+   */
+  const handleImageBgUrlSelect = (template: ImageTemplate) => {
+    const sizeName = canvasSize.name.toLowerCase() as 'post' | 'story' | 'square';
+    setImageBgUrl(template.imageUrls[sizeName]);
+    setBackgroundType('image');
   };
 
-
-  useEffect(() => {
-    const effect = activeEffect;
-    if (effect.id !== 'none') {
-        const newFont = fontOptions.find(f => f.value === effect.fontValue) || activeFont;
-        setActiveFont(newFont);
-        setFontSize(typeof effect.style.fontSize === 'number' ? effect.style.fontSize : fontSize);
-        setTextShadowEnabled(true);
-        setShadows(parseShadow(effect.style.textShadow || ''));
-        if (effect.style.color) {
-          setTextColor(effect.style.color);
+  /**
+   * Searches for images using the Pexels API.
+   * @param {string} query - The search term.
+   * @param {number} [page=1] - The page number for pagination.
+   */
+    const handleSearchImages = useCallback(async (query: string, page: number = 1) => {
+        if (!query) {
+            toast({
+                title: "Search query is empty",
+                description: "Please enter a term to search for images.",
+                variant: "destructive",
+            });
+            return;
         }
-    } else {
-        setTextShadowEnabled(false);
-    }
-  }, [activeEffect, fontSize, setActiveFont]);
+        setIsSearching(true);
+        setSearchPage(page);
+        if(page === 1) {
+            setSearchQuery(query);
+            setSearchedImages([]); 
+        }
 
-  const settingsTabs = [
-    { value: 'creative-magic', icon: <LayoutTemplate />, label: 'Creative Magic' },
-    { value: 'templates', icon: <LayoutTemplate />, label: 'Templates' },
-    { value: 'background', icon: <ImageIcon />, label: 'Background' },
-    { value: 'text', icon: <Type />, label: 'Text' },
-    { value: 'favorites', icon: <HeartIcon />, label: 'Favorites' },
-    { value: 'elements', icon: <Shapes />, label: 'Elements' },
-    { value: 'download', icon: <Download />, label: 'Download & Share' },
-  ];
+        try {
+            const results = await findImages({ query, page: page, per_page: 4 });
+            if (results.imageUrls.length === 0 && page === 1) {
+                toast({ title: "No images found." });
+                setSearchedImages([]);
+            } else {
+                 setSearchedImages(prev => {
+                    const newImages = [...results.imageUrls, ...prev];
+                    const uniqueImages = Array.from(new Set(newImages));
+                    return uniqueImages.slice(0, 12); 
+                });
+            }
+        } catch (error: any) {
+            console.error(error);
+            toast({
+                title: "Search Failed",
+                description: error.message || "Could not fetch images from Pexels.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsSearching(false);
+            if (page === 1) {
+                 setTimeout(() => searchCarouselApi?.scrollTo(0), 100);
+            }
+        }
+    }, [toast, searchCarouselApi]);
 
-  const activeTabLabel = settingsTabs.find(tab => tab.value === activeSettingsTab)?.label;
+  /**
+   * Initiates an image search based on a keyword click.
+   * @param {string} keyword - The keyword to search for.
+   */
+  const handleKeywordSearch = useCallback((keyword: string) => {
+    handleSearchImages(keyword, 1);
+  }, [handleSearchImages]);
 
+  /**
+   * Selects a random image from Picsum Photos and applies a default style.
+   */
+  const handleFeelLucky = () => {
+    const randomSeed = Math.floor(Math.random() * 1000);
+    const url = `https://picsum.photos/seed/${randomSeed}`;
+    const luckyTemplate: ImageTemplate = {
+      name: 'Lucky',
+      imageUrls: {
+        post: `${url}/1080/1350`,
+        story: `${url}/1080/1920`,
+        square: `${url}/1080/1080`,
+      }
+    };
+    handleImageBgUrlSelect(luckyTemplate);
+    setRectBgColor("#f4fdff");
+    setRectOpacity(0.6);
+  };
+
+
+  /**
+   * Renders the content of the currently active settings tab.
+   * @returns {JSX.Element | null} The component for the active tab.
+   */
   const renderActiveTabContent = () => {
+    const props = {
+        title,
+        setTitle,
+        text, 
+        setText, 
+        handleGenerate, 
+        isLoading,
+        handleFeelLucky,
+        bgColor, 
+        handleBgColorSelect,
+        imageBgUrl, 
+        handleImageBgUrlSelect,
+        searchQuery, 
+        setSearchQuery, 
+        handleSearchImages,
+        isSearching, 
+        searchedImages,
+        handleKeywordSearch, 
+        searchPage, 
+        isOverlayEnabled, 
+        setIsOverlayEnabled,
+        overlayColor, 
+        setOverlayColor, 
+        overlayOpacity, 
+        setOverlayOpacity, 
+        gradientBg,
+        handleGradientBgSelect, 
+        setSearchCarouselApi: setSearchCarouselApi, 
+        textColor, 
+        setTextColor: handleTextColorChange, 
+        textOpacity,
+        setTextOpacity, 
+        activeFont, 
+        setActiveFont,
+        fontSize,
+        setFontSize,
+        fontOptions, 
+        isBold, 
+        setIsBold,
+        isUppercase, 
+        setIsUppercase, 
+        textAlign, 
+        setTextAlign, 
+        textShadowEnabled,
+        setTextShadowEnabled, 
+        shadows, 
+        setShadows, 
+        textStroke, 
+        setTextStroke,
+        strokeColor, 
+        setStrokeColor, 
+        strokeWidth, 
+        setStrokeWidth, 
+        isTextBoxEnabled,
+        setIsTextBoxEnabled, 
+        rectBgColor, 
+        setRectBgColor, _rectOpacity: rectOpacity,
+        setRectOpacity: setRectOpacity,
+        textBoxPadding,
+        setTextBoxPadding,
+        textBoxBorderRadius,
+        setTextBoxBorderRadius,
+        isTextBoxBorderEnabled,
+        setIsTextBoxBorderEnabled,
+        textBoxBorderColor,
+        setTextBoxBorderColor,
+        textBoxBorderWidth,
+        setTextBoxBorderWidth,
+        activeEffect, 
+        setActiveEffect: handleEffectChange, 
+        designs, 
+        handleDownloadAll,
+        currentSlide,
+        handleDownload,
+        handleApplyTemplate: applyTemplate, 
+        myDesigns,
+        handleSaveDesign: handleSaveDesign, 
+        handleDeleteDesign: handleDeleteDesign, 
+        handleUpdateDesign: handleUpdateDesign, 
+        editingDesignId,
+        handleEditClick, _handleCancelEdit: handleCancelEdit,
+        editingName, 
+        setEditingName, 
+        designToDelete,
+        setDesignToDelete, 
+        handleLogDesign, 
+        handleImageUpload,
+        elements, 
+        setElements, 
+        selectedElement, 
+        setSelectedElement, 
+        updateElement,
+        areElementsEnabled, 
+        setAreElementsEnabled,
+    };
+
     switch (activeSettingsTab) {
-      case 'creative-magic': return <CreativeMagicPanel title={title} setTitle={setTitle} text={text} setText={setText} handleGenerate={generateDesigns} isLoading={isLoading} />;
-      case 'templates': return <DesignsPanel handleApplyTemplate={handleApplyTemplate} />;
-      case 'background': return <BackgroundSettings handleFeelLucky={handleFeelLucky} bgColor={bgColor} handleBgColorSelect={handleBgColorSelect} imageBgUrl={imageBgUrl} handleImageBgUrlSelect={handleImageBgUrlSelect} searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchImages={handleSearchImages} isSearching={isSearching} searchedImages={searchedImages} handleKeywordSearch={handleKeywordSearch} searchPage={searchPage} isOverlayEnabled={isOverlayEnabled} setIsOverlayEnabled={setIsOverlayEnabled} overlayColor={overlayColor} setOverlayColor={setOverlayColor} overlayOpacity={overlayOpacity} setOverlayOpacity={setOverlayOpacity} gradientBg={gradientBg} handleGradientBgSelect={handleGradientBgSelect} setSearchCarouselApi={setSearchCarouselApi} />;
-      case 'text': return <TextSettings text={text} setText={setText} handleGenerate={generateDesigns} isLoading={isLoading} textColor={textColor} setTextColor={setTextColor} textOpacity={textOpacity} setTextOpacity={setTextOpacity} activeFont={activeFont} setActiveFont={setActiveFont} fontSize={fontSize} setFontSize={setFontSize} fontOptions={fontOptions} isBold={isBold} setIsBold={setIsBold} isUppercase={isUppercase} setIsUppercase={setIsUppercase} textAlign={textAlign} setTextAlign={setTextAlign} textShadowEnabled={textShadowEnabled} setTextShadowEnabled={setTextShadowEnabled} shadows={shadows} setShadows={setShadows} textStroke={textStroke} setTextStroke={setTextStroke} strokeColor={strokeColor} setStrokeColor={setStrokeColor} strokeWidth={strokeWidth} setStrokeWidth={setStrokeWidth} rectBgColor={rectBgColor} setRectBgColor={setRectBgColor} _rectOpacity={rectOpacity} setRectOpacity={setRectOpacity} isTextBoxEnabled={isTextBoxEnabled} setIsTextBoxEnabled={setIsTextBoxEnabled} activeEffect={activeEffect} setActiveEffect={setActiveEffect} textBoxPadding={textBoxPadding} setTextBoxPadding={setTextBoxPadding} textBoxBorderRadius={textBoxBorderRadius} setTextBoxBorderRadius={setTextBoxBorderRadius} isTextBoxBorderEnabled={isTextBoxBorderEnabled} setIsTextBoxBorderEnabled={setIsTextBoxBorderEnabled} textBoxBorderColor={textBoxBorderColor} setTextBoxBorderColor={setTextBoxBorderColor} textBoxBorderWidth={textBoxBorderWidth} setTextBoxBorderWidth={setTextBoxBorderWidth} />;
-      case 'favorites': return <MyDesignsPanel myDesigns={myDesigns} handleSaveDesign={handleSaveDesign} handleDeleteDesign={handleDeleteDesign} handleUpdateDesign={handleUpdateDesign} editingDesignId={editingDesignId} handleEditClick={handleEditClick} _handleCancelEdit={handleCancelEdit} editingName={editingName} setEditingName={setEditingName} designToDelete={designToDelete} setDesignToDelete={setDesignToDelete} handleLogDesign={handleLogDesign} handleApplyTemplate={handleApplyTemplate} />;
-      case 'elements': return <ElementsPanel handleImageUpload={handleImageUpload} elements={elements} selectedElement={selectedElement} setSelectedElement={setSelectedElement} updateElement={updateElement} setElements={setElements} areElementsEnabled={areElementsEnabled} setAreElementsEnabled={setAreElementsEnabled} />;
-      case 'download': return <DownloadPanel handleDownloadAll={handleDownloadAll} designs={designs} currentSlide={currentSlide} handleDownload={handleDownload} />;
+      case 'designs': return <DesignsPanel handleApplyTemplate={applyTemplate} />;
+      case 'favorites': return <MyDesignsPanel {...props} />;
+      case 'background': return <BackgroundSettings {...props} />;
+      case 'text': return <TextSettings {...props} />;
+      case 'elements': return <ElementsPanel {...props} />;
+      case 'download': return <DownloadPanel {...props} />;
       default: return null;
     }
-  }
+  };
 
-  const handleDesktopTabClick = (tab: string) => {
-    if (activeSettingsTab === tab && isSidebarOpen) {
-      setIsSidebarOpen(false);
-    } else {
-      setActiveSettingsTab(tab);
-      setIsSidebarOpen(true);
-    }
-  }
-
-  if (isGeneratingAnimation) {
+  const settingsTabs = [
+    { value: "designs", icon: <LayoutTemplate className="h-5 w-5"/>, label: "Templates" },
+    { value: "background", icon: <ImageIcon className="h-5 w-5"/>, label: "Background" },
+    { value: "text", icon: <Type className="h-5 w-5"/>, label: "Text" },
+    { value: "elements", icon: <Shapes className="h-5 w-5" />, label: "Elements" },
+    { value: "favorites", icon: <HeartIcon className="h-5 w-5"/>, label: "Favorites" },
+    { value: "download", icon: <Download className="h-5 w-5"/>, label: "Download" },
+  ];
+  
+  const activeTabLabel = settingsTabs.find(tab => tab.value === activeSettingsTab)?.label;
+  
+  /**
+   * Render a loading animation if the component is not yet mounted on the client.
+   */
+  if (!isClient) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <Lottie animationData={webflowAnimation} loop={false} style={{ width: 400, height: 400 }} />
+      <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
+        background: 
+        'linear-gradient(to top right, var(--primary), var(--secondary), var(--accent)'
+      }}>
+          <div className="w-64 h-64">
+              <Lottie animationData={webflowAnimation} loop={true} />
+          </div>
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen bg-background text-foreground overflow-hidden">
-      <MakeCarouselSidebar
-        isSidebarOpen={isSidebarOpen}
-        setIsSidebarOpen={setIsSidebarOpen}
-        activeSettingsTab={activeSettingsTab}
-        handleDesktopTabClick={handleDesktopTabClick}
-        settingsTabs={settingsTabs}
-        activeTabLabel={activeTabLabel}
-        renderActiveTabContent={renderActiveTabContent}
-      />
-      
-      <div className="flex-1 flex flex-col overflow-hidden relative">
-        <header className="flex-shrink-0 h-[5vh] flex items-center justify-between px-4 border-b">
-          <div className="flex items-center gap-2">
-            {!isSidebarOpen && (
-              <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(true)} className="md:hidden">
-                <PanelLeft className="h-5 w-5" />
-              </Button>
-            )}
-            <Logo className="text-2xl" />
-          </div>
-          <div className="hidden md:flex items-center justify-center flex-1">
-              <div className="flex items-center gap-2">
-                  {canvasSizes.map(size => (
-                      <TooltipProvider key={size.name}>
-                          <Tooltip>
-                              <TooltipTrigger asChild>
-                                  <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      onClick={() => setCanvasSize(size)}
-                                      className={cn(canvasSize.name === size.name && "bg-muted")}
-                                  >
-                                      {size.name === 'Post' && <RectangleVertical className="h-5 w-5" />}
-                                      {size.name === 'Story' && <Smartphone className="h-5 w-5" />}
-                                      {size.name === 'Square' && <Square className="h-5 w-5" />}
-                                  </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                  <p>{size.name} ({size.name === 'Post' ? '4:5' : size.name === 'Story' ? '9:16' : '1:1'})</p>
-                              </TooltipContent>
-                          </Tooltip>
-                      </TooltipProvider>
-                  ))}
-              </div>
-          </div>
-          <div className="flex items-center gap-2">
+    <div className="flex h-screen flex-col overflow-hidden">
+      {/* 
+      ********************************************************************************
+      * HEADER
+      * Displays the application logo.
+      ********************************************************************************
+      */}
+      <header className="w-full text-left p-8 px-4 md:px-4 h-[5vh] md:h-[5vh] flex items-center justify-between flex-shrink-0 z-20 bg-sidebar shadow-sm md:shadow-none ">
+        <Logo className="text-[1.2rem] md:text-[1.5rem] text-primary pe-12" />
+        {designs.length > 0 && (
+           <div className="flex items-center gap-2 w-full max-w-xs">
+            <Input
+              id="file-name-header"
+              name="file-name"
+              type="text"
+              placeholder="Enter file name..."
+              value={fileName}
+              onChange={(e) => setFileName(e.target.value)}
+              className="bg-sidebar hover:border-primary text-primary h-8 rounded-sm focus:border-indigo-600 focus:outline-hidden text-md bold text-right"
+            />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                 <Button variant="outline">
-                    <Share2 className="h-4 w-4 mr-2" />
-                    Share
-                  </Button>
+                <Button variant="outline" size="icon" className="h-8 w-8 rounded bg-transparent">
+                  <Download className="h-4 w-4" color="var(--primary)" />
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => handleDownloadAll()}>Download All</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleDownload(currentSlide)}>Download Current</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleDownload(currentSlide)} disabled={designs.length === 0}>
+                   <Download className="mr-2 h-4 w-4" />
+                  <span>Download Current</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleDownloadAll} disabled={designs.length === 0}>
+                  <Download className="mr-2 h-4 w-4" />
+                  <span>Download All Designs</span>
+                </DropdownMenuItem>
+                
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-        </header>
+        )}
+      </header>
 
-        <main className="flex-1 flex flex-col items-center justify-center overflow-auto p-4 bg-muted/40 relative">
+      <div className="flex-1 flex overflow-hidden" style={{ height: isMobile ? 'calc(100vh - 10vh - 56px)' : 'auto' }}>
+      {/*
+      ********************************************************************************
+      * DESKTOP SIDEBAR
+      * This section is only visible on screens wider than 767px (md breakpoint).
+      * It contains the main settings tabs and their content.
+      ********************************************************************************
+      */}
+      {designs.length > 0 && (
+          <MakeCarouselSidebar
+            isSidebarOpen={isSidebarOpen}
+            setIsSidebarOpen={setIsSidebarOpen}
+            activeSettingsTab={activeSettingsTab}
+            handleDesktopTabClick={handleDesktopTabClick}
+            settingsTabs={settingsTabs}
+            activeTabLabel={activeTabLabel}
+            renderActiveTabContent={renderActiveTabContent}
+          />
+      )}
+      {/*
+      ********************************************************************************
+      * END DESKTOP SIDEBAR
+      ********************************************************************************
+      */}
+
+      {/*
+      ********************************************************************************
+      * Main Content Area
+      * This area handles the display of either the initial text input
+      * form or the generated design carousel. It also includes
+      * controls for panning and zooming the canvas.
+      ********************************************************************************
+      */}
+        <main 
+          ref={designsRef}
+          className={cn("flex-1 flex items-center justify-center overflow-hidden h-full p-4 relative cursor-default bg-[url(https://www.transparenttextures.com/patterns/project-paper.png)]")}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          style={{ touchAction: 'none' }}
+        >
+        {designs.length > 0 && (
+            <div className="md:w-auto md:justify-center absolute top-0.5 md:top-1.5 left-1/2 -translate-x-1/2 z-30 bg-muted p-1 flex gap-1 md:rounded-md w-full justify-between px-4">
+                <div className="bg-card/20 backdrop-blur-sm p-1 flex gap-1 flex-shrink-0 rounded-md">
+                    {canvasSizes.map(size => (
+                    <TooltipProvider key={size.name}>
+                        <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                            variant="ghost"
+                            size="icon"
+                            className={cn(
+                                "h-8 w-8 text-primary",
+                                canvasSize.name === size.name && "bg-primary-foreground/20"
+                            )}
+                            onClick={() => handleCanvasSizeChange(size)}
+                            >
+                            {size.name === 'Post' && <Smartphone className="h-5 w-5" />}
+                            {size.name === 'Story' && <RectangleVertical className="h-5 w-5" />}
+                            {size.name === 'Square' && <Square className="h-5 w-5" />}
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>{size.name} Format</p>
+                        </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                    ))}
+                </div>
+                <div className="bg-card/20 backdrop-blur-sm p-1 flex items-center gap-1 rounded-md">
+                <TooltipProvider>
+                    <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-primary z-30" onClick={() => handleZoom('out')} disabled={zoomLevel <= MIN_ZOOM}>
+                            <ZoomOut className="h-5 w-5" />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent><p>Zoom Out (-)</p></TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => resetPanAndZoom(canvasSize)}>
+                            <RotateCcw className="h-5 w-5" />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent><p>Reset Zoom</p></TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleZoom('in')} disabled={zoomLevel >= MAX_ZOOM}>
+                            <ZoomIn className="h-5 w-5" />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent><p>Zoom In (+)</p></TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+                </div>
+            </div>
+        )}
+
           {designs.length === 0 ? (
-             <div className="w-full max-w-2xl px-4">
-              <CreativeMagicPanel title={title} setTitle={setTitle} text={text} setText={setText} handleGenerate={generateDesigns} isLoading={isLoading} />
+            <div className="w-full max-w-2xl">
+              <CreativeMagicPanel 
+                  title={title}
+                  setTitle={setTitle}
+                  text={text}
+                  setText={setText}
+                  handleGenerate={handleGenerate}
+                  isLoading={isLoading}
+              />
             </div>
           ) : (
             <div 
               id="designs-container"
-              className="w-full h-full flex flex-col items-center justify-start overflow-y-auto"
+              className="w-full h-full flex flex-col items-center justify-center"
+              onWheel={(e) => {
+                const activeElement = document.activeElement;
+                if (activeElement && (activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'INPUT')) {
+                  return;
+                }
+                e.preventDefault();
+                const direction = e.deltaY > 0 ? 'out' : 'in';
+                handleZoom(direction);
+              }}
             >
-              <Carousel 
-                setApi={setCarouselApi} 
-                className="w-full max-w-lg"
-                opts={{
-                  align: 'center',
-                  containScroll: 'keepSnaps',
-                }}
-              >
-                <CarouselContent className="items-start">
-                  {designs.map((design, index) => (
-                    <CarouselItem key={index} className="flex justify-center">
-                      <div
-                        className="p-1"
-                        style={{
-                          width: `${(canvasSize.width / canvasSize.height) * (70 * zoomLevel)}vh`,
-                          height: `${70 * zoomLevel}vh`,
-                          maxWidth: '90vw',
-                          maxHeight: '90vh'
-                        }}
-                      >
-                         <Card className="w-full h-full shadow-lg overflow-hidden">
-                           <CardContent className="p-0 h-full w-full relative">
-                            {isClient && (
-                              <ImageCanvas
-                                key={`${canvasSize.name}-${index}`}
-                                text={design.text}
-                                isTitle={design.isTitle}
-                                fontFamily={activeFont.fontFamily}
-                                fontWeight={activeFont.weight}
-                                fontSize={fontSize}
-                                lineHeight={activeFont.lineHeight}
-                                backgroundColor={backgroundType === 'flat' ? bgColor : undefined}
-                                textColor={textColor}
-                                textOpacity={textOpacity}
-                                width={canvasSize.width}
-                                height={canvasSize.height}
-                                onCanvasReady={(canvas) => handleCanvasReady(canvas, index)}
-                                backgroundImageUrl={backgroundType === 'image' ? imageBgUrl : undefined}
-                                rectColor={rectBgColor}
-                                rectOpacity={isTextBoxEnabled ? rectOpacity : 0}
-                                textBoxPadding={textBoxPadding}
-                                textBoxBorderRadius={textBoxBorderRadius}
-                                isTextBoxBorderEnabled={isTextBoxBorderEnabled}
-                                textBoxBorderColor={textBoxBorderColor}
-                                textBoxBorderWidth={textBoxBorderWidth}
-                                overlayColor={isOverlayEnabled ? overlayColor : undefined}
-                                overlayOpacity={isOverlayEnabled ? overlayOpacity : undefined}
-                                textAlign={textAlign}
-                                isBold={isBold}
-                                isUppercase={isUppercase}
-                                textShadowEnabled={textShadowEnabled}
-                                shadows={shadows}
-                                textStroke={textStroke}
-                                strokeColor={strokeColor}
-                                strokeWidth={strokeWidth}
-                                elements={elements}
-                                areElementsEnabled={areElementsEnabled}
-                              />
-                            )}
-                          </CardContent>
-                        </Card>
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-              </Carousel>
-              {designs.length > 1 && (
-                  <NavBullets api={carouselApi} current={currentSlide} total={designs.length} className="my-4"/>
-              )}
+                <div 
+                  className="relative" 
+                  style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
+                >
+                  <Carousel className="w-full" setApi={setCarouselApi}>
+                    <CarouselContent>
+                      {designs.map((design, index) => (
+                        <CarouselItem key={index} data-index={index}>
+                          <div 
+                            className="p-1 group relative"
+                          >
+                            <Card className="overflow-hidden border-0">
+                              <CardContent className="p-0 relative bg-card" style={{ aspectRatio: `${canvasSize.width}/${canvasSize.height}`}}>
+                                {renderCanvas(design, index)}
+                              </CardContent>
+                            </Card>
+                            <div className="absolute top-4 right-4 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <AlertDialog>
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <AlertDialogTrigger asChild>
+                                        <Button
+                                          variant="ghost"
+                                          size="icon"
+                                          className="h-14 w-14 flex items-center justify-center rounded-full bg-gray/20 backdrop-blur-sm text-white hover:bg-red/50 hover:text-red-400 [&_svg]:size-8"
+                                        >
+                                          <HeartIconG className="h-12 w-12" />
+                                        </Button>
+                                      </AlertDialogTrigger>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="left">
+                                     <p>Save to Favorites</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      This will save the current background, font, and color settings as a new favorite template.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction onClick={handleSaveDesign}>Save</AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                                </TooltipProvider>
+                              </AlertDialog>
+                            </div>
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                  </Carousel>
+                </div>
+                
+                <div className="hidden md:flex md:justify-center md:items-center md:gap-2 mt-4">
+                  <NavBullets api={carouselApi} current={currentSlide} total={designs.length} />
+                </div>
             </div>
           )}
-           <div className="absolute bottom-4 right-4 flex flex-col gap-2">
-             <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" onClick={handleZoomIn}>
-                        <ZoomIn className="h-4 w-4" />
-                    </Button>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Zoom In</p></TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" onClick={handleZoomReset}>
-                        <RotateCcw className="h-4 w-4" />
-                    </Button>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Reset Zoom</p></TooltipContent>
-                </Tooltip>
-                 <Tooltip>
-                    <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" onClick={handleZoomOut}>
-                        <ZoomOut className="h-4 w-4" />
-                    </Button>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Zoom Out</p></TooltipContent>
-                </Tooltip>
-             </TooltipProvider>
-          </div>
         </main>
-        
-        {isMobile && (
-          <div className="flex-shrink-0 border-t bg-background">
-            <Tabs value={activeSettingsTab} onValueChange={(v) => { setActiveSettingsTab(v); setIsMobilePanelOpen(true); }} className="w-full">
-              <TabsList className="grid w-full grid-cols-5 h-16 rounded-none p-0">
-                {settingsTabs.filter(t => ['templates', 'background', 'text', 'favorites', 'download'].includes(t.value)).map(tab => (
-                  <TabsTrigger key={tab.value} value={tab.value} className="flex-col h-full gap-1 rounded-none text-xs data-[state=active]:bg-primary/10 data-[state=active]:text-primary">
-                    {tab.icon}
-                    <span>{tab.label}</span>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
-            <Sheet open={isMobilePanelOpen} onOpenChange={setIsMobilePanelOpen}>
-              <SheetContent side="bottom" className="h-[85vh]">
-                <SheetHeader>
-                  <SheetTitle className="capitalize">{activeTabLabel}</SheetTitle>
-                </SheetHeader>
-                <div className="py-4 h-full overflow-y-auto">
-                  {renderActiveTabContent()}
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-        )}
       </div>
+
+      {isGeneratingAnimation && (
+          <div className="fixed inset-0 flex items-center justify-center z-50 h-screen w-screen" style={{
+            background: 
+            'linear-gradient(to top right,  var(--primary),  var(--secondary)'
+          }}>
+              <div className="w-64 h-64">
+                  <Lottie animationData={webflowAnimation} loop={true} />
+              </div>
+          </div>
+      )}
+
+      {/* Mobile-only bullet navigation */}
+      {isClient && designs.length > 0 && (
+        <div className="md:hidden fixed bottom-16 left-0 right-0 z-20">
+            <NavBullets api={carouselApi} current={currentSlide} total={designs.length} />
+        </div>
+      )}
+
+      {/*
+      ********************************************************************************
+      * MOBILE TAB SYSTEM
+      * This section is only visible on screens narrower than 768px (md breakpoint).
+      * It uses a Sheet component to display settings from the bottom.
+      ********************************************************************************
+      */}
+      {isClient && designs.length > 0 && (
+          <div ref={mobilePanelRef} className="md:hidden">
+              {/* Sheet component for mobile settings */}
+              <Sheet open={isMobilePanelOpen} onOpenChange={(isOpen) => {
+                  if (!isOpen) {
+                      setActiveSettingsTab(''); // Reset active tab when sheet closes
+                  }
+                  setIsMobilePanelOpen(isOpen);
+              }}>
+                  <SheetContent side="bottom" className="h-auto max-h-[55vh] p-0 flex flex-col bg-sidebar" onOpenAutoFocus={(e) => e.preventDefault()}>
+                      {/* Header for the mobile settings panel */}
+                      <SheetHeader className="p-2 px-4 border-b flex-row justify-between items-center bg-background">
+                          <SheetTitle className="capitalize">{activeTabLabel}</SheetTitle>
+                      </SheetHeader>
+                      {/* Scrollable content area for the active tab */}
+                      <div className="flex-grow overflow-y-auto">
+                          {renderActiveTabContent()}
+                      </div>
+                  </SheetContent>
+              </Sheet>
+
+              {/* Bottom navigation bar for mobile */}
+              <div className={cn("fixed bottom-0 left-0 right-0 z-30 bg-sidebar border-t", isMobilePanelOpen ? "hidden" : "block")}>
+                  <Tabs value={activeSettingsTab ?? ''} className="w-full">
+                      <TabsList className="grid w-full grid-cols-6 h-14 rounded-none bg-sidebar">
+                          {settingsTabs.map(tab => (
+                              <TabsTrigger key={tab.value} value={tab.value} onClick={() => handleMobileTabClick(tab.value)}>
+                                  {tab.icon}
+                              </TabsTrigger>
+                          ))}
+                      </TabsList>
+                  </Tabs>
+              </div>
+          </div>
+      )}
+       {/*
+      ********************************************************************************
+      * END MOBILE TAB SYSTEM
+      ********************************************************************************
+      */}
     </div>
   );
 }

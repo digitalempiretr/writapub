@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useId, useState, useEffect, useRef, useCallback } from "react";
@@ -15,8 +16,7 @@ import { Loader2, Plus, Search, Palette, RotateCcw, Trash2 } from "lucide-react"
 import { Slider } from "@/components/ui/slider";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
-import { defaultSolidColors } from "@/lib/colors";
-import { gradientTemplates } from "@/lib/gradient-templates";
+import { defaultSolidColors, gradientTemplates } from "@/lib/colors";
 import { imageTemplates, ImageTemplate } from "@/lib/image-templates";
 import Image from "next/image";
 import { BgOverlayIcon, FeelLucky } from "@/components/ui/icons";
@@ -124,7 +124,7 @@ export function BackgroundSettings({
       return `radial-gradient(circle, ${colorStopsString})`;
     }
   }, []);
-  
+
   const applyGradientToCanvas = useCallback(() => {
     const newCss = generateGradientCss(gradientType, gradientAngle, customGradientStops);
     handleGradientBgSelect(newCss);
@@ -138,11 +138,11 @@ export function BackgroundSettings({
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     const angleRad = Math.atan2(clientY - centerY, clientX - centerX);
-    let newAngle = Math.round((angleRad * 180) / Math.PI) + 90;
-    newAngle = (newAngle + 360) % 360;
-    setGradientAngle(newAngle);
+    const newAngle = Math.round((angleRad * 180) / Math.PI) + 90;
+    const finalAngle = (newAngle + 360) % 360;
+    setGradientAngle(finalAngle);
     
-    const newCss = generateGradientCss(gradientType, newAngle, customGradientStops);
+    const newCss = generateGradientCss(gradientType, finalAngle, customGradientStops);
     handleGradientBgSelect(newCss);
   }, [gradientType, customGradientStops, handleGradientBgSelect, generateGradientCss]);
 
@@ -665,3 +665,8 @@ export function BackgroundSettings({
     </div>
   );
 }
+
+
+    
+    
+    

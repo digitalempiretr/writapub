@@ -1,5 +1,6 @@
+
 import { fontOptions } from './font-options';
-import { gradientTemplates } from './gradient-templates';
+import { gradientTemplates } from './colors';
 import { TextEffect } from './text-effects';
 
 export type DesignTemplate = {
@@ -1351,3 +1352,5 @@ export const designTemplates: DesignTemplate[] = [
     },
   },
 ];
+
+    
