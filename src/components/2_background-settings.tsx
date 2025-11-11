@@ -114,23 +114,23 @@ export function BackgroundSettings({
   const isMobile = useIsMobile();
   const draggingStopId = useRef<number | null>(null);
   
-  const generateGradientCss = useCallback(() => {
-    const sortedStops = [...customGradientStops].sort((a, b) => a.stop - b.stop);
+  const generateGradientCss = useCallback((type: 'linear' | 'radial', angle: number, stops: GradientStop[]) => {
+    const sortedStops = [...stops].sort((a, b) => a.stop - b.stop);
     const colorStopsString = sortedStops.map(s => `${s.color} ${s.stop}%`).join(', ');
 
-    if (gradientType === 'linear') {
-      return `linear-gradient(${gradientAngle}deg, ${colorStopsString})`;
+    if (type === 'linear') {
+      return `linear-gradient(${angle}deg, ${colorStopsString})`;
     } else {
       return `radial-gradient(circle, ${colorStopsString})`;
     }
-  }, [customGradientStops, gradientType, gradientAngle]);
+  }, []);
 
   const applyGradientToCanvas = useCallback(() => {
-    const newCss = generateGradientCss();
+    const newCss = generateGradientCss(gradientType, gradientAngle, customGradientStops);
     handleGradientBgSelect(newCss);
-  }, [generateGradientCss, handleGradientBgSelect]);
+  }, [generateGradientCss, gradientType, gradientAngle, customGradientStops, handleGradientBgSelect]);
   
-  const gradientSliderBg = React.useMemo(() => generateGradientCss(), [generateGradientCss]);
+  const gradientSliderBg = React.useMemo(() => generateGradientCss(gradientType, gradientAngle, customGradientStops), [generateGradientCss, gradientType, gradientAngle, customGradientStops]);
   
   const handleAngleInteraction = useCallback((clientX: number, clientY: number) => {
     if (!angleSelectorRef.current) return;
@@ -138,10 +138,13 @@ export function BackgroundSettings({
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     const angleRad = Math.atan2(clientY - centerY, clientX - centerX);
-    let angleDeg = Math.round((angleRad * 180) / Math.PI) + 90;
-    setGradientAngle((angleDeg + 360) % 360);
-    applyGradientToCanvas();
-  }, [applyGradientToCanvas]);
+    const newAngle = Math.round((angleRad * 180) / Math.PI) + 90;
+    const finalAngle = (newAngle + 360) % 360;
+    setGradientAngle(finalAngle);
+    
+    const newCss = generateGradientCss(gradientType, finalAngle, customGradientStops);
+    handleGradientBgSelect(newCss);
+  }, [gradientType, customGradientStops, handleGradientBgSelect, generateGradientCss]);
 
   const handleAngleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const handleMouseMove = (event: MouseEvent) => {
@@ -186,15 +189,16 @@ export function BackgroundSettings({
   
   const handleAngleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    if (value === '') {
-        setGradientAngle(0);
-        return;
+    let newAngle = 0;
+    if (value !== '') {
+      const angle = parseInt(value, 10);
+      if (!isNaN(angle) && angle >= 0 && angle <= 360) {
+        newAngle = angle;
+      }
     }
-    const angle = parseInt(value, 10);
-    if (!isNaN(angle) && angle >= 0 && angle <= 360) {
-        setGradientAngle(angle);
-        applyGradientToCanvas();
-    }
+    setGradientAngle(newAngle);
+    const newCss = generateGradientCss(gradientType, newAngle, customGradientStops);
+    handleGradientBgSelect(newCss);
   };
 
   const handleAngleInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -208,11 +212,13 @@ export function BackgroundSettings({
 
   const updateActiveStop = useCallback((newProps: Partial<GradientStop>) => {
     if (!activeStopId) return;
-    setCustomGradientStops(stops =>
-      stops.map(s => (s.id === activeStopId ? { ...s, ...newProps } : s))
-    );
-    applyGradientToCanvas();
-  }, [activeStopId, applyGradientToCanvas]);
+    setCustomGradientStops(stops => {
+        const newStops = stops.map(s => (s.id === activeStopId ? { ...s, ...newProps } : s));
+        const newCss = generateGradientCss(gradientType, gradientAngle, newStops);
+        handleGradientBgSelect(newCss);
+        return newStops;
+    });
+  }, [activeStopId, gradientType, gradientAngle, handleGradientBgSelect, generateGradientCss]);
   
   const addStop = (e: React.MouseEvent<HTMLDivElement>) => {
       if ((e.target as HTMLElement).closest('[data-stop-handle="true"]')) {
@@ -227,17 +233,25 @@ export function BackgroundSettings({
           stop: Math.max(0, Math.min(100, stop)),
       };
 
-      setCustomGradientStops(stops => [...stops, newStop].sort((a,b) => a.stop - b.stop));
+      setCustomGradientStops(stops => {
+          const newStops = [...stops, newStop].sort((a,b) => a.stop - b.stop);
+          const newCss = generateGradientCss(gradientType, gradientAngle, newStops);
+          handleGradientBgSelect(newCss);
+          return newStops;
+      });
       setActiveStopId(newStop.id);
-      applyGradientToCanvas();
   };
 
   const removeActiveStop = () => {
     if (activeStopId && customGradientStops.length > 2) {
-      setCustomGradientStops(stops => stops.filter(s => s.id !== activeStopId));
-      const newActiveIndex = Math.max(0, customGradientStops.findIndex(s => s.id !== activeStopId));
-      setActiveStopId(customGradientStops[newActiveIndex]?.id || null);
-      applyGradientToCanvas();
+      setCustomGradientStops(stops => {
+          const newStops = stops.filter(s => s.id !== activeStopId);
+          const newActiveIndex = Math.max(0, newStops.findIndex(s => s.id !== activeStopId));
+          setActiveStopId(newStops[newActiveIndex]?.id || null);
+          const newCss = generateGradientCss(gradientType, gradientAngle, newStops);
+          handleGradientBgSelect(newCss);
+          return newStops;
+      });
     }
   };
   
@@ -257,10 +271,12 @@ export function BackgroundSettings({
         const newStop = Math.round(((currentX - rect.left) / rect.width) * 100);
         const clampedStop = Math.max(0, Math.min(100, newStop));
 
-        setCustomGradientStops(stops =>
-            stops.map(s => (s.id === id ? { ...s, stop: clampedStop } : s))
-        );
-        applyGradientToCanvas();
+        setCustomGradientStops(stops => {
+            const newStops = stops.map(s => (s.id === id ? { ...s, stop: clampedStop } : s))
+            const newCss = generateGradientCss(gradientType, gradientAngle, newStops);
+            handleGradientBgSelect(newCss);
+            return newStops;
+        });
     };
 
     const onMouseUp = () => {
@@ -276,7 +292,13 @@ export function BackgroundSettings({
     document.addEventListener('touchmove', onMouseMove as any);
     document.addEventListener('touchend', onMouseUp);
 
-  }, [applyGradientToCanvas]);
+  }, [gradientType, gradientAngle, handleGradientBgSelect, generateGradientCss]);
+
+  const handleGradientTypeChange = (newType: 'linear' | 'radial') => {
+      setGradientType(newType);
+      const newCss = generateGradientCss(newType, gradientAngle, customGradientStops);
+      handleGradientBgSelect(newCss);
+  };
 
 
   const overlayContent = (
@@ -375,7 +397,7 @@ export function BackgroundSettings({
       )}
       
       <div className="flex items-center gap-2">
-        <RadioGroup value={gradientType} onValueChange={(v: 'linear' | 'radial') => { setGradientType(v); applyGradientToCanvas(); }} className="grid grid-cols-2 gap-0 border rounded-md p-0.5">
+        <RadioGroup value={gradientType} onValueChange={(v: 'linear' | 'radial') => handleGradientTypeChange(v)} className="grid grid-cols-2 gap-0 border rounded-md p-0.5">
           <div>
             <RadioGroupItem value="linear" id="linear" className="sr-only" />
             <Label htmlFor="linear" className={cn("block text-center text-sm px-4 py-1.5 rounded-sm cursor-pointer", gradientType === 'linear' && "bg-muted")}>Linear</Label>
@@ -645,5 +667,6 @@ export function BackgroundSettings({
 }
 
 
+    
     
     
