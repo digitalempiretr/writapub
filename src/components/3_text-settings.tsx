@@ -217,19 +217,20 @@ export function TextSettings({
   const unitOptions: Unit[] = ['px', 'em', 'rem'];
 
   const fontSizeContent = (
-    <div className="w-full space-y-4">
+    <div className="w-xl space-y-4">
+      
       <div className="space-y-2">
           <Label htmlFor={`${baseId}-font-size-slider`}>Font Size</Label>
            <div className="flex items-center gap-2">
-              <Slider id={`${baseId}-font-size-slider`} max={200} min={16} step={1} value={[internalFontSize]} onValueChange={(v) => setInternalFontSize(v[0])} onValueCommit={(v) => setFontSize(v[0])} />
-              <Input type="number" value={internalFontSize} onChange={(e) => setInternalFontSize(Number(e.target.value))} onBlur={() => setFontSize(internalFontSize)} className="h-10 text-xs flex-grow" />
+              <Slider id={`${baseId}-font-size-slider`} max={100} min={16} step={1} value={[internalFontSize]} onValueChange={(v) => setInternalFontSize(v[0])} onValueCommit={(v) => setFontSize(v[0])} className="flex-grow"/>
+              <Input type="number" value={internalFontSize} onChange={(e) => setInternalFontSize(Number(e.target.value))} onBlur={() => setFontSize(internalFontSize)} className="h-10 text-xs w-2/5" />
            </div>
       </div>
       <div className="space-y-2">
           <Label htmlFor={`${baseId}-line-height-slider`}>Line Height</Label>
           <div className="flex items-center gap-2">
-              <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[internalLineHeight]} onValueChange={(v) => setInternalLineHeight(v[0])} onValueCommit={(v) => handleLineHeightChange(v[0])} />
-               <Input type="number" value={internalLineHeight} onChange={(e) => setInternalLineHeight(Number(e.target.value))} onBlur={() => handleLineHeightChange(internalLineHeight)} step="0.1" className="h-10 text-xs flex-grow" />
+              <Slider id={`${baseId}-line-height-slider`} max={2.5} min={0.8} step={0.1} value={[internalLineHeight]} onValueChange={(v) => setInternalLineHeight(v[0])} onValueCommit={(v) => handleLineHeightChange(v[0])} className="flex-grow"/>
+               <Input type="number" value={internalLineHeight} onChange={(e) => setInternalLineHeight(Number(e.target.value))} onBlur={() => handleLineHeightChange(internalLineHeight)} step="0.1" className="h-10 text-xs w-2/5" />
           </div>
       </div>
     </div>

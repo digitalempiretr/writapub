@@ -363,11 +363,10 @@ export default function Home() {
   
   useEffect(() => {
     if (designs.length > 0) {
-      // Re-generate if canvas size changes
       handleGenerate();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canvasSize]);
+  }, [canvasSize, isBold, isUppercase, textAlign, activeEffect]);
 
 
   /**
@@ -923,7 +922,7 @@ export default function Home() {
     // Set font
     const newFont = fontOptions.find(f => f.value === template.font.value) || activeFont;
     setActiveFont(newFont);
-    setFontSize(template.font.fontSize);
+    // setFontSize(template.font.fontSize); // Do not override user's font size
   
     // Set textbox
     setIsTextBoxEnabled(template.textBox.opacity > 0);
@@ -1034,7 +1033,6 @@ export default function Home() {
 
   /**
    * Handles the selection of a solid background color.
-   * @param {string} color - The selected color.
    */
   const handleBgColorSelect = (color: string) => {
     setBgColor(color);
@@ -1043,7 +1041,6 @@ export default function Home() {
 
   /**
    * Handles the selection of a gradient background.
-   * @param {string} css - The CSS gradient string.
    */
   const handleGradientBgSelect = (css: string) => {
     setGradientBg(css);
