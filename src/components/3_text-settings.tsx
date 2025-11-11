@@ -214,10 +214,17 @@ export function TextSettings({
     }));
   }
 
+  const handleTextBoxToggle = (enabled: boolean) => {
+    setIsTextBoxEnabled(enabled);
+    if (enabled && rectOpacity === 0) {
+      setRectOpacity(0.5);
+    }
+  };
+
   const unitOptions: Unit[] = ['px', 'em', 'rem'];
 
   const fontSizeContent = (
-    <div className="w-xl space-y-4">
+    <div className="w-full space-y-4">
       
       <div className="space-y-2">
           <Label htmlFor={`${baseId}-font-size-slider`}>Font Size</Label>
@@ -355,7 +362,7 @@ export function TextSettings({
         <Switch
         id={`${baseId}-textbox-toggle`}
         checked={isTextBoxEnabled}
-        onCheckedChange={setIsTextBoxEnabled}
+        onCheckedChange={handleTextBoxToggle}
         />
     </div>
     {isTextBoxEnabled && (
