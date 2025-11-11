@@ -37,8 +37,6 @@ type GradientStop = {
 type BackgroundType = 'flat' | 'gradient' | 'image';
 
 type BackgroundSettingsProps = {
-  backgroundTab: string;
-  setBackgroundTab: (value: BackgroundType) => void;
   handleFeelLucky: () => void;
   bgColor: string;
   handleBgColorSelect: (color: string) => void;
@@ -78,8 +76,6 @@ function hexToRgba(hex: string, alpha: number) {
 }
 
 export function BackgroundSettings({
-  backgroundTab,
-  setBackgroundTab,
   handleFeelLucky,
   bgColor,
   handleBgColorSelect,
@@ -103,6 +99,7 @@ export function BackgroundSettings({
   setSearchCarouselApi,
 }: BackgroundSettingsProps) {
   const baseId = useId();
+  const [activeDisplayTab, setActiveDisplayTab] = useState<BackgroundType>('image');
   const [customGradientStops, setCustomGradientStops] = useState<GradientStop[]>([
     { id: 1, color: "#eeaecc", stop: 0 },
     { id: 2, color: "#94bbe9", stop: 100 },
@@ -116,6 +113,23 @@ export function BackgroundSettings({
   const gradientBarRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
   const draggingStopId = useRef<number | null>(null);
+  
+  const generateGradientCss = useCallback(() => {
+    const sortedStops = [...customGradientStops].sort((a, b) => a.stop - b.stop);
+    const colorStopsString = sortedStops.map(s => `${s.color} ${s.stop}%`).join(', ');
+
+    if (gradientType === 'linear') {
+      return `linear-gradient(${gradientAngle}deg, ${colorStopsString})`;
+    } else {
+      return `radial-gradient(circle, ${colorStopsString})`;
+    }
+  }, [customGradientStops, gradientType, gradientAngle]);
+
+  // Apply custom gradient changes to the canvas
+  useEffect(() => {
+    const newCss = generateGradientCss();
+    handleGradientBgSelect(newCss);
+  }, [customGradientStops, gradientType, gradientAngle, generateGradientCss, handleGradientBgSelect]);
 
   const parseAndSetGradient = (css: string) => {
     try {
@@ -174,22 +188,6 @@ export function BackgroundSettings({
     handleGradientBgSelect(css);
     parseAndSetGradient(css);
   };
-  
-  const generateGradientCss = useCallback(() => {
-    const sortedStops = [...customGradientStops].sort((a, b) => a.stop - b.stop);
-    const colorStopsString = sortedStops.map(s => `${s.color} ${s.stop}%`).join(', ');
-
-    if (gradientType === 'linear') {
-      return `linear-gradient(${gradientAngle}deg, ${colorStopsString})`;
-    } else {
-      return `radial-gradient(circle, ${colorStopsString})`;
-    }
-  }, [customGradientStops, gradientType, gradientAngle]);
-
-  useEffect(() => {
-    const newCss = generateGradientCss();
-    handleGradientBgSelect(newCss);
-  }, [customGradientStops, gradientType, gradientAngle, generateGradientCss, handleGradientBgSelect]);
 
 
   const gradientSliderBg = React.useMemo(() => generateGradientCss(), [generateGradientCss]);
@@ -474,7 +472,7 @@ export function BackgroundSettings({
 
   return (
     <div className="p-4 bg-sidebar text-sidebar-foreground rounded-b-lg space-y-4 mobile-tab-content">
-      <Tabs value={backgroundTab} onValueChange={(value) => setBackgroundTab(value as BackgroundType)} className="w-full">
+      <Tabs value={activeDisplayTab} onValueChange={(value) => setActiveDisplayTab(value as BackgroundType)} className="w-full">
         <div className="flex items-center gap-2">
           <TabsList className="grid flex-grow grid-cols-3 font-sans">
             <TabsTrigger value="flat">Solid Color</TabsTrigger>
@@ -698,15 +696,3 @@ export function BackgroundSettings({
     </div>
   );
 }
-
-
-    
-    
-
-
-
-
-
-    
-
-

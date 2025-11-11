@@ -229,7 +229,6 @@ export default function Home() {
   const [textAlign, setTextAlign] = useState<TextAlign>('left');
   const [isBold, setIsBold] = useState(false);
   const [isUppercase, setIsUppercase] = useState(false);
-  const [backgroundTab, setBackgroundTab] = useState<BackgroundType>("image");
   const [bgColor, setBgColor] = useState(pageInitialColors.bgColor);
   const [textColor, setTextColor] = useState(pageInitialColors.textColor);
   const [textOpacity, setTextOpacity] = useState(1);
@@ -1147,8 +1146,6 @@ export default function Home() {
         setText, 
         handleGenerate, 
         isLoading,
-        backgroundTab, 
-        setBackgroundTab,
         handleFeelLucky,
         bgColor, 
         handleBgColorSelect,

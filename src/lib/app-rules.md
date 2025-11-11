@@ -26,6 +26,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 13. **Mobile View Definition:** The "Mobile View" is the layout that applies when the browser window width is less than 768px.
 14. **Case Preservation**: The casing (uppercase/lowercase) of the user's input text, including the title, must be preserved in the final design. Text should not be automatically converted to uppercase.
 15. **Comments Preservation**: Comment lines will NEVER be deleted during edits. A comment line must be added above each block of code explaining what that code does.
+16. **Settings Tabs Do Not Change Background:** Clicking on the "Solid Color", "Gradient", or "Image" tabs in the background settings panel should not automatically change the background of the current canvas. The background should only be updated when the user selects a specific color, gradient, or image from within that tab.
 
 #### Türkçe Çekirdek Kurallar
 1.  **Sen Kodlama yapan Yapay Zeka için Geliştirme Öncesi Kontrol:** Yapay zeka (sen), herhangi bir geliştirmeye başlamadan önce, mevcut tüm kuralları ve projenin mevcut durumunu anlamak için `app-rules.md` dosyasını gözden geçirmelidir.
@@ -41,6 +42,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 13. **Mobil Görünüm Tanımı:** "Mobil Görünüm", tarayıcı pencere genişliği 768 pikselden daha küçük olduğunda geçerli olan düzendir.
 14. **Harf Büyüklüğü Koruma**: Kullanıcının girdiği metnin (başlık dahil) büyük/küçük harf durumu, nihai tasarımda korunmalıdır. Metin otomatik olarak büyük harfe çevrilmemelidir.
 15. Düzenlemelerde Yorum satırları ASLA silinmeyecek. Her kod üzerine yorum satırı eklenip o kodun ne işe yaradığı mutlaka yazılmalı.
+16. **Ayar Sekmeleri Arka Planı Değiştirmez:** Arka plan ayarları panelindeki "Solid Color", "Gradient" veya "Image" sekmelerine tıklamak, mevcut kanvasın arka planını otomatik olarak değiştirmemelidir. Arka plan, yalnızca kullanıcı o sekme içinden belirli bir renk, gradyan veya resim seçtiğinde güncellenmelidir.
 
 #### ENGLISH
 
@@ -62,6 +64,7 @@ _**DİKKAT:** Bu bölümde listelenen kurallar, uygulamanın kararlı çalışma
 ### 3. Font & Character Support
 -   All fonts loaded from Google Fonts must include the `latin-ext` character set to ensure correct display of Turkish characters.
 -   In the font selection menu, the name of each font option should be displayed in its own font style. This allows the user to preview how the fonts look before selecting them.
+
 
 
 
