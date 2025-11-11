@@ -519,7 +519,7 @@ export function BackgroundSettings({
         </div>
         <TabsContent value="flat" className="pt-4 space-y-4">
            <div className="grid grid-cols-6 gap-2">
-            <Card className="overflow-hidden cursor-pointer relative" onClick={() => handleBgColorSelect(bgColor)}>
+            <Card className="overflow-hidden cursor-pointer relative">
               <CardContent className="p-0 aspect-[4/5] flex items-center justify-center bg-gray-100">
                 <Label htmlFor={`${baseId}-bg-color-picker`} className="h-full w-full flex items-center justify-center cursor-pointer">
                   <Plus className="h-6 w-6 text-gray-500" strokeWidth={3}/>
@@ -708,3 +708,4 @@ export function BackgroundSettings({
 
 
     
+
