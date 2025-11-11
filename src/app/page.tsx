@@ -363,10 +363,13 @@ export default function Home() {
   
   useEffect(() => {
     if (designs.length > 0) {
-      handleGenerate();
+      const timeoutId = setTimeout(() => {
+        handleGenerate();
+      }, 100);
+      return () => clearTimeout(timeoutId);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canvasSize, isBold, isUppercase, textAlign, activeEffect]);
+  }, [isBold, isUppercase, textAlign, activeEffect]);
 
 
   /**
@@ -922,8 +925,7 @@ export default function Home() {
     // Set font
     const newFont = fontOptions.find(f => f.value === template.font.value) || activeFont;
     setActiveFont(newFont);
-    // setFontSize(template.font.fontSize); // Do not override user's font size
-  
+    
     // Set textbox
     setIsTextBoxEnabled(template.textBox.opacity > 0);
     setRectBgColor(template.textBox.color);
@@ -1149,15 +1151,15 @@ export default function Home() {
         setBackgroundTab,
         handleFeelLucky,
         bgColor, 
-        handleBgColorSelect: handleBgColorSelect, 
+        handleBgColorSelect,
         imageBgUrl, 
-        handleImageBgUrlSelect: handleImageBgUrlSelect,
+        handleImageBgUrlSelect,
         searchQuery, 
         setSearchQuery, 
         handleSearchImages,
         isSearching, 
         searchedImages,
-        handleKeywordSearch: handleKeywordSearch, 
+        handleKeywordSearch, 
         searchPage, 
         isOverlayEnabled, 
         setIsOverlayEnabled,
@@ -1166,7 +1168,7 @@ export default function Home() {
         overlayOpacity, 
         setOverlayOpacity, 
         gradientBg,
-        handleGradientBgSelect: handleGradientBgSelect, 
+        handleGradientBgSelect, 
         setSearchCarouselApi: setSearchCarouselApi, 
         textColor, 
         setTextColor: handleTextColorChange, 

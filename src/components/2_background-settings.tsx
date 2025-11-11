@@ -99,7 +99,7 @@ export function BackgroundSettings({
   overlayOpacity,
   setOverlayOpacity,
   gradientBg,
-  handleGradientBgSelect: applyGradientToCanvas,
+  handleGradientBgSelect,
   setSearchCarouselApi,
 }: BackgroundSettingsProps) {
   const baseId = useId();
@@ -170,8 +170,8 @@ export function BackgroundSettings({
     }
   };
 
-  const handleGradientBgSelect = (css: string) => {
-    applyGradientToCanvas(css);
+  const handleLocalGradientSelect = (css: string) => {
+    handleGradientBgSelect(css);
     parseAndSetGradient(css);
   };
   
@@ -188,8 +188,8 @@ export function BackgroundSettings({
 
   useEffect(() => {
     const newCss = generateGradientCss();
-    applyGradientToCanvas(newCss);
-  }, [customGradientStops, gradientType, gradientAngle, generateGradientCss, applyGradientToCanvas]);
+    handleGradientBgSelect(newCss);
+  }, [customGradientStops, gradientType, gradientAngle, generateGradientCss, handleGradientBgSelect]);
 
 
   const gradientSliderBg = React.useMemo(() => generateGradientCss(), [generateGradientCss]);
@@ -575,7 +575,7 @@ export function BackgroundSettings({
             )}
 
             {gradientTemplates.map((gradient) => (
-              <Card key={gradient.name} className="overflow-hidden cursor-pointer" onClick={() => handleGradientBgSelect(gradient.css)}>
+              <Card key={gradient.name} className="overflow-hidden cursor-pointer" onClick={() => handleLocalGradientSelect(gradient.css)}>
                 <CardContent className="aspect-[4/5]" style={{ background: gradient.css }} />
               </Card>
             ))}
@@ -708,4 +708,5 @@ export function BackgroundSettings({
 
 
     
+
 
