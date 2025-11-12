@@ -343,6 +343,7 @@ export function BackgroundSettings({
     </div>
   );
 
+  /* Önceden tanımlı Gradient css değerleri colors.ts dosyası içinde */
   const customGradientEditorContent = (
     <div className="w-full space-y-4">
       <div className="space-y-3">

@@ -4,6 +4,7 @@
 import React, { useEffect, useRef } from "react";
 import type { Shadow } from "@/components/3_text-settings";
 import { CanvasElement } from "./5_elements-panel";
+import { CanvasSize } from "@/app/page";
 
 
 export type FontOption = {
@@ -25,6 +26,7 @@ export type ImageCanvasProps = {
   backgroundColor?: string;
   textColor: string;
   textOpacity: number;
+  canvasSize: CanvasSize;
   width: number;
   height: number;
   onCanvasReady: (canvas: HTMLCanvasElement) => void;
@@ -192,6 +194,7 @@ const ImageCanvasComponent = ({
   backgroundColor,
   textColor,
   textOpacity,
+  canvasSize,
   width,
   height,
   onCanvasReady,
@@ -278,8 +281,22 @@ const ImageCanvasComponent = ({
       
       ctx.clearRect(0, 0, width, height);
       
-      const rectWidth = 830 * (width / 1080);
-      const rectHeight = 1100 * (height / 1350);
+      const rectWidth = 830 * scalingFactor;
+      let rectHeight;
+
+      switch(canvasSize.name) {
+        case 'Story':
+            rectHeight = 1420 * scalingFactor;
+            break;
+        case 'Square':
+            rectHeight = 830 * scalingFactor;
+            break;
+        case 'Post':
+        default:
+            rectHeight = 1100 * scalingFactor;
+            break;
+      }
+
       const rectX = (width - rectWidth) / 2;
       const rectY = (height - rectHeight) / 2;
       const finalPadding = textBoxPadding * scalingFactor;
@@ -454,7 +471,7 @@ const ImageCanvasComponent = ({
     };
 
     draw();
-  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, viewportHeight, backgroundColor, textColor, textOpacity, width, height, onCanvasReady, backgroundImageUrl, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing, elements, areElementsEnabled, textBoxPadding, textBoxBorderRadius, isTextBoxBorderEnabled, textBoxBorderColor, textBoxBorderWidth]);
+  }, [text, isTitle, fontFamily, fontWeight, propFontSize, propLineHeight, viewportHeight, backgroundColor, textColor, textOpacity, canvasSize, width, height, onCanvasReady, backgroundImageUrl, rectColor, rectOpacity, overlayColor, overlayOpacity, textAlign, isBold, isUppercase, textShadowEnabled, shadows, textStroke, strokeColor, strokeWidth, fontSmoothing, elements, areElementsEnabled, textBoxPadding, textBoxBorderRadius, isTextBoxBorderEnabled, textBoxBorderColor, textBoxBorderWidth]);
 
   return (
     <canvas

@@ -66,7 +66,7 @@ type Design = {
 
 type TextAlign = 'left' | 'center' | 'right';
 type BackgroundType = 'flat' | 'gradient' | 'image';
-type CanvasSize = { name: 'Post' | 'Story' | 'Square'; width: number; height: number };
+export type CanvasSize = { name: 'Post' | 'Story' | 'Square'; width: number; height: number };
 
 const canvasSizes: CanvasSize[] = [
     { name: 'Post', width: 1080, height: 1350 },
@@ -244,7 +244,7 @@ export default function Home() {
   const [rectBgColor, setRectBgColor] = useState(pageInitialColors.rectBgColor);
   const [rectOpacity, setRectOpacity] = useState(0);
 
-  const [textBoxPadding, setTextBoxPadding] = useState(50);
+  const [textBoxPadding] = useState(100);
   const [textBoxBorderRadius, setTextBoxBorderRadius] = useState(0);
   const [isTextBoxBorderEnabled, setIsTextBoxBorderEnabled] = useState(false);
   const [textBoxBorderColor, setTextBoxBorderColor] = useState('#000000');
@@ -327,10 +327,23 @@ export default function Home() {
   
     document.fonts.load(`${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`).then(() => {
         ctx.font = `${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`;
-  
-        const rectHeight = 1100 * (canvasSize.height / 1350);
-        const rectWidth = 830 * (canvasSize.width / 1080);
-        const textMaxWidth = rectWidth - (textBoxPadding * 2 * scalingFactor);
+
+        let rectHeight;
+        switch (canvasSize.name) {
+          case 'Story':
+            rectHeight = 1420;
+            break;
+          case 'Square':
+            rectHeight = 830;
+            break;
+          case 'Post':
+          default:
+            rectHeight = 1100;
+            break;
+        }
+        rectHeight *= (canvasSize.height / (canvasSize.name === 'Post' ? 1350 : canvasSize.name === 'Story' ? 1920 : 1080));
+
+        const textMaxWidth = 630 * scalingFactor;
         const currentLineHeight = typeof activeFont.lineHeight === 'number' ? activeFont.lineHeight : parseFloat(activeFont.lineHeight as string);
         const finalLineHeight = finalFontSize * currentLineHeight;
   
@@ -358,7 +371,7 @@ export default function Home() {
         // Scroll to the first slide after generation
         setTimeout(() => carouselApi?.scrollTo(0), 100);
     });
-  }, [text, title, canvasSize, activeFont, isBold, carouselApi, textBoxPadding, fontSize]);
+  }, [text, title, canvasSize, activeFont, isBold, carouselApi, fontSize]);
   
   useEffect(() => {
     if (designs.length > 0) {
@@ -639,6 +652,7 @@ export default function Home() {
           textOpacity={textOpacity}
           backgroundColor={currentBg}
           backgroundImageUrl={finalImageUrl}
+          canvasSize={canvasSize}
           width={canvasSize.width}
           height={canvasSize.height}
           onCanvasReady={(canvas) => {
@@ -1198,7 +1212,7 @@ export default function Home() {
         setRectBgColor, _rectOpacity: rectOpacity,
         setRectOpacity: setRectOpacity,
         textBoxPadding,
-        setTextBoxPadding,
+        setTextBoxPadding: () => {}, // This is now a constant
         textBoxBorderRadius,
         setTextBoxBorderRadius,
         isTextBoxBorderEnabled,

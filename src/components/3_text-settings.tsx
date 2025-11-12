@@ -391,13 +391,6 @@ export function TextSettings({
                 </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor={`${baseId}-padding-slider`}>Padding</Label>
-              <div className="flex items-center gap-2">
-                <Slider id={`${baseId}-padding-slider`} max={200} min={0} step={5} value={[textBoxPadding]} onValueChange={(v) => setTextBoxPadding(v[0])} />
-                <span className="text-sm p-2 rounded-md border border-input tabular-nums w-14 text-center">{textBoxPadding}</span>
-              </div>
-            </div>
-            <div className="space-y-2">
               <Label htmlFor={`${baseId}-radius-slider`}>Border Radius</Label>
               <div className="flex items-center gap-2">
                 <Slider id={`${baseId}-radius-slider`} max={200} min={0} step={5} value={[textBoxBorderRadius]} onValueChange={(v) => setTextBoxBorderRadius(v[0])} />
