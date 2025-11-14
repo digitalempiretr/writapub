@@ -84,7 +84,7 @@ const wrapAndDrawText = (
   x: number,
   y: number,
   lineHeight: number,
-  rectHeight: number,
+  textAvailableHeight: number,
   textStroke: boolean,
   strokeColor: string,
   strokeWidth: number,
@@ -94,7 +94,7 @@ const wrapAndDrawText = (
   finalFontSize: number
 ) => {
   const totalTextHeight = (lines.length * lineHeight) - (lineHeight - context.measureText('M').width); // A more accurate height
-  const startY = y + (rectHeight - totalTextHeight) / 2;
+  const startY = y + (textAvailableHeight - totalTextHeight) / 2;
 
   const drawTextLines = (colorOverride?: string) => {
     let currentY = startY;
@@ -282,29 +282,33 @@ const ImageCanvasComponent = ({
       ctx.clearRect(0, 0, width, height);
       
       const rectWidth = 830 * scalingFactor;
-      let rectHeight;
+      let rectHeight; // Visible Textbox height
+      let textAvailableHeight; // Invisible Paragraph Boundary height
 
       switch(canvasSize.name) {
         case 'Story':
             rectHeight = 1420 * scalingFactor;
+            textAvailableHeight = 1220 * scalingFactor;
             break;
         case 'Square':
             rectHeight = 830 * scalingFactor;
+            textAvailableHeight = 630 * scalingFactor;
             break;
         case 'Post':
         default:
             rectHeight = 1100 * scalingFactor;
+            textAvailableHeight = 900 * scalingFactor;
             break;
       }
 
       const rectX = (width - rectWidth) / 2;
       const rectY = (height - rectHeight) / 2;
-      const finalPadding = textBoxPadding * scalingFactor;
-      const textMaxWidth = rectWidth - (finalPadding * 2);
+
+      const textAvailableWidth = 630 * scalingFactor;
 
       ctx.font = `${finalFontWeight} ${finalFontSize}px "${fontFamily}"`;
       
-      const linesToDraw = isTitle ? wrapText(ctx, processedText, textMaxWidth) : processedText.split('\n');
+      const linesToDraw = isTitle ? wrapText(ctx, processedText, textAvailableWidth) : processedText.split('\n');
 
 
       const drawLayout = async () => {
@@ -369,15 +373,17 @@ const ImageCanvasComponent = ({
         ctx.font = `${finalFontWeight} ${finalFontSize}px "${fontFamily}"`;
         
         let textX;
+        const textY = rectY + (rectHeight - textAvailableHeight) / 2;
+
         if (textAlign === 'left') {
-            textX = rectX + finalPadding;
+            textX = rectX + (rectWidth - textAvailableWidth) / 2;
         } else if (textAlign === 'right') {
-            textX = rectX + rectWidth - finalPadding;
+            textX = rectX + rectWidth - (rectWidth - textAvailableWidth) / 2;
         } else { // center
             textX = rectX + rectWidth / 2;
         }
         
-        wrapAndDrawText(ctx, linesToDraw, textX, rectY, finalLineHeight, rectHeight, 
+        wrapAndDrawText(ctx, linesToDraw, textX, textY, finalLineHeight, textAvailableHeight, 
             textStroke, strokeColor, strokeWidth,
             textShadowEnabled, shadows, finalTextColor, finalFontSize
         );

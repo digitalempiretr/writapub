@@ -328,27 +328,27 @@ export default function Home() {
     document.fonts.load(`${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`).then(() => {
         ctx.font = `${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`;
 
-        let rectHeight;
+        let textAvailableHeight;
         switch (canvasSize.name) {
           case 'Story':
-            rectHeight = 1420;
+            textAvailableHeight = 1220;
             break;
           case 'Square':
-            rectHeight = 830;
+            textAvailableHeight = 630;
             break;
           case 'Post':
           default:
-            rectHeight = 1100;
+            textAvailableHeight = 900;
             break;
         }
-        rectHeight *= (canvasSize.height / (canvasSize.name === 'Post' ? 1350 : canvasSize.name === 'Story' ? 1920 : 1080));
+        textAvailableHeight *= scalingFactor;
 
         const textMaxWidth = 630 * scalingFactor;
         const currentLineHeight = typeof activeFont.lineHeight === 'number' ? activeFont.lineHeight : parseFloat(activeFont.lineHeight as string);
         const finalLineHeight = finalFontSize * currentLineHeight;
   
-        // Dynamically calculate max lines based on available height
-        const dynamicMaxLines = Math.floor(rectHeight / finalLineHeight);
+        // Dynamically calculate max lines based on available height for text ("Paragraf Sınırı")
+        const dynamicMaxLines = Math.floor(textAvailableHeight / finalLineHeight);
         const baseMaxLines = Math.max(1, dynamicMaxLines - 2); // Leave some buffer
         const extendedMaxLines = dynamicMaxLines; // Allow using full height if needed
   
@@ -1169,7 +1169,7 @@ export default function Home() {
         isLoading,
         handleFeelLucky,
         bgColor, 
-        handleBgColorSelect,
+        handleBgColorSelect: handleBgColorSelect,
         imageBgUrl, 
         handleImageBgUrlSelect,
         searchQuery, 
@@ -1186,7 +1186,7 @@ export default function Home() {
         overlayOpacity, 
         setOverlayOpacity, 
         gradientBg,
-        handleGradientBgSelect, 
+        handleGradientBgSelect: handleGradientBgSelect,
         setSearchCarouselApi: setSearchCarouselApi, 
         textColor, 
         setTextColor: handleTextColorChange, 
