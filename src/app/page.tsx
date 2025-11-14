@@ -383,6 +383,13 @@ export default function Home() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBold, isUppercase, textAlign, activeEffect]);
 
+  useEffect(() => {
+    if (designs.length > 0) {
+        handleGenerate();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canvasSize]);
+
 
   /**
    * Closes the mobile settings panel.

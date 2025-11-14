@@ -28,7 +28,7 @@ export function MakeCarouselSidebar({
   renderActiveTabContent,
 }: SidebarProps) {
   return (
-    <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50 rounded-tr-lg ", isSidebarOpen ? "w-[40vw]" : "w-[2vw]")}>
+    <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50 rounded-tr-lg ", isSidebarOpen ? "w-[35vw]" : "w-[2vw]")}>
       <Tabs
         orientation="vertical"
         value={activeSettingsTab}
