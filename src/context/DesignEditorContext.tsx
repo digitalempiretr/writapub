@@ -1,6 +1,7 @@
+
 'use client';
 
-import React, { createContext, useContext, useReducer, ReactNode, Dispatch } from 'react';
+import React, { createContext, useContext, useReducer, ReactNode, Dispatch, useCallback } from 'react';
 import { CanvasSize, canvasSizes } from '@/lib/canvas-sizes';
 import { FontOption, fontOptions } from '@/lib/font-options';
 import { DesignTemplate } from '@/lib/design-templates';
@@ -43,6 +44,7 @@ interface State {
   isTextBoxEnabled: boolean;
   rectBgColor: string;
   rectOpacity: number;
+  textBoxPadding: number;
   textBoxBorderRadius: number;
   isTextBoxBorderEnabled: boolean;
   textBoxBorderColor: string;
@@ -98,6 +100,7 @@ const initialState: State = {
   isTextBoxEnabled: false,
   rectBgColor: pageInitialColors.rectBgColor,
   rectOpacity: 0,
+  textBoxPadding: 100,
   textBoxBorderRadius: 0,
   isTextBoxBorderEnabled: false,
   textBoxBorderColor: '#000000',
@@ -158,19 +161,153 @@ const editorReducer = (state: State, action: Action): State => {
   }
 };
 
-// 5. Context
-const DesignEditorContext = createContext<{
+type DesignEditorContextType = {
   state: State;
   dispatch: Dispatch<Action>;
-} | null>(null);
+  handleGenerate: () => void;
+};
+
+// 5. Context
+const DesignEditorContext = createContext<DesignEditorContextType | null>(null);
 
 
 // 6. Provider
 export const DesignEditorProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(editorReducer, initialState);
 
+  const measureAndSplitText = useCallback((text: string, maxLines: number, extendedMaxLines: number, ctx: CanvasRenderingContext2D, textAvailableWidth: number) => {
+      const paragraphs = text.split('\n').filter(p => p.trim() !== '');
+      const slides: string[] = [];
+      let currentSlideText = '';
+      let currentLineCount = 0;
+
+      for (const paragraph of paragraphs) {
+          const words = paragraph.split(' ');
+          let currentLine = '';
+          let lineCountForPara = 0;
+
+          words.forEach((word, index) => {
+              const testLine = currentLine ? `${currentLine} ${word}` : word;
+              const testWidth = ctx.measureText(testLine).width;
+
+              if (testWidth > textAvailableWidth) {
+                  if (currentLine) {
+                      if (currentLineCount + 1 > maxLines) {
+                          slides.push(currentSlideText.trim());
+                          currentSlideText = currentLine + '\n';
+                          currentLineCount = 1;
+                      } else {
+                          currentSlideText += currentLine + '\n';
+                          currentLineCount++;
+                      }
+                  }
+                  currentLine = word;
+              } else {
+                  currentLine = testLine;
+              }
+          });
+
+          if (currentLine) {
+              const remainingWords = paragraph.substring(paragraph.indexOf(currentLine)).split(' ');
+              const isLastSentenceShort = remainingWords.length <= 2;
+              const currentMax = isLastSentenceShort ? extendedMaxLines : maxLines;
+
+              if (currentLineCount + 1 > currentMax) {
+                  slides.push(currentSlideText.trim());
+                  currentSlideText = currentLine + '\n';
+                  currentLineCount = 1;
+              } else {
+                  currentSlideText += currentLine + '\n';
+                  currentLineCount++;
+              }
+          }
+
+          if (currentSlideText.trim() !== '') {
+            lineCountForPara = currentSlideText.split('\n').length -1;
+            if(lineCountForPara >= maxLines) {
+                slides.push(currentSlideText.trim());
+                currentSlideText = '';
+                currentLineCount = 0;
+            }
+          }
+      }
+
+      if (currentSlideText.trim()) {
+          slides.push(currentSlideText.trim());
+      }
+      return slides;
+  }, []);
+
+  const handleGenerate = useCallback(() => {
+    dispatch({ type: 'SET_STATE', payload: { isLoading: true, designs: [] } });
+
+    setTimeout(() => {
+        let currentTitle = state.title;
+        let bodyText = state.text;
+
+        if (!currentTitle) {
+            const firstSentenceEnd = bodyText.search(/[.!?]/) + 1;
+            if (firstSentenceEnd > 0) {
+                currentTitle = bodyText.substring(0, firstSentenceEnd).trim();
+                bodyText = bodyText.substring(firstSentenceEnd).trim();
+            } else {
+                currentTitle = bodyText.substring(0, 50); // Fallback
+                bodyText = bodyText.substring(50).trim();
+            }
+        }
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            dispatch({ type: 'SET_STATE', payload: { isLoading: false } });
+            return;
+        }
+
+        const { canvasSize, fontSize, activeFont } = state;
+        const finalFontWeight = state.isBold ? Math.min(Number(activeFont.weight) + 300, 900) : activeFont.weight;
+
+        const scalingFactor = canvasSize.width / 1080;
+        const finalFontSize = fontSize * scalingFactor;
+        ctx.font = `${finalFontWeight} ${finalFontSize}px "${activeFont.fontFamily}"`;
+        
+        let textAvailableWidth: number, textAvailableHeight: number;
+
+        if (canvasSize.name === 'Story') {
+            textAvailableWidth = 630 * scalingFactor;
+            textAvailableHeight = 1220 * scalingFactor;
+        } else if (canvasSize.name === 'Square') {
+            textAvailableWidth = 630 * scalingFactor;
+            textAvailableHeight = 630 * scalingFactor;
+        } else { // Post
+            textAvailableWidth = 630 * scalingFactor;
+            textAvailableHeight = 900 * scalingFactor;
+        }
+        
+        const lineHeight = finalFontSize * (typeof activeFont.lineHeight === 'number' ? activeFont.lineHeight : 1.4);
+        const dynamicMaxLines = Math.floor(textAvailableHeight / lineHeight);
+        const extendedMaxLines = dynamicMaxLines + 2;
+        
+        const slides = measureAndSplitText(bodyText, dynamicMaxLines, extendedMaxLines, ctx, textAvailableWidth);
+
+        const newDesigns = [
+            { text: currentTitle, isTitle: true },
+            ...slides.map(slideText => ({ text: slideText, isTitle: false }))
+        ];
+
+        dispatch({
+            type: 'SET_STATE',
+            payload: {
+                designs: newDesigns,
+                isLoading: false,
+                isGeneratingAnimation: true
+            }
+        });
+        setTimeout(() => dispatch({ type: 'SET_STATE', payload: { isGeneratingAnimation: false } }), 1000);
+    }, 100);
+  }, [state.title, state.text, state.canvasSize, state.fontSize, state.activeFont, state.isBold, measureAndSplitText]);
+
   return (
-    <DesignEditorContext.Provider value={{ state, dispatch }}>
+    <DesignEditorContext.Provider value={{ state, dispatch, handleGenerate }}>
       {children}
     </DesignEditorContext.Provider>
   );
@@ -184,3 +321,4 @@ export const useDesignEditor = () => {
   }
   return context;
 };
+

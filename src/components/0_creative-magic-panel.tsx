@@ -23,17 +23,18 @@ import {
   DialogTrigger,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { useDesignEditor } from "@/context/DesignEditorContext";
 
 type CreativeMagicPanelProps = {
   title: string;
   setTitle: (title: string) => void;
   text: string;
   setText: (text: string) => void;
-  handleGenerate: () => void;
   isLoading: boolean;
 };
 
-export function CreativeMagicPanel({ title, setTitle, text, setText, handleGenerate, isLoading }: CreativeMagicPanelProps) {
+export function CreativeMagicPanel({ title, setTitle, text, setText, isLoading }: CreativeMagicPanelProps) {
+  const { handleGenerate } = useDesignEditor();
   const titleId = useId();
   const mainTextAreaId = useId();
   const isMobile = useIsMobile();
