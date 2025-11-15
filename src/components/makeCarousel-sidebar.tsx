@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { LayoutTemplate, ImageIcon, Type, Shapes, HeartIcon, Download, X } from 'lucide-react';
 
 type SidebarProps = {
   isSidebarOpen: boolean;
@@ -23,10 +23,19 @@ export function MakeCarouselSidebar({
   setIsSidebarOpen,
   activeSettingsTab,
   handleDesktopTabClick,
-  settingsTabs,
+  settingsTabs: _, // We'll define tabs internally
   activeTabLabel,
   renderActiveTabContent,
 }: SidebarProps) {
+    const settingsTabs = [
+        { value: "designs", icon: <LayoutTemplate className="h-5 w-5"/>, label: "Templates" },
+        { value: "background", icon: <ImageIcon className="h-5 w-5"/>, label: "Background" },
+        { value: "text", icon: <Type className="h-5 w-5"/>, label: "Text" },
+        { value: "elements", icon: <Shapes className="h-5 w-5" />, label: "Elements" },
+        { value: "favorites", icon: <HeartIcon className="h-5 w-5"/>, label: "Favorites" },
+        { value: "download", icon: <Download className="h-5 w-5"/>, label: "Download" },
+      ];
+
   return (
     <div className={cn("hidden md:flex flex-shrink-0 bg-sidebar transition-all duration-300 ease-in-out z-50 rounded-tr-lg ", isSidebarOpen ? "w-[35vw]" : "w-[2vw]")}>
       <Tabs

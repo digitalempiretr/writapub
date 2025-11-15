@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useId, useState } from "react";
+import { useDesignEditor } from "@/context/DesignEditorContext";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,6 @@ import { Slider } from "./ui/slider";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Switch } from "./ui/switch";
-
 
 export type CanvasElement = {
   id: string;
@@ -28,32 +28,47 @@ export type CanvasElement = {
   alignment: 'left' | 'center' | 'right';
 };
 
-
-type ElementsPanelProps = {
-  handleImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  elements: CanvasElement[];
-  selectedElement: string | null;
-  setSelectedElement: (id: string | null) => void;
-  updateElement: (id: string, newProps: Partial<CanvasElement>) => void;
-  setElements: (elements: CanvasElement[] | ((prev: CanvasElement[]) => CanvasElement[])) => void;
-  areElementsEnabled: boolean;
-  setAreElementsEnabled: (enabled: boolean) => void;
-};
-
-export function ElementsPanel({ 
-    handleImageUpload, 
-    elements,
-    selectedElement,
-    setSelectedElement,
-    updateElement,
-    setElements,
-    areElementsEnabled,
-    setAreElementsEnabled,
-}: ElementsPanelProps) {
+export function ElementsPanel() {
+  const { state, dispatch } = useDesignEditor();
+  const { elements, selectedElement, areElementsEnabled } = state;
+  
   const fileInputId = useId();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   
+  const setElements = (updater: (prev: CanvasElement[]) => CanvasElement[]) => {
+    const newElements = updater(elements);
+    dispatch({ type: 'SET_ELEMENTS', payload: newElements });
+  };
+  const setSelectedElement = (id: string | null) => dispatch({ type: 'SET_STATE', payload: { selectedElement: id } });
+  const setAreElementsEnabled = (enabled: boolean) => dispatch({ type: 'SET_STATE', payload: { areElementsEnabled: enabled } });
+  const updateElement = (id: string, newProps: Partial<CanvasElement>) => dispatch({ type: 'UPDATE_ELEMENT', payload: { id, newProps } });
+
   const currentElement = elements.find(el => el.id === selectedElement);
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newElement: CanvasElement = {
+          id: `element-${Date.now()}`,
+          type: 'image',
+          url: reader.result as string,
+          x: 50,
+          y: 50,
+          width: 150,
+          height: 150,
+          rotation: 0,
+          opacity: 1,
+          shape: 'square',
+          alignment: 'left',
+        };
+        setElements(prev => [...prev, newElement]);
+        setSelectedElement(newElement.id);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleDeleteElement = (id: string) => {
     setElements(prev => prev.filter(el => el.id !== id));
@@ -98,9 +113,7 @@ export function ElementsPanel({
                       Choose a file...
                     </Label>
                   </div>
-
                   <Separator />
-
                   <div className="flex items-center justify-between">
                       <Label htmlFor="elements-toggle" className="flex flex-col space-y-1">
                           <span>Show Elements</span>
@@ -114,7 +127,6 @@ export function ElementsPanel({
                           onCheckedChange={setAreElementsEnabled}
                       />
                   </div>
-
                   {currentElement && areElementsEnabled && (
                     <div className="space-y-4 pt-4 border-t">
                         <Label className="font-medium">Selected Element Settings</Label>
@@ -129,7 +141,6 @@ export function ElementsPanel({
                                 </Button>
                             </div>
                         </div>
-
                         <div className="space-y-2">
                             <Label className="text-xs">Alignment</Label>
                             <div className="grid grid-cols-3 gap-2">
@@ -144,7 +155,6 @@ export function ElementsPanel({
                                 </Button>
                             </div>
                         </div>
-
                         <div className="space-y-2">
                             <Label htmlFor="opacity-slider" className="text-xs">Opacity</Label>
                             <div className="flex items-center gap-2">
@@ -165,9 +175,7 @@ export function ElementsPanel({
           </PopoverContent>
         </Popover>
       </div>
-
        <Separator />
-
         <div className="space-y-2">
             {elements.length > 0 ? (
                 <div className="space-y-2">
