@@ -26,6 +26,7 @@ import { findImages } from '@/ai/flows/find-images-flow';
 import { fontOptions } from '@/lib/font-options';
 import { textEffects } from '@/lib/text-effects';
 import { CarouselApi } from '../ui/carousel';
+import { gradientTemplates } from '@/lib/colors';
 
 
 export const EditorLayout = () => {
@@ -59,6 +60,7 @@ export const EditorLayout = () => {
 
     const setIsSidebarOpen = (isOpen: boolean) => dispatch({ type: 'SET_STATE', payload: { isSidebarOpen: isOpen } });
     const setActiveSettingsTab = (tab: string) => dispatch({ type: 'SET_STATE', payload: { activeSettingsTab: tab } });
+    const handleGenerate = () => dispatch({ type: 'SET_STATE', payload: { designs: [] } });
 
     const handleDesktopTabClick = (tab: string) => {
         setActiveSettingsTab(tab);
@@ -174,7 +176,7 @@ export const EditorLayout = () => {
               <TextSettings
                 text={state.text}
                 setText={(text) => dispatch({ type: 'SET_STATE', payload: { text } })}
-                handleGenerate={() => { /* Not used here */ }}
+                handleGenerate={handleGenerate}
                 isLoading={state.isLoading}
                 textColor={state.textColor}
                 setTextColor={(color) => dispatch({ type: 'SET_STATE', payload: { textColor: color } })}
