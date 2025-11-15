@@ -4,8 +4,9 @@
 import React, { useEffect, useRef } from "react";
 import type { Shadow } from "@/components/3_text-settings";
 import { CanvasElement } from "./5_elements-panel";
-import { CanvasSize } from "@/app/page";
 
+
+export type CanvasSize = { name: 'Post' | 'Story' | 'Square'; width: number; height: number };
 
 export type FontOption = {
   value: string;

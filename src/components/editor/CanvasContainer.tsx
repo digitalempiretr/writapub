@@ -9,7 +9,7 @@ import { NavBullets } from '../ui/nav-bullets';
 
 export const CanvasContainer = () => {
     const { state, dispatch } = useDesignEditor();
-    const { designs, zoomLevel, panOffset, ...canvasProps } = state;
+    const { designs, zoomLevel, panOffset, bgColor, ...canvasProps } = state;
     
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
     const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
@@ -41,6 +41,7 @@ export const CanvasContainer = () => {
                                         <CardContent className="p-0 relative bg-card" style={{ aspectRatio: `${canvasProps.canvasSize.width}/${canvasProps.canvasSize.height}` }}>
                                             <ImageCanvas
                                                 {...canvasProps}
+                                                backgroundColor={bgColor}
                                                 text={design.text}
                                                 isTitle={design.isTitle}
                                                 width={canvasProps.canvasSize.width}
